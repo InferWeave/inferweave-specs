@@ -187,3 +187,21 @@ Start with API keys and add OIDC before public multi-user launch?
 Current default: yes.
 
 Changing a resolved decision requires an ADR.
+
+## D-006 Status of `autospec-inferweave` — OPEN
+
+Invariant 27 states that `autospec-inferweave` remains a thin integration client/operator
+surface. That is currently false.
+
+The `InferWeave/inferweave-*` implementation repositories were archived on 2026-09-03, and
+`autospec-inferweave` is now the only running inference stack. It holds the only working
+implementations of the deployment context ceiling, capability persistence and reservation
+liveness behaviours specified in `specs/03`, `specs/04` and `specs/00`.
+
+Required decision: is `autospec-inferweave` a temporary bridge whose behaviours are rewritten
+into the target architecture under the clean-slate constraint, or the transitional production
+plane these specifications must describe?
+
+Until this resolves, invariant 27 describes the target state, not the current one. No task may
+cite invariant 27 as authority for removing a capability that is currently serving production
+traffic.

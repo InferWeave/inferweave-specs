@@ -1,6 +1,6 @@
 # Feature → Canonical Task Coverage
 
-Features: **65**
+Features: **73**
 
 | Feature | Priority | Phase | Owner component | Canonical tasks |
 |---|---|---|---|---|
@@ -69,3 +69,11 @@ Features: **65**
 | `IW-WATCH-003` Watchdog CLI/dashboard/MCP diagnostics and operator rescue | P0 | 3 | health+mcp+web | `P3-T18A` |
 | `IW-DEPLOY-001` Docker Compose is mandatory persistent deployment substrate | P0 | 0 | bootstrap | `P0-T11A`, `P1-T22`, `P1-T23`, `P3-T09`, `P3-T11` |
 | `IW-DEPLOY-002` Apptainer is mandatory Slurm allocation deployment substrate | P0 | 3 | bootstrap+slurm | `P3-T10` |
+| `IW-CAP-002` Deployment context ceiling as a hard admission bound | P0 | 1 | control-plane+node | `P1-T06A`, `P1-T11A` |
+| `IW-CAP-003` Reservation liveness and stale reclamation | P0 | 1 | control-plane+node | `P1-T11B` |
+| `IW-NODE-003` Capability precedence, persistence and cold-start admissibility | P0 | 1 | node | `P1-T06B` |
+| `IW-DEPLOY-003` Maximum-context deployment sizing | P0 | 1 | node | `P1-T06A` |
+| `IW-ROUTE-004` Context-size alias semantics | P0 | 1 | control-plane | `P1-T13A` |
+| `IW-BOOT-005` Node serviceability gate and shipped default policy | P0 | 1 | node | `P1-T12B` |
+| `IW-WATCH-004` Discovered device inventory and requalification on change | P0 | 1 | node | `P1-T20C` |
+| `IW-OBS-002` Single-source queue observability | P0 | 1 | control-plane | `P1-T12A` |

@@ -6,7 +6,7 @@
 2. Resolve model alias/intent to eligible immutable deployments.
 3. Filter fresh/healthy/non-draining service instances.
 4. Filter modality/capability/license/privacy/policy.
-5. Filter context/resource feasibility.
+5. Filter context/resource feasibility, including each candidate deployment's hard `max_context_tokens` ceiling.
 6. Apply owner/FairShare eligibility.
 7. Prefer valid existing session/cache affinity.
 8. Apply best-fit packing.
@@ -19,6 +19,8 @@
 Prefer the candidate with the lowest sufficient remaining context/KV/resource envelope, preserving large contiguous capacity for requests that need it.
 
 A faster GPU with insufficient context is not a candidate.
+
+A context-size alias expresses caller intent and never widens a candidate's ceiling.
 
 ## Score dimensions
 

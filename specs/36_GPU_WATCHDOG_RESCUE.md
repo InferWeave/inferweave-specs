@@ -28,6 +28,25 @@ It protects:
 9. GPU owner priority remains absolute.
 10. Recovery must not corrupt prompt, telemetry, benchmark, contribution or lease accounting.
 
+## Expected device inventory
+
+The devices a node expects are derived from discovery and versioned with the hardware
+fingerprint, never held as a configured constant.
+
+A hard-coded expected device count turns every legitimate hardware change — a card removed,
+replaced or added — into a permanent degraded state no recovery action can clear, because
+nothing is actually broken.
+
+A change in device count or device identity is a requalification trigger:
+
+- record a new host generation (`26_RESOURCE_IDENTITY_REDISCOVERY.md`);
+- re-measure the resource envelope and the published context ceiling;
+- re-advertise capability before becoming schedulable again.
+
+A device count below expectation is never resolved by falling back to CPU execution. Silent
+CPU fallback presents as a working node serving at a small fraction of expected throughput,
+which is harder to detect than an outage.
+
 ## Watchdog signals
 
 Monitor, where supported:

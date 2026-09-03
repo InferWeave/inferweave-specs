@@ -1,9 +1,9 @@
 # InferWeave Specs Repository Index
 
-Version: **8.0**
+Version: **9.0**
 Specifications: **38**
-Tracked features: **65**
-Canonical tasks: **110**
+Tracked features: **73**
+Canonical tasks: **118**
 Deployment: **Docker Compose persistent / Apptainer Slurm**
 GPU watchdog/rescue: **required**
 
@@ -18,10 +18,10 @@ GPU watchdog/rescue: **required**
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443`
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3`
-- `AGENTS.md` — `a27759322b91`
+- `AGENTS.md` — `e3c0561280d5`
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4`
-- `CHANGELOG.md` — `da4dc9a60069`
-- `CONTRIBUTING.md` — `2c3569159c72`
+- `CHANGELOG.md` — `c433cc1ecca9`
+- `CONTRIBUTING.md` — `afbd4102ee4c`
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57`
 - `FEATURE_PRESERVATION_MATRIX.md` — `995cf0b7ebb6`
 - `GETTING_STARTED.md` — `c97552130b3f`
@@ -34,32 +34,32 @@ GPU watchdog/rescue: **required**
 - `agents/implementation-planner.md` — `0479376063d5`
 - `agents/spec-author.md` — `31ca2354413f`
 - `agents/spec-reviewer.md` — `9e07c9d365ad`
-- `bundle-manifest.json` — `00f264ffdf20`
+- `bundle-manifest.json` — `99552207ce4a`
 - `contracts/README.md` — `8afc7db8d310`
-- `contracts/canonical-task-graph.json` — `dcd0091b44ee`
+- `contracts/canonical-task-graph.json` — `56d1d0b79c98`
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03`
 - `contracts/error.example.json` — `7a43622775b1`
-- `contracts/feature-registry.json` — `a584280874b5`
+- `contracts/feature-registry.json` — `65a46bce61db`
 - `contracts/gpu-telemetry.example.json` — `e3d37a58ab37`
 - `contracts/prompt-record.example.json` — `8b199a55dc53`
 - `contracts/repository-map.json` — `ea1edd0197ad`
 - `contracts/routing-preferences.example.json` — `8fe31be89156`
 - `decisions/ADR_TEMPLATE.md` — `5ae4a549d08a`
-- `decisions/DECISIONS_REQUIRED.md` — `96fcfee452e3`
+- `decisions/DECISIONS_REQUIRED.md` — `eaa8760902fe`
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab`
 - `docs/AI_INSTALL_INFERWEAVE.md` — `64b97a39d222`
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `9ce06bfc2250`
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `88e1ee03bce7`
-- `implementation/CANONICAL_TASK_INDEX.md` — `3ed042cd59e2`
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `888d25d21621`
+- `implementation/CANONICAL_TASK_INDEX.md` — `b3a11efc981d`
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `4e6d9c9665dd`
 - `implementation/DATA_MODEL.md` — `d0e500314c0c`
-- `implementation/ERROR_SEMANTICS.md` — `c68ee4522d55`
-- `implementation/FEATURE_TASK_COVERAGE.md` — `12108c1f750a`
+- `implementation/ERROR_SEMANTICS.md` — `b20d20bfb602`
+- `implementation/FEATURE_TASK_COVERAGE.md` — `052a6394d7c2`
 - `implementation/IMPLEMENTATION_ORDER.md` — `1a48655f5ecc`
 - `implementation/MILESTONES.md` — `84f77749cf80`
 - `implementation/MONOREPO_BOOTSTRAP.md` — `7d729410dacd`
 - `implementation/PHASE_GATES.md` — `2e31a5645d9b`
-- `implementation/SPEC_TASK_COVERAGE.md` — `31d604084aa6`
+- `implementation/SPEC_TASK_COVERAGE.md` — `0cd976f1ebd5`
 - `implementation/TEST_STRATEGY.md` — `ac0d3dad032f`
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70`
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c`
@@ -72,17 +72,17 @@ GPU watchdog/rescue: **required**
 - `scripts/bootstrap-repositories.sh` — `914de3443dbc`
 - `scripts/validate_specs.py` — `4bca6c0a26da`
 - `solana/DEVNET_ONLY.md` — `1a8ea96fcc58`
-- `specs/00_INVARIANTS.md` — `c1af2c043db2`
+- `specs/00_INVARIANTS.md` — `6e13451ec135`
 - `specs/01_REPOSITORIES_AND_OWNERSHIP.md` — `e52f5e6e8112`
 - `specs/02_PROTOCOL_AND_API.md` — `60d75f035f9f`
-- `specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md` — `1e9907ad8adc`
-- `specs/04_CAPACITY_ADMISSION_SEATS.md` — `3295eb6f2c0d`
-- `specs/05_ROUTING_AFFINITY.md` — `787765c71d9a`
+- `specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md` — `291701e33b15`
+- `specs/04_CAPACITY_ADMISSION_SEATS.md` — `846d9f2c8c8c`
+- `specs/05_ROUTING_AFFINITY.md` — `fe90cd1a0a50`
 - `specs/06_BACKPRESSURE_RETURN_TO_SENDER.md` — `ae995dd6ac19`
 - `specs/07_FAIRSHARE_OWNER_PRIORITY.md` — `3c9f3be77e28`
 - `specs/08_CONNECTIVITY_DATA_PLANE.md` — `11aeb504bd51`
 - `specs/09_OBSERVABILITY_RECEIPTS.md` — `391a76476314`
-- `specs/10_DASHBOARD_PORTAL.md` — `d821f542ccbf`
+- `specs/10_DASHBOARD_PORTAL.md` — `8e8e4b817c74`
 - `specs/11_WORKBENCH_AUTOSPEC_PI.md` — `fbd0cf942993`
 - `specs/12_MODEL_TUNING_BENCHMARKS.md` — `18e3f43ca576`
 - `specs/13_RAG_TOOLS_LSP.md` — `9b08ea55e3c6`
@@ -98,7 +98,7 @@ GPU watchdog/rescue: **required**
 - `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md` — `c0cd3e45d4ca`
 - `specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md` — `290ce8de7f53`
 - `specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md` — `eb94bd094dd4`
-- `specs/26_RESOURCE_IDENTITY_REDISCOVERY.md` — `bfa43c12707f`
+- `specs/26_RESOURCE_IDENTITY_REDISCOVERY.md` — `ad4f89547616`
 - `specs/27_SITE_CONNECTOR_ARTIFACT_CACHE.md` — `5117f6bd7dea`
 - `specs/28_BOOTSTRAP_INIT_CLIENT.md` — `f6766faf2603`
 - `specs/29_MCP_SERVERS.md` — `1f23788d86fd`
@@ -108,7 +108,7 @@ GPU watchdog/rescue: **required**
 - `specs/33_RESUMABLE_BENCHMARK_DAG.md` — `091546f271f1`
 - `specs/34_PROMPT_STORE_TIERING.md` — `cf79dca6f2b8`
 - `specs/35_CLUSTER_SIMULATOR_CHAOS.md` — `a0dd9596ea15`
-- `specs/36_GPU_WATCHDOG_RESCUE.md` — `7787e8ef95f2`
+- `specs/36_GPU_WATCHDOG_RESCUE.md` — `74fd26e93204`
 - `specs/37_CONTAINER_DEPLOYMENT_STANDARD.md` — `cfb37e4e75a6`
 - `tasks/deferred/D-T01.md` — `861aeffcf7d5`
 - `tasks/phase-0/P0-T01.md` — `60abd0e98738`
@@ -130,13 +130,20 @@ GPU watchdog/rescue: **required**
 - `tasks/phase-1/P1-T04.md` — `5b9a4ae1e091`
 - `tasks/phase-1/P1-T05.md` — `a303705c28db`
 - `tasks/phase-1/P1-T06.md` — `77d5cd0c60b5`
+- `tasks/phase-1/P1-T06A.md` — `ec6bfb192b2b`
+- `tasks/phase-1/P1-T06B.md` — `65e7cc6d6119`
 - `tasks/phase-1/P1-T07.md` — `a90a6de7508a`
 - `tasks/phase-1/P1-T08.md` — `5b2a87d8df07`
 - `tasks/phase-1/P1-T09.md` — `6fd988ce32b4`
 - `tasks/phase-1/P1-T10.md` — `37228004f6ca`
 - `tasks/phase-1/P1-T11.md` — `227ab54426b0`
+- `tasks/phase-1/P1-T11A.md` — `9bd1d0af6902`
+- `tasks/phase-1/P1-T11B.md` — `fa7125a7798d`
 - `tasks/phase-1/P1-T12.md` — `bc28a58a97c9`
+- `tasks/phase-1/P1-T12A.md` — `6d37b28ef198`
+- `tasks/phase-1/P1-T12B.md` — `67a098968f42`
 - `tasks/phase-1/P1-T13.md` — `702a57a64aa3`
+- `tasks/phase-1/P1-T13A.md` — `f4aa6ce87397`
 - `tasks/phase-1/P1-T14.md` — `d73421bf0f34`
 - `tasks/phase-1/P1-T15.md` — `1291081fd48f`
 - `tasks/phase-1/P1-T16.md` — `2aa387487f9a`
@@ -146,6 +153,7 @@ GPU watchdog/rescue: **required**
 - `tasks/phase-1/P1-T20.md` — `a1a1358ae090`
 - `tasks/phase-1/P1-T20A.md` — `9381a97ce36a`
 - `tasks/phase-1/P1-T20B.md` — `c798525c33a3`
+- `tasks/phase-1/P1-T20C.md` — `e6731435a1e6`
 - `tasks/phase-1/P1-T21.md` — `aac8ed4437d1`
 - `tasks/phase-1/P1-T22.md` — `5bfd9d463dd6`
 - `tasks/phase-1/P1-T23.md` — `dca5dca655b6`

@@ -13,6 +13,25 @@ Read:
 6. `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md`
 7. `implementation/FEATURE_TASK_COVERAGE.md`
 
+## Operational feedback is a specification obligation
+
+These specifications are maintained continuously, not written once.
+
+Each of the following produces a specification change in the same change set that introduced
+it:
+
+- a production incident whose root cause is behaviour these specifications do not describe;
+- a new capability, surface or contract;
+- a measured value that contradicts a stated assumption;
+- an implementation choice made because a specification was silent.
+
+Record the operational evidence — the observed failure, the measurement, the incident — inside
+the change. A specification that cannot be traced to why it says what it says decays into
+folklore, and the next reader cannot tell a deliberate constraint from an accident.
+
+When an incident and a specification disagree, the incident is the fact. Fix the
+specification.
+
 ## Authority order
 
 1. resolved decisions;

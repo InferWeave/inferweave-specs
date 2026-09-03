@@ -78,6 +78,11 @@ If `gpu-node-17` is rebuilt with new GPUs:
 - create a new generation;
 - do not pretend old GPU performance applies to the new hardware.
 
+A change in the number of visible GPUs is a material hardware identity change and creates a
+new generation, whether devices were added or lost. Watchdog expectations, resource envelope
+and published context ceiling are all re-derived for the new generation rather than
+inherited.
+
 ## Ephemeral IDs
 
 ### `allocation_id`

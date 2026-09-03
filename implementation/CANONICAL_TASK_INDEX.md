@@ -1,6 +1,6 @@
 # Canonical Task Index
 
-Total tasks: **110**
+Total tasks: **118**
 
 | Task | Phase | Context | Depends | Title |
 |---|---:|---:|---|---|
@@ -23,13 +23,20 @@ Total tasks: **110**
 | `P1-T04` | 1 | C70 | P1-T01, P0-T04 | Full hardware/software/GPU discovery fingerprint |
 | `P1-T05` | 1 | C65 | P1-T04, P0-T05 | Live GPU/host telemetry collection |
 | `P1-T06` | 1 | C65 | P1-T03, P1-T04, P0-T06 | Immutable deployment manifest and node advertisement |
+| `P1-T06A` | 1 | C75 | P1-T06 | Publish a deployment context ceiling sized to the envelope |
+| `P1-T06B` | 1 | C75 | P1-T06A | Capability precedence: declared, measured, persisted |
 | `P1-T07` | 1 | C75 | P0-T05, P0-T11 | Prompt ledger metadata and encrypted payload storage |
 | `P1-T08` | 1 | C65 | P1-T07, P0-T06 | Prompt ingest API and submission ordering |
 | `P1-T09` | 1 | C60 | P1-T03, P1-T06 | Gateway registry and `/v1/models` |
 | `P1-T10` | 1 | C70 | P1-T08, P1-T09 | OpenAI streaming ingress against deterministic backend |
 | `P1-T11` | 1 | C75 | P1-T06, P1-T10 | Seat/session/context/KV capacity model |
+| `P1-T11A` | 1 | C75 | P1-T11, P1-T06A | Enforce the context ceiling as a hard admission bound |
+| `P1-T11B` | 1 | C75 | P1-T11 | Reservation liveness and stale reclamation |
 | `P1-T12` | 1 | C70 | P1-T11, P1-T03 | Node authoritative admission and leases |
+| `P1-T12A` | 1 | C75 | P1-T12, P1-T11B | Single-source queue observability |
+| `P1-T12B` | 1 | C75 | P1-T12 | Node serviceability gate and shipped default policy |
 | `P1-T13` | 1 | C70 | P1-T09, P1-T11 | Routing hard constraints |
+| `P1-T13A` | 1 | C50 | P1-T13, P1-T09 | Context-size alias semantics |
 | `P1-T14` | 1 | C70 | P1-T13, P1-T12 | Best-fit capacity placement |
 | `P1-T15` | 1 | C65 | P1-T14 | Sticky sessions and cache affinity |
 | `P1-T16` | 1 | C80 | P1-T12, P1-T15, P0-T11 | Route tickets and rendezvous protocol |
@@ -39,6 +46,7 @@ Total tasks: **110**
 | `P1-T20` | 1 | C75 | P1-T05, P1-T10, P1-T12 | Per-request performance/resource telemetry |
 | `P1-T20A` | 1 | C75 | P1-T05, P1-T06, P1-T20 | GPU/runtime watchdog detection and incident classification |
 | `P1-T20B` | 1 | C85 | P1-T20A, P1-T12 | Bounded rescue ladder and automatic profile rollback |
+| `P1-T20C` | 1 | C75 | P1-T20A, P1-T04 | Discovered device inventory and requalification on change |
 | `P1-T21` | 1 | C75 | P0-T09, P1-T09, P1-T20 | Live Next.js cluster/GPU/request dashboard |
 | `P1-T22` | 1 | C85 | P0-T07, P1-T02, P1-T21 | `init gateway` production container flow |
 | `P1-T23` | 1 | C85 | P0-T07, P1-T02, P1-T04, P1-T17 | `init node` production container flow |
