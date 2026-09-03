@@ -103,6 +103,79 @@ def guard_task_traceability(features, tasks, spec_exists):
             for t in tasks if not t.get("features") and t["id"] not in allowed]
 
 
+# --- derived-artifact drift -------------------------------------------------
+# The same task information exists five ways. These guards make the reconciliation a
+# check rather than an author's discipline.
+
+def _index_rows(root):
+    rows = {}
+    for line in (root / "implementation/CANONICAL_TASK_INDEX.md").read_text().splitlines():
+        m = re.match(r"\| `([^`]+)` \| ([^|]+)\| ([^|]+)\| ([^|]+)\| (.+) \|$", line)
+        if m:
+            rows[m.group(1)] = (m.group(2).strip(), m.group(3).strip(),
+                                m.group(4).strip(), m.group(5).strip())
+    return rows
+
+
+def guard_task_index_matches_graph(features, tasks, spec_exists):
+    errors = []
+    rows = _index_rows(ROOT)
+    if set(rows) != {t["id"] for t in tasks}:
+        for missing in {t["id"] for t in tasks} - set(rows):
+            errors.append(f"task index missing {missing}")
+        for extra in set(rows) - {t["id"] for t in tasks}:
+            errors.append(f"task index has unknown task {extra}")
+    for t in tasks:
+        row = rows.get(t["id"])
+        if not row:
+            continue
+        want = (str(t["phase"]), t["context_class"],
+                ", ".join(t.get("depends_on", [])) or "—", t["title"])
+        if row != want:
+            errors.append(f"task index disagrees with graph for {t['id']}")
+    return errors
+
+
+def guard_sequence_matches_graph(features, tasks, spec_exists):
+    errors = []
+    seq = (ROOT / "implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md").read_text()
+    for t in tasks:
+        m = re.search(rf"^### {re.escape(t['id'])} — (.+)$", seq, re.M)
+        if not m:
+            errors.append(f"canonical sequence missing {t['id']}")
+            continue
+        if m.group(1).strip() != t["title"]:
+            errors.append(f"canonical sequence title disagrees for {t['id']}")
+        block = seq[m.end():]
+        nxt = re.search(r"^#{2,3} ", block, re.M)
+        block = block[: nxt.start()] if nxt else block
+        dep = ", ".join(t.get("depends_on", [])) or "none"
+        if f"**Depends on:** {dep}" not in block:
+            errors.append(f"canonical sequence dependencies disagree for {t['id']}")
+    return errors
+
+
+def guard_every_task_has_a_card(features, tasks, spec_exists):
+    return [f"{t['id']}: no task card"
+            for t in tasks
+            if not (ROOT / f"tasks/phase-{t['phase']}/{t['id']}.md").exists()
+            and not (ROOT / f"tasks/deferred/{t['id']}.md").exists()]
+
+
+def guard_coverage_tables_match(features, tasks, spec_exists):
+    errors = []
+    ft = (ROOT / "implementation/FEATURE_TASK_COVERAGE.md").read_text()
+    for f in features:
+        if f"`{f['id']}`" not in ft:
+            errors.append(f"feature coverage table missing {f['id']}")
+    st = (ROOT / "implementation/SPEC_TASK_COVERAGE.md").read_text()
+    used = {s for t in tasks for s in t.get("specs", [])}
+    for s in used:
+        if f"`specs/{s}.md`" not in st:
+            errors.append(f"spec coverage table missing specs/{s}.md")
+    return errors
+
+
 DATA_GUARDS = [
     guard_duplicate_ids,
     guard_task_references,
@@ -110,6 +183,10 @@ DATA_GUARDS = [
     guard_feature_mappings,
     guard_proof_status,
     guard_task_traceability,
+    guard_task_index_matches_graph,
+    guard_sequence_matches_graph,
+    guard_every_task_has_a_card,
+    guard_coverage_tables_match,
 ]
 
 
@@ -205,6 +282,20 @@ def _break_traceability(features, tasks):
     nxt["features"] = []
 
 
+def _break_index_drift(features, tasks):
+    tasks[0]["title"] = "a title the generated index has never seen"
+
+
+def _break_card_missing(features, tasks):
+    tasks.append({"id": "P9-T99", "phase": 9, "title": "no card exists for this",
+                  "depends_on": [], "specs": [], "features": [], "context_class": "C50",
+                  "outcome": "", "required_tests": [], "notes": ""})
+
+
+def _break_coverage(features, tasks):
+    features[0]["id"] = "IW-NOT-IN-THE-TABLE"
+
+
 MUTATIONS = [
     ("duplicate task id", _break_duplicate),
     ("dangling dependency", _break_reference),
@@ -214,6 +305,9 @@ MUTATIONS = [
     ("feature with no task", _break_orphan_feature),
     ("invalid proof status", _break_proof_status),
     ("task with no feature and no gate record", _break_traceability),
+    ("derived index drifted from the graph", _break_index_drift),
+    ("task with no card", _break_card_missing),
+    ("coverage table missing a feature", _break_coverage),
 ]
 
 

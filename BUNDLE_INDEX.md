@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~134,956 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~135,907 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~71t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -73,7 +73,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `pi/REVIEW_PROMPT.md` — `0fca83a1dc7a` — ~190t
 - `pi/TASK_TEMPLATE.md` — `654c899dbb32` — ~280t
 - `scripts/bootstrap-repositories.sh` — `914de3443dbc` — ~226t
-- `scripts/validate_specs.py` — `c0f2483dba45` — ~2,072t
+- `scripts/validate_specs.py` — `1fbc6fabf975` — ~3,023t
 - `solana/DEVNET_ONLY.md` — `1a8ea96fcc58` — ~135t
 - `specs/00_INVARIANTS.md` — `601c31dc7d9b` — ~1,319t
 - `specs/01_REPOSITORIES_AND_OWNERSHIP.md` — `e52f5e6e8112` — ~628t

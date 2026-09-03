@@ -54,7 +54,7 @@
   "pi/REVIEW_PROMPT.md": "0fca83a1dc7a198c64bc3f358821ab7add8b131f5a51d96ad0858e1df7c1e624",
   "pi/TASK_TEMPLATE.md": "654c899dbb3259e82591b44e6927cb74315b09993ccb39ca413d63a88f67d3fb",
   "scripts/bootstrap-repositories.sh": "914de3443dbc86195e7d0a6f702d3592a3250ccde17d20faf710b19c0fc8d0a9",
-  "scripts/validate_specs.py": "c0f2483dba4547f4d632166b851061b031cdd4640b697b807fc80b6ccf053d80",
+  "scripts/validate_specs.py": "1fbc6fabf9752ac5c83a5e812d8eebc0b76e2e43300354b12220391fdcbf72d7",
   "solana/DEVNET_ONLY.md": "1a8ea96fcc580aa266209747df5223314df59bf81a7492e2e5ff5e63bef3eb01",
   "specs/00_INVARIANTS.md": "601c31dc7d9bc2b32708352d98b83aa1b1f08c4cb2ef8136632f7c6e7e28171b",
   "specs/01_REPOSITORIES_AND_OWNERSHIP.md": "e52f5e6e81126a0edc7804799598051a83a9217491afb002f583eebac239cac3",
