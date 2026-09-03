@@ -119,3 +119,21 @@ The product requirement is to store every prompt. Retention duration remains pol
 ## Benchmarks
 
 Prompt records may feed workload-shape statistics and private benchmark replays. Public/global benchmark publication uses derived aggregate features unless an explicit dataset-governance process approves prompt content release.
+
+## Read-side integrity
+
+The ledger is read far more often than it is written — every reconnect, every reconciliation,
+every audit. A correct writer is not the same thing as a trustworthy reader.
+
+Every read of an ordered record proves the whole record is gapless, not merely the page
+returned. A gap below a reader's cursor is invisible to a page-shaped check while the stream
+replays as complete, and an interrupted operation can then be closed on evidence drawn from a
+record nobody verified.
+
+Where that proof relies on a storage-engine property — that sequence numbers are integral,
+that a uniqueness constraint holds — the premise is asserted against the live engine by
+attempting the write that would violate it, because a declared type is not always an enforced
+type.
+
+Verification is a read-side check over the existing store. It introduces no second journal
+implementation: two implementations of one ordering rule are two places it can drift.

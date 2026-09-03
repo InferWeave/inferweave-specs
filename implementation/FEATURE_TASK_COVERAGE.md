@@ -1,6 +1,6 @@
 # Feature → Canonical Task Coverage
 
-Features: **73**
+Features: **78**
 
 | Feature | Priority | Phase | Owner component | Canonical tasks |
 |---|---|---|---|---|
@@ -77,3 +77,8 @@ Features: **73**
 | `IW-BOOT-005` Node serviceability gate and shipped default policy | P0 | 1 | node | `P1-T12B` |
 | `IW-WATCH-004` Discovered device inventory and requalification on change | P0 | 1 | node | `P1-T20C` |
 | `IW-OBS-002` Single-source queue observability | P0 | 1 | control-plane | `P1-T12A` |
+| `IW-EVID-001` Conformance and hostile vectors | P0 | 0 | protocol+control-plane | `P0-T06A` |
+| `IW-EVID-002` Machine-checked registries with anti-vacuous guards | P0 | 0 | bootstrap | `P0-T01A` |
+| `IW-NODE-004` Token-free proof enrollment | P0 | 1 | node+control-plane | `P1-T02A` |
+| `IW-OBS-003` Read-side ledger integrity | P0 | 1 | control-plane | `P1-T08A` |
+| `IW-UI-003` Machine-checked presentation policy | P0 | 1 | web | `P1-T21A` |

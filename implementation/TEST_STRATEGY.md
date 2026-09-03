@@ -52,6 +52,41 @@ M1: 30 minutes.
 Private alpha: 4+ hours mixed workload.
 Production-candidate deployment/profile: 24–72 hours depending on risk.
 
+## Conformance vectors
+Every protocol-level contract is proven against hash-pinned vectors rather than against a
+reading of the document. Two implementations agreeing with the same prose is not evidence;
+both agreeing with the same vector is. See `specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md`.
+
+Every vector set ships hostile cases beside valid ones — malformed, replayed, truncated,
+reordered, over-large, wrongly signed, boundary-value — each with its expected refusal. A
+vector set of valid inputs only proves an implementation can succeed and says nothing about
+how it fails.
+
+## Guards are tested against known-bad input
+Every structural guard runs additionally against a deliberately broken copy of the data it
+guards, and a guard that passes there is a test failure.
+
+A guard that silently stops checking reports success indefinitely and cannot be distinguished
+from one that works. `scripts/validate_specs.py --self-test` applies this rule to this
+repository's own validator.
+
+## Coverage measures coverage, not truth
+A scanner reports which code the suite reaches. It cannot report whether the reachable
+behaviour is correct, and it cannot see a data state no test constructs.
+
+Do not delete a guard because a coverage signal says no test reaches it. Remove a guard only
+once the condition it detects is unreachable at the point of writing, and assert that
+unreachability by test.
+
+Where a proof depends on a storage-engine property — integrality, uniqueness, a constraint —
+assert that premise against the live engine by attempting the write that would violate it. A
+declared type is not always an enforced type.
+
+## Whole-object integrity
+Verification of an ordered, gapless record proves the property over the whole object, never
+over the page in hand. A gap below a reader's cursor is invisible to a page-shaped check while
+the stream replays as complete.
+
 ## Coverage
 80%+ new logic is a useful target, but acceptance/property/failure coverage has priority over line-count gaming.
 

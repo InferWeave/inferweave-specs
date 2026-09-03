@@ -29,6 +29,25 @@ A per-resource capacity view shows context occupied, the sessions holding it, co
 remaining, and how many further clients fit at common context sizes before requests begin to
 queue.
 
+## Machine-checked presentation policy
+
+Presentation requirements are enforced by a policy the build checks, not by review.
+
+A policy file maps each route to the rendering variants it must be proven under, at minimum:
+
+- `default` and `narrow` viewport;
+- `forced-colors`;
+- `reduced-motion`;
+- `wired` against live contract data, or `fixture` where a live surface does not yet exist;
+- `unsupported`, the state shown when a required capability is absent.
+
+The policy also names the single token source every surface draws colour, spacing and type
+from, and a denylist of superseded components that must not reappear.
+
+Accessibility and theming stated only in prose are not enforced, and regress silently at the
+first route added under deadline. A route absent from the policy fails the check rather than
+defaulting to unconstrained.
+
 ## GPU explorer
 
 For each privacy-safe GPU/service view display appropriate public-safe fields:

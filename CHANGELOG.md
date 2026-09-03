@@ -1,5 +1,26 @@
 # Changelog
 
+## v10 — 2026-09-03
+
+Made the bundle enforceable rather than aspirational, from ideas recovered out of the archived
+`InferWeave/*` repositories and rewritten under the clean-slate constraint.
+
+- Added `38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE`: registries as frozen data plus published
+  document plus reconciling tests; hash-pinned conformance vectors with hostile cases;
+  whole-object integrity; explicit proof status.
+- Guards must be able to fail. `scripts/validate_specs.py --self-test` runs every data guard
+  against a deliberately broken registry; removing a guard fails the self-test.
+- Recorded that coverage measures coverage, not truth: a guard may not be deleted on a
+  coverage signal.
+- Added `OPEN_GATES.md`, a register of what is *not* approved, including that no independent
+  reviewer is enrolled and every M-of-N threshold is presently 1-of-1.
+- ADR template now states what a record authorizes and its exact relationship to prior
+  records; measured figures must be reproduced, not quoted.
+- Adopted token-free proof enrollment (`D-007`), replacing the operator bootstrap token.
+- Added a machine-checked presentation policy to the dashboard specification.
+- Added read-side ledger integrity to the prompt ledger.
+- Added invariants 39–41.
+
 ## v9 — 2026-09-03
 
 Aligned the bundle with operational evidence from production GPU inference.

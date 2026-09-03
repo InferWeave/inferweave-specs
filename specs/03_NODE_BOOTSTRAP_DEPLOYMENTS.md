@@ -7,7 +7,8 @@ A new node can be brought online with:
 ```text
 install agent
 → generate/load local node UUID
-→ enroll with short-lived operator token
+→ generate a persistent node keypair
+→ enroll by proof of protocol possession (no operator token)
 → establish outbound mutually authenticated connection
 → advertise hardware/runtime discovery
 → configure desired model intents/deployments
@@ -18,6 +19,34 @@ install agent
 ```
 
 Inbound firewall openings are not required.
+
+### Token-free proof enrollment
+
+Enrollment requires no operator-issued bootstrap token. A node generates a persistent
+asymmetric keypair before connecting, selects a gateway explicitly, and earns a renewable role
+credential by proving what it actually is.
+
+Enrollment is credential-free, not identity-free. There is no operator approval or promotion
+step: the gateway issues the credential automatically once proof succeeds.
+
+Two proofs apply:
+
+- **protocol-role proof** is required of every node;
+- **model-execution proof** is additionally required for every model and context class a
+  worker advertises.
+
+A challenge result grants eligibility to exactly what was challenged — the signed role, model,
+artifact, runtime, quantization, feature set, context class and measured resource claim — and
+to nothing adjacent. A node may advertise several models and several context classes per model
+within one process or allocation, each separately proven.
+
+This makes the published context ceiling something a node proves rather than asserts. A
+capability claim that has not been challenged for a given context class does not license
+serving it.
+
+Distributing a shared bootstrap token to every joining node makes the token the credential, so
+every holder is equivalent regardless of what it can actually do. Proof binds the credential
+to measured capability instead.
 
 ### Serviceability gate
 

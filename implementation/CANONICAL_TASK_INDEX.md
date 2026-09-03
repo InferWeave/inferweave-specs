@@ -1,15 +1,17 @@
 # Canonical Task Index
 
-Total tasks: **118**
+Total tasks: **123**
 
 | Task | Phase | Context | Depends | Title |
 |---|---:|---:|---|---|
 | `P0-T01` | 0 | C50 | — | Bootstrap clean Rust/Next.js monorepo |
+| `P0-T01A` | 0 | C65 | P0-T01 | Machine-checked registry pattern and anti-vacuous guards |
 | `P0-T02` | 0 | C55 | P0-T01 | Canonical protocol versioning, typed IDs and error envelope |
 | `P0-T03` | 0 | C55 | P0-T01, P0-T02 | Bootstrap CLI command framework and versioned JSON output |
 | `P0-T04` | 0 | C65 | P0-T03 | Read-only doctor and host probe |
 | `P0-T05` | 0 | C60 | P0-T01, P0-T02 | PostgreSQL development storage foundation |
 | `P0-T06` | 0 | C65 | P0-T02 | Canonical schemas and generated Rust/TypeScript bindings |
+| `P0-T06A` | 0 | C70 | P0-T06 | Conformance vectors and hostile vectors |
 | `P0-T07` | 0 | C70 | P0-T03, P0-T04, P0-T05 | Container stack renderer and init plan |
 | `P0-T08` | 0 | C65 | P0-T07 | Local development stack generator |
 | `P0-T09` | 0 | C55 | P0-T01, P0-T06 | Next.js shell and generated API client |
@@ -19,6 +21,7 @@ Total tasks: **118**
 | `P0-T12` | 0 | C90 | P0-T01, P0-T02, P0-T03, P0-T04, P0-T05, P0-T06, P0-T07, P0-T08, P0-T09, P0-T10, P0-T11, P0-T11A | Phase-0 architecture and bootstrap review |
 | `P1-T01` | 1 | C65 | P0-T12 | Stable provider/node/GPU identity primitives |
 | `P1-T02` | 1 | C70 | P1-T01, P0-T11 | One-time enrollment and node credentials |
+| `P1-T02A` | 1 | C75 | P1-T02 | Token-free proof enrollment |
 | `P1-T03` | 1 | C65 | P1-T02 | Outbound node control connection and heartbeat |
 | `P1-T04` | 1 | C70 | P1-T01, P0-T04 | Full hardware/software/GPU discovery fingerprint |
 | `P1-T05` | 1 | C65 | P1-T04, P0-T05 | Live GPU/host telemetry collection |
@@ -27,6 +30,7 @@ Total tasks: **118**
 | `P1-T06B` | 1 | C75 | P1-T06A | Capability precedence: declared, measured, persisted |
 | `P1-T07` | 1 | C75 | P0-T05, P0-T11 | Prompt ledger metadata and encrypted payload storage |
 | `P1-T08` | 1 | C65 | P1-T07, P0-T06 | Prompt ingest API and submission ordering |
+| `P1-T08A` | 1 | C75 | P1-T08 | Read-side ledger integrity |
 | `P1-T09` | 1 | C60 | P1-T03, P1-T06 | Gateway registry and `/v1/models` |
 | `P1-T10` | 1 | C70 | P1-T08, P1-T09 | OpenAI streaming ingress against deterministic backend |
 | `P1-T11` | 1 | C75 | P1-T06, P1-T10 | Seat/session/context/KV capacity model |
@@ -48,6 +52,7 @@ Total tasks: **118**
 | `P1-T20B` | 1 | C85 | P1-T20A, P1-T12 | Bounded rescue ladder and automatic profile rollback |
 | `P1-T20C` | 1 | C75 | P1-T20A, P1-T04 | Discovered device inventory and requalification on change |
 | `P1-T21` | 1 | C75 | P0-T09, P1-T09, P1-T20 | Live Next.js cluster/GPU/request dashboard |
+| `P1-T21A` | 1 | C65 | P1-T21 | Machine-checked presentation policy |
 | `P1-T22` | 1 | C85 | P0-T07, P1-T02, P1-T21 | `init gateway` production container flow |
 | `P1-T23` | 1 | C85 | P0-T07, P1-T02, P1-T04, P1-T17 | `init node` production container flow |
 | `P1-T24` | 1 | C95 | P1-T19, P1-T20, P1-T21, P1-T22, P1-T23, P1-T20B | Two heterogeneous real-node vertical-slice E2E |

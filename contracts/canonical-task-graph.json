@@ -24,6 +24,32 @@
       "notes": ""
     },
     {
+      "id": "P0-T01A",
+      "phase": 0,
+      "title": "Machine-checked registry pattern and anti-vacuous guards",
+      "depends_on": [
+        "P0-T01"
+      ],
+      "specs": [
+        "38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE",
+        "00_INVARIANTS"
+      ],
+      "features": [
+        "IW-EVID-002"
+      ],
+      "context_class": "C65",
+      "outcome": "Shared vocabularies ship as frozen data plus a published document plus conformance tests that fail on disagreement, and every structural guard is executed against a deliberately broken copy of what it guards.",
+      "required_tests": [
+        "document and frozen data reconciled cell by cell",
+        "each guard rejects its known-bad input",
+        "removing a guard fails the guard self-test",
+        "new vocabulary value without a decision record fails"
+      ],
+      "notes": "A guard that silently stops checking reports success indefinitely. scripts/validate_specs.py --self-test demonstrates the rule on this bundle.",
+      "proof_status": "proven",
+      "proof_owed_by": []
+    },
+    {
       "id": "P0-T02",
       "phase": 0,
       "title": "Canonical protocol versioning, typed IDs and error envelope",
@@ -144,6 +170,34 @@
         "CI drift failure test"
       ],
       "notes": ""
+    },
+    {
+      "id": "P0-T06A",
+      "phase": 0,
+      "title": "Conformance vectors and hostile vectors",
+      "depends_on": [
+        "P0-T06"
+      ],
+      "specs": [
+        "38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE",
+        "02_PROTOCOL_AND_API"
+      ],
+      "features": [
+        "IW-EVID-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Hash-pinned conformance vectors with a digest manifest cover the message envelope, identity, discovery, error envelope, receipt chain, capability advertisement and context ceiling, each with hostile cases and expected refusals.",
+      "required_tests": [
+        "Rust and TypeScript agree with the same vector, not the same prose",
+        "manifest digest mismatch fails the build",
+        "each hostile vector produces its expected refusal",
+        "a vector set with no hostile case fails"
+      ],
+      "notes": "Two implementations agreeing with a document is not evidence of agreement.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P0-T06A"
+      ]
     },
     {
       "id": "P0-T07",
@@ -372,6 +426,34 @@
       "notes": ""
     },
     {
+      "id": "P1-T02A",
+      "phase": 1,
+      "title": "Token-free proof enrollment",
+      "depends_on": [
+        "P1-T02"
+      ],
+      "specs": [
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "16_SECURITY_PRIVACY_TRUST"
+      ],
+      "features": [
+        "IW-NODE-004"
+      ],
+      "context_class": "C75",
+      "outcome": "Nodes enrol by protocol-role proof and, per advertised model and context class, model-execution proof, receiving a renewable role credential with no operator token and no approval step.",
+      "required_tests": [
+        "node enrols with no operator-issued token",
+        "eligibility is granted only to the exact challenged claim",
+        "unchallenged context class cannot be served",
+        "a replayed or hostile proof is refused"
+      ],
+      "notes": "A shared bootstrap token makes the token the credential; proof binds it to measured capability.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P1-T02A"
+      ]
+    },
+    {
       "id": "P1-T03",
       "phase": 1,
       "title": "Outbound node control connection and heartbeat",
@@ -567,6 +649,34 @@
         "no route without durable submission"
       ],
       "notes": ""
+    },
+    {
+      "id": "P1-T08A",
+      "phase": 1,
+      "title": "Read-side ledger integrity",
+      "depends_on": [
+        "P1-T08"
+      ],
+      "specs": [
+        "22_PROMPT_LEDGER",
+        "38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE"
+      ],
+      "features": [
+        "IW-OBS-003"
+      ],
+      "context_class": "C75",
+      "outcome": "Every read of an ordered record proves the whole record gapless rather than the returned page, with storage-engine premises asserted against the live engine.",
+      "required_tests": [
+        "gap below the reader cursor is detected",
+        "page-shaped check alone fails the suite",
+        "engine rejects the write that would violate each premise",
+        "no second journal implementation is introduced"
+      ],
+      "notes": "A correct writer is not the same thing as a trustworthy reader.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P1-T08A"
+      ]
     },
     {
       "id": "P1-T09",
@@ -1081,6 +1191,33 @@
         "no misleading pooled VRAM totals"
       ],
       "notes": ""
+    },
+    {
+      "id": "P1-T21A",
+      "phase": 1,
+      "title": "Machine-checked presentation policy",
+      "depends_on": [
+        "P1-T21"
+      ],
+      "specs": [
+        "10_DASHBOARD_PORTAL"
+      ],
+      "features": [
+        "IW-UI-003"
+      ],
+      "context_class": "C65",
+      "outcome": "A policy maps every route to required rendering variants \u2014 narrow, forced-colors, reduced-motion, wired or fixture, unsupported \u2014 names the single token source, and denies superseded components, enforced by the build.",
+      "required_tests": [
+        "route absent from the policy fails the check",
+        "each declared variant is exercised per route",
+        "a colour outside the token source fails",
+        "a denylisted component reappearing fails"
+      ],
+      "notes": "Accessibility stated only in prose regresses at the first route added under deadline.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P1-T21A"
+      ]
     },
     {
       "id": "P1-T22",

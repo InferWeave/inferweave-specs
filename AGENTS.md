@@ -12,6 +12,27 @@ Read:
 5. the relevant specification(s)
 6. `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md`
 7. `implementation/FEATURE_TASK_COVERAGE.md`
+8. `OPEN_GATES.md` — what is *not* approved
+
+## Evidence rules
+
+**Measured basis.** Any figure a change relies on is measured by its author against the
+pinned commit and reproduced in the change. Do not quote a number from another document
+without reproducing it; a number copied twice is a number nobody has checked.
+
+**Honest capability disclosure.** Where a control is specified but unstaffed, unexercised or
+unmeasured, record that in `OPEN_GATES.md` in the same change. A control recorded as existing
+but unstaffed invites reliance that is not warranted, and is worse than one recorded as
+absent. State it as unsatisfied — not partially satisfied, not satisfied in spirit, not
+pending confirmation.
+
+**When the specification was the defect.** If an incident traces to specification text rather
+than to an implementation error, say so explicitly: what the text caused, and what a future
+implementer following it literally would reintroduce. A correction that reads as a
+clarification teaches nobody.
+
+**Proof status.** Every required test is `proven` or `owed`. `proven` means a test exists,
+runs, and fails if the control is removed. Never record `owed` work as `proven`.
 
 ## Operational feedback is a specification obligation
 
