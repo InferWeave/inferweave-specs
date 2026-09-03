@@ -10,7 +10,8 @@ This repository accepts:
 - acceptance tests;
 - benchmark methodology;
 - operational/security requirements;
-- traceability fixes.
+- traceability fixes;
+- operational findings and incident-driven corrections.
 
 Production implementation code belongs in `InferWeave/inferweave`.
 

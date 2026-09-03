@@ -795,6 +795,95 @@
       "canonical_tasks": [
         "P3-T10"
       ]
+    },
+    {
+      "id": "IW-CAP-002",
+      "name": "Deployment context ceiling as a hard admission bound",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P1-T06A",
+        "P1-T11A"
+      ]
+    },
+    {
+      "id": "IW-CAP-003",
+      "name": "Reservation liveness and stale reclamation",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P1-T11B"
+      ]
+    },
+    {
+      "id": "IW-NODE-003",
+      "name": "Capability precedence, persistence and cold-start admissibility",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P1-T06B"
+      ]
+    },
+    {
+      "id": "IW-DEPLOY-003",
+      "name": "Maximum-context deployment sizing",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P1-T06A"
+      ]
+    },
+    {
+      "id": "IW-ROUTE-004",
+      "name": "Context-size alias semantics",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P1-T13A"
+      ]
+    },
+    {
+      "id": "IW-BOOT-005",
+      "name": "Node serviceability gate and shipped default policy",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P1-T12B"
+      ]
+    },
+    {
+      "id": "IW-WATCH-004",
+      "name": "Discovered device inventory and requalification on change",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P1-T20C"
+      ]
+    },
+    {
+      "id": "IW-OBS-002",
+      "name": "Single-source queue observability",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P1-T12A"
+      ]
     }
   ]
 }

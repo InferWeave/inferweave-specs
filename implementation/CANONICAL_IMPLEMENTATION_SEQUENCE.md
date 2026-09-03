@@ -265,6 +265,37 @@ Rules:
 - mutable alias cannot change immutable fingerprint
 - freshness tests
 
+### P1-T06A — Publish a deployment context ceiling sized to the envelope
+**Context:** `C75`
+**Depends on:** P1-T06
+**Features:** IW-DEPLOY-003, IW-CAP-002
+**Read:** specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md, specs/04_CAPACITY_ADMISSION_SEATS.md
+
+**Outcome:** Deployment loads at the largest context its measured envelope safely permits and publishes that value as max_context_tokens in the immutable manifest and node advertisement.
+
+**Required tests:**
+- ceiling derived from envelope, not configuration
+- published ceiling matches the loaded runtime window
+- reduced window records its stated constraint
+
+**Notes:** Context size is derived, never an operator constant.
+
+### P1-T06B — Capability precedence: declared, measured, persisted
+**Context:** `C75`
+**Depends on:** P1-T06A
+**Features:** IW-NODE-003
+**Read:** specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md, specs/26_RESOURCE_IDENTITY_REDISCOVERY.md
+
+**Outcome:** Capability claims resolve declared then measured then persisted, keyed by deployment fingerprint, so a model that is not currently loaded remains admissible and cold start cannot deadlock.
+
+**Required tests:**
+- unloaded model admissible from declared claim
+- measured supersedes declared for the same fingerprint
+- persisted claim survives restart
+- new fingerprint falls back to declared
+
+**Notes:** An autoloading runtime reports no window for an unloaded model.
+
 ### P1-T07 — Prompt ledger metadata and encrypted payload storage
 **Context:** `C75`
 **Depends on:** P0-T05, P0-T11
@@ -332,6 +363,38 @@ Rules:
 - shared weights counted once
 - context growth update tests
 
+### P1-T11A — Enforce the context ceiling as a hard admission bound
+**Context:** `C75`
+**Depends on:** P1-T11, P1-T06A
+**Features:** IW-CAP-002
+**Read:** specs/04_CAPACITY_ADMISSION_SEATS.md, specs/06_BACKPRESSURE_RETURN_TO_SENDER.md
+
+**Outcome:** Admission refuses any request whose total or predicted peak context exceeds the deployment ceiling, before capacity arithmetic, returning a non-retryable 413 CONTEXT_WINDOW_EXCEEDED naming the actual ceiling.
+
+**Required tests:**
+- oversized request refused before prefill
+- refusal names the real ceiling
+- unknown ceiling is not admissible
+- 413 non-retryable, distinct from transient 503
+
+**Notes:** Free capacity never raises a ceiling.
+
+### P1-T11B — Reservation liveness and stale reclamation
+**Context:** `C75`
+**Depends on:** P1-T11
+**Features:** IW-CAP-003
+**Read:** specs/04_CAPACITY_ADMISSION_SEATS.md
+
+**Outcome:** Reservations carry progress timestamps and are reclaimed on silence rather than duration, with idempotent release and recorded reclaim events.
+
+**Required tests:**
+- leaked reservation reclaimed after the silence bound
+- long request making progress is never reclaimed
+- release is idempotent
+- reclaim events are recorded
+
+**Notes:** Measuring duration instead of silence kills long legitimate requests.
+
 ### P1-T12 — Node authoritative admission and leases
 **Context:** `C70`
 **Depends on:** P1-T11, P1-T03
@@ -346,6 +409,36 @@ Rules:
 - cancel releases resources
 - prediction mismatch
 
+### P1-T12A — Single-source queue observability
+**Context:** `C75`
+**Depends on:** P1-T12, P1-T11B
+**Features:** IW-OBS-002
+**Read:** specs/04_CAPACITY_ADMISSION_SEATS.md, specs/06_BACKPRESSURE_RETURN_TO_SENDER.md, specs/10_DASHBOARD_PORTAL.md
+
+**Outcome:** Queue position and estimated wait are served from the structure that orders admission, so every waiter is visible to API and dashboard alike.
+
+**Required tests:**
+- waiting requests appear while they wait
+- position ordering matches admission ordering
+- absent estimate reported as absent, never zero
+
+**Notes:** Recording only executing work reports an empty queue to waiting clients.
+
+### P1-T12B — Node serviceability gate and shipped default policy
+**Context:** `C75`
+**Depends on:** P1-T12
+**Features:** IW-BOOT-005
+**Read:** specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md, specs/37_CONTAINER_DEPLOYMENT_STANDARD.md
+
+**Outcome:** A node becomes schedulable only after a real request traverses its full authorization and admission path, and every fail-closed gate ships a working default policy with its installer.
+
+**Required tests:**
+- fresh install serves a real request end to end
+- missing policy fails the install, not the first user
+- liveness probe alone does not satisfy the gate
+
+**Notes:** A fail-closed gate with no policy refuses everything while reporting healthy.
+
 ### P1-T13 — Routing hard constraints
 **Context:** `C70`
 **Depends on:** P1-T09, P1-T11
@@ -358,6 +451,21 @@ Rules:
 - hard constraints never relaxed property
 - no eligible candidate semantics
 - model mismatch
+
+### P1-T13A — Context-size alias semantics
+**Context:** `C50`
+**Depends on:** P1-T13, P1-T09
+**Features:** IW-ROUTE-004
+**Read:** specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md, specs/05_ROUTING_AFFINITY.md
+
+**Outcome:** Context-size aliases resolve as request-shaping hints against one deployment rather than as separate qualified deployments, and never widen a ceiling.
+
+**Required tests:**
+- alias family resolves to a single deployment
+- alias below the ceiling is honoured as intent
+- alias above the ceiling is refused, not downgraded
+
+**Notes:** Separate deployments per size reintroduce the fixed tiers invariant 4 forbids.
 
 ### P1-T14 — Best-fit capacity placement
 **Context:** `C70`
@@ -481,6 +589,22 @@ Rules:
 - Docker runtime recreate
 - bounded retry ends quarantine
 - no automatic host reboot default
+
+### P1-T20C — Discovered device inventory and requalification on change
+**Context:** `C75`
+**Depends on:** P1-T20A, P1-T04
+**Features:** IW-WATCH-004
+**Read:** specs/26_RESOURCE_IDENTITY_REDISCOVERY.md, specs/36_GPU_WATCHDOG_RESCUE.md
+
+**Outcome:** Expected device inventory is derived from discovery and versioned with the hardware fingerprint; a device count or identity change triggers a new host generation and requalification instead of a permanent degraded state.
+
+**Required tests:**
+- node with fewer cards requalifies rather than degrading permanently
+- device change creates a new host generation
+- context ceiling re-derived for the new generation
+- no silent CPU fallback on missing devices
+
+**Notes:** A hard-coded expected device count cannot survive a rebuild.
 
 ### P1-T21 — Live Next.js cluster/GPU/request dashboard
 **Context:** `C75`

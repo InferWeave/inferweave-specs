@@ -41,3 +41,6 @@ These requirements override every feature spec.
 33. Production deployment uses Docker/Compose for persistent InferWeave roles and Apptainer for Slurm allocation workers; model servers are not deployed as unmanaged bare-host processes.
 34. Every GPU-serving node has a bounded watchdog/rescue mechanism that drains before recovery, preserves a known-good rollback target, and quarantines after repeated failure.
 35. A GPU reset, illegal-memory fault, OOM below the admitted envelope, restart loop, correctness corruption, or profile drift cannot remain silently routable.
+36. No request is admitted whose total or predicted peak context exceeds the target deployment's published context ceiling. A deployment whose ceiling is unknown is not admissible; an absent capability claim is never read as an unbounded one.
+37. Reservations expire on absence of observable progress, never on elapsed duration, and reclamation releases every resource the reservation held.
+38. A node becomes schedulable only after a real request has traversed its full authorization and admission path. Starting successfully is not evidence of being able to serve.

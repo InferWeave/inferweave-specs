@@ -32,7 +32,22 @@ Canonical machine-readable body:
 `NO_MODEL`, `NO_DEPLOYMENT`, `NO_CAPABILITY`, `NO_CONTEXT_CAPACITY`,
 `NO_RESOURCE_HEADROOM`, `ALL_DRAINING`, `ALL_STALE`,
 `REGION_UNAVAILABLE`, `PRIVACY_CONSTRAINT`, `LICENSE_CONSTRAINT`,
-`OWNER_RESERVE`, `NODE_OVERLOADED`, `BACKEND_UNHEALTHY`.
+`OWNER_RESERVE`, `NODE_OVERLOADED`, `BACKEND_UNHEALTHY`,
+`CONTEXT_WINDOW_EXCEEDED`.
+
+## Permanent versus transient capacity failures
+
+Every code above except one describes a condition that may clear on its own.
+
+`NO_CONTEXT_CAPACITY` is transient: this deployment could serve this request later.
+
+`CONTEXT_WINDOW_EXCEEDED` is permanent for that deployment. The request exceeds the model's
+context ceiling and no amount of waiting changes that. It maps to `413`, carries
+`"retryable": false`, and must name the actual ceiling so a client can shrink deliberately
+instead of retrying blindly.
+
+Returning a retryable `503` for a permanently oversized request turns the client's own error
+handling into a retry loop, and each attempt pays the full prefill cost before failing.
 
 Hard policy failures may map to 403 rather than capacity responses depending on whether revealing eligibility would leak sensitive policy.
 

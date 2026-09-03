@@ -21,6 +21,14 @@ Routes may include:
 
 Show useful ready capacity first.
 
+Capacity views read waiting work from the structure that orders admission
+(`04_CAPACITY_ADMISSION_SEATS.md`), never from a separate collector that observes only
+executing requests.
+
+A per-resource capacity view shows context occupied, the sessions holding it, context
+remaining, and how many further clients fit at common context sizes before requests begin to
+queue.
+
 ## GPU explorer
 
 For each privacy-safe GPU/service view display appropriate public-safe fields:

@@ -472,6 +472,54 @@
       "notes": ""
     },
     {
+      "id": "P1-T06A",
+      "phase": 1,
+      "title": "Publish a deployment context ceiling sized to the envelope",
+      "depends_on": [
+        "P1-T06"
+      ],
+      "specs": [
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "04_CAPACITY_ADMISSION_SEATS"
+      ],
+      "features": [
+        "IW-DEPLOY-003",
+        "IW-CAP-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Deployment loads at the largest context its measured envelope safely permits and publishes that value as max_context_tokens in the immutable manifest and node advertisement.",
+      "required_tests": [
+        "ceiling derived from envelope, not configuration",
+        "published ceiling matches the loaded runtime window",
+        "reduced window records its stated constraint"
+      ],
+      "notes": "Context size is derived, never an operator constant."
+    },
+    {
+      "id": "P1-T06B",
+      "phase": 1,
+      "title": "Capability precedence: declared, measured, persisted",
+      "depends_on": [
+        "P1-T06A"
+      ],
+      "specs": [
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "26_RESOURCE_IDENTITY_REDISCOVERY"
+      ],
+      "features": [
+        "IW-NODE-003"
+      ],
+      "context_class": "C75",
+      "outcome": "Capability claims resolve declared then measured then persisted, keyed by deployment fingerprint, so a model that is not currently loaded remains admissible and cold start cannot deadlock.",
+      "required_tests": [
+        "unloaded model admissible from declared claim",
+        "measured supersedes declared for the same fingerprint",
+        "persisted claim survives restart",
+        "new fingerprint falls back to declared"
+      ],
+      "notes": "An autoloading runtime reports no window for an unloaded model."
+    },
+    {
       "id": "P1-T07",
       "phase": 1,
       "title": "Prompt ledger metadata and encrypted payload storage",
@@ -593,6 +641,54 @@
       "notes": ""
     },
     {
+      "id": "P1-T11A",
+      "phase": 1,
+      "title": "Enforce the context ceiling as a hard admission bound",
+      "depends_on": [
+        "P1-T11",
+        "P1-T06A"
+      ],
+      "specs": [
+        "04_CAPACITY_ADMISSION_SEATS",
+        "06_BACKPRESSURE_RETURN_TO_SENDER"
+      ],
+      "features": [
+        "IW-CAP-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Admission refuses any request whose total or predicted peak context exceeds the deployment ceiling, before capacity arithmetic, returning a non-retryable 413 CONTEXT_WINDOW_EXCEEDED naming the actual ceiling.",
+      "required_tests": [
+        "oversized request refused before prefill",
+        "refusal names the real ceiling",
+        "unknown ceiling is not admissible",
+        "413 non-retryable, distinct from transient 503"
+      ],
+      "notes": "Free capacity never raises a ceiling."
+    },
+    {
+      "id": "P1-T11B",
+      "phase": 1,
+      "title": "Reservation liveness and stale reclamation",
+      "depends_on": [
+        "P1-T11"
+      ],
+      "specs": [
+        "04_CAPACITY_ADMISSION_SEATS"
+      ],
+      "features": [
+        "IW-CAP-003"
+      ],
+      "context_class": "C75",
+      "outcome": "Reservations carry progress timestamps and are reclaimed on silence rather than duration, with idempotent release and recorded reclaim events.",
+      "required_tests": [
+        "leaked reservation reclaimed after the silence bound",
+        "long request making progress is never reclaimed",
+        "release is idempotent",
+        "reclaim events are recorded"
+      ],
+      "notes": "Measuring duration instead of silence kills long legitimate requests."
+    },
+    {
       "id": "P1-T12",
       "phase": 1,
       "title": "Node authoritative admission and leases",
@@ -619,6 +715,54 @@
       "notes": ""
     },
     {
+      "id": "P1-T12A",
+      "phase": 1,
+      "title": "Single-source queue observability",
+      "depends_on": [
+        "P1-T12",
+        "P1-T11B"
+      ],
+      "specs": [
+        "04_CAPACITY_ADMISSION_SEATS",
+        "06_BACKPRESSURE_RETURN_TO_SENDER",
+        "10_DASHBOARD_PORTAL"
+      ],
+      "features": [
+        "IW-OBS-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Queue position and estimated wait are served from the structure that orders admission, so every waiter is visible to API and dashboard alike.",
+      "required_tests": [
+        "waiting requests appear while they wait",
+        "position ordering matches admission ordering",
+        "absent estimate reported as absent, never zero"
+      ],
+      "notes": "Recording only executing work reports an empty queue to waiting clients."
+    },
+    {
+      "id": "P1-T12B",
+      "phase": 1,
+      "title": "Node serviceability gate and shipped default policy",
+      "depends_on": [
+        "P1-T12"
+      ],
+      "specs": [
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "37_CONTAINER_DEPLOYMENT_STANDARD"
+      ],
+      "features": [
+        "IW-BOOT-005"
+      ],
+      "context_class": "C75",
+      "outcome": "A node becomes schedulable only after a real request traverses its full authorization and admission path, and every fail-closed gate ships a working default policy with its installer.",
+      "required_tests": [
+        "fresh install serves a real request end to end",
+        "missing policy fails the install, not the first user",
+        "liveness probe alone does not satisfy the gate"
+      ],
+      "notes": "A fail-closed gate with no policy refuses everything while reporting healthy."
+    },
+    {
       "id": "P1-T13",
       "phase": 1,
       "title": "Routing hard constraints",
@@ -641,6 +785,30 @@
         "model mismatch"
       ],
       "notes": ""
+    },
+    {
+      "id": "P1-T13A",
+      "phase": 1,
+      "title": "Context-size alias semantics",
+      "depends_on": [
+        "P1-T13",
+        "P1-T09"
+      ],
+      "specs": [
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "05_ROUTING_AFFINITY"
+      ],
+      "features": [
+        "IW-ROUTE-004"
+      ],
+      "context_class": "C50",
+      "outcome": "Context-size aliases resolve as request-shaping hints against one deployment rather than as separate qualified deployments, and never widen a ceiling.",
+      "required_tests": [
+        "alias family resolves to a single deployment",
+        "alias below the ceiling is honoured as intent",
+        "alias above the ceiling is refused, not downgraded"
+      ],
+      "notes": "Separate deployments per size reintroduce the fixed tiers invariant 4 forbids."
     },
     {
       "id": "P1-T14",
@@ -864,6 +1032,31 @@
         "bounded retry ends quarantine",
         "no automatic host reboot default"
       ]
+    },
+    {
+      "id": "P1-T20C",
+      "phase": 1,
+      "title": "Discovered device inventory and requalification on change",
+      "depends_on": [
+        "P1-T20A",
+        "P1-T04"
+      ],
+      "specs": [
+        "26_RESOURCE_IDENTITY_REDISCOVERY",
+        "36_GPU_WATCHDOG_RESCUE"
+      ],
+      "features": [
+        "IW-WATCH-004"
+      ],
+      "context_class": "C75",
+      "outcome": "Expected device inventory is derived from discovery and versioned with the hardware fingerprint; a device count or identity change triggers a new host generation and requalification instead of a permanent degraded state.",
+      "required_tests": [
+        "node with fewer cards requalifies rather than degrading permanently",
+        "device change creates a new host generation",
+        "context ceiling re-derived for the new generation",
+        "no silent CPU fallback on missing devices"
+      ],
+      "notes": "A hard-coded expected device count cannot survive a rebuild."
     },
     {
       "id": "P1-T21",
