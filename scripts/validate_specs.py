@@ -89,12 +89,27 @@ def guard_proof_status(features, tasks, spec_exists):
     return errors
 
 
+def guard_task_traceability(features, tasks, spec_exists):
+    """Every task maps to a feature unless it is a recorded gate/checkpoint task.
+
+    The allowlist is a decision, not an omission: these tasks verify or gate other work and
+    own no requirement of their own. Adding to it requires saying so.
+    """
+    allowed = {
+        "P0-T11", "P0-T12", "P1-T25", "P2-T13", "P2-T17", "P2-T22", "P3-T20", "P3-T22",
+        "P4-T09", "P4-T14", "P5-T07", "P5-T08", "P5-T09", "P5-T10",
+    }
+    return [f"{t['id']}: no feature and not a recorded gate task"
+            for t in tasks if not t.get("features") and t["id"] not in allowed]
+
+
 DATA_GUARDS = [
     guard_duplicate_ids,
     guard_task_references,
     guard_acyclic,
     guard_feature_mappings,
     guard_proof_status,
+    guard_task_traceability,
 ]
 
 
@@ -185,6 +200,11 @@ def _break_proof_status(features, tasks):
     tasks[0]["proof_status"] = "definitely"
 
 
+def _break_traceability(features, tasks):
+    nxt = next(t for t in tasks if t["id"] not in {"P0-T11"} and t.get("features"))
+    nxt["features"] = []
+
+
 MUTATIONS = [
     ("duplicate task id", _break_duplicate),
     ("dangling dependency", _break_reference),
@@ -193,6 +213,7 @@ MUTATIONS = [
     ("feature maps to missing task", _break_feature_mapping),
     ("feature with no task", _break_orphan_feature),
     ("invalid proof status", _break_proof_status),
+    ("task with no feature and no gate record", _break_traceability),
 ]
 
 

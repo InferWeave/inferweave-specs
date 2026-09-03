@@ -52,7 +52,7 @@ a small number of upstreams. Behaviour at fleet scale is projected, not measured
 
 **BLOCKED.** Specified telemetry covers CUDA, ROCm and Vulkan backends. Measured evidence
 exists for a subset only. Any claim that a backend is supported requires a device fingerprint
-and live telemetry from that backend recorded under `23_GLOBAL_TELEMETRY_BENCHMARKS.md`.
+and live telemetry from that backend recorded under `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md`.
 
 ## Settlement and accounting gate
 
@@ -72,6 +72,6 @@ adversarial run has occurred. The threat surface is specified; it has not been a
 Approved: the specification bundle is authoritative for implementation sequencing, and
 `scripts/validate_specs.py` proves its structural integrity.
 
-BLOCKED: conformance vectors do not exist yet (`38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md`),
+BLOCKED: conformance vectors do not exist yet (`specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md`),
 so no cross-implementation conformance claim may be made. Every `owed` proof status in the
 task graph is an open gate on the control it names.

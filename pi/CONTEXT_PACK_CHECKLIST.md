@@ -5,7 +5,7 @@ Before launching a Pi implementation session, verify:
 - [ ] Exactly one canonical task card selected.
 - [ ] Dependencies are merged/passing.
 - [ ] `PI_IMPLEMENTATION_SYSTEM_PROMPT.md` included.
-- [ ] `00_INVARIANTS.md` included.
+- [ ] `specs/00_INVARIANTS.md` included.
 - [ ] Task-specific specs only.
 - [ ] Current public types/interfaces loaded from repository.
 - [ ] Relevant source/tests selected by symbols/call path.

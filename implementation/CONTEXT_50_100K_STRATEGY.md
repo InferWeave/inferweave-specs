@@ -91,9 +91,52 @@ This increases prefix-cache reuse.
 5. Recent relevant ADRs.
 6. Historical explanation only if necessary.
 
+## What things actually cost
+
+These are measured, not estimated, and are regenerated with the bundle index. Approximate
+tokens at four characters per token:
+
+| Artifact | Tokens | Note |
+|---|---:|---|
+| every specification, all of them | ~31,000 | the whole corpus is small |
+| `contracts/canonical-task-graph.json` | ~21,000 | machine artifact; do not read to find one task |
+| `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` | ~15,000 | the same graph in prose, for humans |
+| all task cards together | ~28,000 | you need exactly one |
+| **one task card** | **~210** | this is the per-task cost |
+| stable prefix (Pi prompt + invariants + strategy) | ~2,900 | |
+| whole bundle, every file | ~142,000 | never load this |
+
+Two consequences follow, and they cut in opposite directions.
+
+**The specifications are cheaper than this document once assumed.** The entire specification
+corpus fits inside a single C50 pack. Selectivity among specifications buys little and risks
+missing a cross-cutting invariant; for any task at C75 or above, loading every specification is
+a reasonable default rather than an extravagance.
+
+**The task representations are where the cost is.** The same task information exists five ways
+— the graph, the sequence, the cards, the index and the coverage tables — and together they are
+roughly half the bundle. Reading the graph to find one task costs a hundred times the card.
+
+## Which representation to read
+
+| Consumer | Reads | Never reads |
+|---|---|---|
+| implementation agent | the one task card | the graph, the sequence |
+| tooling and validators | `contracts/canonical-task-graph.json` | the cards |
+| a human orienting | `CANONICAL_IMPLEMENTATION_SEQUENCE.md` | the graph |
+| coverage questions | the coverage tables | the graph |
+
+## Context classes are four tiers, not eleven
+
+The class labels in the task graph map onto four distinct budgets. `C55` through `C70` share
+one budget; so do `C75` through `C85`, and `C90` through `C100`. A task marked `C65` and one
+marked `C70` are budgeted identically — the finer label carries intent about complexity, not a
+different allowance. Do not read precision into it that is not there.
+
 ## Never include by default
 
-- all 35 specs;
+- every task card at once;
+- `contracts/canonical-task-graph.json` when you need one task;
 - full Git history;
 - previous implementation attempts;
 - generated dependency trees;
