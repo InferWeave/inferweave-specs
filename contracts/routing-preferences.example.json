@@ -1,0 +1,34 @@
+{
+  "purpose": "implementation",
+  "selection_mode": "balanced",
+  "model_policy": {
+    "allow_families": ["qwen"],
+    "min_context_tokens": 32768,
+    "require_exact_deployment": false
+  },
+  "gpu": {
+    "vendors": ["amd", "nvidia"],
+    "min_vram_gib": 20
+  },
+  "placement": {
+    "regions": ["us-west"],
+    "max_network_rtt_ms": 100
+  },
+  "privacy": {
+    "minimum_tier": "no_retention",
+    "require_verified_node": true,
+    "allow_relay": true
+  },
+  "performance": {
+    "max_queue_wait_ms": 5000,
+    "max_ttft_ms": 3000,
+    "min_decode_tps": 20
+  },
+  "fallback": {
+    "allow_other_gpu": true,
+    "allow_other_region": true,
+    "allow_other_quantization": true,
+    "allow_other_model": false,
+    "allow_weaker_privacy": false
+  }
+}

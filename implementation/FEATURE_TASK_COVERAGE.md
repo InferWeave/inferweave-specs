@@ -1,0 +1,71 @@
+# Feature → Canonical Task Coverage
+
+Features: **65**
+
+| Feature | Priority | Phase | Owner component | Canonical tasks |
+|---|---|---|---|---|
+| `IW-CORE-001` OpenAI-compatible text inference | P0 | 1 | control-plane | `P0-T02`, `P0-T06`, `P1-T09`, `P1-T10`, `P1-T24` |
+| `IW-NODE-001` Outbound-only node enrollment and heartbeat | P0 | 1 | node | `P1-T01`, `P1-T02`, `P1-T03` |
+| `IW-CAP-001` Seat/session + context/KV capacity accounting | P0 | 1 | control-plane+node | `P1-T11`, `P1-T12` |
+| `IW-ROUTE-001` Model/capability hard filtering | P0 | 1 | control-plane | `P1-T13`, `P2-T14` |
+| `IW-ROUTE-002` Best-fit context packing | P0 | 1 | control-plane | `P1-T14` |
+| `IW-ROUTE-003` Sticky session/cache affinity | P0 | 1 | control-plane | `P1-T15` |
+| `IW-BP-001` Bounded backpressure 503/429 semantics | P0 | 1 | control-plane | `P1-T12`, `P1-T19` |
+| `IW-DP-001` NAT-safe persistent relay | P0 | 1 | control-plane+node | `P1-T03`, `P1-T18` |
+| `IW-OBS-001` Route/capacity/request telemetry | P0 | 1 | control-plane+node | `P1-T05`, `P1-T20` |
+| `IW-UI-001` Live node/model/capacity/session dashboard | P0 | 1 | control-plane | `P0-T09`, `P1-T21` |
+| `IW-TUNE-001` Node benchmark/tuning and qualified profiles | P0 | 2 | node | `P2-T02`, `P2-T09` |
+| `IW-QOS-001` Hierarchical FairShare and anti-gaming | P1 | 2 | control-plane | `P2-T12` |
+| `IW-QOS-002` Owner reserve/reclaim | P1 | 2 | control-plane+node | `P2-T11` |
+| `IW-DP-002` Regional relay/direct path/rendezvous | P1 | 3 | control-plane+node | `P1-T16`, `P1-T18`, `P3-T08`, `P5-T03` |
+| `IW-PROXY-001` Local edge proxy/cache | P1 | 3 | autospec-client | `P1-T17` |
+| `IW-WB-001` Workbench persistent sessions/fork/files/rendering | P1 | 3 | web/workbench | `P4-T03`, `P4-T04`, `P4-T05` |
+| `IW-PUBLIC-001` Anonymous bounded playground | P2 | 4 | control-plane | `P4-T13` |
+| `IW-RAG-001` Agentic RAG/provenance | P1 | 4 | node | `P4-T07` |
+| `IW-LSP-001` LSP/tool capability brokering | P2 | 4 | node | `P4-T08` |
+| `IW-IMG-001` Distributed image generation/editing | P1 | 4 | control-plane+node | `P4-T10`, `P4-T11` |
+| `IW-IMG-002` Deterministic annotated technical images + vision QA | P2 | 4 | node | `P4-T12` |
+| `IW-JOB-001` Durable async jobs/events/artifacts | P1 | 3 | control-plane | `P4-T01`, `P4-T02` |
+| `IW-CI-001` Build history/logs/Pi review dashboard | P1 | 3 | control-plane | `P4-T06` |
+| `IW-SCALE-001` Regional/multi-gateway HA | P1 | 5 | control-plane | `P5-T01`, `P5-T02`, `P5-T03`, `P5-T06` |
+| `IW-ECON-001` Internal deterministic usage ledger | P1 | 2 | control-plane | `P2-T16` |
+| `IW-ECON-002` Solana local/devnet settlement adapter | P2 | deferred | control-plane | `D-T01` |
+| `IW-AUTOSPEC-001` Thin AutoSpec/Pi InferWeave integration | P0 | 2 | autospec-client | `P2-T06`, `P2-T15` |
+| `IW-NODE-002` Node hardware/runtime/model self-discovery and safe config proposal | P1 | 2 | node | `P0-T04`, `P1-T04`, `P1-T06`, `P1-T23` |
+| `IW-FED-001` Intermediate coordinator/federation roles | P1 | 5 | control-plane | `P5-T04` |
+| `IW-TOOL-001` Workbench MCP/tool catalog and permission-aware invocation | P2 | 4 | web/workbench | `P4-T05`, `P4-T08` |
+| `IW-VERIFY-001` Node/deployment challenge and verification bands | P2 | 5 | control-plane+node | `P5-T05` |
+| `IW-PROMPT-001` Persist every submitted prompt in shared encrypted database | P0 | 1 | control-plane | `P0-T05`, `P1-T07`, `P1-T08`, `P1-T24` |
+| `IW-DP-003` Direct-first client/local-proxy to node data path | P0 | 1 | control-plane+node | `P1-T16`, `P1-T17`, `P1-T24` |
+| `IW-TEL-001` Per-GPU full hardware/software/runtime/model telemetry | P0 | 1 | node | `P0-T04`, `P0-T05`, `P1-T04`, `P1-T05`, `P1-T20` |
+| `IW-BENCH-002` Global cluster benchmark and contribution warehouse | P0 | 2 | control-plane | `P2-T01`, `P2-T03` |
+| `IW-UI-002` Next.js benchmark/GPU/contribution explorer | P1 | 2 | control-plane | `P2-T18` |
+| `IW-REC-001` Hardware/workload-specific model recommendation engine | P0 | 2 | benchmarks | `P2-T04`, `P2-T05`, `P2-T07`, `P2-T14` |
+| `IW-REC-002` Measured/predicted recommendation evidence and Pareto frontier | P0 | 2 | benchmarks | `P2-T07`, `P2-T08`, `P2-T09` |
+| `IW-REC-003` Real Pi/AutoSpec workflow replay for coding-agent recommendations | P0 | 2 | benchmarks+autospec-client | `P2-T06` |
+| `IW-SCHED-001` Generic external resource scheduler adapter | P1 | 3 | control-plane | `P3-T04` |
+| `IW-SLURM-001` Slurm allocation-scoped ephemeral provider workers | P0 | 3 | node+control-plane | `P3-T05`, `P3-T10`, `P3-T21` |
+| `IW-SLURM-002` Stable host/GPU identity across ephemeral Slurm allocations | P0 | 3 | identity+node | `P1-T01`, `P3-T05`, `P3-T21` |
+| `IW-SLURM-003` Gateway desired-deployment assignment for ephemeral workers | P0 | 3 | deployments+routing | `P3-T03`, `P3-T21` |
+| `IW-SLURM-004` Reservation deadline/preemption-aware draining and routing | P0 | 3 | node+routing | `P3-T06`, `P3-T21` |
+| `IW-SLURM-005` Opportunistic resumable benchmarking on Slurm capacity | P1 | 3 | benchmarks | `P3-T07`, `P3-T21` |
+| `IW-SITE-001` Persistent HPC/Slurm site connector | P0 | 3 | site | `P3-T01`, `P3-T08`, `P3-T09` |
+| `IW-CACHE-001` Hierarchical content-addressed artifact/model cache | P0 | 3 | site+deployments | `P3-T02` |
+| `IW-BOOT-001` Single AI-friendly InferWeave bootstrap/init CLI | P0 | 0 | bootstrap | `P0-T01`, `P0-T03`, `P3-T19` |
+| `IW-BOOT-002` Containerized gateway/node/edge/site/proxy initialization | P0 | 0 | bootstrap | `P0-T07`, `P0-T08`, `P1-T22`, `P1-T23`, `P3-T09`, `P3-T10`, `P3-T11`, `P3-T19` |
+| `IW-BOOT-003` Idempotent one-time enrollment and verification | P0 | 1 | bootstrap+auth | `P1-T02`, `P1-T22`, `P1-T23` |
+| `IW-BOOT-004` Versioned JSON doctor/probe/plan/status for AI automation | P0 | 0 | bootstrap | `P0-T03`, `P0-T04`, `P0-T07`, `P0-T10`, `P3-T19` |
+| `IW-MCP-001` Authenticated control-plane MCP information server | P1 | 3 | mcp | `P3-T16`, `P3-T18` |
+| `IW-MCP-002` Local node/site diagnostic MCP server | P1 | 3 | mcp+node | `P3-T17`, `P3-T18` |
+| `IW-WORK-001` Explicit workload scheduling contracts | P0 | 2 | routing | `P2-T01` |
+| `IW-EVENT-001` Persistent resource lifecycle event log | P0 | 2 | telemetry | `P2-T10` |
+| `IW-HEALTH-001` Automatic resource degradation/quarantine/recovery | P0 | 3 | health | `P3-T13`, `P3-T14` |
+| `IW-FORECAST-001` Demand forecasting and model artifact pre-staging | P1 | 3 | deployments+routing | `P3-T15` |
+| `IW-BENCH-003` Resumable preemption-safe benchmark DAG | P0 | 2 | benchmarks | `P2-T19` |
+| `IW-PROMPT-002` Backend-independent PromptStore with encrypted object tiering | P0 | 3 | prompt-ledger | `P3-T12` |
+| `IW-SIM-001` Large-scale protocol-accurate cluster/churn simulator | P0 | 2 | simulator | `P2-T20`, `P2-T21`, `P5-T06` |
+| `IW-WATCH-001` Per-GPU watchdog detects runtime/GPU correctness and liveness failures | P0 | 1 | node+health | `P1-T20A` |
+| `IW-WATCH-002` Bounded automatic rescue ladder with known-good profile rollback | P0 | 1 | node+deployments | `P1-T20B` |
+| `IW-WATCH-003` Watchdog CLI/dashboard/MCP diagnostics and operator rescue | P0 | 3 | health+mcp+web | `P3-T18A` |
+| `IW-DEPLOY-001` Docker Compose is mandatory persistent deployment substrate | P0 | 0 | bootstrap | `P0-T11A`, `P1-T22`, `P1-T23`, `P3-T09`, `P3-T11` |
+| `IW-DEPLOY-002` Apptainer is mandatory Slurm allocation deployment substrate | P0 | 3 | bootstrap+slurm | `P3-T10` |

@@ -1,0 +1,34 @@
+schema_version: inferweave.deployment/v1
+deployment_id: dep_qwen_coding_example
+modality: text
+model:
+  source: huggingface
+  repository: org/model
+  revision: immutable-commit
+  sha256: sha256:REPLACE
+tokenizer:
+  revision: immutable-commit
+runtime:
+  backend: vllm
+  version: pinned
+  container_digest: sha256:REPLACE
+precision:
+  weights: fp8
+  kv: fp8
+context:
+  max_tokens: 131072
+execution:
+  tensor_parallel: 1
+  pipeline_parallel: 1
+  speculative:
+    enabled: false
+resource_envelope:
+  minimum_vram_bytes: 0
+  safety_margin_bytes: 0
+policy:
+  profiles: [standard]
+license:
+  id: REVIEW_REQUIRED
+validation:
+  state: unqualified
+  benchmark_profile_id: null

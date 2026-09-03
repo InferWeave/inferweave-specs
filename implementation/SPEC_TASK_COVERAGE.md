@@ -1,0 +1,42 @@
+# Specification → Canonical Task Coverage
+
+| Spec | Canonical tasks |
+|---|---|
+| `specs/00_INVARIANTS.md` | `P0-T01`, `P0-T02`, `P0-T12`, `P1-T24`, `P1-T25`, `P5-T09` |
+| `specs/01_REPOSITORIES_AND_OWNERSHIP.md` | `P0-T01`, `P0-T12` |
+| `specs/02_PROTOCOL_AND_API.md` | `P0-T02`, `P0-T06`, `P1-T08`, `P1-T09`, `P1-T10`, `P1-T24`, `P2-T13`, `P4-T09` |
+| `specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md` | `P0-T06`, `P1-T01`, `P1-T02`, `P1-T03`, `P1-T06`, `P1-T09`, `P3-T03` |
+| `specs/04_CAPACITY_ADMISSION_SEATS.md` | `P1-T11`, `P1-T12`, `P1-T14`, `P1-T19`, `P1-T24` |
+| `specs/05_ROUTING_AFFINITY.md` | `P1-T13`, `P1-T14`, `P1-T15`, `P1-T24`, `P2-T14` |
+| `specs/06_BACKPRESSURE_RETURN_TO_SENDER.md` | `P0-T02`, `P1-T10`, `P1-T12`, `P1-T19`, `P1-T25` |
+| `specs/07_FAIRSHARE_OWNER_PRIORITY.md` | `P2-T11`, `P2-T12`, `P2-T22` |
+| `specs/08_CONNECTIVITY_DATA_PLANE.md` | `P1-T03`, `P1-T16`, `P1-T17`, `P1-T18`, `P1-T24`, `P3-T08`, `P4-T02`, `P5-T03` |
+| `specs/09_OBSERVABILITY_RECEIPTS.md` | `P1-T05`, `P1-T20`, `P1-T25`, `P2-T16`, `P2-T17` |
+| `specs/10_DASHBOARD_PORTAL.md` | `P0-T09`, `P1-T21`, `P2-T14`, `P2-T17`, `P2-T18`, `P3-T18A`, `P4-T13` |
+| `specs/11_WORKBENCH_AUTOSPEC_PI.md` | `P2-T06`, `P2-T15`, `P4-T03`, `P4-T04`, `P4-T05`, `P4-T14` |
+| `specs/12_MODEL_TUNING_BENCHMARKS.md` | `P1-T06`, `P1-T20B`, `P2-T01`, `P2-T02`, `P2-T09`, `P2-T22` |
+| `specs/13_RAG_TOOLS_LSP.md` | `P4-T07`, `P4-T08`, `P4-T09`, `P4-T14` |
+| `specs/14_IMAGE_GENERATION.md` | `P4-T10`, `P4-T11`, `P4-T12`, `P4-T14` |
+| `specs/15_ASYNC_JOBS_ARTIFACTS.md` | `P4-T01`, `P4-T02`, `P4-T11` |
+| `specs/16_SECURITY_PRIVACY_TRUST.md` | `P0-T11`, `P1-T02`, `P1-T13`, `P1-T16`, `P1-T25`, `P2-T13`, `P3-T18`, `P3-T20`, `P3-T22`, `P4-T13`, `P5-T05`, `P5-T07`, `P5-T10` |
+| `specs/17_SCALING_HA_REGIONS.md` | `P5-T01`, `P5-T02`, `P5-T03`, `P5-T06`, `P5-T07`, `P5-T08` |
+| `specs/18_SOLANA_DEV_ACCOUNTING.md` | `P2-T16`, `D-T01` |
+| `specs/19_CI_CD_LIVING_SPECS.md` | `P4-T06`, `P4-T14`, `P5-T10` |
+| `specs/20_NODE_AUTOCONFIG_DISCOVERY.md` | `P0-T04`, `P1-T04`, `P1-T23` |
+| `specs/21_FEDERATION_ROLES.md` | `P5-T04`, `P5-T05`, `P5-T08` |
+| `specs/22_PROMPT_LEDGER.md` | `P0-T05`, `P1-T07`, `P1-T08` |
+| `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md` | `P0-T04`, `P0-T05`, `P0-T06`, `P1-T04`, `P1-T05`, `P1-T20`, `P2-T01`, `P2-T02`, `P2-T03` |
+| `specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md` | `P2-T04`, `P2-T05`, `P2-T06`, `P2-T07`, `P2-T08`, `P2-T09`, `P2-T18`, `P2-T22` |
+| `specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md` | `P3-T03`, `P3-T04`, `P3-T05`, `P3-T06`, `P3-T07`, `P3-T09`, `P3-T10`, `P3-T21` |
+| `specs/26_RESOURCE_IDENTITY_REDISCOVERY.md` | `P1-T01`, `P1-T04`, `P3-T01`, `P3-T05`, `P3-T21` |
+| `specs/27_SITE_CONNECTOR_ARTIFACT_CACHE.md` | `P3-T01`, `P3-T02`, `P3-T08`, `P3-T09`, `P3-T11`, `P3-T21` |
+| `specs/28_BOOTSTRAP_INIT_CLIENT.md` | `P0-T03`, `P0-T04`, `P0-T07`, `P0-T08`, `P0-T10`, `P0-T11`, `P0-T11A`, `P0-T12`, `P1-T02`, `P1-T22`, `P1-T23`, `P3-T09`, `P3-T10`, `P3-T11`, `P3-T19`, `P3-T20`, `P3-T22`, `P5-T10` |
+| `specs/29_MCP_SERVERS.md` | `P3-T16`, `P3-T17`, `P3-T18`, `P3-T18A`, `P3-T19`, `P3-T22`, `P4-T05` |
+| `specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md` | `P2-T01`, `P2-T10`, `P2-T11`, `P3-T06` |
+| `specs/31_RESOURCE_HEALTH_QUARANTINE.md` | `P1-T20A`, `P3-T13`, `P3-T14` |
+| `specs/32_DEMAND_FORECASTING_PRESTAGING.md` | `P3-T15` |
+| `specs/33_RESUMABLE_BENCHMARK_DAG.md` | `P2-T19`, `P3-T07` |
+| `specs/34_PROMPT_STORE_TIERING.md` | `P0-T05`, `P1-T07`, `P3-T12` |
+| `specs/35_CLUSTER_SIMULATOR_CHAOS.md` | `P0-T08`, `P2-T20`, `P2-T21`, `P5-T06`, `P5-T08` |
+| `specs/36_GPU_WATCHDOG_RESCUE.md` | `P1-T20A`, `P1-T20B`, `P3-T18A` |
+| `specs/37_CONTAINER_DEPLOYMENT_STANDARD.md` | `P0-T11A`, `P1-T20B`, `P1-T22`, `P1-T23`, `P3-T09`, `P3-T10`, `P3-T11` |

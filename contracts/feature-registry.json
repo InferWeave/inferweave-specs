@@ -1,0 +1,800 @@
+{
+  "schema_version": 2,
+  "features": [
+    {
+      "id": "IW-CORE-001",
+      "name": "OpenAI-compatible text inference",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P0-T02",
+        "P0-T06",
+        "P1-T09",
+        "P1-T10",
+        "P1-T24"
+      ]
+    },
+    {
+      "id": "IW-NODE-001",
+      "name": "Outbound-only node enrollment and heartbeat",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P1-T01",
+        "P1-T02",
+        "P1-T03"
+      ]
+    },
+    {
+      "id": "IW-CAP-001",
+      "name": "Seat/session + context/KV capacity accounting",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P1-T11",
+        "P1-T12"
+      ]
+    },
+    {
+      "id": "IW-ROUTE-001",
+      "name": "Model/capability hard filtering",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P1-T13",
+        "P2-T14"
+      ]
+    },
+    {
+      "id": "IW-ROUTE-002",
+      "name": "Best-fit context packing",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P1-T14"
+      ]
+    },
+    {
+      "id": "IW-ROUTE-003",
+      "name": "Sticky session/cache affinity",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P1-T15"
+      ]
+    },
+    {
+      "id": "IW-BP-001",
+      "name": "Bounded backpressure 503/429 semantics",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P1-T12",
+        "P1-T19"
+      ]
+    },
+    {
+      "id": "IW-DP-001",
+      "name": "NAT-safe persistent relay",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P1-T03",
+        "P1-T18"
+      ]
+    },
+    {
+      "id": "IW-OBS-001",
+      "name": "Route/capacity/request telemetry",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P1-T05",
+        "P1-T20"
+      ]
+    },
+    {
+      "id": "IW-UI-001",
+      "name": "Live node/model/capacity/session dashboard",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P0-T09",
+        "P1-T21"
+      ]
+    },
+    {
+      "id": "IW-TUNE-001",
+      "name": "Node benchmark/tuning and qualified profiles",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P2-T02",
+        "P2-T09"
+      ]
+    },
+    {
+      "id": "IW-QOS-001",
+      "name": "Hierarchical FairShare and anti-gaming",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P2-T12"
+      ]
+    },
+    {
+      "id": "IW-QOS-002",
+      "name": "Owner reserve/reclaim",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "decision": "D-003",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P2-T11"
+      ]
+    },
+    {
+      "id": "IW-DP-002",
+      "name": "Regional relay/direct path/rendezvous",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required_later",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P1-T16",
+        "P1-T18",
+        "P3-T08",
+        "P5-T03"
+      ]
+    },
+    {
+      "id": "IW-PROXY-001",
+      "name": "Local edge proxy/cache",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required_later",
+      "owner_component": "autospec-client",
+      "canonical_tasks": [
+        "P1-T17"
+      ]
+    },
+    {
+      "id": "IW-WB-001",
+      "name": "Workbench persistent sessions/fork/files/rendering",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required_later",
+      "decision": "D-007",
+      "owner_component": "web/workbench",
+      "canonical_tasks": [
+        "P4-T03",
+        "P4-T04",
+        "P4-T05"
+      ]
+    },
+    {
+      "id": "IW-PUBLIC-001",
+      "name": "Anonymous bounded playground",
+      "phase": 4,
+      "priority": "P2",
+      "status": "decision",
+      "decision": "D-004",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P4-T13"
+      ]
+    },
+    {
+      "id": "IW-RAG-001",
+      "name": "Agentic RAG/provenance",
+      "phase": 4,
+      "priority": "P1",
+      "status": "required_later",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P4-T07"
+      ]
+    },
+    {
+      "id": "IW-LSP-001",
+      "name": "LSP/tool capability brokering",
+      "phase": 4,
+      "priority": "P2",
+      "status": "required_later",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P4-T08"
+      ]
+    },
+    {
+      "id": "IW-IMG-001",
+      "name": "Distributed image generation/editing",
+      "phase": 4,
+      "priority": "P1",
+      "status": "required_later",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P4-T10",
+        "P4-T11"
+      ]
+    },
+    {
+      "id": "IW-IMG-002",
+      "name": "Deterministic annotated technical images + vision QA",
+      "phase": 4,
+      "priority": "P2",
+      "status": "required_later",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P4-T12"
+      ]
+    },
+    {
+      "id": "IW-JOB-001",
+      "name": "Durable async jobs/events/artifacts",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required_later",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P4-T01",
+        "P4-T02"
+      ]
+    },
+    {
+      "id": "IW-CI-001",
+      "name": "Build history/logs/Pi review dashboard",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required_later",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P4-T06"
+      ]
+    },
+    {
+      "id": "IW-SCALE-001",
+      "name": "Regional/multi-gateway HA",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required_later",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P5-T01",
+        "P5-T02",
+        "P5-T03",
+        "P5-T06"
+      ]
+    },
+    {
+      "id": "IW-ECON-001",
+      "name": "Internal deterministic usage ledger",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P2-T16"
+      ]
+    },
+    {
+      "id": "IW-ECON-002",
+      "name": "Solana local/devnet settlement adapter",
+      "phase": "deferred",
+      "priority": "P2",
+      "status": "deferred_until_working_gpu_weave",
+      "decision": "D-009",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "D-T01"
+      ]
+    },
+    {
+      "id": "IW-AUTOSPEC-001",
+      "name": "Thin AutoSpec/Pi InferWeave integration",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "autospec-client",
+      "canonical_tasks": [
+        "P2-T06",
+        "P2-T15"
+      ]
+    },
+    {
+      "id": "IW-NODE-002",
+      "name": "Node hardware/runtime/model self-discovery and safe config proposal",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P0-T04",
+        "P1-T04",
+        "P1-T06",
+        "P1-T23"
+      ]
+    },
+    {
+      "id": "IW-FED-001",
+      "name": "Intermediate coordinator/federation roles",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required_later",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P5-T04"
+      ]
+    },
+    {
+      "id": "IW-TOOL-001",
+      "name": "Workbench MCP/tool catalog and permission-aware invocation",
+      "phase": 4,
+      "priority": "P2",
+      "status": "required_later",
+      "owner_component": "web/workbench",
+      "canonical_tasks": [
+        "P4-T05",
+        "P4-T08"
+      ]
+    },
+    {
+      "id": "IW-VERIFY-001",
+      "name": "Node/deployment challenge and verification bands",
+      "phase": 5,
+      "priority": "P2",
+      "status": "required_later",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P5-T05"
+      ]
+    },
+    {
+      "id": "IW-PROMPT-001",
+      "name": "Persist every submitted prompt in shared encrypted database",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P0-T05",
+        "P1-T07",
+        "P1-T08",
+        "P1-T24"
+      ]
+    },
+    {
+      "id": "IW-DP-003",
+      "name": "Direct-first client/local-proxy to node data path",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P1-T16",
+        "P1-T17",
+        "P1-T24"
+      ]
+    },
+    {
+      "id": "IW-TEL-001",
+      "name": "Per-GPU full hardware/software/runtime/model telemetry",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node",
+      "canonical_tasks": [
+        "P0-T04",
+        "P0-T05",
+        "P1-T04",
+        "P1-T05",
+        "P1-T20"
+      ]
+    },
+    {
+      "id": "IW-BENCH-002",
+      "name": "Global cluster benchmark and contribution warehouse",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P2-T01",
+        "P2-T03"
+      ]
+    },
+    {
+      "id": "IW-UI-002",
+      "name": "Next.js benchmark/GPU/contribution explorer",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P2-T18"
+      ]
+    },
+    {
+      "id": "IW-REC-001",
+      "name": "Hardware/workload-specific model recommendation engine",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "benchmarks",
+      "canonical_tasks": [
+        "P2-T04",
+        "P2-T05",
+        "P2-T07",
+        "P2-T14"
+      ]
+    },
+    {
+      "id": "IW-REC-002",
+      "name": "Measured/predicted recommendation evidence and Pareto frontier",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "benchmarks",
+      "canonical_tasks": [
+        "P2-T07",
+        "P2-T08",
+        "P2-T09"
+      ]
+    },
+    {
+      "id": "IW-REC-003",
+      "name": "Real Pi/AutoSpec workflow replay for coding-agent recommendations",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "benchmarks+autospec-client",
+      "canonical_tasks": [
+        "P2-T06"
+      ]
+    },
+    {
+      "id": "IW-SCHED-001",
+      "name": "Generic external resource scheduler adapter",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P3-T04"
+      ]
+    },
+    {
+      "id": "IW-SLURM-001",
+      "name": "Slurm allocation-scoped ephemeral provider workers",
+      "phase": 3,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node+control-plane",
+      "canonical_tasks": [
+        "P3-T05",
+        "P3-T10",
+        "P3-T21"
+      ]
+    },
+    {
+      "id": "IW-SLURM-002",
+      "name": "Stable host/GPU identity across ephemeral Slurm allocations",
+      "phase": 3,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "identity+node",
+      "canonical_tasks": [
+        "P1-T01",
+        "P3-T05",
+        "P3-T21"
+      ]
+    },
+    {
+      "id": "IW-SLURM-003",
+      "name": "Gateway desired-deployment assignment for ephemeral workers",
+      "phase": 3,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "deployments+routing",
+      "canonical_tasks": [
+        "P3-T03",
+        "P3-T21"
+      ]
+    },
+    {
+      "id": "IW-SLURM-004",
+      "name": "Reservation deadline/preemption-aware draining and routing",
+      "phase": 3,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node+routing",
+      "canonical_tasks": [
+        "P3-T06",
+        "P3-T21"
+      ]
+    },
+    {
+      "id": "IW-SLURM-005",
+      "name": "Opportunistic resumable benchmarking on Slurm capacity",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "benchmarks",
+      "canonical_tasks": [
+        "P3-T07",
+        "P3-T21"
+      ]
+    },
+    {
+      "id": "IW-SITE-001",
+      "name": "Persistent HPC/Slurm site connector",
+      "phase": 3,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "site",
+      "canonical_tasks": [
+        "P3-T01",
+        "P3-T08",
+        "P3-T09"
+      ]
+    },
+    {
+      "id": "IW-CACHE-001",
+      "name": "Hierarchical content-addressed artifact/model cache",
+      "phase": 3,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "site+deployments",
+      "canonical_tasks": [
+        "P3-T02"
+      ]
+    },
+    {
+      "id": "IW-BOOT-001",
+      "name": "Single AI-friendly InferWeave bootstrap/init CLI",
+      "phase": 0,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "bootstrap",
+      "canonical_tasks": [
+        "P0-T01",
+        "P0-T03",
+        "P3-T19"
+      ]
+    },
+    {
+      "id": "IW-BOOT-002",
+      "name": "Containerized gateway/node/edge/site/proxy initialization",
+      "phase": 0,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "bootstrap",
+      "canonical_tasks": [
+        "P0-T07",
+        "P0-T08",
+        "P1-T22",
+        "P1-T23",
+        "P3-T09",
+        "P3-T10",
+        "P3-T11",
+        "P3-T19"
+      ]
+    },
+    {
+      "id": "IW-BOOT-003",
+      "name": "Idempotent one-time enrollment and verification",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "bootstrap+auth",
+      "canonical_tasks": [
+        "P1-T02",
+        "P1-T22",
+        "P1-T23"
+      ]
+    },
+    {
+      "id": "IW-BOOT-004",
+      "name": "Versioned JSON doctor/probe/plan/status for AI automation",
+      "phase": 0,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "bootstrap",
+      "canonical_tasks": [
+        "P0-T03",
+        "P0-T04",
+        "P0-T07",
+        "P0-T10",
+        "P3-T19"
+      ]
+    },
+    {
+      "id": "IW-MCP-001",
+      "name": "Authenticated control-plane MCP information server",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "mcp",
+      "canonical_tasks": [
+        "P3-T16",
+        "P3-T18"
+      ]
+    },
+    {
+      "id": "IW-MCP-002",
+      "name": "Local node/site diagnostic MCP server",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "mcp+node",
+      "canonical_tasks": [
+        "P3-T17",
+        "P3-T18"
+      ]
+    },
+    {
+      "id": "IW-WORK-001",
+      "name": "Explicit workload scheduling contracts",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "routing",
+      "canonical_tasks": [
+        "P2-T01"
+      ]
+    },
+    {
+      "id": "IW-EVENT-001",
+      "name": "Persistent resource lifecycle event log",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "telemetry",
+      "canonical_tasks": [
+        "P2-T10"
+      ]
+    },
+    {
+      "id": "IW-HEALTH-001",
+      "name": "Automatic resource degradation/quarantine/recovery",
+      "phase": 3,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "health",
+      "canonical_tasks": [
+        "P3-T13",
+        "P3-T14"
+      ]
+    },
+    {
+      "id": "IW-FORECAST-001",
+      "name": "Demand forecasting and model artifact pre-staging",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "deployments+routing",
+      "canonical_tasks": [
+        "P3-T15"
+      ]
+    },
+    {
+      "id": "IW-BENCH-003",
+      "name": "Resumable preemption-safe benchmark DAG",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "benchmarks",
+      "canonical_tasks": [
+        "P2-T19"
+      ]
+    },
+    {
+      "id": "IW-PROMPT-002",
+      "name": "Backend-independent PromptStore with encrypted object tiering",
+      "phase": 3,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "prompt-ledger",
+      "canonical_tasks": [
+        "P3-T12"
+      ]
+    },
+    {
+      "id": "IW-SIM-001",
+      "name": "Large-scale protocol-accurate cluster/churn simulator",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "simulator",
+      "canonical_tasks": [
+        "P2-T20",
+        "P2-T21",
+        "P5-T06"
+      ]
+    },
+    {
+      "id": "IW-WATCH-001",
+      "name": "Per-GPU watchdog detects runtime/GPU correctness and liveness failures",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node+health",
+      "canonical_tasks": [
+        "P1-T20A"
+      ]
+    },
+    {
+      "id": "IW-WATCH-002",
+      "name": "Bounded automatic rescue ladder with known-good profile rollback",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node+deployments",
+      "canonical_tasks": [
+        "P1-T20B"
+      ]
+    },
+    {
+      "id": "IW-WATCH-003",
+      "name": "Watchdog CLI/dashboard/MCP diagnostics and operator rescue",
+      "phase": 3,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "health+mcp+web",
+      "canonical_tasks": [
+        "P3-T18A"
+      ]
+    },
+    {
+      "id": "IW-DEPLOY-001",
+      "name": "Docker Compose is mandatory persistent deployment substrate",
+      "phase": 0,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "bootstrap",
+      "canonical_tasks": [
+        "P0-T11A",
+        "P1-T22",
+        "P1-T23",
+        "P3-T09",
+        "P3-T11"
+      ]
+    },
+    {
+      "id": "IW-DEPLOY-002",
+      "name": "Apptainer is mandatory Slurm allocation deployment substrate",
+      "phase": 3,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "bootstrap+slurm",
+      "canonical_tasks": [
+        "P3-T10"
+      ]
+    }
+  ]
+}

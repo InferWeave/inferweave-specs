@@ -1,0 +1,2704 @@
+{
+  "schema_version": 1,
+  "context_strategy": "implementation/CONTEXT_50_100K_STRATEGY.md",
+  "phase_gates": "implementation/PHASE_GATES.md",
+  "tasks": [
+    {
+      "id": "P0-T01",
+      "phase": 0,
+      "title": "Bootstrap clean Rust/Next.js monorepo",
+      "depends_on": [],
+      "specs": [
+        "00_INVARIANTS",
+        "01_REPOSITORIES_AND_OWNERSHIP"
+      ],
+      "features": [
+        "IW-BOOT-001"
+      ],
+      "context_class": "C50",
+      "outcome": "Rust workspace, apps/web, CI skeleton, docs/ADR/changelog layout compile from an empty repository.",
+      "required_tests": [
+        "cargo fmt/check/test baseline",
+        "Next.js lint/typecheck baseline"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T02",
+      "phase": 0,
+      "title": "Canonical protocol versioning, typed IDs and error envelope",
+      "depends_on": [
+        "P0-T01"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "02_PROTOCOL_AND_API",
+        "06_BACKPRESSURE_RETURN_TO_SENDER"
+      ],
+      "features": [
+        "IW-CORE-001"
+      ],
+      "context_class": "C55",
+      "outcome": "Create canonical protocol crate with strongly typed IDs, schema versions and normalized error types.",
+      "required_tests": [
+        "unit serialization round trips",
+        "schema compatibility fixture tests"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T03",
+      "phase": 0,
+      "title": "Bootstrap CLI command framework and versioned JSON output",
+      "depends_on": [
+        "P0-T01",
+        "P0-T02"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT"
+      ],
+      "features": [
+        "IW-BOOT-001",
+        "IW-BOOT-004"
+      ],
+      "context_class": "C55",
+      "outcome": "Create `inferweave` CLI with stable commands, exit codes, JSON envelope and secret-redaction rules.",
+      "required_tests": [
+        "CLI golden JSON tests",
+        "exit-code tests",
+        "secret redaction tests"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T04",
+      "phase": 0,
+      "title": "Read-only doctor and host probe",
+      "depends_on": [
+        "P0-T03"
+      ],
+      "specs": [
+        "20_NODE_AUTOCONFIG_DISCOVERY",
+        "23_GLOBAL_TELEMETRY_BENCHMARKS",
+        "28_BOOTSTRAP_INIT_CLIENT"
+      ],
+      "features": [
+        "IW-BOOT-004",
+        "IW-NODE-002",
+        "IW-TEL-001"
+      ],
+      "context_class": "C65",
+      "outcome": "`inferweave doctor/probe --json` reports OS/CPU/RAM/storage/network/container/GPU/runtime facts without mutation.",
+      "required_tests": [
+        "fixture probes AMD/NVIDIA/no-GPU",
+        "unsupported sensor representation",
+        "read-only integration test"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T05",
+      "phase": 0,
+      "title": "PostgreSQL development storage foundation",
+      "depends_on": [
+        "P0-T01",
+        "P0-T02"
+      ],
+      "specs": [
+        "22_PROMPT_LEDGER",
+        "23_GLOBAL_TELEMETRY_BENCHMARKS",
+        "34_PROMPT_STORE_TIERING"
+      ],
+      "features": [
+        "IW-PROMPT-001",
+        "IW-TEL-001"
+      ],
+      "context_class": "C60",
+      "outcome": "Create storage crate, migrations, transaction helpers and local PostgreSQL Compose profile.",
+      "required_tests": [
+        "migration up/down in disposable DB",
+        "transaction/idempotency tests"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T06",
+      "phase": 0,
+      "title": "Canonical schemas and generated Rust/TypeScript bindings",
+      "depends_on": [
+        "P0-T02"
+      ],
+      "specs": [
+        "02_PROTOCOL_AND_API",
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "23_GLOBAL_TELEMETRY_BENCHMARKS"
+      ],
+      "features": [
+        "IW-CORE-001"
+      ],
+      "context_class": "C65",
+      "outcome": "Establish OpenAPI/JSON Schema source of truth and generated bindings with CI drift detection.",
+      "required_tests": [
+        "generation reproducibility",
+        "Rust/TS schema parity",
+        "CI drift failure test"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T07",
+      "phase": 0,
+      "title": "Container stack renderer and init plan",
+      "depends_on": [
+        "P0-T03",
+        "P0-T04",
+        "P0-T05"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT"
+      ],
+      "features": [
+        "IW-BOOT-002",
+        "IW-BOOT-004"
+      ],
+      "context_class": "C70",
+      "outcome": "`inferweave init plan <role> --json` emits explicit containers, ports, volumes, device mappings, privilege changes and rollback plan.",
+      "required_tests": [
+        "golden plans gateway/node/edge/site/proxy",
+        "no silent firewall mutation",
+        "GPU device selection test"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T08",
+      "phase": 0,
+      "title": "Local development stack generator",
+      "depends_on": [
+        "P0-T07"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT",
+        "35_CLUSTER_SIMULATOR_CHAOS"
+      ],
+      "features": [
+        "IW-BOOT-002"
+      ],
+      "context_class": "C65",
+      "outcome": "`inferweave init dev` creates and verifies deterministic gateway/node/mock/web/Postgres development stack.",
+      "required_tests": [
+        "Compose bring-up E2E",
+        "idempotent second run",
+        "teardown leaves persistent data as documented"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T09",
+      "phase": 0,
+      "title": "Next.js shell and generated API client",
+      "depends_on": [
+        "P0-T01",
+        "P0-T06"
+      ],
+      "specs": [
+        "10_DASHBOARD_PORTAL"
+      ],
+      "features": [
+        "IW-UI-001"
+      ],
+      "context_class": "C55",
+      "outcome": "Create common Next.js application shell, generated API client and server/client auth-ready boundaries.",
+      "required_tests": [
+        "typecheck",
+        "component smoke tests",
+        "generated client compile"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T10",
+      "phase": 0,
+      "title": "Bootstrap CLI support bundle and config model",
+      "depends_on": [
+        "P0-T03",
+        "P0-T04"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT"
+      ],
+      "features": [
+        "IW-BOOT-004"
+      ],
+      "context_class": "C55",
+      "outcome": "Implement config discovery/export, status skeleton and redacted support-bundle format.",
+      "required_tests": [
+        "redaction fixture",
+        "bundle manifest test",
+        "config permissions test"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T11",
+      "phase": 0,
+      "title": "Foundation security and secrets policy",
+      "depends_on": [
+        "P0-T03",
+        "P0-T05",
+        "P0-T07"
+      ],
+      "specs": [
+        "16_SECURITY_PRIVACY_TRUST",
+        "28_BOOTSTRAP_INIT_CLIENT"
+      ],
+      "features": [],
+      "context_class": "C70",
+      "outcome": "Implement shared secret types/redaction, filesystem permissions, container privilege policy and bootstrap credential primitives.",
+      "required_tests": [
+        "secret cannot serialize to logs",
+        "permissions tests",
+        "negative privilege configuration tests"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P0-T11A",
+      "phase": 0,
+      "title": "Docker/Apptainer deployment substrate contract",
+      "depends_on": [
+        "P0-T04",
+        "P0-T07",
+        "P0-T11"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT",
+        "37_CONTAINER_DEPLOYMENT_STANDARD"
+      ],
+      "features": [
+        "IW-DEPLOY-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Bootstrap/runtime abstraction supports Docker Compose for persistent roles and Apptainer for Slurm, with pinned container artifacts, GPU device scoping and no bare-host model server path.",
+      "required_tests": [
+        "gateway/node role plan selects Docker Compose",
+        "slurm role plan selects Apptainer",
+        "Podman/bare-host production mode rejected",
+        "GPU device scoping fixture",
+        "pinned digest validation"
+      ],
+      "notes": "This task defines deployment mechanics; it does not implement Slurm scheduling."
+    },
+    {
+      "id": "P0-T12",
+      "phase": 0,
+      "title": "Phase-0 architecture and bootstrap review",
+      "depends_on": [
+        "P0-T01",
+        "P0-T02",
+        "P0-T03",
+        "P0-T04",
+        "P0-T05",
+        "P0-T06",
+        "P0-T07",
+        "P0-T08",
+        "P0-T09",
+        "P0-T10",
+        "P0-T11",
+        "P0-T11A"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "01_REPOSITORIES_AND_OWNERSHIP",
+        "28_BOOTSTRAP_INIT_CLIENT"
+      ],
+      "features": [],
+      "context_class": "C90",
+      "outcome": "Independent review verifies clean-slate boundaries, schema ownership, CLI safety and that Phase 1 can build without legacy assumptions.",
+      "required_tests": [
+        "full workspace CI",
+        "fresh-machine dev bootstrap acceptance"
+      ],
+      "notes": "Review-only; do not add features."
+    },
+    {
+      "id": "P1-T01",
+      "phase": 1,
+      "title": "Stable provider/node/GPU identity primitives",
+      "depends_on": [
+        "P0-T12"
+      ],
+      "specs": [
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "26_RESOURCE_IDENTITY_REDISCOVERY"
+      ],
+      "features": [
+        "IW-NODE-001",
+        "IW-SLURM-002"
+      ],
+      "context_class": "C65",
+      "outcome": "Implement stable provider/cluster/host/GPU identities separate from worker/connection identities.",
+      "required_tests": [
+        "same fingerprint resolves same identity",
+        "hardware replacement creates new generation",
+        "duplicate mapping property tests"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T02",
+      "phase": 1,
+      "title": "One-time enrollment and node credentials",
+      "depends_on": [
+        "P1-T01",
+        "P0-T11"
+      ],
+      "specs": [
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "16_SECURITY_PRIVACY_TRUST",
+        "28_BOOTSTRAP_INIT_CLIENT"
+      ],
+      "features": [
+        "IW-BOOT-003",
+        "IW-NODE-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Gateway issues one-time short-lived enrollment codes that exchange for scoped persistent node credentials.",
+      "required_tests": [
+        "single-use/expiry tests",
+        "replay rejection",
+        "revocation test"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T03",
+      "phase": 1,
+      "title": "Outbound node control connection and heartbeat",
+      "depends_on": [
+        "P1-T02"
+      ],
+      "specs": [
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "08_CONNECTIVITY_DATA_PLANE"
+      ],
+      "features": [
+        "IW-NODE-001",
+        "IW-DP-001"
+      ],
+      "context_class": "C65",
+      "outcome": "Node maintains authenticated outbound control connection with registration, heartbeat and freshness expiration.",
+      "required_tests": [
+        "disconnect/stale TTL test",
+        "reconnect same identity",
+        "gateway restart recovery"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T04",
+      "phase": 1,
+      "title": "Full hardware/software/GPU discovery fingerprint",
+      "depends_on": [
+        "P1-T01",
+        "P0-T04"
+      ],
+      "specs": [
+        "20_NODE_AUTOCONFIG_DISCOVERY",
+        "23_GLOBAL_TELEMETRY_BENCHMARKS",
+        "26_RESOURCE_IDENTITY_REDISCOVERY"
+      ],
+      "features": [
+        "IW-NODE-002",
+        "IW-TEL-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Node produces immutable hardware/software/runtime fingerprint including GPU UUIDs/topology/drivers/runtime/model-server capabilities.",
+      "required_tests": [
+        "AMD/NVIDIA fixtures",
+        "fingerprint stability",
+        "material change causes new fingerprint"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T05",
+      "phase": 1,
+      "title": "Live GPU/host telemetry collection",
+      "depends_on": [
+        "P1-T04",
+        "P0-T05"
+      ],
+      "specs": [
+        "09_OBSERVABILITY_RECEIPTS",
+        "23_GLOBAL_TELEMETRY_BENCHMARKS"
+      ],
+      "features": [
+        "IW-TEL-001",
+        "IW-OBS-001"
+      ],
+      "context_class": "C65",
+      "outcome": "Collect temperature/power/clocks/utilization/VRAM/errors plus host CPU/RAM/storage/network where supported.",
+      "required_tests": [
+        "sensor unsupported semantics",
+        "sample ingestion",
+        "bounded frequency/backpressure"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T06",
+      "phase": 1,
+      "title": "Immutable deployment manifest and node advertisement",
+      "depends_on": [
+        "P1-T03",
+        "P1-T04",
+        "P0-T06"
+      ],
+      "specs": [
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "12_MODEL_TUNING_BENCHMARKS"
+      ],
+      "features": [
+        "IW-NODE-002"
+      ],
+      "context_class": "C65",
+      "outcome": "Define deployment fingerprint and advertise resident/available deployments with exact model/runtime/profile versions.",
+      "required_tests": [
+        "fingerprint roundtrip",
+        "mutable alias cannot change immutable fingerprint",
+        "freshness tests"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T07",
+      "phase": 1,
+      "title": "Prompt ledger metadata and encrypted payload storage",
+      "depends_on": [
+        "P0-T05",
+        "P0-T11"
+      ],
+      "specs": [
+        "22_PROMPT_LEDGER",
+        "34_PROMPT_STORE_TIERING"
+      ],
+      "features": [
+        "IW-PROMPT-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Persist every submitted prompt idempotently with encrypted content, metadata, lineage and access-audit primitives.",
+      "required_tests": [
+        "accepted/rejected/cancelled prompt storage",
+        "idempotency",
+        "content excluded from logs",
+        "authorized read audit"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T08",
+      "phase": 1,
+      "title": "Prompt ingest API and submission ordering",
+      "depends_on": [
+        "P1-T07",
+        "P0-T06"
+      ],
+      "specs": [
+        "22_PROMPT_LEDGER",
+        "02_PROTOCOL_AND_API"
+      ],
+      "features": [
+        "IW-PROMPT-001"
+      ],
+      "context_class": "C65",
+      "outcome": "Client/proxy obtains prompt_id/hash before routing and executions/rejections reference it.",
+      "required_tests": [
+        "storage unavailable behavior",
+        "retry/outbox fixture",
+        "no route without durable submission"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T09",
+      "phase": 1,
+      "title": "Gateway registry and `/v1/models`",
+      "depends_on": [
+        "P1-T03",
+        "P1-T06"
+      ],
+      "specs": [
+        "02_PROTOCOL_AND_API",
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS"
+      ],
+      "features": [
+        "IW-CORE-001"
+      ],
+      "context_class": "C60",
+      "outcome": "Gateway maintains fresh node/deployment catalog and exposes OpenAI-compatible model listing.",
+      "required_tests": [
+        "stale node removed",
+        "model alias/fingerprint test",
+        "OpenAI response contract"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T10",
+      "phase": 1,
+      "title": "OpenAI streaming ingress against deterministic backend",
+      "depends_on": [
+        "P1-T08",
+        "P1-T09"
+      ],
+      "specs": [
+        "02_PROTOCOL_AND_API",
+        "06_BACKPRESSURE_RETURN_TO_SENDER"
+      ],
+      "features": [
+        "IW-CORE-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Implement streaming chat/completion ingress with request IDs, cancellation plumbing and deterministic mock backend.",
+      "required_tests": [
+        "stream contract",
+        "client disconnect",
+        "malformed backend",
+        "prompt correlation"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T11",
+      "phase": 1,
+      "title": "Seat/session/context/KV capacity model",
+      "depends_on": [
+        "P1-T06",
+        "P1-T10"
+      ],
+      "specs": [
+        "04_CAPACITY_ADMISSION_SEATS"
+      ],
+      "features": [
+        "IW-CAP-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Model active sessions as unequal seats with context/KV/output reserve and shared model weight accounting.",
+      "required_tests": [
+        "capacity never negative property",
+        "shared weights counted once",
+        "context growth update tests"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T12",
+      "phase": 1,
+      "title": "Node authoritative admission and leases",
+      "depends_on": [
+        "P1-T11",
+        "P1-T03"
+      ],
+      "specs": [
+        "04_CAPACITY_ADMISSION_SEATS",
+        "06_BACKPRESSURE_RETURN_TO_SENDER"
+      ],
+      "features": [
+        "IW-CAP-001",
+        "IW-BP-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Gateway prediction is confirmed by authoritative node lease/admission with bounded expiration/cancellation.",
+      "required_tests": [
+        "lease expiration",
+        "double-admit race",
+        "cancel releases resources",
+        "prediction mismatch"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T13",
+      "phase": 1,
+      "title": "Routing hard constraints",
+      "depends_on": [
+        "P1-T09",
+        "P1-T11"
+      ],
+      "specs": [
+        "05_ROUTING_AFFINITY",
+        "16_SECURITY_PRIVACY_TRUST"
+      ],
+      "features": [
+        "IW-ROUTE-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Filter candidates by exact model/capability/context/resource/privacy/license/policy constraints.",
+      "required_tests": [
+        "hard constraints never relaxed property",
+        "no eligible candidate semantics",
+        "model mismatch"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T14",
+      "phase": 1,
+      "title": "Best-fit capacity placement",
+      "depends_on": [
+        "P1-T13",
+        "P1-T12"
+      ],
+      "specs": [
+        "05_ROUTING_AFFINITY",
+        "04_CAPACITY_ADMISSION_SEATS"
+      ],
+      "features": [
+        "IW-ROUTE-002"
+      ],
+      "context_class": "C70",
+      "outcome": "Choose lowest sufficient context/KV headroom after hard filtering to preserve large capacity.",
+      "required_tests": [
+        "best-fit property tests",
+        "tie handling",
+        "capacity changes during lease"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T15",
+      "phase": 1,
+      "title": "Sticky sessions and cache affinity",
+      "depends_on": [
+        "P1-T14"
+      ],
+      "specs": [
+        "05_ROUTING_AFFINITY"
+      ],
+      "features": [
+        "IW-ROUTE-003"
+      ],
+      "context_class": "C65",
+      "outcome": "Preserve long-lived session/model-instance affinity while respecting health/capacity/hard constraints.",
+      "required_tests": [
+        "affinity retained",
+        "affinity broken on hard failure",
+        "no silent model substitution mid-stream"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T16",
+      "phase": 1,
+      "title": "Route tickets and rendezvous protocol",
+      "depends_on": [
+        "P1-T12",
+        "P1-T15",
+        "P0-T11"
+      ],
+      "specs": [
+        "08_CONNECTIVITY_DATA_PLANE",
+        "16_SECURITY_PRIVACY_TRUST"
+      ],
+      "features": [
+        "IW-DP-003",
+        "IW-DP-002"
+      ],
+      "context_class": "C80",
+      "outcome": "Issue route-scoped short-lived connection tickets and exchange connectivity candidates without gateway stream proxying.",
+      "required_tests": [
+        "ticket expiry/replay",
+        "wrong node rejection",
+        "rendezvous fallback fixture"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T17",
+      "phase": 1,
+      "title": "Local proxy direct node streaming",
+      "depends_on": [
+        "P1-T16",
+        "P1-T10"
+      ],
+      "specs": [
+        "08_CONNECTIVITY_DATA_PLANE"
+      ],
+      "features": [
+        "IW-DP-003",
+        "IW-PROXY-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Local proxy connects directly to selected node, streams OpenAI response and propagates cancellation.",
+      "required_tests": [
+        "gateway sees zero response payload",
+        "direct success",
+        "cancel propagation",
+        "session affinity"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T18",
+      "phase": 1,
+      "title": "Regional/gateway relay fallback",
+      "depends_on": [
+        "P1-T17"
+      ],
+      "specs": [
+        "08_CONNECTIVITY_DATA_PLANE"
+      ],
+      "features": [
+        "IW-DP-001",
+        "IW-DP-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Fallback order is direct \u2192 site/regional relay \u2192 gateway relay last resort with byte accounting/circuit breakers.",
+      "required_tests": [
+        "forced NAT failure",
+        "fallback ordering",
+        "gateway relay bandwidth circuit breaker"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T19",
+      "phase": 1,
+      "title": "Canonical 503/429 backpressure and bounded retries",
+      "depends_on": [
+        "P1-T12",
+        "P1-T18"
+      ],
+      "specs": [
+        "06_BACKPRESSURE_RETURN_TO_SENDER",
+        "04_CAPACITY_ADMISSION_SEATS"
+      ],
+      "features": [
+        "IW-BP-001"
+      ],
+      "context_class": "C65",
+      "outcome": "Infrastructure/capacity returns 503; user/FairShare policy returns 429; retry candidate/time budgets are bounded.",
+      "required_tests": [
+        "status mapping",
+        "retry metadata",
+        "no unbounded queue/retry loop"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T20",
+      "phase": 1,
+      "title": "Per-request performance/resource telemetry",
+      "depends_on": [
+        "P1-T05",
+        "P1-T10",
+        "P1-T12"
+      ],
+      "specs": [
+        "09_OBSERVABILITY_RECEIPTS",
+        "23_GLOBAL_TELEMETRY_BENCHMARKS"
+      ],
+      "features": [
+        "IW-OBS-001",
+        "IW-TEL-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Persist request attempt facts linked prompt\u2192route\u2192deployment\u2192GPU with TTFT/prefill/decode/cache/resource/power outcome.",
+      "required_tests": [
+        "correlation completeness",
+        "cancel/preemption facts",
+        "no prompt body in metrics"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T20A",
+      "phase": 1,
+      "title": "GPU/runtime watchdog detection and incident classification",
+      "depends_on": [
+        "P1-T05",
+        "P1-T06",
+        "P1-T20"
+      ],
+      "specs": [
+        "31_RESOURCE_HEALTH_QUARANTINE",
+        "36_GPU_WATCHDOG_RESCUE"
+      ],
+      "features": [
+        "IW-WATCH-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Node watchdog detects bounded GPU/backend/container/correctness incidents, drains uncertain resources and writes correlated lifecycle/telemetry events before further admission.",
+      "required_tests": [
+        "GPU reset fixture removes route eligibility",
+        "OOM-below-envelope incident",
+        "backend hung/stuck request",
+        "restart-loop counter",
+        "unsupported sensor not treated as zero"
+      ]
+    },
+    {
+      "id": "P1-T20B",
+      "phase": 1,
+      "title": "Bounded rescue ladder and automatic profile rollback",
+      "depends_on": [
+        "P1-T20A",
+        "P1-T12"
+      ],
+      "specs": [
+        "12_MODEL_TUNING_BENCHMARKS",
+        "36_GPU_WATCHDOG_RESCUE",
+        "37_CONTAINER_DEPLOYMENT_STANDARD"
+      ],
+      "features": [
+        "IW-WATCH-002"
+      ],
+      "context_class": "C85",
+      "outcome": "Watchdog performs least-destructive bounded rescue: request cleanup, backend restart, known-good profile rollback, Docker runtime recreation, optional policy-gated device recovery, then quarantine.",
+      "required_tests": [
+        "soft restart success",
+        "automatic rollback trigger matrix",
+        "previous image/model/env/cache preserved until success",
+        "Docker runtime recreate",
+        "bounded retry ends quarantine",
+        "no automatic host reboot default"
+      ]
+    },
+    {
+      "id": "P1-T21",
+      "phase": 1,
+      "title": "Live Next.js cluster/GPU/request dashboard",
+      "depends_on": [
+        "P0-T09",
+        "P1-T09",
+        "P1-T20"
+      ],
+      "specs": [
+        "10_DASHBOARD_PORTAL"
+      ],
+      "features": [
+        "IW-UI-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Display live nodes, GPUs, models, seats/context/KV, requests, route state and freshness.",
+      "required_tests": [
+        "UI E2E with deterministic fixtures",
+        "stale telemetry visible",
+        "no misleading pooled VRAM totals"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T22",
+      "phase": 1,
+      "title": "`init gateway` production container flow",
+      "depends_on": [
+        "P0-T07",
+        "P1-T02",
+        "P1-T21"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT",
+        "37_CONTAINER_DEPLOYMENT_STANDARD"
+      ],
+      "features": [
+        "IW-BOOT-002",
+        "IW-BOOT-003",
+        "IW-DEPLOY-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Fresh host can initialize gateway/web/Postgres/MCP-placeholder/telemetry stack, bootstrap admin/enrollment and verify health.",
+      "required_tests": [
+        "fresh VM/container E2E",
+        "second init idempotent",
+        "secret permissions"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T23",
+      "phase": 1,
+      "title": "`init node` production container flow",
+      "depends_on": [
+        "P0-T07",
+        "P1-T02",
+        "P1-T04",
+        "P1-T17"
+      ],
+      "specs": [
+        "20_NODE_AUTOCONFIG_DISCOVERY",
+        "28_BOOTSTRAP_INIT_CLIENT",
+        "37_CONTAINER_DEPLOYMENT_STANDARD"
+      ],
+      "features": [
+        "IW-BOOT-002",
+        "IW-BOOT-003",
+        "IW-NODE-002",
+        "IW-DEPLOY-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Fresh GPU host probes, enrolls, generates device-safe container config, connects, smoke-tests and displays stable IDs.",
+      "required_tests": [
+        "AMD real/simulated fixture",
+        "NVIDIA fixture",
+        "idempotent re-init",
+        "wrong GPU exposure blocked"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T24",
+      "phase": 1,
+      "title": "Two heterogeneous real-node vertical-slice E2E",
+      "depends_on": [
+        "P1-T19",
+        "P1-T20",
+        "P1-T21",
+        "P1-T22",
+        "P1-T23",
+        "P1-T20B"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "02_PROTOCOL_AND_API",
+        "04_CAPACITY_ADMISSION_SEATS",
+        "05_ROUTING_AFFINITY",
+        "08_CONNECTIVITY_DATA_PLANE"
+      ],
+      "features": [
+        "IW-CORE-001",
+        "IW-DP-003",
+        "IW-PROMPT-001"
+      ],
+      "context_class": "C95",
+      "outcome": "A real client submits a prompt, gateway routes, proxy streams directly from one of two heterogeneous GPU nodes, telemetry/prompt facts persist.",
+      "required_tests": [
+        "full E2E",
+        "model mismatch",
+        "context pressure",
+        "direct path byte assertion"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P1-T25",
+      "phase": 1,
+      "title": "Phase-1 soak, failure injection and independent review",
+      "depends_on": [
+        "P1-T24",
+        "P1-T20B"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "06_BACKPRESSURE_RETURN_TO_SENDER",
+        "09_OBSERVABILITY_RECEIPTS",
+        "16_SECURITY_PRIVACY_TRUST"
+      ],
+      "features": [],
+      "context_class": "C100",
+      "outcome": "Multi-hour mixed workload validates cancellation, node loss, stale telemetry, prompt durability and direct-path invariants.",
+      "required_tests": [
+        "soak",
+        "node crash",
+        "gateway restart",
+        "Postgres hiccup",
+        "review requirement matrix"
+      ],
+      "notes": "Review-only plus defect fixes; no Phase 2 features."
+    },
+    {
+      "id": "P2-T01",
+      "phase": 2,
+      "title": "Benchmark campaign/sample schemas and workload contracts",
+      "depends_on": [
+        "P1-T25"
+      ],
+      "specs": [
+        "12_MODEL_TUNING_BENCHMARKS",
+        "23_GLOBAL_TELEMETRY_BENCHMARKS",
+        "30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS"
+      ],
+      "features": [
+        "IW-BENCH-002",
+        "IW-WORK-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Define versioned benchmark campaign/run/sample and workload scheduling contracts.",
+      "required_tests": [
+        "schema roundtrip",
+        "versioned suite identifiers",
+        "duration/deadline validation"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T02",
+      "phase": 2,
+      "title": "Node benchmark runner and profile capture",
+      "depends_on": [
+        "P2-T01",
+        "P1-T06",
+        "P1-T20"
+      ],
+      "specs": [
+        "12_MODEL_TUNING_BENCHMARKS",
+        "23_GLOBAL_TELEMETRY_BENCHMARKS"
+      ],
+      "features": [
+        "IW-TUNE-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Run deterministic TTFT/prefill/decode/concurrency/context/cache/power benchmarks and persist exact launch profile.",
+      "required_tests": [
+        "cold/warm/cache cases",
+        "timeout/cleanup",
+        "profile fingerprint"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T03",
+      "phase": 2,
+      "title": "Global benchmark warehouse and rollups",
+      "depends_on": [
+        "P2-T02"
+      ],
+      "specs": [
+        "23_GLOBAL_TELEMETRY_BENCHMARKS"
+      ],
+      "features": [
+        "IW-BENCH-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Persist raw samples and dimensioned rollups by exact GPU/runtime/model/context/concurrency/settings fingerprint.",
+      "required_tests": [
+        "partition/rollup correctness",
+        "no universal TPS aggregation",
+        "retention test"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T04",
+      "phase": 2,
+      "title": "Model candidate registry and feasibility filter",
+      "depends_on": [
+        "P2-T03"
+      ],
+      "specs": [
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE"
+      ],
+      "features": [
+        "IW-REC-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Register immutable model/runtime/deployment candidates and statically reject impossible hardware/policy combinations.",
+      "required_tests": [
+        "VRAM/context feasibility",
+        "runtime support",
+        "license/policy filters"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T05",
+      "phase": 2,
+      "title": "Quality evaluation adapters",
+      "depends_on": [
+        "P2-T04"
+      ],
+      "specs": [
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE"
+      ],
+      "features": [
+        "IW-REC-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Versioned adapters record dataset/task/scorer versions and quality results without conflating performance.",
+      "required_tests": [
+        "deterministic fixture scorer",
+        "dataset revision persistence",
+        "failure classification"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T06",
+      "phase": 2,
+      "title": "Pi/AutoSpec real-workflow replay benchmark",
+      "depends_on": [
+        "P2-T05"
+      ],
+      "specs": [
+        "11_WORKBENCH_AUTOSPEC_PI",
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE"
+      ],
+      "features": [
+        "IW-REC-003",
+        "IW-AUTOSPEC-001"
+      ],
+      "context_class": "C90",
+      "outcome": "Replay representative planning/implementation/review/test/tool workflows and score task success/time/tokens/iterations/reviewer quality.",
+      "required_tests": [
+        "deterministic repo fixture",
+        "compile/test outcome capture",
+        "independent reviewer record"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T07",
+      "phase": 2,
+      "title": "Recommendation engine and evidence classes",
+      "depends_on": [
+        "P2-T03",
+        "P2-T05",
+        "P2-T06"
+      ],
+      "specs": [
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE"
+      ],
+      "features": [
+        "IW-REC-001",
+        "IW-REC-002"
+      ],
+      "context_class": "C85",
+      "outcome": "Produce workload-specific recommendations with measured_exact/equivalent/observed/predicted confidence and reproducible evidence.",
+      "required_tests": [
+        "predicted never labeled measured",
+        "exact evidence reconstruction",
+        "confidence downgrade"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T08",
+      "phase": 2,
+      "title": "Pareto frontier and next-experiment selection",
+      "depends_on": [
+        "P2-T07"
+      ],
+      "specs": [
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE"
+      ],
+      "features": [
+        "IW-REC-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Maintain multi-objective Pareto frontier and select high-value uncertain benchmark experiments.",
+      "required_tests": [
+        "domination tests",
+        "missing evidence priority",
+        "no single-score hidden override"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T09",
+      "phase": 2,
+      "title": "Requalification and regression gates",
+      "depends_on": [
+        "P2-T07",
+        "P1-T04"
+      ],
+      "specs": [
+        "12_MODEL_TUNING_BENCHMARKS",
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE"
+      ],
+      "features": [
+        "IW-TUNE-001",
+        "IW-REC-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Material hardware/software/model/settings changes invalidate/downgrade evidence and trigger smoke/full requalification.",
+      "required_tests": [
+        "driver change",
+        "model hash change",
+        "settings change",
+        "stable exact match reuse"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T10",
+      "phase": 2,
+      "title": "Resource lifecycle event log",
+      "depends_on": [
+        "P2-T01",
+        "P1-T20"
+      ],
+      "specs": [
+        "30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS"
+      ],
+      "features": [
+        "IW-EVENT-001"
+      ],
+      "context_class": "C65",
+      "outcome": "Persist append-oriented resource/allocation/deployment/health lifecycle events with correlation IDs.",
+      "required_tests": [
+        "state transition history",
+        "append/idempotency",
+        "query timeline"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T11",
+      "phase": 2,
+      "title": "Owner priority/reclaim/preemption",
+      "depends_on": [
+        "P2-T01",
+        "P1-T12",
+        "P2-T10"
+      ],
+      "specs": [
+        "07_FAIRSHARE_OWNER_PRIORITY",
+        "30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS"
+      ],
+      "features": [
+        "IW-QOS-002"
+      ],
+      "context_class": "C80",
+      "outcome": "Owner demand stops shared admissions and drains/preempts interruptible borrowed work until owner service is restored.",
+      "required_tests": [
+        "owner always wins property",
+        "non-owner cannot claim owner",
+        "preemption telemetry"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T12",
+      "phase": 2,
+      "title": "Hierarchical FairShare and anti-gaming",
+      "depends_on": [
+        "P2-T11"
+      ],
+      "specs": [
+        "07_FAIRSHARE_OWNER_PRIORITY"
+      ],
+      "features": [
+        "IW-QOS-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Implement org/team/user/app/key/session hierarchy, minimums/weights/borrowing/wait fairness and stable-parent anti-fanout.",
+      "required_tests": [
+        "fanout gaming test",
+        "borrowing/reclaim",
+        "starvation bound",
+        "shadow simulation"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T13",
+      "phase": 2,
+      "title": "API keys and routing preference policy",
+      "depends_on": [
+        "P0-T11",
+        "P2-T12"
+      ],
+      "specs": [
+        "02_PROTOCOL_AND_API",
+        "16_SECURITY_PRIVACY_TRUST"
+      ],
+      "features": [],
+      "context_class": "C70",
+      "outcome": "Issue scoped API keys and persist hard/soft routing preferences with explicit fallback permissions.",
+      "required_tests": [
+        "scope enforcement",
+        "hard preference failure",
+        "fallback disclosure"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T14",
+      "phase": 2,
+      "title": "Route preview and explainability",
+      "depends_on": [
+        "P2-T13",
+        "P1-T15",
+        "P2-T07"
+      ],
+      "specs": [
+        "05_ROUTING_AFFINITY",
+        "10_DASHBOARD_PORTAL"
+      ],
+      "features": [
+        "IW-ROUTE-001",
+        "IW-REC-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Preview candidate eligibility/scores/recommendation/fallback reasons without consuming a serving lease.",
+      "required_tests": [
+        "explanation reconstructs decision",
+        "privacy-safe reason data",
+        "no hidden hard relaxation"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T15",
+      "phase": 2,
+      "title": "Thin AutoSpec/Pi client integration",
+      "depends_on": [
+        "P2-T13",
+        "P1-T17",
+        "P2-T06"
+      ],
+      "specs": [
+        "11_WORKBENCH_AUTOSPEC_PI"
+      ],
+      "features": [
+        "IW-AUTOSPEC-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Expose stable task/session/workload IDs, local-proxy routing, cancellation, workload hints and telemetry correlation to Pi/AutoSpec.",
+      "required_tests": [
+        "session affinity",
+        "cancel release",
+        "workload class mapping",
+        "prompt correlation"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T16",
+      "phase": 2,
+      "title": "Internal deterministic contribution/usage ledger",
+      "depends_on": [
+        "P1-T20",
+        "P2-T12"
+      ],
+      "specs": [
+        "09_OBSERVABILITY_RECEIPTS",
+        "18_SOLANA_DEV_ACCOUNTING"
+      ],
+      "features": [
+        "IW-ECON-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Record verified useful-work facts independent of any blockchain; no prompt bodies in receipts.",
+      "required_tests": [
+        "reconciliation",
+        "duplicate prevention",
+        "content-free records"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T17",
+      "phase": 2,
+      "title": "Public-safe signed snapshot builder",
+      "depends_on": [
+        "P2-T03",
+        "P2-T16"
+      ],
+      "specs": [
+        "09_OBSERVABILITY_RECEIPTS",
+        "10_DASHBOARD_PORTAL"
+      ],
+      "features": [],
+      "context_class": "C70",
+      "outcome": "Build freshness-aware signed aggregate network snapshots without private addresses/users/prompts.",
+      "required_tests": [
+        "privacy fixture",
+        "stale state",
+        "signature verify"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T18",
+      "phase": 2,
+      "title": "Next.js GPU/benchmark/recommendation explorer",
+      "depends_on": [
+        "P2-T03",
+        "P2-T07",
+        "P2-T09"
+      ],
+      "specs": [
+        "10_DASHBOARD_PORTAL",
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE"
+      ],
+      "features": [
+        "IW-UI-002"
+      ],
+      "context_class": "C80",
+      "outcome": "Filter exact fingerprints, compare benchmark distributions/Pareto recommendations and show confidence/regressions.",
+      "required_tests": [
+        "UI E2E",
+        "measured/predicted labels",
+        "dimension filters"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T19",
+      "phase": 2,
+      "title": "Resumable benchmark DAG core",
+      "depends_on": [
+        "P2-T02",
+        "P2-T08"
+      ],
+      "specs": [
+        "33_RESUMABLE_BENCHMARK_DAG"
+      ],
+      "features": [
+        "IW-BENCH-003"
+      ],
+      "context_class": "C75",
+      "outcome": "Break campaigns into immutable leaseable leaves whose completed samples survive worker loss/preemption.",
+      "required_tests": [
+        "lease expiry/reschedule",
+        "completed leaf not rerun",
+        "partial confidence"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T20",
+      "phase": 2,
+      "title": "Cluster simulator protocol skeleton",
+      "depends_on": [
+        "P1-T25",
+        "P2-T10"
+      ],
+      "specs": [
+        "35_CLUSTER_SIMULATOR_CHAOS"
+      ],
+      "features": [
+        "IW-SIM-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Synthetic nodes use real protocol to simulate identities/capacity/latency/churn with deterministic seeds.",
+      "required_tests": [
+        "1k join smoke",
+        "reproducible seed",
+        "stale lease invariant"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T21",
+      "phase": 2,
+      "title": "10k churn/chaos scenarios and invariant checks",
+      "depends_on": [
+        "P2-T20",
+        "P2-T12",
+        "P2-T19"
+      ],
+      "specs": [
+        "35_CLUSTER_SIMULATOR_CHAOS"
+      ],
+      "features": [
+        "IW-SIM-001"
+      ],
+      "context_class": "C95",
+      "outcome": "Exercise 10k ephemeral workers, mass expiry, duplicate identities, cache storms, failures and demand shifts.",
+      "required_tests": [
+        "10k scenario",
+        "mass disconnect",
+        "duplicate authoritative lease prevention",
+        "bounded queues"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P2-T22",
+      "phase": 2,
+      "title": "Phase-2 private-alpha review and qualification",
+      "depends_on": [
+        "P2-T07",
+        "P2-T12",
+        "P2-T15",
+        "P2-T18",
+        "P2-T19",
+        "P2-T21"
+      ],
+      "specs": [
+        "12_MODEL_TUNING_BENCHMARKS",
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE",
+        "07_FAIRSHARE_OWNER_PRIORITY"
+      ],
+      "features": [],
+      "context_class": "C100",
+      "outcome": "Independent review verifies recommendations are evidence-based, owner/FairShare correct, AutoSpec works and simulator covers invariants.",
+      "required_tests": [
+        "full private-alpha E2E",
+        "benchmark reproducibility",
+        "requirement coverage review"
+      ],
+      "notes": "Review-only; fix defects before Phase 3."
+    },
+    {
+      "id": "P3-T01",
+      "phase": 3,
+      "title": "Persistent site connector identity and control channel",
+      "depends_on": [
+        "P2-T22",
+        "P1-T03"
+      ],
+      "specs": [
+        "27_SITE_CONNECTOR_ARTIFACT_CACHE",
+        "26_RESOURCE_IDENTITY_REDISCOVERY"
+      ],
+      "features": [
+        "IW-SITE-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Implement persistent non-GPU site connector with provider/cluster identity and resilient control connection.",
+      "required_tests": [
+        "restart/reconnect",
+        "multi-connector instance IDs",
+        "zero-GPU site"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T02",
+      "phase": 3,
+      "title": "Hierarchical content-addressed artifact cache",
+      "depends_on": [
+        "P3-T01",
+        "P1-T06"
+      ],
+      "specs": [
+        "27_SITE_CONNECTOR_ARTIFACT_CACHE"
+      ],
+      "features": [
+        "IW-CACHE-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Implement immutable digest inventory, resumable fetch, verification, corruption quarantine and host/site/upstream lookup.",
+      "required_tests": [
+        "partial resume",
+        "hash mismatch",
+        "eviction/disk pressure",
+        "no gateway byte path by default"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T03",
+      "phase": 3,
+      "title": "Gateway desired-deployment assignment negotiation",
+      "depends_on": [
+        "P3-T02",
+        "P2-T07"
+      ],
+      "specs": [
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "25_SLURM_EPHEMERAL_PROVIDER_NODES"
+      ],
+      "features": [
+        "IW-SLURM-003"
+      ],
+      "context_class": "C80",
+      "outcome": "Worker offers resources/cache/lifetime; gateway assigns immutable deployment; worker estimates/accepts/rejects and reports warm readiness.",
+      "required_tests": [
+        "short lifetime rejection",
+        "cache-aware assignment",
+        "failed warm rollback"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T04",
+      "phase": 3,
+      "title": "Generic external scheduler adapter",
+      "depends_on": [
+        "P3-T01"
+      ],
+      "specs": [
+        "25_SLURM_EPHEMERAL_PROVIDER_NODES"
+      ],
+      "features": [
+        "IW-SCHED-001"
+      ],
+      "context_class": "C70",
+      "outcome": "Define scheduler-neutral allocation/resource lifecycle interface; Slurm-specific logic stays behind adapter.",
+      "required_tests": [
+        "fake scheduler adapter",
+        "allocation lifecycle contract",
+        "no core Slurm types leak"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T05",
+      "phase": 3,
+      "title": "Slurm allocation identity and worker registration",
+      "depends_on": [
+        "P3-T04",
+        "P1-T01",
+        "P3-T01"
+      ],
+      "specs": [
+        "25_SLURM_EPHEMERAL_PROVIDER_NODES",
+        "26_RESOURCE_IDENTITY_REDISCOVERY"
+      ],
+      "features": [
+        "IW-SLURM-001",
+        "IW-SLURM-002"
+      ],
+      "context_class": "C85",
+      "outcome": "Allocation-scoped worker exposes only allocated GPUs and resolves stable host/GPU history plus temporary allocation/worker IDs.",
+      "required_tests": [
+        "same GPU later same stable ID",
+        "replacement GPU new generation",
+        "array/requeue identity",
+        "allocated-only GPU visibility"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T06",
+      "phase": 3,
+      "title": "Slurm deadline/preemption drain",
+      "depends_on": [
+        "P3-T05",
+        "P3-T03",
+        "P2-T01"
+      ],
+      "specs": [
+        "25_SLURM_EPHEMERAL_PROVIDER_NODES",
+        "30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS"
+      ],
+      "features": [
+        "IW-SLURM-004"
+      ],
+      "context_class": "C75",
+      "outcome": "Reservation expiry/signals transition to DRAINING, stop admission, flush telemetry/results and disconnect cleanly.",
+      "required_tests": [
+        "preemption signal",
+        "normal expiry not fault",
+        "deadline-aware no-new-session"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T07",
+      "phase": 3,
+      "title": "Slurm opportunistic benchmark execution",
+      "depends_on": [
+        "P3-T06",
+        "P2-T19",
+        "P2-T08"
+      ],
+      "specs": [
+        "25_SLURM_EPHEMERAL_PROVIDER_NODES",
+        "33_RESUMABLE_BENCHMARK_DAG"
+      ],
+      "features": [
+        "IW-SLURM-005"
+      ],
+      "context_class": "C75",
+      "outcome": "Spare allocation time executes recommended benchmark leaves that fit remaining safe lifetime.",
+      "required_tests": [
+        "preempt/resume",
+        "setup+case time budget",
+        "completed leaves retained"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T08",
+      "phase": 3,
+      "title": "Site relay and direct-connect integration",
+      "depends_on": [
+        "P3-T01",
+        "P1-T18"
+      ],
+      "specs": [
+        "27_SITE_CONNECTOR_ARTIFACT_CACHE",
+        "08_CONNECTIVITY_DATA_PLANE"
+      ],
+      "features": [
+        "IW-DP-002",
+        "IW-SITE-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Site connector serves rendezvous/relay fallback before regional/gateway relay while preserving direct preference.",
+      "required_tests": [
+        "HPC no-inbound fixture",
+        "fallback order",
+        "byte accounting"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T09",
+      "phase": 3,
+      "title": "`init site` and Slurm discovery",
+      "depends_on": [
+        "P0-T07",
+        "P3-T01",
+        "P3-T04"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT",
+        "27_SITE_CONNECTOR_ARTIFACT_CACHE",
+        "25_SLURM_EPHEMERAL_PROVIDER_NODES",
+        "37_CONTAINER_DEPLOYMENT_STANDARD"
+      ],
+      "features": [
+        "IW-BOOT-002",
+        "IW-SITE-001",
+        "IW-DEPLOY-001"
+      ],
+      "context_class": "C85",
+      "outcome": "CLI detects Slurm/cluster/shared cache/network and installs persistent connector safely.",
+      "required_tests": [
+        "Slurm fixture",
+        "no-Slurm blocker",
+        "idempotent init",
+        "shared path permissions"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T10",
+      "phase": 3,
+      "title": "`init slurm-worker` allocation-scoped flow",
+      "depends_on": [
+        "P3-T05",
+        "P3-T06",
+        "P3-T09"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT",
+        "25_SLURM_EPHEMERAL_PROVIDER_NODES",
+        "37_CONTAINER_DEPLOYMENT_STANDARD"
+      ],
+      "features": [
+        "IW-SLURM-001",
+        "IW-BOOT-002",
+        "IW-DEPLOY-002"
+      ],
+      "context_class": "C80",
+      "outcome": "One command inside a Slurm allocation launches the worker/runtime under Apptainer, obtains short-lived credentials, registers only allocated GPUs, receives deployment, serves/benchmarks and drains without Docker.",
+      "required_tests": [
+        "allocation E2E",
+        "credential expiry",
+        "requeue/restart"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T11",
+      "phase": 3,
+      "title": "Edge node role and container init",
+      "depends_on": [
+        "P1-T18",
+        "P3-T02",
+        "P0-T07"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT",
+        "27_SITE_CONNECTOR_ARTIFACT_CACHE",
+        "37_CONTAINER_DEPLOYMENT_STANDARD"
+      ],
+      "features": [
+        "IW-BOOT-002",
+        "IW-DEPLOY-001"
+      ],
+      "context_class": "C75",
+      "outcome": "`init edge` composes approved relay/cache/rendezvous/API-edge capabilities without requiring GPU.",
+      "required_tests": [
+        "capability combinations",
+        "no accidental GPU dependency",
+        "idempotent init"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T12",
+      "phase": 3,
+      "title": "PromptStore object-storage tiering",
+      "depends_on": [
+        "P1-T07",
+        "P2-T22"
+      ],
+      "specs": [
+        "34_PROMPT_STORE_TIERING"
+      ],
+      "features": [
+        "IW-PROMPT-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Large encrypted prompt payloads can live in object storage while PostgreSQL retains authoritative metadata/locator/hash/audit.",
+      "required_tests": [
+        "inline\u2192object threshold",
+        "object unavailable submission semantics",
+        "authorized short-lived read"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T13",
+      "phase": 3,
+      "title": "Resource health baseline and degradation detector",
+      "depends_on": [
+        "P2-T03",
+        "P2-T10"
+      ],
+      "specs": [
+        "31_RESOURCE_HEALTH_QUARANTINE"
+      ],
+      "features": [
+        "IW-HEALTH-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Compare each GPU against own history and peer-class exact fingerprints using robust minimum-sample rules.",
+      "required_tests": [
+        "single outlier ignored",
+        "sustained regression detected",
+        "unlike workload excluded"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T14",
+      "phase": 3,
+      "title": "Quarantine, diagnostics and recovery canaries",
+      "depends_on": [
+        "P3-T13",
+        "P2-T09"
+      ],
+      "specs": [
+        "31_RESOURCE_HEALTH_QUARANTINE"
+      ],
+      "features": [
+        "IW-HEALTH-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Implement HEALTHY\u2192SUSPECT\u2192DEGRADED\u2192DIAGNOSTIC\u2192QUARANTINED\u2192RECOVERING state and bounded recovery qualification.",
+      "required_tests": [
+        "quarantine no shared traffic",
+        "canary recovery",
+        "owner warning"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T15",
+      "phase": 3,
+      "title": "Demand forecasting and explainable pre-staging",
+      "depends_on": [
+        "P2-T07",
+        "P3-T02",
+        "P3-T03"
+      ],
+      "specs": [
+        "32_DEMAND_FORECASTING_PRESTAGING"
+      ],
+      "features": [
+        "IW-FORECAST-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Transparent seasonal/window demand forecasts drive artifact pre-stage/residency suggestions without overriding hard constraints.",
+      "required_tests": [
+        "forecast reproducibility",
+        "hard constraint precedence",
+        "explanation record"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T16",
+      "phase": 3,
+      "title": "Control-plane MCP read server",
+      "depends_on": [
+        "P2-T14",
+        "P2-T18",
+        "P0-T11"
+      ],
+      "specs": [
+        "29_MCP_SERVERS"
+      ],
+      "features": [
+        "IW-MCP-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Expose typed authenticated read resources/tools for cluster, GPU, model, routes, benchmarks, capacity, health and history.",
+      "required_tests": [
+        "scope enforcement",
+        "stateless instance test",
+        "schema discovery",
+        "no generic shell"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T17",
+      "phase": 3,
+      "title": "Local node/site diagnostic MCP",
+      "depends_on": [
+        "P3-T16",
+        "P0-T04",
+        "P3-T01"
+      ],
+      "specs": [
+        "29_MCP_SERVERS"
+      ],
+      "features": [
+        "IW-MCP-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Local MCP exposes bounded host/GPU/runtime/cache/connectivity diagnostics backed by canonical probe APIs.",
+      "required_tests": [
+        "local-only binding default",
+        "secret redaction",
+        "typed diagnostics"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T18",
+      "phase": 3,
+      "title": "MCP controlled operations and audit",
+      "depends_on": [
+        "P3-T16",
+        "P3-T17"
+      ],
+      "specs": [
+        "29_MCP_SERVERS",
+        "16_SECURITY_PRIVACY_TRUST"
+      ],
+      "features": [
+        "IW-MCP-001",
+        "IW-MCP-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Add scoped enrollment/reprobe/deployment/drain/benchmark actions with audit and no unrestricted host execution.",
+      "required_tests": [
+        "unauthorized mutation",
+        "audit trail",
+        "prompt content scope"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T18A",
+      "phase": 3,
+      "title": "Watchdog operator rescue via CLI/dashboard/MCP",
+      "depends_on": [
+        "P1-T20B",
+        "P3-T14",
+        "P3-T18"
+      ],
+      "specs": [
+        "10_DASHBOARD_PORTAL",
+        "29_MCP_SERVERS",
+        "36_GPU_WATCHDOG_RESCUE"
+      ],
+      "features": [
+        "IW-WATCH-003"
+      ],
+      "context_class": "C80",
+      "outcome": "Authorized operators can inspect incident history, diagnose, request bounded rescue/rollback/recreate/quarantine and verify recovery through CLI, Next.js and typed MCP tools.",
+      "required_tests": [
+        "read-only status scope",
+        "destructive rescue authorization",
+        "audit record",
+        "quarantine UI",
+        "MCP cannot expose arbitrary host control"
+      ]
+    },
+    {
+      "id": "P3-T19",
+      "phase": 3,
+      "title": "AI copy/paste installer acceptance flow",
+      "depends_on": [
+        "P1-T22",
+        "P1-T23",
+        "P3-T09",
+        "P3-T11",
+        "P3-T16",
+        "P3-T18A"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT",
+        "29_MCP_SERVERS"
+      ],
+      "features": [
+        "IW-BOOT-001",
+        "IW-BOOT-002",
+        "IW-BOOT-004"
+      ],
+      "context_class": "C90",
+      "outcome": "A shell-capable AI can follow docs/AI_INSTALL_INFERWEAVE.md and complete gateway/node/site/edge setup using only structured CLI operations.",
+      "required_tests": [
+        "clean VM scripted acceptance",
+        "no secret in transcript",
+        "blocking issue explanation"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T20",
+      "phase": 3,
+      "title": "Update/backup/restore operational lifecycle",
+      "depends_on": [
+        "P3-T19",
+        "P3-T12"
+      ],
+      "specs": [
+        "28_BOOTSTRAP_INIT_CLIENT",
+        "16_SECURITY_PRIVACY_TRUST"
+      ],
+      "features": [],
+      "context_class": "C80",
+      "outcome": "Implement signed update plan, DB compatibility check, backup/checkpoint, verification and supported rollback/restore.",
+      "required_tests": [
+        "failed update rollback",
+        "backup restore",
+        "version skew detection"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T21",
+      "phase": 3,
+      "title": "Production Slurm/site E2E and reconnect history",
+      "depends_on": [
+        "P3-T07",
+        "P3-T08",
+        "P3-T10",
+        "P3-T14"
+      ],
+      "specs": [
+        "25_SLURM_EPHEMERAL_PROVIDER_NODES",
+        "26_RESOURCE_IDENTITY_REDISCOVERY",
+        "27_SITE_CONNECTOR_ARTIFACT_CACHE"
+      ],
+      "features": [
+        "IW-SLURM-001",
+        "IW-SLURM-002",
+        "IW-SLURM-003",
+        "IW-SLURM-004",
+        "IW-SLURM-005"
+      ],
+      "context_class": "C95",
+      "outcome": "Same physical Slurm GPU appears across multiple reservations, reuses history/cache/recommendation, serves/benchmarks, drains and reconnects safely.",
+      "required_tests": [
+        "multi-allocation E2E",
+        "software change requalifies",
+        "cache reuse",
+        "preemption"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P3-T22",
+      "phase": 3,
+      "title": "Phase-3 operational/security review",
+      "depends_on": [
+        "P3-T21",
+        "P3-T19",
+        "P3-T20",
+        "P3-T18A"
+      ],
+      "specs": [
+        "16_SECURITY_PRIVACY_TRUST",
+        "28_BOOTSTRAP_INIT_CLIENT",
+        "29_MCP_SERVERS"
+      ],
+      "features": [],
+      "context_class": "C100",
+      "outcome": "Independent review verifies enrollment, containers, MCP scopes, Slurm lifecycle, caches, prompt tiering and operational recovery.",
+      "required_tests": [
+        "security negative tests",
+        "fresh installs",
+        "Slurm/site soak",
+        "requirement review"
+      ],
+      "notes": "Review-only."
+    },
+    {
+      "id": "P4-T01",
+      "phase": 4,
+      "title": "Durable async job/event/lease state machine",
+      "depends_on": [
+        "P3-T22"
+      ],
+      "specs": [
+        "15_ASYNC_JOBS_ARTIFACTS"
+      ],
+      "features": [
+        "IW-JOB-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Implement restart-safe durable job lifecycle, idempotency, leases/fencing, cancellation and sequenced events.",
+      "required_tests": [
+        "restart recovery",
+        "duplicate submit",
+        "lease fencing",
+        "cancel"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T02",
+      "phase": 4,
+      "title": "Artifact metadata/grants and direct transfer",
+      "depends_on": [
+        "P4-T01",
+        "P3-T02"
+      ],
+      "specs": [
+        "15_ASYNC_JOBS_ARTIFACTS",
+        "08_CONNECTIVITY_DATA_PLANE"
+      ],
+      "features": [
+        "IW-JOB-001"
+      ],
+      "context_class": "C75",
+      "outcome": "Manage checksummed artifacts and short-lived grants while keeping large bytes off gateway path.",
+      "required_tests": [
+        "resumable transfer",
+        "checksum failure",
+        "grant expiry"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T03",
+      "phase": 4,
+      "title": "Workbench session/history core",
+      "depends_on": [
+        "P4-T01",
+        "P2-T15"
+      ],
+      "specs": [
+        "11_WORKBENCH_AUTOSPEC_PI"
+      ],
+      "features": [
+        "IW-WB-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Next.js Workbench stores persistent conversations/session metadata and attaches/resumes without owning Pi execution.",
+      "required_tests": [
+        "session persist/resume",
+        "tenant isolation",
+        "route metadata display"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T04",
+      "phase": 4,
+      "title": "Workbench fork/split/files/rendering",
+      "depends_on": [
+        "P4-T03",
+        "P4-T02"
+      ],
+      "specs": [
+        "11_WORKBENCH_AUTOSPEC_PI"
+      ],
+      "features": [
+        "IW-WB-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Implement branch/fork, artifact/file views and safe Markdown/HTML/YAML/XML/JSON/code rendering/download.",
+      "required_tests": [
+        "fork lineage",
+        "unsafe HTML sandboxing",
+        "large file behavior"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T05",
+      "phase": 4,
+      "title": "Workbench coding/review and tool UX",
+      "depends_on": [
+        "P4-T04",
+        "P3-T16"
+      ],
+      "specs": [
+        "11_WORKBENCH_AUTOSPEC_PI",
+        "29_MCP_SERVERS"
+      ],
+      "features": [
+        "IW-WB-001",
+        "IW-TOOL-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Display diffs/reviews/context/capacity and permission-aware MCP/tool catalog/invocation.",
+      "required_tests": [
+        "permission prompts",
+        "tool result provenance",
+        "diff rendering"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T06",
+      "phase": 4,
+      "title": "CI/build history and Pi review records",
+      "depends_on": [
+        "P2-T15",
+        "P4-T03"
+      ],
+      "specs": [
+        "19_CI_CD_LIVING_SPECS"
+      ],
+      "features": [
+        "IW-CI-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Persist builds, current/history/logs/tests/coverage/artifacts/Pi reviews/requirement mappings/changelog/spec evolution.",
+      "required_tests": [
+        "build ingestion",
+        "history UI",
+        "review provenance"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T07",
+      "phase": 4,
+      "title": "Agentic RAG retrieval contracts and provenance",
+      "depends_on": [
+        "P4-T01",
+        "P2-T15"
+      ],
+      "specs": [
+        "13_RAG_TOOLS_LSP"
+      ],
+      "features": [
+        "IW-RAG-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Implement versioned retrieval bundles across lexical/vector/symbol/files/git/docs with provenance/confidence/tenant isolation.",
+      "required_tests": [
+        "tenant isolation",
+        "provenance completeness",
+        "deterministic context bundle"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T08",
+      "phase": 4,
+      "title": "LSP/MCP/tool capability broker",
+      "depends_on": [
+        "P4-T07",
+        "P3-T16"
+      ],
+      "specs": [
+        "13_RAG_TOOLS_LSP"
+      ],
+      "features": [
+        "IW-LSP-001",
+        "IW-TOOL-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Broker self-hosted LSP and typed tool capabilities separately from LLM serving; no arbitrary public shell.",
+      "required_tests": [
+        "capability discovery",
+        "permission isolation",
+        "LSP lifecycle"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T09",
+      "phase": 4,
+      "title": "Embeddings/rerank/vision deployment capabilities",
+      "depends_on": [
+        "P1-T06",
+        "P4-T07"
+      ],
+      "specs": [
+        "13_RAG_TOOLS_LSP",
+        "02_PROTOCOL_AND_API"
+      ],
+      "features": [],
+      "context_class": "C80",
+      "outcome": "Extend immutable deployment/capacity/routing model to embeddings, rerank and vision capabilities.",
+      "required_tests": [
+        "capability routing",
+        "model mismatch",
+        "resource accounting"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T10",
+      "phase": 4,
+      "title": "Image deployment manifests and compatible/native APIs",
+      "depends_on": [
+        "P4-T01",
+        "P4-T09"
+      ],
+      "specs": [
+        "14_IMAGE_GENERATION"
+      ],
+      "features": [
+        "IW-IMG-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Implement immutable full image pipeline deployment, compatible images endpoint and durable native async job API.",
+      "required_tests": [
+        "manifest pinning",
+        "job restart",
+        "policy/license routing"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T11",
+      "phase": 4,
+      "title": "Image direct artifact data plane and resource accounting",
+      "depends_on": [
+        "P4-T10",
+        "P4-T02"
+      ],
+      "specs": [
+        "14_IMAGE_GENERATION",
+        "15_ASYNC_JOBS_ARTIFACTS"
+      ],
+      "features": [
+        "IW-IMG-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Input/output image bytes use direct/object/regional path; accounting uses pixels/steps/GPU time/energy.",
+      "required_tests": [
+        "gateway bypass",
+        "cancel",
+        "artifact checksum/provenance"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T12",
+      "phase": 4,
+      "title": "Deterministic technical annotation + vision QA",
+      "depends_on": [
+        "P4-T11"
+      ],
+      "specs": [
+        "14_IMAGE_GENERATION"
+      ],
+      "features": [
+        "IW-IMG-002"
+      ],
+      "context_class": "C85",
+      "outcome": "Two-stage generation\u2192grounding/segmentation\u2192deterministic annotation with exact labels/arrows and QA failure on low confidence.",
+      "required_tests": [
+        "label spelling",
+        "no clipping/overlap",
+        "low-confidence fail",
+        "seed provenance"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P4-T13",
+      "phase": 4,
+      "title": "Optional bounded public playground behind decision gate",
+      "depends_on": [
+        "P4-T05",
+        "P4-T12"
+      ],
+      "specs": [
+        "10_DASHBOARD_PORTAL",
+        "16_SECURITY_PRIVACY_TRUST"
+      ],
+      "features": [
+        "IW-PUBLIC-001"
+      ],
+      "context_class": "C70",
+      "outcome": "If explicitly approved, implement anonymous text-only trial with tight quotas/circuit breakers/owner reserve and no tools/files/images.",
+      "required_tests": [
+        "global circuit breaker",
+        "abuse limits",
+        "owner reserve"
+      ],
+      "notes": "Decision-gated; skip unless D-018 is approved."
+    },
+    {
+      "id": "P4-T14",
+      "phase": 4,
+      "title": "Phase-4 capability/UX review",
+      "depends_on": [
+        "P4-T06",
+        "P4-T08",
+        "P4-T12"
+      ],
+      "specs": [
+        "11_WORKBENCH_AUTOSPEC_PI",
+        "13_RAG_TOOLS_LSP",
+        "14_IMAGE_GENERATION",
+        "19_CI_CD_LIVING_SPECS"
+      ],
+      "features": [],
+      "context_class": "C100",
+      "outcome": "Independent review validates Workbench boundaries, jobs/artifacts, tools/RAG, image pipeline and CI living-spec behavior.",
+      "required_tests": [
+        "E2E Workbench",
+        "tool security",
+        "image 72h mixed soak where hardware available",
+        "spec verification"
+      ],
+      "notes": "Review-only."
+    },
+    {
+      "id": "P5-T01",
+      "phase": 5,
+      "title": "Multi-gateway stateless control services",
+      "depends_on": [
+        "P4-T14"
+      ],
+      "specs": [
+        "17_SCALING_HA_REGIONS"
+      ],
+      "features": [
+        "IW-SCALE-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Remove single-instance assumptions from gateway/API/MCP and establish shared state/freshness semantics.",
+      "required_tests": [
+        "two-gateway failover",
+        "sticky control not required",
+        "concurrent route decisions"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P5-T02",
+      "phase": 5,
+      "title": "Regional presence/sharded telemetry ingestion",
+      "depends_on": [
+        "P5-T01",
+        "P2-T03"
+      ],
+      "specs": [
+        "17_SCALING_HA_REGIONS"
+      ],
+      "features": [
+        "IW-SCALE-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Shard presence/telemetry/snapshot ingestion by region with TTLs, compact deltas and aggregation.",
+      "required_tests": [
+        "regional partition",
+        "stale expiry",
+        "aggregation correctness"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P5-T03",
+      "phase": 5,
+      "title": "Regional relay failover and routing locality",
+      "depends_on": [
+        "P5-T02",
+        "P3-T08"
+      ],
+      "specs": [
+        "17_SCALING_HA_REGIONS",
+        "08_CONNECTIVITY_DATA_PLANE"
+      ],
+      "features": [
+        "IW-SCALE-001",
+        "IW-DP-002"
+      ],
+      "context_class": "C80",
+      "outcome": "Select/health regional relays and fail over without making central gateway the data bottleneck.",
+      "required_tests": [
+        "relay loss",
+        "WAN locality",
+        "byte ratio SLO"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P5-T04",
+      "phase": 5,
+      "title": "Federation/coordinator hierarchy",
+      "depends_on": [
+        "P5-T02"
+      ],
+      "specs": [
+        "21_FEDERATION_ROLES"
+      ],
+      "features": [
+        "IW-FED-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Implement provider/intermediate coordinator/subscription gateway/relay hierarchy with no cycles/duplicate accounting.",
+      "required_tests": [
+        "cycle rejection",
+        "backup parent",
+        "dedup lineage"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P5-T05",
+      "phase": 5,
+      "title": "Node/deployment challenge and verification bands",
+      "depends_on": [
+        "P2-T09",
+        "P5-T04"
+      ],
+      "specs": [
+        "16_SECURITY_PRIVACY_TRUST",
+        "21_FEDERATION_ROLES"
+      ],
+      "features": [
+        "IW-VERIFY-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Add challenge/verification/reliability bands so self-reported performance alone cannot establish trust.",
+      "required_tests": [
+        "challenge failure quarantine",
+        "verification expiry",
+        "no prompt disclosure"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P5-T06",
+      "phase": 5,
+      "title": "Million-node public snapshot/query scale simulation",
+      "depends_on": [
+        "P5-T02",
+        "P2-T21"
+      ],
+      "specs": [
+        "17_SCALING_HA_REGIONS",
+        "35_CLUSTER_SIMULATOR_CHAOS"
+      ],
+      "features": [
+        "IW-SCALE-001",
+        "IW-SIM-001"
+      ],
+      "context_class": "C95",
+      "outcome": "Simulate large sharded presence, faceted pagination/deltas and verify browser/control APIs remain bounded.",
+      "required_tests": [
+        "1M synthetic summary test",
+        "pagination/delta correctness",
+        "regional failure"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P5-T07",
+      "phase": 5,
+      "title": "Cross-region security/privacy review",
+      "depends_on": [
+        "P5-T03",
+        "P5-T05"
+      ],
+      "specs": [
+        "16_SECURITY_PRIVACY_TRUST",
+        "17_SCALING_HA_REGIONS"
+      ],
+      "features": [],
+      "context_class": "C95",
+      "outcome": "Review credentials, tenant isolation, public snapshots, relay trust and private-address/prompt leakage across regions.",
+      "required_tests": [
+        "penetration-style negative suite",
+        "privacy fixture",
+        "credential rotation"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P5-T08",
+      "phase": 5,
+      "title": "Federated production soak and chaos",
+      "depends_on": [
+        "P5-T04",
+        "P5-T06",
+        "P5-T07"
+      ],
+      "specs": [
+        "17_SCALING_HA_REGIONS",
+        "21_FEDERATION_ROLES",
+        "35_CLUSTER_SIMULATOR_CHAOS"
+      ],
+      "features": [],
+      "context_class": "C100",
+      "outcome": "Long-running regional/federated chaos validates routing, accounting, direct paths, owner priority and recovery.",
+      "required_tests": [
+        "multi-region soak",
+        "coordinator failure",
+        "mass churn",
+        "accounting reconciliation"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "P5-T09",
+      "phase": 5,
+      "title": "Final requirements/spec conformance audit",
+      "depends_on": [
+        "P5-T08"
+      ],
+      "specs": [
+        "00_INVARIANTS"
+      ],
+      "features": [],
+      "context_class": "C100",
+      "outcome": "Map every required feature and acceptance criterion to passing evidence, current docs and operational ownership.",
+      "required_tests": [
+        "feature registry complete",
+        "AC matrix complete",
+        "no orphan required feature"
+      ],
+      "notes": "Independent spec-verifier role."
+    },
+    {
+      "id": "P5-T10",
+      "phase": 5,
+      "title": "Production-readiness release gate",
+      "depends_on": [
+        "P5-T09"
+      ],
+      "specs": [
+        "16_SECURITY_PRIVACY_TRUST",
+        "19_CI_CD_LIVING_SPECS",
+        "28_BOOTSTRAP_INIT_CLIENT"
+      ],
+      "features": [],
+      "context_class": "C100",
+      "outcome": "Produce signed release manifest, deployment docs, backups/rollback, known limitations and go/no-go evidence.",
+      "required_tests": [
+        "clean install",
+        "upgrade rollback",
+        "disaster restore",
+        "release manifest"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "D-T01",
+      "phase": "deferred",
+      "title": "Optional development settlement adapter",
+      "depends_on": [
+        "P5-T10"
+      ],
+      "specs": [
+        "18_SOLANA_DEV_ACCOUNTING"
+      ],
+      "features": [
+        "IW-ECON-002"
+      ],
+      "context_class": "C70",
+      "outcome": "Only after explicit owner reactivation: implement replaceable local/devnet settlement adapter without making inference depend on it.",
+      "required_tests": [
+        "settlement unavailable inference continues",
+        "no mainnet config"
+      ],
+      "notes": "Do not schedule until explicitly reopened."
+    }
+  ]
+}

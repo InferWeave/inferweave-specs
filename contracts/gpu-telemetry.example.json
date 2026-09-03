@@ -1,0 +1,36 @@
+{
+  "schema_version": "inferweave.gpu-telemetry/v1",
+  "at": "2026-09-03T00:00:00Z",
+  "node_id": "node_internal_example",
+  "gpu_id": "gpu_internal_example",
+  "hardware_fingerprint": "hw_sha256_example",
+  "software_fingerprint": "sw_sha256_example",
+  "deployment_fingerprint": "dep_example",
+  "gpu": {
+    "vendor": "amd",
+    "model": "Radeon AI PRO R9700",
+    "architecture": "gfx1201",
+    "vram_total_bytes": 34359738368,
+    "pcie_generation": 5,
+    "pcie_width": 16
+  },
+  "runtime": {
+    "rocm_version": "EXACT",
+    "vulkan_version": "EXACT",
+    "backend": "EXACT",
+    "backend_version": "EXACT",
+    "container_digest": "sha256:REPLACE",
+    "model_revision": "IMMUTABLE",
+    "quantization": "EXACT",
+    "kv_precision": "EXACT"
+  },
+  "live": {
+    "temperature_c": 0,
+    "power_w": 0,
+    "gpu_utilization_pct": 0,
+    "vram_used_bytes": 0,
+    "core_clock_mhz": 0,
+    "memory_clock_mhz": 0,
+    "throttling": false
+  }
+}
