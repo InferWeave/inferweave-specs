@@ -1,0 +1,27 @@
+{
+  "_comment": "Maps OpenAI POST /v1/images/generations onto a CONSTRAINED server-side workflow template (specs/14_IMAGE_GENERATION.md, specs/02_PROTOCOL_AND_API.md). Standard OpenAI clients use only the top-level bindings; InferWeave-specific fields ride in the optional `inferweave` request object or documented headers so stock SDKs never break. Public clients never submit workflow graphs; only the named template and these bound inputs are accepted.",
+  "schema_version": "inferweave.image-binding/v1",
+  "template": "z_image_turbo/text_to_image",
+  "deployment_ref": "dep_zimage_turbo_example",
+  "openai_endpoint": "/v1/images/generations",
+  "bindings": {
+    "prompt": { "target": "positive_text", "required": true },
+    "n": { "target": "batch_size", "default": 1, "max": 4 },
+    "size": { "target": ["width", "height"], "parse": "WxH", "default": "1024x1024" },
+    "response_format": { "values": ["b64_json", "url"], "default": "b64_json" }
+  },
+  "inferweave_extensions": {
+    "_comment": "Supplied via the `inferweave` request object or X-InferWeave-* headers.",
+    "negative_prompt": { "target": "negative_text", "default": "" },
+    "steps": { "target": "ksampler.steps", "default": 8, "range": [4, 20] },
+    "seed": { "target": "ksampler.seed", "default": "random" },
+    "guidance": { "target": "ksampler.cfg", "default": 1.0 }
+  },
+  "artifact_metadata": [
+    "checksum",
+    "seed",
+    "settings",
+    "deployment_id",
+    "license"
+  ]
+}
