@@ -264,3 +264,18 @@ energy = ...
 samples = ...
 evidence = measured_exact
 ```
+
+## Image qualification
+
+The suite also qualifies `modality: image` deployments (spec 14). An image
+qualification profile records, per GPU class and precision:
+- a latency matrix over `resolution × steps` with measured VRAM, latency and
+  images/minute throughput;
+- cold-start time (weight load);
+- a quality signal from a fixed prompt set scored by independent vision-QA
+  (`IW-IMG-002`).
+
+It produces a `benchmark_profile_id` consumable by a `modality: image` manifest's
+`validation.benchmark_profile_id`. See
+`contracts/image-qualification-profile.example.json`. Recognized runtimes are
+enumerated per modality in `contracts/backends.registry.example.json`.
