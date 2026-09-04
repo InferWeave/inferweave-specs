@@ -14,17 +14,20 @@ pipeline:                              # spec 14 immutable pipeline
   diffusion_model:
     source: huggingface
     repository: Comfy-Org/z_image_turbo
+    revision: immutable-commit
     file: split_files/diffusion_models/z_image_turbo_bf16.safetensors
     sha256: sha256:REPLACE
   text_encoder:
     source: huggingface
     repository: Comfy-Org/z_image_turbo
+    revision: immutable-commit
     file: split_files/text_encoders/qwen_3_4b.safetensors
     clip_type: lumina2
     sha256: sha256:REPLACE
   vae:
     source: huggingface
     repository: Comfy-Org/z_image_turbo
+    revision: immutable-commit
     file: split_files/vae/ae.safetensors
     sha256: sha256:REPLACE
   adapters: []
