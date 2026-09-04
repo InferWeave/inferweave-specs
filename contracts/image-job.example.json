@@ -1,0 +1,24 @@
+{
+  "schema_version": "inferweave.image-job/v1",
+  "job_id": "imgjob_01J000000000000000000000",
+  "request_id": "req_01J000000000000000000000",
+  "idempotency_key": "client-supplied-optional",
+  "deployment_ref": "dep_zimage_turbo_example",
+  "owner": "acct_example",
+  "submitted_via": "/v1/images/generations",
+  "sync_eligible": false,
+  "sync_decision_reason": "steps>threshold or resolution>1024x1024 or queue_wait>budget",
+  "request": {
+    "prompt": "a red apple on a wooden table",
+    "n": 1,
+    "size": "1536x1536",
+    "response_format": "url",
+    "inferweave": { "steps": 12, "seed": 12345, "guidance": 1.0, "negative_prompt": "" }
+  },
+  "state": "RUNNING",
+  "state_history": ["SUBMITTED", "VALIDATED", "QUEUED", "LEASED", "RUNNING"],
+  "events_endpoint": "/api/v1/jobs/imgjob_01J000000000000000000000/events",
+  "cancellable": true,
+  "reservation": { "vram_bytes": 10200547328, "scratch_bytes": 2147483648 },
+  "artifacts": []
+}

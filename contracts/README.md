@@ -33,3 +33,5 @@ Additional canonical schemas required by resolved decisions:
 - image deployment manifest (`deployment-manifest.image.example.yaml`);
 - OpenAI image parameter binding (`image-template-binding.example.json`);
 - image qualification profile (`image-qualification-profile.example.json`).
+- image async job (`image-job.example.json`);
+- image artifact provenance (`image-artifact.example.json`).
