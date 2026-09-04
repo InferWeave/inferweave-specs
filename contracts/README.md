@@ -28,4 +28,8 @@ Additional canonical schemas required by resolved decisions:
 - software/runtime/deployment fingerprint;
 - high-frequency GPU telemetry sample;
 - per-request performance/contribution fact;
-- direct-route ticket/rendezvous offer.
+- direct-route ticket/rendezvous offer;
+- recognized inference backends per modality (`backends.registry.example.json`);
+- image deployment manifest (`deployment-manifest.image.example.yaml`);
+- OpenAI image parameter binding (`image-template-binding.example.json`);
+- image qualification profile (`image-qualification-profile.example.json`).

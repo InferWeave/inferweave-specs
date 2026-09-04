@@ -1,0 +1,43 @@
+{
+  "schema_version": "inferweave.backends/v1",
+  "backends": [
+    {
+      "id": "vllm",
+      "modality": "text",
+      "requires": ["container_digest", "tokenizer.revision", "precision.weights"],
+      "supports": { "kv_precision": true, "tensor_parallel": true, "speculative": true }
+    },
+    {
+      "id": "sglang",
+      "modality": "text",
+      "requires": ["container_digest", "tokenizer.revision"],
+      "supports": { "kv_precision": true, "tensor_parallel": true }
+    },
+    {
+      "id": "tgi",
+      "modality": "text",
+      "requires": ["container_digest", "tokenizer.revision"],
+      "supports": { "kv_precision": true }
+    },
+    {
+      "id": "ollama",
+      "modality": "text",
+      "requires": ["container_digest", "model.revision"],
+      "supports": { "kv_precision": true, "embeddings": true },
+      "notes": "GGUF runtime. Some fused kernels (e.g. flash-attention over SSM/hybrid architectures) are unsupported on older compute capabilities and must be disabled at deploy time."
+    },
+    {
+      "id": "comfyui",
+      "modality": "image",
+      "requires": ["container_digest", "workflow_template"],
+      "supports": { "constrained_template": true, "fp8_weight_storage": true },
+      "notes": "Constrained server-side templates only; public clients never submit graphs (specs/14). See contracts/image-template-binding.example.json."
+    },
+    {
+      "id": "diffusers",
+      "modality": "image",
+      "requires": ["container_digest"],
+      "supports": { "fp8_weight_storage": true }
+    }
+  ]
+}

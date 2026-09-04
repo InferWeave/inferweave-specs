@@ -1,0 +1,29 @@
+{
+  "schema_version": "inferweave.image-qualification/v1",
+  "profile_id": "imgqual_zimage_turbo_2080ti_fp8",
+  "deployment_ref": "dep_zimage_turbo_example",
+  "gpu_class": "nvidia-sm75-11gb",
+  "precision": "fp8_e4m3fn",
+  "latency_matrix": [
+    { "resolution": "1024x1024", "steps": 8, "vram_bytes": 8589934592, "latency_ms": 2100, "throughput_images_min": 28 },
+    { "resolution": "1024x1024", "steps": 4, "vram_bytes": 8589934592, "latency_ms": 1200, "throughput_images_min": 48 },
+    { "resolution": "1536x1536", "steps": 8, "vram_bytes": 10200547328, "latency_ms": 5200, "throughput_images_min": 11 }
+  ],
+  "cold_start_ms": 34000,
+  "quality": {
+    "prompt_set": "iw-image-eval/v1",
+    "method": "vision_qa",
+    "vision_qa_score": null,
+    "notes": "Independent vision-QA scoring per specs/14 (IW-IMG-002); score populated by the qualification run."
+  },
+  "resource_envelope": {
+    "minimum_vram_bytes": 8589934592,
+    "safety_margin_bytes": 1073741824,
+    "max_resolution": "1536x1536"
+  },
+  "validation": {
+    "state": "measured",
+    "source": "reference-run",
+    "notes": "Reference datum measured on an RTX 2080 Ti (SM 7.5), Z-Image Turbo fp8, warm. Cold start includes weight load."
+  }
+}
