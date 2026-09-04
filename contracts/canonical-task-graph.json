@@ -602,6 +602,34 @@
       "notes": "An autoloading runtime reports no window for an unloaded model."
     },
     {
+      "id": "P1-T06C",
+      "phase": 1,
+      "title": "Record measured runtime tuning per deployment",
+      "depends_on": [
+        "P1-T06A"
+      ],
+      "specs": [
+        "39_INFERENCE_RUNTIME_TUNING",
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS"
+      ],
+      "features": [
+        "IW-TUNE-002"
+      ],
+      "context_class": "C70",
+      "outcome": "Each qualified deployment records measured prefill and decode at depth, KV cache type, backend, thread count, device memory headroom, and drafter acceptance, as measurements rather than configuration intent.",
+      "required_tests": [
+        "throughput record without a depth is rejected",
+        "drafter without a recorded acceptance rate is not qualified",
+        "backend change produces a new deployment fingerprint",
+        "MoE deployment with non-resident experts advertises as low-throughput"
+      ],
+      "notes": "Thread count set to SMT threads rather than physical cores cost 19x on one host.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P1-T06C"
+      ]
+    },
+    {
       "id": "P1-T07",
       "phase": 1,
       "title": "Prompt ledger metadata and encrypted payload storage",
