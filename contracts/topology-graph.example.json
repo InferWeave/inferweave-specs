@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "emitter": {
+    "stable_id": "gw-01H8XK3QN4",
+    "roles": ["gateway", "coordinator"],
+    "snapshot_at": "2026-09-04T14:52:11Z",
+    "version": 41207
+  },
+  "vertices": [
+    {
+      "id": "gw-01H8XK3QN4",
+      "kind": "gateway",
+      "roles": ["gateway", "coordinator"],
+      "horizon": "complete",
+      "snapshot_at": "2026-09-04T14:52:11Z",
+      "version": 41207,
+      "labels": {"region": "us-west", "site": "fiehnlab"}
+    },
+    {
+      "id": "co-01H8XM7BQ2",
+      "kind": "coordinator",
+      "roles": ["coordinator"],
+      "horizon": "partial",
+      "horizon_note": "3 children reported; registry indicates at least 5",
+      "snapshot_at": "2026-09-04T14:49:02Z",
+      "version": 9820,
+      "labels": {"region": "us-west"}
+    },
+    {
+      "id": "pv-01H8XN2FF9",
+      "kind": "provider",
+      "roles": ["provider"],
+      "horizon": "complete",
+      "snapshot_at": "2026-09-04T14:52:03Z",
+      "version": 55311,
+      "labels": {"host_generation": "7"}
+    },
+    {
+      "id": "gpu-01H8XN2FF9-0",
+      "kind": "gpu",
+      "horizon": "complete",
+      "snapshot_at": "2026-09-04T14:52:03Z",
+      "version": 55311,
+      "telemetry_ref": {
+        "spec": "23_GLOBAL_TELEMETRY_BENCHMARKS",
+        "gpu_stable_id": "gpu-01H8XN2FF9-0"
+      }
+    },
+    {
+      "id": "co-01H8XPQ0R7",
+      "kind": "coordinator",
+      "roles": ["coordinator"],
+      "horizon": "unknown",
+      "horizon_note": "referenced by co-01H8XM7BQ2; never contacted by this emitter",
+      "snapshot_at": null,
+      "version": null
+    },
+    {
+      "id": "agg-01H8XR5T3K",
+      "kind": "aggregate",
+      "horizon": "partial",
+      "summarises": "co-01H8XM7BQ2 subtree beyond fan-out 64",
+      "counts": {"provider": 212, "gpu": 448, "unknown_vertices": 6},
+      "capacity": {"gpu_total": 448, "gpu_available": 91},
+      "snapshot_at": "2026-09-04T14:49:02Z",
+      "version": 9820
+    },
+    {
+      "id": "opaque-7f3c1a",
+      "kind": "provider",
+      "roles": ["provider"],
+      "horizon": "complete",
+      "redacted": true,
+      "redaction_note": "viewer not authorised for address or operator identity; vertex retained so topology shape and counts stay correct",
+      "snapshot_at": "2026-09-04T14:51:40Z",
+      "version": 3312
+    }
+  ],
+  "edges": [
+    {"kind": "registered_with", "from": "co-01H8XM7BQ2", "to": "gw-01H8XK3QN4"},
+    {"kind": "registered_with", "from": "pv-01H8XN2FF9", "to": "co-01H8XM7BQ2"},
+    {"kind": "hosts_gpu", "from": "pv-01H8XN2FF9", "to": "gpu-01H8XN2FF9-0"},
+    {"kind": "routes_to", "from": "gw-01H8XK3QN4", "to": "co-01H8XM7BQ2"},
+    {
+      "kind": "registered_with",
+      "from": "co-01H8XPQ0R7",
+      "to": "co-01H8XM7BQ2",
+      "stale": true,
+      "stale_note": "parent unreachable since 14:31Z; edge retained because parent loss must not confiscate child identity (spec 21)"
+    },
+    {
+      "kind": "routes_to",
+      "from": "co-01H8XPQ0R7",
+      "to": "gw-01H8XK3QN4",
+      "cycle": true,
+      "cycle_note": "closes gw -> co -> co -> gw; recorded and not traversed"
+    },
+    {"kind": "registered_with", "from": "opaque-7f3c1a", "to": "co-01H8XM7BQ2"}
+  ],
+  "totals": {
+    "note": "Every total is reported with the uncertainty it was computed over. A consumer that drops these fields must not publish the totals either.",
+    "vertices": 7,
+    "gpu_known": 1,
+    "gpu_in_aggregates": 448,
+    "vertices_unknown_horizon": 1,
+    "vertices_partial_horizon": 2,
+    "vertices_redacted": 1
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "exchange": [
+    {
+      "message": "capacity_request",
+      "request_id": "cap-01H8Y2K9QW",
+      "from": "gw-01H8XK3QN4",
+      "to": "gw-01H8Y0R4TT",
+      "issued_at": "2026-09-04T15:04:02Z",
+      "path": ["gw-01H8XK3QN4"],
+      "hop_budget": 2,
+      "fanout_breadth": 3,
+      "want": {
+        "slots": 8,
+        "envelope": {
+          "model": "qwen3.8-27b",
+          "quantisation": "q4_k_m",
+          "context_tokens": 131072,
+          "note": "Envelope is matched on measured capability, not model name alone: two sites running the same name at different quantisation are not interchangeable."
+        },
+        "hold_for_seconds": 900
+      },
+      "reason": "local envelope exhausted; 14 admissions returned to sender in the last 60s",
+      "not_a_work_transfer": true
+    },
+    {
+      "message": "capacity_grant",
+      "request_id": "cap-01H8Y2K9QW",
+      "grant_id": "grant-01H8Y2M1XZ",
+      "from": "gw-01H8Y0R4TT",
+      "to": "gw-01H8XK3QN4",
+      "issued_at": "2026-09-04T15:04:02Z",
+      "slots": 5,
+      "slots_note": "Fewer than requested. 8 were asked for; 3 are already promised under grant-01H8XZ88KP and were subtracted before replying.",
+      "envelope": {
+        "model": "qwen3.8-27b",
+        "quantisation": "q4_k_m",
+        "context_tokens": 131072,
+        "measured": true,
+        "measured_at": "2026-09-04T14:20:11Z"
+      },
+      "ttl_seconds": 900,
+      "expiry_rule": "time_since_last_progress",
+      "revocable_with_notice_seconds": 30,
+      "revocation_grounds": "local owner priority (spec 21) or measured envelope contraction",
+      "lineage": {
+        "accounting_site": "gw-01H8Y0R4TT",
+        "billed_to": "gw-01H8XK3QN4",
+        "note": "One request served under this grant produces exactly one accounting record, at the site that ran it."
+      },
+      "holding_cost_attributed_to": "gw-01H8XK3QN4"
+    },
+    {
+      "message": "capacity_refusal",
+      "request_id": "cap-01H8Y2K9QX",
+      "from": "gw-01H8Y7VV21",
+      "to": "gw-01H8XK3QN4",
+      "issued_at": "2026-09-04T15:04:02Z",
+      "answered_immediately": true,
+      "reason_code": "no_offerable_envelope",
+      "retryable": true,
+      "retry_after_ms": 120000,
+      "detail": "Measured envelope 12 slots, 12 already granted. Refusing rather than staying silent: a requester cannot tell a thinking peer from a dead one."
+    },
+    {
+      "message": "capacity_refusal",
+      "request_id": "cap-01H8Y2K9QY",
+      "from": "gw-01H8XK3QN4",
+      "to": "gw-01H8Y9AB33",
+      "issued_at": "2026-09-04T15:04:07Z",
+      "answered_immediately": true,
+      "reason_code": "cycle_detected",
+      "retryable": false,
+      "detail": "path already contains gw-01H8XK3QN4: [gw-01H8XK3QN4, gw-01H8Y0R4TT, gw-01H8Y9AB33]"
+    },
+    {
+      "message": "grant_revocation",
+      "grant_id": "grant-01H8Y2M1XZ",
+      "from": "gw-01H8Y0R4TT",
+      "to": "gw-01H8XK3QN4",
+      "issued_at": "2026-09-04T15:11:40Z",
+      "effective_at": "2026-09-04T15:12:10Z",
+      "notice_seconds": 30,
+      "reason_code": "local_owner_priority",
+      "slots_returned_to_envelope": 5,
+      "detail": "Granting site's own owners require the capacity. A grant is a loan, not a sale."
+    }
+  ]
+}

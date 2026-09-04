@@ -939,6 +939,116 @@
       "canonical_tasks": [
         "P1-T21A"
       ]
+    },
+    {
+      "id": "IW-TOPO-001",
+      "name": "Local topology graph export",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P2-T23"
+      ]
+    },
+    {
+      "id": "IW-TOPO-002",
+      "name": "Topology horizon and completeness semantics",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P2-T23"
+      ]
+    },
+    {
+      "id": "IW-TOPO-003",
+      "name": "Federated topology composition",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P5-T11"
+      ]
+    },
+    {
+      "id": "IW-TOPO-004",
+      "name": "Per-viewer topology redaction",
+      "phase": 2,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P2-T24"
+      ]
+    },
+    {
+      "id": "IW-TOPO-005",
+      "name": "Topology scale aggregation",
+      "phase": 5,
+      "priority": "P2",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P5-T12"
+      ]
+    },
+    {
+      "id": "IW-TOPO-006",
+      "name": "Whole-network visualization surface",
+      "phase": 5,
+      "priority": "P2",
+      "status": "required",
+      "owner_component": "web",
+      "canonical_tasks": [
+        "P5-T13"
+      ]
+    },
+    {
+      "id": "IW-GRANT-001",
+      "name": "Inter-gateway capacity request protocol",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P5-T14"
+      ]
+    },
+    {
+      "id": "IW-GRANT-002",
+      "name": "Standby slot grants and lifecycle",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P5-T15"
+      ]
+    },
+    {
+      "id": "IW-GRANT-003",
+      "name": "Capacity request loop and amplification control",
+      "phase": 5,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P5-T16"
+      ]
+    },
+    {
+      "id": "IW-GRANT-004",
+      "name": "Capacity grant receipts and forecast signals",
+      "phase": 5,
+      "priority": "P2",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P5-T17"
+      ]
     }
   ]
 }

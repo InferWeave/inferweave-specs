@@ -127,3 +127,12 @@ Total tasks: **123**
 | `P5-T09` | 5 | C100 | P5-T08 | Final requirements/spec conformance audit |
 | `P5-T10` | 5 | C100 | P5-T09 | Production-readiness release gate |
 | `D-T01` | deferred | C70 | P5-T10 | Optional development settlement adapter |
+| `P2-T23` | 2 | C80 | P0-T06, P1-T04, P1-T05 | Topology graph model and local gateway export |
+| `P2-T24` | 2 | C75 | P2-T23 | Per-viewer topology redaction |
+| `P5-T11` | 5 | C85 | P2-T23, P5-T04 | Federated topology composition |
+| `P5-T12` | 5 | C80 | P5-T11 | Topology scale aggregation |
+| `P5-T13` | 5 | C80 | P5-T11 | Whole-network topology visualization surface |
+| `P5-T14` | 5 | C85 | P5-T04, P1-T12 | Inter-gateway capacity request protocol |
+| `P5-T15` | 5 | C85 | P5-T14, P1-T11B | Standby slot grants and lifecycle |
+| `P5-T16` | 5 | C75 | P5-T14 | Capacity request loop and amplification control |
+| `P5-T17` | 5 | C80 | P5-T15 | Capacity grant receipts and forecast signals |
