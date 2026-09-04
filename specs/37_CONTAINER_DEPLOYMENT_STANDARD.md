@@ -244,3 +244,14 @@ dev     -> Docker Compose
 - persistent state survives container recreation;
 - watchdog can rescue/recreate InferWeave-owned Docker runtime safely;
 - no production task requires a bare host model-server install.
+
+## OpenAI edge adapters
+
+The public OpenAI-compatible surface is served by edge adapters — the text
+inference server and the image adapter that translates `/v1/images/generations`
+into a constrained workflow (spec 14). These adapters are workloads and are
+subject to this standard: they ship as pinned OCI images (no ad-hoc host Python
+or bare-metal system services), bind only scheduler/site-approved GPU devices,
+and re-probe inside the container to confirm usable resources. Recognized
+adapter backends per modality are enumerated in
+`contracts/backends.registry.example.json`.

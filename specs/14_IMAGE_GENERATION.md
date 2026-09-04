@@ -55,3 +55,18 @@ Reserve VRAM/RAM/scratch/thermal/bandwidth before execution. Oversized requests 
 ## Workbench/AutoSpec
 
 Workbench displays actual deployment/policy/license/progress/artifacts. AutoSpec may request visual artifacts and route independent vision QA as a separate workflow.
+
+## Sync/async decision and artifact provenance
+
+`/v1/images/generations` may answer synchronously only when the request fits a
+bounded budget (small resolution, few steps, short queue wait). Otherwise the
+client is directed to the native durable job API (spec 15): submit → ordered
+resumable events → artifact access grant, with cancellation. The decision rule
+and job shape are shown in `contracts/image-job.example.json`.
+
+Every produced image is recorded as an artifact carrying checksum, deployment
+provenance (deployment id, backend, workflow template, pipeline fingerprint),
+reproducibility metadata (resolved seed + settings), ownership/access policy and
+a retention deadline — see `contracts/image-artifact.example.json`. Bulk bytes
+move over scoped direct/relay transfers (spec 08); the gateway stays
+authoritative for job state, provenance and access grants.
