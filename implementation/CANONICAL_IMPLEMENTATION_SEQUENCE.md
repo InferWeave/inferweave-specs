@@ -26,6 +26,22 @@ Rules:
 - cargo fmt/check/test baseline
 - Next.js lint/typecheck baseline
 
+### P0-T01A — Machine-checked registry pattern and anti-vacuous guards
+**Context:** `C65`
+**Depends on:** P0-T01
+**Features:** IW-EVID-002
+**Read:** specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md, specs/00_INVARIANTS.md
+
+**Outcome:** Shared vocabularies ship as frozen data plus a published document plus conformance tests that fail on disagreement, and every structural guard is executed against a deliberately broken copy of what it guards.
+
+**Required tests:**
+- document and frozen data reconciled cell by cell
+- each guard rejects its known-bad input
+- removing a guard fails the guard self-test
+- new vocabulary value without a decision record fails
+
+**Notes:** A guard that silently stops checking reports success indefinitely. scripts/validate_specs.py --self-test demonstrates the rule on this bundle.
+
 ### P0-T02 — Canonical protocol versioning, typed IDs and error envelope
 **Context:** `C55`
 **Depends on:** P0-T01
@@ -88,6 +104,22 @@ Rules:
 - generation reproducibility
 - Rust/TS schema parity
 - CI drift failure test
+
+### P0-T06A — Conformance vectors and hostile vectors
+**Context:** `C70`
+**Depends on:** P0-T06
+**Features:** IW-EVID-001
+**Read:** specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md, specs/02_PROTOCOL_AND_API.md
+
+**Outcome:** Hash-pinned conformance vectors with a digest manifest cover the message envelope, identity, discovery, error envelope, receipt chain, capability advertisement and context ceiling, each with hostile cases and expected refusals.
+
+**Required tests:**
+- Rust and TypeScript agree with the same vector, not the same prose
+- manifest digest mismatch fails the build
+- each hostile vector produces its expected refusal
+- a vector set with no hostile case fails
+
+**Notes:** Two implementations agreeing with a document is not evidence of agreement.
 
 ### P0-T07 — Container stack renderer and init plan
 **Context:** `C70`
@@ -213,6 +245,22 @@ Rules:
 - replay rejection
 - revocation test
 
+### P1-T02A — Token-free proof enrollment
+**Context:** `C75`
+**Depends on:** P1-T02
+**Features:** IW-NODE-004
+**Read:** specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md, specs/16_SECURITY_PRIVACY_TRUST.md
+
+**Outcome:** Nodes enrol by protocol-role proof and, per advertised model and context class, model-execution proof, receiving a renewable role credential with no operator token and no approval step.
+
+**Required tests:**
+- node enrols with no operator-issued token
+- eligibility is granted only to the exact challenged claim
+- unchallenged context class cannot be served
+- a replayed or hostile proof is refused
+
+**Notes:** A shared bootstrap token makes the token the credential; proof binds it to measured capability.
+
 ### P1-T03 — Outbound node control connection and heartbeat
 **Context:** `C65`
 **Depends on:** P1-T02
@@ -322,6 +370,22 @@ Rules:
 - storage unavailable behavior
 - retry/outbox fixture
 - no route without durable submission
+
+### P1-T08A — Read-side ledger integrity
+**Context:** `C75`
+**Depends on:** P1-T08
+**Features:** IW-OBS-003
+**Read:** specs/22_PROMPT_LEDGER.md, specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md
+
+**Outcome:** Every read of an ordered record proves the whole record gapless rather than the returned page, with storage-engine premises asserted against the live engine.
+
+**Required tests:**
+- gap below the reader cursor is detected
+- page-shaped check alone fails the suite
+- engine rejects the write that would violate each premise
+- no second journal implementation is introduced
+
+**Notes:** A correct writer is not the same thing as a trustworthy reader.
 
 ### P1-T09 — Gateway registry and `/v1/models`
 **Context:** `C60`
@@ -618,6 +682,22 @@ Rules:
 - UI E2E with deterministic fixtures
 - stale telemetry visible
 - no misleading pooled VRAM totals
+
+### P1-T21A — Machine-checked presentation policy
+**Context:** `C65`
+**Depends on:** P1-T21
+**Features:** IW-UI-003
+**Read:** specs/10_DASHBOARD_PORTAL.md
+
+**Outcome:** A policy maps every route to required rendering variants — narrow, forced-colors, reduced-motion, wired or fixture, unsupported — names the single token source, and denies superseded components, enforced by the build.
+
+**Required tests:**
+- route absent from the policy fails the check
+- each declared variant is exercised per route
+- a colour outside the token source fails
+- a denylisted component reappearing fails
+
+**Notes:** Accessibility stated only in prose regresses at the first route added under deadline.
 
 ### P1-T22 — `init gateway` production container flow
 **Context:** `C85`

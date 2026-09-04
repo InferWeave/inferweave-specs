@@ -1,9 +1,9 @@
 # InferWeave Specs Repository Index
 
-Version: **9.0**
-Specifications: **38**
-Tracked features: **73**
-Canonical tasks: **118**
+Version: **10.0**
+Specifications: **39**
+Tracked features: **78**
+Canonical tasks: **123**
 Deployment: **Docker Compose persistent / Apptainer Slurm**
 GPU watchdog/rescue: **required**
 
@@ -16,215 +16,224 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-- `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443`
-- `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3`
-- `AGENTS.md` — `e3c0561280d5`
-- `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4`
-- `CHANGELOG.md` — `c433cc1ecca9`
-- `CONTRIBUTING.md` — `afbd4102ee4c`
-- `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57`
-- `FEATURE_PRESERVATION_MATRIX.md` — `995cf0b7ebb6`
-- `GETTING_STARTED.md` — `c97552130b3f`
-- `README.md` — `f87b6c9d3add`
-- `SOURCE_AUDIT.md` — `ac0450713e0f`
-- `SOURCE_NOTES_CURRENT.md` — `be95fa740a29`
-- `START_HERE.md` — `81565b9b1d3d`
-- `agents/README.md` — `7102d9ae3274`
-- `agents/hardware-ops-reviewer.md` — `076714dfeea3`
-- `agents/implementation-planner.md` — `0479376063d5`
-- `agents/spec-author.md` — `31ca2354413f`
-- `agents/spec-reviewer.md` — `9e07c9d365ad`
-- `bundle-manifest.json` — `99552207ce4a`
-- `contracts/README.md` — `8afc7db8d310`
-- `contracts/canonical-task-graph.json` — `56d1d0b79c98`
-- `contracts/deployment-manifest.example.yaml` — `42f71d086f03`
-- `contracts/error.example.json` — `7a43622775b1`
-- `contracts/feature-registry.json` — `65a46bce61db`
-- `contracts/gpu-telemetry.example.json` — `e3d37a58ab37`
-- `contracts/prompt-record.example.json` — `8b199a55dc53`
-- `contracts/repository-map.json` — `ea1edd0197ad`
-- `contracts/routing-preferences.example.json` — `8fe31be89156`
-- `decisions/ADR_TEMPLATE.md` — `5ae4a549d08a`
-- `decisions/DECISIONS_REQUIRED.md` — `eaa8760902fe`
-- `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab`
-- `docs/AI_INSTALL_INFERWEAVE.md` — `64b97a39d222`
-- `implementation/ACCEPTANCE_TEST_MATRIX.md` — `9ce06bfc2250`
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `888d25d21621`
-- `implementation/CANONICAL_TASK_INDEX.md` — `b3a11efc981d`
-- `implementation/CONTEXT_50_100K_STRATEGY.md` — `4e6d9c9665dd`
-- `implementation/DATA_MODEL.md` — `d0e500314c0c`
-- `implementation/ERROR_SEMANTICS.md` — `b20d20bfb602`
-- `implementation/FEATURE_TASK_COVERAGE.md` — `052a6394d7c2`
-- `implementation/IMPLEMENTATION_ORDER.md` — `1a48655f5ecc`
-- `implementation/MILESTONES.md` — `84f77749cf80`
-- `implementation/MONOREPO_BOOTSTRAP.md` — `7d729410dacd`
-- `implementation/PHASE_GATES.md` — `2e31a5645d9b`
-- `implementation/SPEC_TASK_COVERAGE.md` — `0cd976f1ebd5`
-- `implementation/TEST_STRATEGY.md` — `ac0d3dad032f`
-- `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70`
-- `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c`
-- `pi/CONTEXT_PACK_CHECKLIST.md` — `8f3711052f21`
-- `pi/FIRST_TASKS.md` — `674dbf07c4f5`
-- `pi/PI_IMPLEMENTATION_SYSTEM_PROMPT.md` — `d3fd2adc5bc3`
-- `pi/QWEN_CONTEXT_GUIDE.md` — `a016ee2cb759`
-- `pi/REVIEW_PROMPT.md` — `0fca83a1dc7a`
-- `pi/TASK_TEMPLATE.md` — `654c899dbb32`
-- `scripts/bootstrap-repositories.sh` — `914de3443dbc`
-- `scripts/validate_specs.py` — `4bca6c0a26da`
-- `solana/DEVNET_ONLY.md` — `1a8ea96fcc58`
-- `specs/00_INVARIANTS.md` — `6e13451ec135`
-- `specs/01_REPOSITORIES_AND_OWNERSHIP.md` — `e52f5e6e8112`
-- `specs/02_PROTOCOL_AND_API.md` — `60d75f035f9f`
-- `specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md` — `291701e33b15`
-- `specs/04_CAPACITY_ADMISSION_SEATS.md` — `846d9f2c8c8c`
-- `specs/05_ROUTING_AFFINITY.md` — `fe90cd1a0a50`
-- `specs/06_BACKPRESSURE_RETURN_TO_SENDER.md` — `ae995dd6ac19`
-- `specs/07_FAIRSHARE_OWNER_PRIORITY.md` — `3c9f3be77e28`
-- `specs/08_CONNECTIVITY_DATA_PLANE.md` — `11aeb504bd51`
-- `specs/09_OBSERVABILITY_RECEIPTS.md` — `391a76476314`
-- `specs/10_DASHBOARD_PORTAL.md` — `8e8e4b817c74`
-- `specs/11_WORKBENCH_AUTOSPEC_PI.md` — `fbd0cf942993`
-- `specs/12_MODEL_TUNING_BENCHMARKS.md` — `18e3f43ca576`
-- `specs/13_RAG_TOOLS_LSP.md` — `9b08ea55e3c6`
-- `specs/14_IMAGE_GENERATION.md` — `8eca06e1132a`
-- `specs/15_ASYNC_JOBS_ARTIFACTS.md` — `8a995543424c`
-- `specs/16_SECURITY_PRIVACY_TRUST.md` — `9aa2011d43ec`
-- `specs/17_SCALING_HA_REGIONS.md` — `c70cb284139d`
-- `specs/18_SOLANA_DEV_ACCOUNTING.md` — `436369519dbb`
-- `specs/19_CI_CD_LIVING_SPECS.md` — `4bed745d8e28`
-- `specs/20_NODE_AUTOCONFIG_DISCOVERY.md` — `0d0646f28dab`
-- `specs/21_FEDERATION_ROLES.md` — `edc52ab18985`
-- `specs/22_PROMPT_LEDGER.md` — `4a5ff1323c1f`
-- `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md` — `c0cd3e45d4ca`
-- `specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md` — `290ce8de7f53`
-- `specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md` — `eb94bd094dd4`
-- `specs/26_RESOURCE_IDENTITY_REDISCOVERY.md` — `ad4f89547616`
-- `specs/27_SITE_CONNECTOR_ARTIFACT_CACHE.md` — `5117f6bd7dea`
-- `specs/28_BOOTSTRAP_INIT_CLIENT.md` — `f6766faf2603`
-- `specs/29_MCP_SERVERS.md` — `1f23788d86fd`
-- `specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md` — `2dbde44c46cd`
-- `specs/31_RESOURCE_HEALTH_QUARANTINE.md` — `4b0b1edbb982`
-- `specs/32_DEMAND_FORECASTING_PRESTAGING.md` — `d705ce0560ba`
-- `specs/33_RESUMABLE_BENCHMARK_DAG.md` — `091546f271f1`
-- `specs/34_PROMPT_STORE_TIERING.md` — `cf79dca6f2b8`
-- `specs/35_CLUSTER_SIMULATOR_CHAOS.md` — `a0dd9596ea15`
-- `specs/36_GPU_WATCHDOG_RESCUE.md` — `74fd26e93204`
-- `specs/37_CONTAINER_DEPLOYMENT_STANDARD.md` — `cfb37e4e75a6`
-- `tasks/deferred/D-T01.md` — `861aeffcf7d5`
-- `tasks/phase-0/P0-T01.md` — `60abd0e98738`
-- `tasks/phase-0/P0-T02.md` — `c4ee404ee682`
-- `tasks/phase-0/P0-T03.md` — `e27830a66a89`
-- `tasks/phase-0/P0-T04.md` — `577c7aa3b04f`
-- `tasks/phase-0/P0-T05.md` — `4749f0be47d4`
-- `tasks/phase-0/P0-T06.md` — `7d13d3f92094`
-- `tasks/phase-0/P0-T07.md` — `f8319120298a`
-- `tasks/phase-0/P0-T08.md` — `c1b61f88b7cc`
-- `tasks/phase-0/P0-T09.md` — `6dafc5d25a0e`
-- `tasks/phase-0/P0-T10.md` — `93f903066ad3`
-- `tasks/phase-0/P0-T11.md` — `c79fb0948144`
-- `tasks/phase-0/P0-T11A.md` — `c2bbabe4f2ac`
-- `tasks/phase-0/P0-T12.md` — `eb9ee60d52ed`
-- `tasks/phase-1/P1-T01.md` — `116b1b644707`
-- `tasks/phase-1/P1-T02.md` — `ada1491674cb`
-- `tasks/phase-1/P1-T03.md` — `d3a5a0427996`
-- `tasks/phase-1/P1-T04.md` — `5b9a4ae1e091`
-- `tasks/phase-1/P1-T05.md` — `a303705c28db`
-- `tasks/phase-1/P1-T06.md` — `77d5cd0c60b5`
-- `tasks/phase-1/P1-T06A.md` — `ec6bfb192b2b`
-- `tasks/phase-1/P1-T06B.md` — `65e7cc6d6119`
-- `tasks/phase-1/P1-T07.md` — `a90a6de7508a`
-- `tasks/phase-1/P1-T08.md` — `5b2a87d8df07`
-- `tasks/phase-1/P1-T09.md` — `6fd988ce32b4`
-- `tasks/phase-1/P1-T10.md` — `37228004f6ca`
-- `tasks/phase-1/P1-T11.md` — `227ab54426b0`
-- `tasks/phase-1/P1-T11A.md` — `9bd1d0af6902`
-- `tasks/phase-1/P1-T11B.md` — `fa7125a7798d`
-- `tasks/phase-1/P1-T12.md` — `bc28a58a97c9`
-- `tasks/phase-1/P1-T12A.md` — `6d37b28ef198`
-- `tasks/phase-1/P1-T12B.md` — `67a098968f42`
-- `tasks/phase-1/P1-T13.md` — `702a57a64aa3`
-- `tasks/phase-1/P1-T13A.md` — `f4aa6ce87397`
-- `tasks/phase-1/P1-T14.md` — `d73421bf0f34`
-- `tasks/phase-1/P1-T15.md` — `1291081fd48f`
-- `tasks/phase-1/P1-T16.md` — `2aa387487f9a`
-- `tasks/phase-1/P1-T17.md` — `beb74054711f`
-- `tasks/phase-1/P1-T18.md` — `7c63e8ebe5c0`
-- `tasks/phase-1/P1-T19.md` — `a354ab8b7b28`
-- `tasks/phase-1/P1-T20.md` — `a1a1358ae090`
-- `tasks/phase-1/P1-T20A.md` — `9381a97ce36a`
-- `tasks/phase-1/P1-T20B.md` — `c798525c33a3`
-- `tasks/phase-1/P1-T20C.md` — `e6731435a1e6`
-- `tasks/phase-1/P1-T21.md` — `aac8ed4437d1`
-- `tasks/phase-1/P1-T22.md` — `5bfd9d463dd6`
-- `tasks/phase-1/P1-T23.md` — `dca5dca655b6`
-- `tasks/phase-1/P1-T24.md` — `4c57d586bb4f`
-- `tasks/phase-1/P1-T25.md` — `0b3ae1640b59`
-- `tasks/phase-2/P2-T01.md` — `d1d8bd9f78a1`
-- `tasks/phase-2/P2-T02.md` — `b397dc1a7e8a`
-- `tasks/phase-2/P2-T03.md` — `2f4e66ede399`
-- `tasks/phase-2/P2-T04.md` — `0967cbe74575`
-- `tasks/phase-2/P2-T05.md` — `25f2255222b9`
-- `tasks/phase-2/P2-T06.md` — `a43fca8d6043`
-- `tasks/phase-2/P2-T07.md` — `7adbd83796de`
-- `tasks/phase-2/P2-T08.md` — `2cdc12d56d1f`
-- `tasks/phase-2/P2-T09.md` — `92b1a355ab06`
-- `tasks/phase-2/P2-T10.md` — `ed7c9a048a2c`
-- `tasks/phase-2/P2-T11.md` — `035921484f61`
-- `tasks/phase-2/P2-T12.md` — `135e576c22da`
-- `tasks/phase-2/P2-T13.md` — `7f6a1fc8c725`
-- `tasks/phase-2/P2-T14.md` — `a0599f2b1d57`
-- `tasks/phase-2/P2-T15.md` — `b93b30411613`
-- `tasks/phase-2/P2-T16.md` — `b5edb9bf4479`
-- `tasks/phase-2/P2-T17.md` — `48a2bd94dc90`
-- `tasks/phase-2/P2-T18.md` — `f620b5fa4eb8`
-- `tasks/phase-2/P2-T19.md` — `b47ecd2147f0`
-- `tasks/phase-2/P2-T20.md` — `071a328b095d`
-- `tasks/phase-2/P2-T21.md` — `1ebd378be79e`
-- `tasks/phase-2/P2-T22.md` — `87abfd2cb655`
-- `tasks/phase-3/P3-T01.md` — `c27133d20dd1`
-- `tasks/phase-3/P3-T02.md` — `b13d75c13f8a`
-- `tasks/phase-3/P3-T03.md` — `20f18a601a62`
-- `tasks/phase-3/P3-T04.md` — `ad4cbbf8fc20`
-- `tasks/phase-3/P3-T05.md` — `28461d9e3a9b`
-- `tasks/phase-3/P3-T06.md` — `b1819aa4b8fa`
-- `tasks/phase-3/P3-T07.md` — `549ad13b667e`
-- `tasks/phase-3/P3-T08.md` — `e48a36995bf8`
-- `tasks/phase-3/P3-T09.md` — `507f3d530e06`
-- `tasks/phase-3/P3-T10.md` — `81624c4b6c64`
-- `tasks/phase-3/P3-T11.md` — `8b64fd42935b`
-- `tasks/phase-3/P3-T12.md` — `f6de6dc2ec6c`
-- `tasks/phase-3/P3-T13.md` — `958f9d9e93f1`
-- `tasks/phase-3/P3-T14.md` — `d35832964d58`
-- `tasks/phase-3/P3-T15.md` — `b89253d9ef3b`
-- `tasks/phase-3/P3-T16.md` — `b65069689a39`
-- `tasks/phase-3/P3-T17.md` — `66efef08986d`
-- `tasks/phase-3/P3-T18.md` — `1713cc712511`
-- `tasks/phase-3/P3-T18A.md` — `2fe8a38b88fa`
-- `tasks/phase-3/P3-T19.md` — `5c04e484939f`
-- `tasks/phase-3/P3-T20.md` — `0c56e92674d5`
-- `tasks/phase-3/P3-T21.md` — `0c2df07a252f`
-- `tasks/phase-3/P3-T22.md` — `738b73fd3d63`
-- `tasks/phase-4/P4-T01.md` — `13aea58d004d`
-- `tasks/phase-4/P4-T02.md` — `eff0ab87d51e`
-- `tasks/phase-4/P4-T03.md` — `4b5ac3095de5`
-- `tasks/phase-4/P4-T04.md` — `92c242955e6d`
-- `tasks/phase-4/P4-T05.md` — `0d4466c1e740`
-- `tasks/phase-4/P4-T06.md` — `5d13d8467fe8`
-- `tasks/phase-4/P4-T07.md` — `9a3f9da78957`
-- `tasks/phase-4/P4-T08.md` — `a3f8cc9fe132`
-- `tasks/phase-4/P4-T09.md` — `b3560093c271`
-- `tasks/phase-4/P4-T10.md` — `e61cf8bf4e15`
-- `tasks/phase-4/P4-T11.md` — `10accc96baba`
-- `tasks/phase-4/P4-T12.md` — `64b2d537fab0`
-- `tasks/phase-4/P4-T13.md` — `4ad3cf3c4566`
-- `tasks/phase-4/P4-T14.md` — `3b9c005e6ebb`
-- `tasks/phase-5/P5-T01.md` — `294a2646b3ad`
-- `tasks/phase-5/P5-T02.md` — `1ebef1bfd860`
-- `tasks/phase-5/P5-T03.md` — `b6ab719915e0`
-- `tasks/phase-5/P5-T04.md` — `0399e9334d2c`
-- `tasks/phase-5/P5-T05.md` — `b512467ad169`
-- `tasks/phase-5/P5-T06.md` — `2e75a0312f9b`
-- `tasks/phase-5/P5-T07.md` — `9a93df719d30`
-- `tasks/phase-5/P5-T08.md` — `895c009d4ebd`
-- `tasks/phase-5/P5-T09.md` — `fab2465dee7a`
-- `tasks/phase-5/P5-T10.md` — `4b8f3f2ecc0d`
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~135,907 tokens**.
+
+- `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~71t
+- `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
+- `AGENTS.md` — `19cb61b4aa04` — ~1,237t
+- `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~404t
+- `CHANGELOG.md` — `63f1d5da4695` — ~820t
+- `CONTRIBUTING.md` — `afbd4102ee4c` — ~404t
+- `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~639t
+- `FEATURE_PRESERVATION_MATRIX.md` — `995cf0b7ebb6` — ~969t
+- `GETTING_STARTED.md` — `c97552130b3f` — ~557t
+- `OPEN_GATES.md` — `9b2605f9ccee` — ~902t
+- `README.md` — `f87b6c9d3add` — ~885t
+- `SOURCE_AUDIT.md` — `ac0450713e0f` — ~374t
+- `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~440t
+- `START_HERE.md` — `e6132cc6b8ed` — ~437t
+- `agents/README.md` — `7102d9ae3274` — ~202t
+- `agents/hardware-ops-reviewer.md` — `076714dfeea3` — ~126t
+- `agents/implementation-planner.md` — `0479376063d5` — ~105t
+- `agents/spec-author.md` — `31ca2354413f` — ~113t
+- `agents/spec-reviewer.md` — `9e07c9d365ad` — ~121t
+- `bundle-manifest.json` — `b7c17c834d37` — ~542t
+- `contracts/README.md` — `8afc7db8d310` — ~217t
+- `contracts/canonical-task-graph.json` — `abe11aa05856` — ~21,368t
+- `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~166t
+- `contracts/error.example.json` — `7a43622775b1` — ~60t
+- `contracts/feature-registry.json` — `3024b2c35e98` — ~5,590t
+- `contracts/gpu-telemetry.example.json` — `e3d37a58ab37` — ~236t
+- `contracts/prompt-record.example.json` — `8b199a55dc53` — ~137t
+- `contracts/repository-map.json` — `ea1edd0197ad` — ~173t
+- `contracts/routing-preferences.example.json` — `8fe31be89156` — ~188t
+- `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~394t
+- `decisions/DECISIONS_REQUIRED.md` — `ee84dba95ca4` — ~2,563t
+- `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~265t
+- `docs/AI_INSTALL_INFERWEAVE.md` — `64b97a39d222` — ~508t
+- `implementation/ACCEPTANCE_TEST_MATRIX.md` — `9ce06bfc2250` — ~1,737t
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `aeed2288acb9` — ~14,915t
+- `implementation/CANONICAL_TASK_INDEX.md` — `3c554f8e7417` — ~2,672t
+- `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,624t
+- `implementation/DATA_MODEL.md` — `d0e500314c0c` — ~596t
+- `implementation/ERROR_SEMANTICS.md` — `b20d20bfb602` — ~522t
+- `implementation/FEATURE_TASK_COVERAGE.md` — `6b7abb5f10c7` — ~2,151t
+- `implementation/IMPLEMENTATION_ORDER.md` — `1a48655f5ecc` — ~219t
+- `implementation/MILESTONES.md` — `84f77749cf80` — ~473t
+- `implementation/MONOREPO_BOOTSTRAP.md` — `7d729410dacd` — ~366t
+- `implementation/PHASE_GATES.md` — `2e31a5645d9b` — ~643t
+- `implementation/SPEC_TASK_COVERAGE.md` — `311dd51c46d0` — ~1,020t
+- `implementation/TEST_STRATEGY.md` — `c36453b9c5c0` — ~1,189t
+- `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~366t
+- `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
+- `pi/CONTEXT_PACK_CHECKLIST.md` — `8a9c95b7ec3d` — ~199t
+- `pi/FIRST_TASKS.md` — `674dbf07c4f5` — ~459t
+- `pi/PI_IMPLEMENTATION_SYSTEM_PROMPT.md` — `d3fd2adc5bc3` — ~554t
+- `pi/QWEN_CONTEXT_GUIDE.md` — `a016ee2cb759` — ~204t
+- `pi/REVIEW_PROMPT.md` — `0fca83a1dc7a` — ~190t
+- `pi/TASK_TEMPLATE.md` — `654c899dbb32` — ~280t
+- `scripts/bootstrap-repositories.sh` — `914de3443dbc` — ~226t
+- `scripts/validate_specs.py` — `1fbc6fabf975` — ~3,023t
+- `solana/DEVNET_ONLY.md` — `1a8ea96fcc58` — ~135t
+- `specs/00_INVARIANTS.md` — `601c31dc7d9b` — ~1,319t
+- `specs/01_REPOSITORIES_AND_OWNERSHIP.md` — `e52f5e6e8112` — ~628t
+- `specs/02_PROTOCOL_AND_API.md` — `60d75f035f9f` — ~425t
+- `specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md` — `e878aec33f99` — ~1,741t
+- `specs/04_CAPACITY_ADMISSION_SEATS.md` — `846d9f2c8c8c` — ~1,049t
+- `specs/05_ROUTING_AFFINITY.md` — `fe90cd1a0a50` — ~541t
+- `specs/06_BACKPRESSURE_RETURN_TO_SENDER.md` — `ae995dd6ac19` — ~343t
+- `specs/07_FAIRSHARE_OWNER_PRIORITY.md` — `3c9f3be77e28` — ~449t
+- `specs/08_CONNECTIVITY_DATA_PLANE.md` — `11aeb504bd51` — ~529t
+- `specs/09_OBSERVABILITY_RECEIPTS.md` — `391a76476314` — ~415t
+- `specs/10_DASHBOARD_PORTAL.md` — `157206881cb7` — ~998t
+- `specs/11_WORKBENCH_AUTOSPEC_PI.md` — `fbd0cf942993` — ~408t
+- `specs/12_MODEL_TUNING_BENCHMARKS.md` — `18e3f43ca576` — ~508t
+- `specs/13_RAG_TOOLS_LSP.md` — `9b08ea55e3c6` — ~328t
+- `specs/14_IMAGE_GENERATION.md` — `8eca06e1132a` — ~423t
+- `specs/15_ASYNC_JOBS_ARTIFACTS.md` — `8a995543424c` — ~303t
+- `specs/16_SECURITY_PRIVACY_TRUST.md` — `9aa2011d43ec` — ~368t
+- `specs/17_SCALING_HA_REGIONS.md` — `c70cb284139d` — ~383t
+- `specs/18_SOLANA_DEV_ACCOUNTING.md` — `436369519dbb` — ~266t
+- `specs/19_CI_CD_LIVING_SPECS.md` — `4bed745d8e28` — ~319t
+- `specs/20_NODE_AUTOCONFIG_DISCOVERY.md` — `0d0646f28dab` — ~423t
+- `specs/21_FEDERATION_ROLES.md` — `edc52ab18985` — ~492t
+- `specs/22_PROMPT_LEDGER.md` — `0f4993ca1982` — ~1,228t
+- `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md` — `c0cd3e45d4ca` — ~1,326t
+- `specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md` — `290ce8de7f53` — ~1,464t
+- `specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md` — `eb94bd094dd4` — ~1,532t
+- `specs/26_RESOURCE_IDENTITY_REDISCOVERY.md` — `ad4f89547616` — ~1,639t
+- `specs/27_SITE_CONNECTOR_ARTIFACT_CACHE.md` — `5117f6bd7dea` — ~924t
+- `specs/28_BOOTSTRAP_INIT_CLIENT.md` — `f6766faf2603` — ~2,059t
+- `specs/29_MCP_SERVERS.md` — `1f23788d86fd` — ~1,044t
+- `specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md` — `2dbde44c46cd` — ~445t
+- `specs/31_RESOURCE_HEALTH_QUARANTINE.md` — `4b0b1edbb982` — ~350t
+- `specs/32_DEMAND_FORECASTING_PRESTAGING.md` — `d705ce0560ba` — ~299t
+- `specs/33_RESUMABLE_BENCHMARK_DAG.md` — `091546f271f1` — ~385t
+- `specs/34_PROMPT_STORE_TIERING.md` — `cf79dca6f2b8` — ~354t
+- `specs/35_CLUSTER_SIMULATOR_CHAOS.md` — `a0dd9596ea15` — ~461t
+- `specs/36_GPU_WATCHDOG_RESCUE.md` — `74fd26e93204` — ~2,615t
+- `specs/37_CONTAINER_DEPLOYMENT_STANDARD.md` — `cfb37e4e75a6` — ~1,539t
+- `specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md` — `3be309a25553` — ~1,171t
+- `tasks/deferred/D-T01.md` — `a25f12f8d5a3` — ~227t
+- `tasks/phase-0/P0-T01.md` — `906dade5a845` — ~211t
+- `tasks/phase-0/P0-T01A.md` — `5cd8da23195c` — ~326t
+- `tasks/phase-0/P0-T02.md` — `6b633954d0b3` — ~228t
+- `tasks/phase-0/P0-T03.md` — `c982bcefec27` — ~216t
+- `tasks/phase-0/P0-T04.md` — `bb1deef48731` — ~244t
+- `tasks/phase-0/P0-T05.md` — `b1caab6a7138` — ~229t
+- `tasks/phase-0/P0-T06.md` — `8f2e809dd9b9` — ~230t
+- `tasks/phase-0/P0-T06A.md` — `0e2e7cf03e74` — ~321t
+- `tasks/phase-0/P0-T07.md` — `7b2d9b601815` — ~231t
+- `tasks/phase-0/P0-T08.md` — `7d809393c292` — ~222t
+- `tasks/phase-0/P0-T09.md` — `01b974ba0175` — ~205t
+- `tasks/phase-0/P0-T10.md` — `285ca39bc825` — ~206t
+- `tasks/phase-0/P0-T11.md` — `4ef4994bf764` — ~235t
+- `tasks/phase-0/P0-T11A.md` — `8616ae5381c2` — ~298t
+- `tasks/phase-0/P0-T12.md` — `d7d71d559fbe` — ~272t
+- `tasks/phase-1/P1-T01.md` — `c558fac84690` — ~236t
+- `tasks/phase-1/P1-T02.md` — `b6b97feed4db` — ~233t
+- `tasks/phase-1/P1-T02A.md` — `813e53012f60` — ~308t
+- `tasks/phase-1/P1-T03.md` — `a0dc1e389f65` — ~228t
+- `tasks/phase-1/P1-T04.md` — `96b4c02e831a` — ~250t
+- `tasks/phase-1/P1-T05.md` — `6a2567aa4045` — ~227t
+- `tasks/phase-1/P1-T06.md` — `92b8b8097cd5` — ~236t
+- `tasks/phase-1/P1-T06A.md` — `505bfee2b613` — ~285t
+- `tasks/phase-1/P1-T06B.md` — `8339a0b84e24` — ~294t
+- `tasks/phase-1/P1-T07.md` — `57d55b341fed` — ~233t
+- `tasks/phase-1/P1-T08.md` — `aff4a183d1ab` — ~219t
+- `tasks/phase-1/P1-T08A.md` — `3e28582c2906` — ~293t
+- `tasks/phase-1/P1-T09.md` — `e8fec108ad44` — ~217t
+- `tasks/phase-1/P1-T10.md` — `24a601e505b2` — ~228t
+- `tasks/phase-1/P1-T11.md` — `a95911d2b7ed` — ~216t
+- `tasks/phase-1/P1-T11A.md` — `ba874b7b8bc4` — ~290t
+- `tasks/phase-1/P1-T11B.md` — `c44413a61964` — ~264t
+- `tasks/phase-1/P1-T12.md` — `3343336487e6` — ~230t
+- `tasks/phase-1/P1-T12A.md` — `7b58d2dd116f` — ~279t
+- `tasks/phase-1/P1-T12B.md` — `fab313701e3b` — ~289t
+- `tasks/phase-1/P1-T13.md` — `a0fe678e8846` — ~218t
+- `tasks/phase-1/P1-T13A.md` — `9ed7fbbf64d4` — ~274t
+- `tasks/phase-1/P1-T14.md` — `e24035714f89` — ~214t
+- `tasks/phase-1/P1-T15.md` — `bfe3343fa469` — ~210t
+- `tasks/phase-1/P1-T16.md` — `31111e5bc528` — ~230t
+- `tasks/phase-1/P1-T17.md` — `3837224c6d0a` — ~217t
+- `tasks/phase-1/P1-T18.md` — `8163804b5bd8` — ~214t
+- `tasks/phase-1/P1-T19.md` — `a91ebffd338c` — ~225t
+- `tasks/phase-1/P1-T20.md` — `4203a32a3894` — ~234t
+- `tasks/phase-1/P1-T20A.md` — `06f7cad8d9ca` — ~270t
+- `tasks/phase-1/P1-T20B.md` — `1eb4f73abdcd` — ~292t
+- `tasks/phase-1/P1-T20C.md` — `6c392a57daea` — ~312t
+- `tasks/phase-1/P1-T21.md` — `db33ca4b61d2` — ~214t
+- `tasks/phase-1/P1-T21A.md` — `4e405f60d628` — ~300t
+- `tasks/phase-1/P1-T22.md` — `95d5d7dc544a` — ~238t
+- `tasks/phase-1/P1-T23.md` — `fce5fb7587f4` — ~259t
+- `tasks/phase-1/P1-T24.md` — `c53df0c58af0` — ~276t
+- `tasks/phase-1/P1-T25.md` — `3830edae26d0` — ~266t
+- `tasks/phase-2/P2-T01.md` — `dec5bff4b912` — ~236t
+- `tasks/phase-2/P2-T02.md` — `7e4abf6d7746` — ~225t
+- `tasks/phase-2/P2-T03.md` — `1430df4de5c6` — ~212t
+- `tasks/phase-2/P2-T04.md` — `d88ab3fe74eb` — ~215t
+- `tasks/phase-2/P2-T05.md` — `1caedbd7cf5d` — ~212t
+- `tasks/phase-2/P2-T06.md` — `ee38db034a80` — ~238t
+- `tasks/phase-2/P2-T07.md` — `13e4df0f460e` — ~231t
+- `tasks/phase-2/P2-T08.md` — `b41e689a857e` — ~212t
+- `tasks/phase-2/P2-T09.md` — `05409e0067a5` — ~233t
+- `tasks/phase-2/P2-T10.md` — `c8e701450f18` — ~208t
+- `tasks/phase-2/P2-T11.md` — `f09c53860c35` — ~230t
+- `tasks/phase-2/P2-T12.md` — `783bc537d1ff` — ~214t
+- `tasks/phase-2/P2-T13.md` — `b9a350cc9c76` — ~217t
+- `tasks/phase-2/P2-T14.md` — `899b4bc2776f` — ~226t
+- `tasks/phase-2/P2-T15.md` — `94a72cc2009e` — ~222t
+- `tasks/phase-2/P2-T16.md` — `88f10d07f21e` — ~217t
+- `tasks/phase-2/P2-T17.md` — `8b8a9947b84a` — ~211t
+- `tasks/phase-2/P2-T18.md` — `96ff2fbc0a7b` — ~224t
+- `tasks/phase-2/P2-T19.md` — `31d54dd0f6cd` — ~208t
+- `tasks/phase-2/P2-T20.md` — `7101adbb0f10` — ~206t
+- `tasks/phase-2/P2-T21.md` — `eecd1c1a9103` — ~221t
+- `tasks/phase-2/P2-T22.md` — `dacfcf61e918` — ~271t
+- `tasks/phase-3/P3-T01.md` — `46700fd72996` — ~227t
+- `tasks/phase-3/P3-T02.md` — `83b937c1726b` — ~223t
+- `tasks/phase-3/P3-T03.md` — `d596e96a836b` — ~235t
+- `tasks/phase-3/P3-T04.md` — `68f8d1a9c0b4` — ~212t
+- `tasks/phase-3/P3-T05.md` — `c0ca3d3c1d20` — ~252t
+- `tasks/phase-3/P3-T06.md` — `0454fc8a9bdd` — ~230t
+- `tasks/phase-3/P3-T07.md` — `d8439ca8d45d` — ~222t
+- `tasks/phase-3/P3-T08.md` — `b4279f0b768e` — ~225t
+- `tasks/phase-3/P3-T09.md` — `941ac7cfbd0e` — ~252t
+- `tasks/phase-3/P3-T10.md` — `03fe81d0999f` — ~268t
+- `tasks/phase-3/P3-T11.md` — `bb4c51fbc6ce` — ~238t
+- `tasks/phase-3/P3-T12.md` — `c57cb5ff03fb` — ~221t
+- `tasks/phase-3/P3-T13.md` — `a7e43d10fc03` — ~217t
+- `tasks/phase-3/P3-T14.md` — `f6dc3230142d` — ~213t
+- `tasks/phase-3/P3-T15.md` — `15221b751a86` — ~225t
+- `tasks/phase-3/P3-T16.md` — `28200ba08b98` — ~215t
+- `tasks/phase-3/P3-T17.md` — `1e0c9b4c30d2` — ~207t
+- `tasks/phase-3/P3-T18.md` — `fa6fe78f6750` — ~219t
+- `tasks/phase-3/P3-T18A.md` — `142782830b0e` — ~263t
+- `tasks/phase-3/P3-T19.md` — `093e1eadc8af` — ~248t
+- `tasks/phase-3/P3-T20.md` — `9ba7fd8c7a66` — ~223t
+- `tasks/phase-3/P3-T21.md` — `962e8d5b6dd3` — ~273t
+- `tasks/phase-3/P3-T22.md` — `7c4484210a81` — ~247t
+- `tasks/phase-4/P4-T01.md` — `c5457362a2a8` — ~207t
+- `tasks/phase-4/P4-T02.md` — `fa87d7ccde5a` — ~214t
+- `tasks/phase-4/P4-T03.md` — `c31cbc884e12` — ~209t
+- `tasks/phase-4/P4-T04.md` — `2da6cfbc8f84` — ~206t
+- `tasks/phase-4/P4-T05.md` — `cfc10fca09df` — ~213t
+- `tasks/phase-4/P4-T06.md` — `206e0cdd0dab` — ~207t
+- `tasks/phase-4/P4-T07.md` — `00d6ed940e6f` — ~216t
+- `tasks/phase-4/P4-T08.md` — `d9b49d8321a1` — ~207t
+- `tasks/phase-4/P4-T09.md` — `9969fe9c4ebc` — ~214t
+- `tasks/phase-4/P4-T10.md` — `a992858115bb` — ~210t
+- `tasks/phase-4/P4-T11.md` — `7b4d8127bf9a` — ~218t
+- `tasks/phase-4/P4-T12.md` — `89b162cbb7b3` — ~215t
+- `tasks/phase-4/P4-T13.md` — `be5c9ff31582` — ~241t
+- `tasks/phase-4/P4-T14.md` — `8abfa304dc33` — ~252t
+- `tasks/phase-5/P5-T01.md` — `b3feb41b1a8e` — ~209t
+- `tasks/phase-5/P5-T02.md` — `850c5ed54f82` — ~206t
+- `tasks/phase-5/P5-T03.md` — `6c5f8ea10441` — ~215t
+- `tasks/phase-5/P5-T04.md` — `66541093a7b1` — ~202t
+- `tasks/phase-5/P5-T05.md` — `d040f32ec680` — ~222t
+- `tasks/phase-5/P5-T06.md` — `d5d93fdf0acb` — ~228t
+- `tasks/phase-5/P5-T07.md` — `60e1cbfe67d6` — ~223t
+- `tasks/phase-5/P5-T08.md` — `ac1ba9075340` — ~235t
+- `tasks/phase-5/P5-T09.md` — `b73ee68ef2c0` — ~220t
+- `tasks/phase-5/P5-T10.md` — `62a2404b415b` — ~226t

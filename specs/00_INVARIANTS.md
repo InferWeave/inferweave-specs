@@ -44,3 +44,6 @@ These requirements override every feature spec.
 36. No request is admitted whose total or predicted peak context exceeds the target deployment's published context ceiling. A deployment whose ceiling is unknown is not admissible; an absent capability claim is never read as an unbounded one.
 37. Reservations expire on absence of observable progress, never on elapsed duration, and reclamation releases every resource the reservation held.
 38. A node becomes schedulable only after a real request has traversed its full authorization and admission path. Starting successfully is not evidence of being able to serve.
+39. There is no authoritative global provider registry in the request path. Discovery returns a bounded candidate set for a query and never requires enumerating the network.
+40. A control is proven only by a test that fails when the control is removed. Specification of a control, and a coverage signal reaching it, are each insufficient. Unproven controls are recorded as owed, never as proven.
+41. Every shared vocabulary — outcome, reason code, lifecycle state — is expressed as frozen data, published as a document, and reconciled by test. Prose alone is not a contract.

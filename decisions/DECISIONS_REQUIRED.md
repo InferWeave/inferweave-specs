@@ -205,3 +205,20 @@ plane these specifications must describe?
 Until this resolves, invariant 27 describes the target state, not the current one. No task may
 cite invariant 27 as authority for removing a capability that is currently serving production
 traffic.
+
+## D-007 Token-free proof enrollment — RESOLVED
+
+Node enrollment uses proof of protocol possession and model execution rather than an
+operator-issued bootstrap token. The gateway issues a renewable role credential automatically
+once proof succeeds; there is no operator approval step.
+
+A challenge grants eligibility to exactly the signed role, model, artifact, runtime,
+quantization, feature set, context class and measured resource claim challenged.
+
+Rationale: a shared bootstrap token makes the token the credential, so every holder is
+equivalent regardless of capability. Proof binds the credential to measured capability, and
+makes a published context ceiling something a node proves rather than asserts.
+
+Source: design recovered from the archived `InferWeave/inferweave-node` repository and
+rewritten into this architecture under the clean-slate constraint. Adopted by owner direction
+on 2026-09-03.

@@ -884,6 +884,61 @@
       "canonical_tasks": [
         "P1-T12A"
       ]
+    },
+    {
+      "id": "IW-EVID-001",
+      "name": "Conformance and hostile vectors",
+      "phase": 0,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "protocol+control-plane",
+      "canonical_tasks": [
+        "P0-T06A"
+      ]
+    },
+    {
+      "id": "IW-EVID-002",
+      "name": "Machine-checked registries with anti-vacuous guards",
+      "phase": 0,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "bootstrap",
+      "canonical_tasks": [
+        "P0-T01A"
+      ]
+    },
+    {
+      "id": "IW-NODE-004",
+      "name": "Token-free proof enrollment",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "node+control-plane",
+      "canonical_tasks": [
+        "P1-T02A"
+      ]
+    },
+    {
+      "id": "IW-OBS-003",
+      "name": "Read-side ledger integrity",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane",
+      "canonical_tasks": [
+        "P1-T08A"
+      ]
+    },
+    {
+      "id": "IW-UI-003",
+      "name": "Machine-checked presentation policy",
+      "phase": 1,
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "web",
+      "canonical_tasks": [
+        "P1-T21A"
+      ]
     }
   ]
 }

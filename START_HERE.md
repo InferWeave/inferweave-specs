@@ -6,12 +6,15 @@ This ZIP contains the complete canonical specification and implementation order.
 
 1. `AGENTS.md`
 2. `decisions/DECISIONS_REQUIRED.md`
-2. `specs/00_INVARIANTS.md`
-3. target `specs/*.md`
-4. canonical contracts/schema
-5. `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md`
-6. current task card
-7. current monorepo code
+3. `specs/00_INVARIANTS.md`
+4. target `specs/*.md`
+5. canonical contracts/schema
+6. `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md`
+7. current task card
+8. current monorepo code
+
+Read `OPEN_GATES.md` before treating any specified control as available. Specification is not
+deployment, and implementation is not staffing.
 
 Historical repositories are not authoritative.
 
