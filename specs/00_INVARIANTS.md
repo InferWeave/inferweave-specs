@@ -47,3 +47,4 @@ These requirements override every feature spec.
 39. There is no authoritative global provider registry in the request path. Discovery returns a bounded candidate set for a query and never requires enumerating the network.
 40. A control is proven only by a test that fails when the control is removed. Specification of a control, and a coverage signal reaching it, are each insufficient. Unproven controls are recorded as owed, never as proven.
 41. Every shared vocabulary — outcome, reason code, lifecycle state — is expressed as frozen data, published as a document, and reconciled by test. Prose alone is not a contract.
+42. A throughput figure is meaningless without the context depth it was measured at. Runtime configuration is measured on the target placement, never inherited from another model, card or recipe.

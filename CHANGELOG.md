@@ -1,5 +1,14 @@
 # Changelog
 
+## v11 — 2026-09-04
+
+- Added `39_INFERENCE_RUNTIME_TUNING`: throughput figures require a measured context depth;
+  KV cache quantization is a measured choice and often a net loss; thread count is physical
+  cores; accelerator memory needs working headroom; backend selection is measured; drafters
+  are qualified per workload and depth with recorded acceptance; MoE placement has a hard
+  ceiling when experts are not device-resident.
+- Added invariant 42.
+
 ## v10 — 2026-09-03
 
 Made the bundle enforceable rather than aspirational, from ideas recovered out of the archived

@@ -1,6 +1,6 @@
 # Feature → Canonical Task Coverage
 
-Features: **78**
+Features: **79**
 
 | Feature | Priority | Phase | Owner component | Canonical tasks |
 |---|---|---|---|---|
@@ -92,3 +92,4 @@ Features: **78**
 | `IW-GRANT-001` Inter-gateway capacity request protocol | P1 | 5 | control-plane | `P5-T14` |
 | `IW-GRANT-002` Standby slot grants and lifecycle | P1 | 5 | control-plane | `P5-T15` |
 | `IW-GRANT-003` Capacity request loop and amplification control | P0 | 5 | control-plane | `P5-T16` |
+| `IW-TUNE-002` Measured runtime tuning record | P0 | 1 | node | `P1-T06C` |

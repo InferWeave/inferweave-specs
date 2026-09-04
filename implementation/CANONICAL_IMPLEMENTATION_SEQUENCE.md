@@ -344,6 +344,22 @@ Rules:
 
 **Notes:** An autoloading runtime reports no window for an unloaded model.
 
+### P1-T06C — Record measured runtime tuning per deployment
+**Context:** `C70`
+**Depends on:** P1-T06A
+**Features:** IW-TUNE-002
+**Read:** specs/39_INFERENCE_RUNTIME_TUNING.md, specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md
+
+**Outcome:** Each qualified deployment records measured prefill and decode at depth, KV cache type, backend, thread count, device memory headroom, and drafter acceptance, as measurements rather than configuration intent.
+
+**Required tests:**
+- throughput record without a depth is rejected
+- drafter without a recorded acceptance rate is not qualified
+- backend change produces a new deployment fingerprint
+- MoE deployment with non-resident experts advertises as low-throughput
+
+**Notes:** Thread count set to SMT threads rather than physical cores cost 19x on one host.
+
 ### P1-T07 — Prompt ledger metadata and encrypted payload storage
 **Context:** `C75`
 **Depends on:** P0-T05, P0-T11

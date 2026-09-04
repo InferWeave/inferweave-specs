@@ -1,6 +1,6 @@
 # Canonical Task Index
 
-Total tasks: **123**
+Total tasks: **124**
 
 | Task | Phase | Context | Depends | Title |
 |---|---:|---:|---|---|
@@ -28,6 +28,7 @@ Total tasks: **123**
 | `P1-T06` | 1 | C65 | P1-T03, P1-T04, P0-T06 | Immutable deployment manifest and node advertisement |
 | `P1-T06A` | 1 | C75 | P1-T06 | Publish a deployment context ceiling sized to the envelope |
 | `P1-T06B` | 1 | C75 | P1-T06A | Capability precedence: declared, measured, persisted |
+| `P1-T06C` | 1 | C70 | P1-T06A | Record measured runtime tuning per deployment |
 | `P1-T07` | 1 | C75 | P0-T05, P0-T11 | Prompt ledger metadata and encrypted payload storage |
 | `P1-T08` | 1 | C65 | P1-T07, P0-T06 | Prompt ingest API and submission ordering |
 | `P1-T08A` | 1 | C75 | P1-T08 | Read-side ledger integrity |
