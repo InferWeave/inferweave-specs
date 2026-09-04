@@ -1,0 +1,61 @@
+{
+  "schema_version": "inferweave.image-binding/v1",
+  "template": "z_image_turbo/text_to_image",
+  "deployment_ref": "dep_zimage_turbo_example",
+  "openai_endpoint": "/v1/images/generations",
+  "bindings": {
+    "prompt": {
+      "target": "positive_text",
+      "required": true
+    },
+    "n": {
+      "target": "batch_size",
+      "default": 1,
+      "max": 4
+    },
+    "size": {
+      "target": [
+        "width",
+        "height"
+      ],
+      "parse": "WxH",
+      "default": "1024x1024"
+    },
+    "response_format": {
+      "values": [
+        "b64_json",
+        "url"
+      ],
+      "default": "b64_json"
+    }
+  },
+  "inferweave_extensions": {
+    "negative_prompt": {
+      "target": "negative_text",
+      "default": ""
+    },
+    "steps": {
+      "target": "ksampler.steps",
+      "default": 8,
+      "range": [
+        4,
+        20
+      ]
+    },
+    "seed": {
+      "target": "ksampler.seed",
+      "default": "random"
+    },
+    "guidance": {
+      "target": "ksampler.cfg",
+      "default": 1.0
+    }
+  },
+  "artifact_metadata": [
+    "checksum",
+    "seed",
+    "settings",
+    "deployment_id",
+    "license"
+  ]
+}

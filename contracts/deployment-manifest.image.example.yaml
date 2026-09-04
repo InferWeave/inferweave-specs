@@ -1,0 +1,60 @@
+# Example image (diffusion) deployment manifest — companion to
+# deployment-manifest.example.yaml (which covers modality: text).
+#
+# Realizes specs/14_IMAGE_GENERATION.md: an immutable pipeline (weights + text
+# encoder + decoder/VAE + workflow + runtime/container + policy/license +
+# hardware compatibility) executed through a CONSTRAINED server-side workflow
+# template. Public clients never submit arbitrary ComfyUI graphs; they call the
+# OpenAI-compatible /v1/images/generations endpoint (see specs/02) and the
+# parameter binding in contracts/image-template-binding.example.json.
+schema_version: inferweave.deployment/v1
+deployment_id: dep_zimage_turbo_example
+modality: image
+pipeline:                              # spec 14 immutable pipeline
+  diffusion_model:
+    source: huggingface
+    repository: Comfy-Org/z_image_turbo
+    revision: immutable-commit
+    file: split_files/diffusion_models/z_image_turbo_bf16.safetensors
+    sha256: sha256:REPLACE
+  text_encoder:
+    source: huggingface
+    repository: Comfy-Org/z_image_turbo
+    revision: immutable-commit
+    file: split_files/text_encoders/qwen_3_4b.safetensors
+    clip_type: lumina2
+    sha256: sha256:REPLACE
+  vae:
+    source: huggingface
+    repository: Comfy-Org/z_image_turbo
+    revision: immutable-commit
+    file: split_files/vae/ae.safetensors
+    sha256: sha256:REPLACE
+  adapters: []
+runtime:
+  backend: comfyui                     # constrained-template adapter (spec 14)
+  version: pinned
+  container_digest: sha256:REPLACE
+  workflow_template: z_image_turbo/text_to_image   # server-side; not client-supplied
+precision:
+  weights: fp8_e4m3fn                  # storage-only fp8; runs on Turing (SM 7.5) and newer
+context:
+  default_resolution: 1024x1024
+  max_resolution: 1536x1536
+execution:
+  default_steps: 8                     # "turbo" schedule
+  cfg: 1.0
+  sampler: euler
+  scheduler: simple
+  model_sampling: auraflow
+  shift: 3.0
+resource_envelope:
+  minimum_vram_bytes: 8589934592       # ~8 GiB observed at fp8, 1024x1024
+  safety_margin_bytes: 1073741824
+policy:
+  profiles: [standard]
+license:
+  id: REVIEW_REQUIRED                  # confirm Z-Image / Tongyi-MAI terms before qualifying
+validation:
+  state: unqualified
+  benchmark_profile_id: null           # image qualification suite TBD (see specs/24)

@@ -16,6 +16,23 @@ Initial execution adapter may use constrained ComfyUI templates. Public clients 
 - cancellation;
 - artifact access grants.
 
+### OpenAI parameter binding
+
+The public `POST /v1/images/generations` surface (specs/02) is bound to a named,
+server-side template through a declared mapping — see
+`contracts/image-template-binding.example.json`. Only the template name and its
+bound inputs are accepted; clients never supply a workflow graph.
+
+Standard OpenAI fields (`prompt`, `n`, `size`, `response_format`) map directly to
+template inputs. Generation controls that have no OpenAI equivalent
+(`negative_prompt`, `steps`, `seed`, `guidance`, sampler/shift) are supplied only
+through the optional `inferweave` request object or documented `X-InferWeave-*`
+headers, so stock SDKs continue to work unchanged. Every artifact records the
+resolved seed and settings for reproducibility.
+
+An image deployment is declared as an immutable pipeline manifest — see
+`contracts/deployment-manifest.image.example.yaml` (`modality: image`).
+
 ## Data plane
 
 Large inputs/outputs normally bypass the central gateway through scoped object/direct/relay transfers. Gateway remains authoritative for auth, reservation, policy and job state.
