@@ -1704,3 +1704,124 @@ Rules:
 - no mainnet config
 
 **Notes:** Do not schedule until explicitly reopened.
+
+### P2-T23 — Topology graph model and local gateway export
+**Context:** `C80`
+**Depends on:** P0-T06, P1-T04, P1-T05
+**Features:** IW-TOPO-001, IW-TOPO-002
+**Read:** specs/40_NETWORK_TOPOLOGY_GRAPH.md, specs/26_RESOURCE_IDENTITY_REDISCOVERY.md, specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md
+
+**Outcome:** A gateway emits a typed vertex/edge graph of the nodes, child gateways and GPUs it directly knows, keyed on stable resource IDs, with every vertex carrying a complete/partial/unknown horizon and its own snapshot_at and version.
+
+**Required tests:**
+- unknown-horizon vertices are not counted as empty
+- vertices key on stable IDs, not addresses
+- export validates against contracts/topology-graph.example.json
+- guard suite runs against a deliberately broken fixture
+
+### P2-T24 — Per-viewer topology redaction
+**Context:** `C75`
+**Depends on:** P2-T23
+**Features:** IW-TOPO-004
+**Read:** specs/40_NETWORK_TOPOLOGY_GRAPH.md, specs/16_SECURITY_PRIVACY_TRUST.md
+
+**Outcome:** Topology export is rendered per viewer: unauthorized vertices remain present with kind, edges and horizon intact, and their address, hostname and operator identity replaced by a stable per-session opaque handle.
+
+**Required tests:**
+- redacted export contains no private address
+- redacted export has the same vertex count as the unredacted one
+- opaque handles are stable within a session and uncorrelatable across viewers
+
+### P5-T11 — Federated topology composition
+**Context:** `C85`
+**Depends on:** P2-T23, P5-T04
+**Features:** IW-TOPO-003
+**Read:** specs/40_NETWORK_TOPOLOGY_GRAPH.md, specs/21_FEDERATION_ROLES.md
+
+**Outcome:** Local exports compose into a network view that deduplicates one service reached by several discovery paths, marks cycles without traversing them, resolves conflicting vertices by version rather than arrival order, and carries per-subtree staleness instead of one network-wide timestamp.
+
+**Required tests:**
+- two discovery paths to one provider compose to one vertex
+- composition over a cyclic graph terminates and marks the cycle
+- conflicting exports resolve by version, not arrival order
+- composed graph exposes no single network-wide timestamp
+
+### P5-T12 — Topology scale aggregation
+**Context:** `C80`
+**Depends on:** P5-T11
+**Features:** IW-TOPO-005
+**Read:** specs/40_NETWORK_TOPOLOGY_GRAPH.md, specs/21_FEDERATION_ROLES.md
+
+**Outcome:** Above a configured fan-out a coordinator emits a typed aggregate vertex carrying counts and summed capacity for its subtree, inheriting that subtree's horizon so an aggregate over unknown vertices is never reported complete.
+
+**Required tests:**
+- an aggregate over a subtree containing unknown is not complete
+- aggregate vertices are distinguishable from leaves by type
+- fan-out threshold is honoured
+
+### P5-T13 — Whole-network topology visualization surface
+**Context:** `C80`
+**Depends on:** P5-T11
+**Features:** IW-TOPO-006
+**Read:** specs/40_NETWORK_TOPOLOGY_GRAPH.md, specs/10_DASHBOARD_PORTAL.md
+
+**Outcome:** Dashboard and CLI render the composed graph from the published contract, showing completeness and staleness rather than hiding them, and never presenting an aggregate or an unknown-horizon vertex as a known leaf.
+
+**Required tests:**
+- unknown and complete vertices render distinguishably
+- totals are shown with the uncertainty they were computed over
+- renderer consumes only the published contract
+
+### P5-T14 — Inter-gateway capacity request protocol
+**Context:** `C85`
+**Depends on:** P5-T04, P1-T12
+**Features:** IW-GRANT-001
+**Read:** specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md, specs/06_BACKPRESSURE_RETURN_TO_SENDER.md, specs/04_CAPACITY_ADMISSION_SEATS.md
+
+**Outcome:** A gateway can ask a peer for capacity on the control plane without holding the triggering client request: negotiation runs on its own clock, a peer answers or refuses immediately with a spec 06 reason code, and no peer offers capacity it has already granted elsewhere.
+
+**Required tests:**
+- client request is not held beyond the spec 06 admission budget while a peer is asked
+- a peer with outstanding grants does not offer the same capacity twice
+- refusal is immediate and carries a reason code
+
+### P5-T15 — Standby slot grants and lifecycle
+**Context:** `C85`
+**Depends on:** P5-T14, P1-T11B
+**Features:** IW-GRANT-002
+**Read:** specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md, specs/04_CAPACITY_ADMISSION_SEATS.md
+
+**Outcome:** Granted standby slots are held against the granting site's measured envelope, expire on time since last progress, are revocable with notice under local owner priority, and return to the granting site's envelope on expiry or revocation.
+
+**Required tests:**
+- standby offered never exceeds the measured envelope
+- expiry is evaluated on time since last progress, not elapsed time
+- revocation honours the stated notice and returns slots to the envelope
+- routing to an expired grant is rejected
+
+### P5-T16 — Capacity request loop and amplification control
+**Context:** `C75`
+**Depends on:** P5-T14
+**Features:** IW-GRANT-003
+**Read:** specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md, specs/21_FEDERATION_ROLES.md
+
+**Outcome:** Capacity requests carry a path vector and hop budget and are bounded by a configured fan-out breadth, so one shortage cannot broadcast across a mesh and a malformed path causes refusal rather than an unbounded walk.
+
+**Required tests:**
+- a request whose path already contains the receiver is refused
+- a request at hop budget zero is answered or refused, never forwarded
+- fan-out never exceeds the configured breadth
+- a malformed path vector causes refusal, not traversal
+
+### P5-T17 — Capacity grant receipts and forecast signals
+**Context:** `C80`
+**Depends on:** P5-T15
+**Features:** IW-GRANT-004
+**Read:** specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md, specs/09_OBSERVABILITY_RECEIPTS.md, specs/32_DEMAND_FORECASTING_PRESTAGING.md
+
+**Outcome:** Every grant, refusal, revocation and expiry is a receipt carrying path vector, hop budget, envelope offered and accounting lineage, and held/revoked grants feed pre-staging so a site meeting demand by borrowing is visible rather than hidden.
+
+**Required tests:**
+- each grant, refusal, revocation and expiry emits a receipt
+- receipts carry lineage so one served request bills exactly once
+- repeated revocation surfaces as an under-provisioning signal

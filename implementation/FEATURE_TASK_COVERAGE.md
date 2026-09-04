@@ -82,3 +82,13 @@ Features: **78**
 | `IW-NODE-004` Token-free proof enrollment | P0 | 1 | node+control-plane | `P1-T02A` |
 | `IW-OBS-003` Read-side ledger integrity | P0 | 1 | control-plane | `P1-T08A` |
 | `IW-UI-003` Machine-checked presentation policy | P0 | 1 | web | `P1-T21A` |
+| `IW-TOPO-001` Local topology graph export | P1 | 2 | control-plane | `P2-T23` |
+| `IW-TOPO-002` Topology horizon and completeness semantics | P0 | 2 | control-plane | `P2-T23` |
+| `IW-TOPO-003` Federated topology composition | P1 | 5 | control-plane | `P5-T11` |
+| `IW-TOPO-004` Per-viewer topology redaction | P0 | 2 | control-plane | `P2-T24` |
+| `IW-TOPO-005` Topology scale aggregation | P2 | 5 | control-plane | `P5-T12` |
+| `IW-TOPO-006` Whole-network visualization surface | P2 | 5 | web | `P5-T13` |
+| `IW-GRANT-004` Capacity grant receipts and forecast signals | P2 | 5 | control-plane | `P5-T17` |
+| `IW-GRANT-001` Inter-gateway capacity request protocol | P1 | 5 | control-plane | `P5-T14` |
+| `IW-GRANT-002` Standby slot grants and lifecycle | P1 | 5 | control-plane | `P5-T15` |
+| `IW-GRANT-003` Capacity request loop and amplification control | P0 | 5 | control-plane | `P5-T16` |
