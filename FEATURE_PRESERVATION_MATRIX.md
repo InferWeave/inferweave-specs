@@ -5,7 +5,7 @@ This matrix exists specifically to prevent consolidation from deleting desired b
 | Area | Preserved target | Canonical spec | Phase |
 |---|---|---|---:|
 | OpenAI API | `/v1/models`, chat, responses, embeddings; images later | 02 | 1 |
-| Native API | `/api/v1` nodes, capacity, routes, jobs, policy, tuning | 02 | 1+ |
+| Native API | `/iw/v1` nodes, capacity, routes, jobs, policy, tuning | 02 | 1+ |
 | Seats | one active session = seat; unequal resource cost | 04 | 1 |
 | Context/KV | measured/predicted admission, growth reserve, headroom | 04 | 1 |
 | Routing | model/capability/policy hard filters | 05 | 1 |
