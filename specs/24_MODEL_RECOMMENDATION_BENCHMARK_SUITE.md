@@ -235,14 +235,14 @@ Next.js should expose:
 ## API
 
 ```text
-GET  /api/v1/model-candidates
-GET  /api/v1/benchmark-suites
-POST /api/v1/benchmark-runs
-GET  /api/v1/benchmark-runs/{id}
-GET  /api/v1/recommendations
-GET  /api/v1/recommendations/resources/{resource_id}
-POST /api/v1/recommendations/qualify
-POST /api/v1/recommendations/recompute
+GET  /iw/v1/model-candidates
+GET  /iw/v1/benchmark-suites
+POST /iw/v1/benchmark-runs
+GET  /iw/v1/benchmark-runs/{id}
+GET  /iw/v1/recommendations
+GET  /iw/v1/recommendations/resources/{resource_id}
+POST /iw/v1/recommendations/qualify
+POST /iw/v1/recommendations/recompute
 ```
 
 ## Explainability

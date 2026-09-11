@@ -12,9 +12,11 @@ Later/conditional:
 - `POST /v1/images/generations`
 - compatible image edit endpoints where semantics can be honored
 
-OpenAI compatibility is a public contract. InferWeave-specific metadata may be supplied through documented headers or an optional `inferweave` request object without breaking standard clients.
+OpenAI compatibility is a public contract and MUST stay byte-compatible under `/v1/` so any OpenAI client works unmodified. InferWeave-specific metadata may be supplied through documented headers or an optional `inferweave` request object without breaking standard clients.
 
-## Native `/api/v1`
+**Naming rule (see `specs/42_SITE_GATEWAY_CONFORMANCE.md` §API naming):** the OpenAI-standard surface stays under `/v1/`; every InferWeave-native (non-OpenAI) endpoint lives under the **`iw` prefix** (`/iw/v1/…`, Prometheus `/iw/metrics`), never bare `/v1/`, so a future OpenAI route can never collide. The native plane below is therefore served under `/iw/v1`, not `/api/v1`.
+
+## Native `/iw/v1`
 
 Minimum:
 - nodes/capabilities/capacity/heartbeats
