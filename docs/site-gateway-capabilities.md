@@ -119,7 +119,7 @@ scope (C10).
 - MUST expose per-model request stats (requests, errors, 503s, in-flight, a
   latency percentile).
 - SHOULD expose per-model+card throughput (tokens, cache hits, prefill/decode
-  rates), a Prometheus `/metrics` surface, a capacity summary, and a dashboard
+  rates), a Prometheus `/iw/metrics` surface, a capacity summary, and a dashboard
   aggregate.
 - Telemetry MUST record only metadata (model, worker, card, token counts, timing,
   status) — never prompt or completion text — and MUST be non-blocking (a metric

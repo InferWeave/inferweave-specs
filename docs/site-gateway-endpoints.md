@@ -10,6 +10,10 @@ the companion [gateway-capabilities-spec](./site-gateway-capabilities.md). RFC
 2119 key words apply.
 
 ## Conventions
+- **Naming.** OpenAI-standard routes stay byte-compatible under `/v1/`; all
+  InferWeave-custom routes are `iw`-prefixed (`/iw/v1/…`, Prometheus at
+  `/iw/metrics`) so they never collide with a future OpenAI route. Bare-`/v1/`
+  forms of custom routes MAY be served as transition compat aliases.
 - **Transport.** HTTP/1.1; JSON request/response bodies (`Content-Type:
   application/json`) except SSE streams and the Prometheus text endpoint.
 - **Auth classes** (how a route is protected):
@@ -47,6 +51,7 @@ MUST expose running-vs-registered-vs-dispatchable counts. No auth.
 |---|---|---|
 | POST | `/v1/chat/completions` | MUST |
 | POST | `/v1/completions` | MUST |
+| POST | `/v1/responses` | SHOULD (OpenAI-current) |
 | POST | `/v1/embeddings` | SHOULD (models advertising the modality) |
 | POST | `/v1/images/generations` | SHOULD (image models) |
 
@@ -68,12 +73,12 @@ carry a modality marker.
 ### Workers (registry)
 | Method | Path | Auth | Body / Result |
 |---|---|---|---|
-| POST | `/v1/workers` | admin | register (below) |
-| POST | `/v1/workers/{id}/heartbeat` | admin | liveness bump; `204`/`200` |
-| DELETE | `/v1/workers/{id}` | admin | deregister; `204` |
-| GET | `/v1/workers` | client | fleet topology |
+| POST | `/iw/v1/workers` | admin | register (below) |
+| POST | `/iw/v1/workers/{id}/heartbeat` | admin | liveness bump; `204`/`200` |
+| DELETE | `/iw/v1/workers/{id}` | admin | deregister; `204` |
+| GET | `/iw/v1/workers` | client | fleet topology |
 
-**`POST /v1/workers`** request (JSON) — required: (`model` OR `job_id`),
+**`POST /iw/v1/workers`** request (JSON) — required: (`model` OR `job_id`),
 `endpoint`, `card`, `slots` (≥1), `ctx_window` (>0). Optional: `quant`,
 `spec_type`, `gpus`, `tier`, `expires_at` (RFC3339), `last_seen`,
 `gpu_layers`/`model_layers`, measured footprint. MUST be **all-or-nothing**
@@ -81,7 +86,7 @@ carry a modality marker.
 `endpoint` outside the allowlist (`400`). MUST clamp a future `last_seen`.
 Success `200`/`204`.
 
-**`GET /v1/workers`** → `200` `{"data":[ {"job_id","model","endpoint","card",
+**`GET /iw/v1/workers`** → `200` `{"data":[ {"job_id","model","endpoint","card",
 "quant","spec_type","gpus","ctx_window","slots","tier","source",
 "last_request_ts","hold_until","expires_at"} … ]}`. A worker past its TTL MUST
 NOT appear as routable (MAY appear flagged).
@@ -89,9 +94,9 @@ NOT appear as routable (MAY appear flagged).
 ### Pool / lifecycle — auth: *client*
 | Method | Path | Notes |
 |---|---|---|
-| POST | `/v1/warmup` | request a model be warmed to ≥1 worker; returns an ETA |
-| GET | `/v1/warmup` | warm state per model |
-| DELETE | `/v1/warmup/{model}` | release/stop keeping a model warm |
+| POST | `/iw/v1/warmup` | request a model be warmed to ≥1 worker; returns an ETA |
+| GET | `/iw/v1/warmup` | warm state per model |
+| DELETE | `/iw/v1/warmup/{model}` | release/stop keeping a model warm |
 
 Warmup MUST be idempotent and MUST NOT exceed the acquisition backstops (C6);
 when acquisition is disabled it MUST refuse cleanly (not hang).
@@ -99,14 +104,14 @@ when acquisition is disabled it MUST refuse cleanly (not hang).
 ### Observability — auth: *client*
 | Method | Path | Result |
 |---|---|---|
-| GET | `/v1/stats` | per-model `{requests,errors,served_503,inflight,p50_ms}` + totals, uptime, events, capacity |
-| GET | `/v1/throughput` | per model+card `{requests,prompt_tokens,cached_tokens,completion_tokens,prefill_tps,decode_tps,ctx_at_end}` (+ sample counts); unmeasured = `"unknown"` |
-| GET | `/v1/capacity` | fleet capacity summary per model |
-| GET | `/v1/dashboard` | aggregated fleet/utilisation view |
-| GET | `/metrics` | Prometheus text (below) |
+| GET | `/iw/v1/stats` | per-model `{requests,errors,served_503,inflight,p50_ms}` + totals, uptime, events, capacity |
+| GET | `/iw/v1/throughput` | per model+card `{requests,prompt_tokens,cached_tokens,completion_tokens,prefill_tps,decode_tps,ctx_at_end}` (+ sample counts); unmeasured = `"unknown"` |
+| GET | `/iw/v1/capacity` | fleet capacity summary per model |
+| GET | `/iw/v1/dashboard` | aggregated fleet/utilisation view |
+| GET | `/iw/metrics` | Prometheus text (below) |
 | GET | `/ui` | human status page (HTML) |
 
-**`GET /metrics`** — Prometheus `text/plain; version=0.0.4`. MUST expose at least,
+**`GET /iw/metrics`** — Prometheus `text/plain; version=0.0.4`. MUST expose at least,
 labeled by model (and card where applicable): request counts, prompt/cached/
 completion token counters, prefill/decode rates, per-model errors/503s/inflight/
 p50, uptime, and live workers by card. Unmeasured series MUST be omitted, never
@@ -116,9 +121,9 @@ open).
 ### Operator sign-in & personal keys — auth as noted (present only if OIDC configured)
 | Method | Path | Auth |
 |---|---|---|
-| GET | `/auth/login` `/auth/callback` `/auth/logout` | open (OIDC flow) |
-| GET | `/auth/me` | session |
-| GET/POST | `/keys`, POST `/keys/{id}/delete` | session |
+| GET | `/iw/auth/login` `/iw/auth/callback` `/iw/auth/logout` | open (OIDC flow) |
+| GET | `/iw/auth/me` | session |
+| GET/POST | `/iw/keys`, POST `/iw/keys/{id}/delete` | session |
 
 If sign-in is not configured these routes MUST return `404` (not a fake success).
 Personal keys minted here are presented to *client* routes as bearer tokens.
@@ -128,10 +133,10 @@ Personal keys minted here are presented to *client* routes as bearer tokens.
 2. `GET /v1/models` in OpenAI list shape with context window + state.
 3. `POST /v1/chat/completions` + `/v1/completions`, client-gated, streaming,
    cancellation, `X-Request-Id`, and `503`+`Retry-After` on no worker.
-4. `POST/GET/DELETE /v1/workers[...]` admin-gated, all-or-nothing registration
+4. `POST/GET/DELETE /iw/v1/workers[...]` admin-gated, all-or-nothing registration
    with endpoint allowlist + TTL liveness.
 5. Warmup trio, client-gated, idempotent, bounded.
-6. `GET /v1/stats` (+ SHOULD: `/v1/throughput`, `/v1/capacity`, `/metrics`).
+6. `GET /iw/v1/stats` (+ SHOULD: `/iw/v1/throughput`, `/iw/v1/capacity`, `/iw/metrics`).
 7. Two shared secrets (client, registration) + optional OIDC; identical `401`s;
    MUST refuse to start with an unset registration secret.
 8. No enrolment/bootstrap-token endpoint (C9).

@@ -38,6 +38,21 @@ A conformant gateway is therefore defined by what it presents (endpoints, below)
 what it guarantees (capabilities, below), and how it behaves as one link in a
 chain (B1–B5).
 
+## API naming — OpenAI fidelity + `iw` prefix (invariant)
+- The OpenAI-compatible surface MUST stay **byte-compatible with the OpenAI API**
+  under `/v1/` (`/v1/models`, `/v1/chat/completions`, `/v1/completions`,
+  `/v1/responses`, `/v1/embeddings`, `/v1/images/generations`), so any OpenAI
+  client/SDK works unmodified.
+- Every InferWeave-specific (non-OpenAI) endpoint MUST live under the **`iw`
+  prefix** (`/iw/v1/…`), never under bare `/v1/`, so a future OpenAI addition can
+  never collide with an InferWeave one. This is the rule that keeps the two
+  surfaces from ever clashing as OpenAI evolves.
+- Prometheus is served at `/iw/metrics`. Pure operational conventions that are
+  neither OpenAI nor InferWeave-invented (e.g. `/healthz`) MAY keep their standard
+  path.
+- This supersedes any custom `/api/v1/*` namespace: InferWeave-custom is
+  `iw`-prefixed.
+
 ## Capabilities (MUST unless noted)
 - **C1 Model advertisement** — OpenAI `{"object":"list","data":[…]}`; each entry
   carries a *servable* context window and a state (`hot|warm|cold`), never a bare
@@ -77,34 +92,48 @@ chain (B1–B5).
 Public OpenAI-compatible plane follows `specs/02`. The concrete site-gateway
 surface the reference implementation serves (auth class in parens):
 
+**OpenAI-standard surface — under `/v1/`, byte-compatible with OpenAI:**
 | Method · path | Auth | Contract |
 |---|---|---|
-| `GET /healthz` | open | `200 {status:"ok",census}` / `503 {status:"degraded"}`, fail-closed |
 | `GET /v1/models` | client | OpenAI list w/ `x_context_window`,`x_state` |
-| `POST /v1/chat/completions`, `/v1/completions` | client | §C2; SHOULD `/v1/embeddings`,`/v1/images/generations` |
-| `POST /v1/workers` | admin | all-or-nothing register (§C4) |
-| `POST /v1/workers/{id}/heartbeat` · `DELETE /v1/workers/{id}` | admin | liveness / deregister |
-| `GET /v1/workers` · `GET /v1/capacity` | client | fleet topology / capacity summary |
-| `POST/GET /v1/warmup` · `DELETE /v1/warmup/{model}` | client | idempotent, bounded (§C5/6) |
-| `GET /v1/stats` · `/v1/throughput` · `/v1/dashboard` · `/metrics` | client | observability (§C8) |
-| `GET /auth/{login,callback,logout,me}` · `/keys*` | open/session | OPTIONAL OIDC + personal keys |
+| `POST /v1/chat/completions` · `/v1/completions` · `/v1/responses` | client | §C2 |
+| `POST /v1/embeddings` · `/v1/images/generations` | client | §C2 (SHOULD, by modality) |
+
+**InferWeave-custom surface — under the `iw` prefix (never bare `/v1/`):**
+| Method · path | Auth | Contract |
+|---|---|---|
+| `POST /iw/v1/workers` | admin | all-or-nothing register (§C4) |
+| `POST /iw/v1/workers/{id}/heartbeat` · `DELETE /iw/v1/workers/{id}` | admin | liveness / deregister |
+| `GET /iw/v1/workers` · `GET /iw/v1/capacity` | client | fleet topology / capacity |
+| `POST/GET /iw/v1/warmup` · `DELETE /iw/v1/warmup/{model}` | client | idempotent, bounded (§C5/6) |
+| `GET /iw/v1/stats` · `/iw/v1/throughput` · `/iw/v1/dashboard` | client | observability (§C8) |
+| `GET /iw/metrics` | client | Prometheus text (§C8) |
+| `GET /iw/auth/{login,callback,logout,me}` · `/iw/keys*` | open/session | OPTIONAL OIDC + personal keys |
+
+**Operational conventions** (not OpenAI, no clash risk): `GET /healthz` (open) MAY
+keep its standard path — `200 {status:"ok",census}` / `503 {status:"degraded"}`,
+fail-closed.
+
+The reference implementation currently serves the custom endpoints under bare
+`/v1/*` (and `/metrics`); those MUST be retained as **compat aliases** during the
+transition to the `iw` prefix (see §API naming, §Divergences).
 
 Full per-endpoint request/response/status detail lives in the companion
 references `docs/site-gateway-capabilities.md` and `docs/site-gateway-endpoints.md`;
 the auth classes, request bodies, and status codes summarised above are normative.
 
-## Divergences from `specs/02` — TO RECONCILE (open gate)
-The deployed reference gateway and `02` differ; a conformant contract must pick a
-canonical form. Tracked here for resolution (see `OPEN_GATES.md`):
+## Divergences from `specs/02` — RESOLVED by §API naming
+The naming rule settles the earlier open gate:
 
-| Concern | `02` says | Reference gateway | Proposed resolution |
+| Concern | `02` said | Reference gateway | **Resolution** |
 |---|---|---|---|
-| text completion | `POST /v1/responses` | `POST /v1/completions` | support **both** aliases during transition; `/v1/responses` canonical |
-| worker/node admin | native `/api/v1/*` (nodes, heartbeats, capacity) | `/v1/workers*`, `/v1/capacity` | move admin under `/api/v1/*`; keep `/v1/workers*` as compat aliases |
-| warm/stats/throughput | native admin vocabulary | `/v1/warmup`,`/v1/stats`,`/v1/throughput`,`/metrics` | fold into native `/api/v1/*`; `/metrics` stays Prometheus-standard |
+| text completion | `/v1/responses` | `/v1/completions` | both are OpenAI-standard; serve both under `/v1/`, `/v1/responses` canonical |
+| worker/node admin | native `/api/v1/*` | `/v1/workers*`, `/v1/capacity` | **`/iw/v1/*`** (not `/api/v1/*`, not bare `/v1/`); current `/v1/*` forms kept as compat aliases |
+| warm/stats/throughput | native admin vocab | `/v1/warmup`,`/v1/stats`,… `/metrics` | **`/iw/v1/*`** + `/iw/metrics`; current forms compat aliases |
 
-Until resolved, an implementation MUST serve at least the reference forms above;
-after resolution, the canonical forms become MUST and the others compat aliases.
+This means `specs/02_PROTOCOL_AND_API.md`'s native `/api/v1/*` namespace SHOULD be
+renamed to the `iw` prefix for system-wide consistency (flagged for `02`; the
+`iw`-prefix rule here is authoritative for the gateway surface).
 
 ## Conformance (per spec 38)
 Minimum for interchangeability: §C1–C10, the MUST endpoints + status behaviours
