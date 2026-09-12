@@ -102,7 +102,10 @@ Total tasks: **124**
 | `P3-T19` | 3 | C90 | P1-T22, P1-T23, P3-T09, P3-T11, P3-T16, P3-T18A | AI copy/paste installer acceptance flow |
 | `P3-T20` | 3 | C80 | P3-T19, P3-T12 | Update/backup/restore operational lifecycle |
 | `P3-T21` | 3 | C95 | P3-T07, P3-T08, P3-T10, P3-T14 | Production Slurm/site E2E and reconnect history |
-| `P3-T22` | 3 | C100 | P3-T21, P3-T19, P3-T20, P3-T18A | Phase-3 operational/security review |
+| `P3-T23` | 3 | C75 | P3-T03, P1-T06C | Per-GPU claims, per-model dwell and availability floor in the autoscaler |
+| `P3-T24` | 3 | C80 | P3-T23, P3-T06, P3-T14 | Node GPU swap executor: drain, pinned load, rollback |
+| `P3-T25` | 3 | C75 | P3-T24 | GPU hot-swap conformance and live-load swap evidence |
+| `P3-T22` | 3 | C100 | P3-T21, P3-T19, P3-T20, P3-T18A, P3-T25 | Phase-3 operational/security review |
 | `P4-T01` | 4 | C75 | P3-T22 | Durable async job/event/lease state machine |
 | `P4-T02` | 4 | C75 | P4-T01, P3-T02 | Artifact metadata/grants and direct transfer |
 | `P4-T03` | 4 | C80 | P4-T01, P2-T15 | Workbench session/history core |

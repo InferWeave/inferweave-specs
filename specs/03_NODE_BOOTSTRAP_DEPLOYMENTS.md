@@ -97,6 +97,7 @@ State transitions are idempotent and observable.
 - warm/health-check
 - drain
 - stop/evict
+- swap one GPU to another deployment: drain, stop, pinned load, warm (`43_GPU_PLACEMENT_HOT_SWAP.md`)
 - update by creating a new deployment
 - rollback to previously qualified deployment
 - requalify after driver/runtime/kernel/model/topology changes
@@ -164,6 +165,8 @@ Nodes register capability/cache/lifetime facts and request desired deployments f
 The gateway chooses deployment(s), returning immutable model/runtime/profile manifests and signed artifact references. The node then fetches/loads/verifies/warms and advertises readiness.
 
 The gateway should not normally proxy model artifact bytes itself.
+
+On a node with more than one accelerator the assignment is per GPU: each GPU carries its own desired deployment, and a node may serve several deployments, or several instances of one deployment, at once. Reassigning a GPU is a swap under `43_GPU_PLACEMENT_HOT_SWAP.md` and never bypasses its drain, dwell or availability floor. A runtime's own on-demand loading and eviction do not decide placement.
 
 
 ## Container deployment

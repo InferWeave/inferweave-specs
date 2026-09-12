@@ -44,6 +44,12 @@ Long sessions use strict affinity while the service remains healthy/eligible. Bo
 
 Do not move large KV state over WAN by default.
 
+## Instances of one deployment
+
+Each GPU instance of a deployment is a separate service instance, and routing balances across them. Where a runtime requires a unique name per loaded instance, the node exposes a distinct name per (deployment, GPU) pair and routing, not the runtime, spreads load.
+
+A draining instance is not a candidate. Requests it cancels at its drain deadline carry reason `INSTANCE_DRAINED` and are rerouted within the bounded retry budget of `06_BACKPRESSURE_RETURN_TO_SENDER.md` (`43_GPU_PLACEMENT_HOT_SWAP.md`).
+
 ## Explainability
 
 Persist candidate rejection reason codes, score components, selected instance/deployment and any soft fallback. The public representation uses privacy-safe IDs.

@@ -54,6 +54,23 @@ a small number of upstreams. Behaviour at fleet scale is projected, not measured
 exists for a subset only. Any claim that a backend is supported requires a device fingerprint
 and live telemetry from that backend recorded under `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md`.
 
+## GPU placement and hot-swap gate
+
+**BLOCKED.** Per-GPU placement and hot-swap (`specs/43_GPU_PLACEMENT_HOT_SWAP.md`, `IW-SCHED-002`)
+is specified and unimplemented. No node swaps a GPU under autoscaler control, and the fleet
+autoscaler (`InferWeave/inferweave#302`) remains library-only.
+
+- Every required test of `P3-T23`, `P3-T24` and `P3-T25` is `owed`.
+- The defaults `min_gpu_dwell_secs = 300`, `dwell_load_multiple = 10` and
+  `drain_timeout_secs = 120` are policy choices. None was tuned against fleet traffic.
+- Swap timings were measured on one two-GPU host with one runtime. The production router binary
+  they were measured on has no recorded commit; its behaviour was read from source at `82d6bb2`.
+- No swap has run across nodes, so the availability floor has not been exercised against a real
+  second instance.
+- The capacity reason codes, including `INSTANCE_DRAINED`, exist as prose in
+  `implementation/ERROR_SEMANTICS.md` and one example. They are not frozen data reconciled by a
+  test, so invariant 41 is unsatisfied for that vocabulary. This predates the change.
+
 ## Settlement and accounting gate
 
 **BLOCKED.** Invariants 29 and 30 and decision `D-004` defer all blockchain and settlement

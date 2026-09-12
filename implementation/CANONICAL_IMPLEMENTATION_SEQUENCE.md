@@ -1362,9 +1362,56 @@ Rules:
 - cache reuse
 - preemption
 
+### P3-T23 — Per-GPU claims, per-model dwell and availability floor in the autoscaler
+**Context:** `C75`
+**Depends on:** P3-T03, P1-T06C
+**Features:** IW-SCHED-002
+**Read:** specs/43_GPU_PLACEMENT_HOT_SWAP.md, specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md, specs/05_ROUTING_AFFINITY.md, specs/00_INVARIANTS.md
+
+**Outcome:** The autoscaler claims individual GPUs, rebalances one GPU per decision, holds each GPU for its model's dwell (configured, or max(300 s, 10 x measured p95 load)), never chooses a donor that would breach a model's healthy-instance floor or whose load cost is unmeasured, and persists loaded_at and swap intent on the claim.
+
+**Required tests:**
+- GPU inside dwell is never a donor and restart cannot shorten dwell
+- derived dwell and per-model override
+- model without measured load time is never a donor
+- property: no decision sequence breaches an availability floor
+- model at floor is freed only after another instance is healthy
+- GpuDwell, AvailabilityFloor and UnmeasuredLoadCost holds carry their numbers
+- existing autoscaler invariants still hold
+
+### P3-T24 — Node GPU swap executor: drain, pinned load, rollback
+**Context:** `C80`
+**Depends on:** P3-T23, P3-T06, P3-T14
+**Features:** IW-SCHED-002
+**Read:** specs/43_GPU_PLACEMENT_HOT_SWAP.md, specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md, specs/06_BACKPRESSURE_RETURN_TO_SENDER.md, specs/36_GPU_WATCHDOG_RESCUE.md, specs/31_RESOURCE_HEALTH_QUARANTINE.md, specs/39_INFERENCE_RUNTIME_TUNING.md
+
+**Outcome:** A node executes a GPU swap from persisted intent: drain with a bounded per-model deadline and INSTANCE_DRAINED cancellation, unload, load with every runtime component pinned to the claimed GPU and verified from device memory accounting, warm through the real admission path, and roll back or quarantine on failure, with runtime on-demand loading and eviction disabled.
+
+**Required tests:**
+- request within drain deadline completes before unload
+- request past drain deadline receives retryable 503 INSTANCE_DRAINED
+- failed load rolls back to the previous deployment and records a start failure
+- OOM on load is classified and not retried into the same placement
+- executor killed during STARTING resumes from persisted intent
+- weights, drafter and projector allocated on the claimed GPU
+- request for an unloaded model is refused and evicts nothing
+
+### P3-T25 — GPU hot-swap conformance and live-load swap evidence
+**Context:** `C75`
+**Depends on:** P3-T24
+**Features:** IW-SCHED-002
+**Read:** specs/43_GPU_PLACEMENT_HOT_SWAP.md, specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md, specs/09_OBSERVABILITY_RECEIPTS.md
+
+**Outcome:** A multi-GPU node under live load swaps a GPU to a second instance of another model while the donor model stays above its floor elsewhere, and the recorded decision and phase events show no sample where any model's healthy instances fell below its floor.
+
+**Required tests:**
+- live swap under load keeps every model at or above its floor at every sample
+- every swap decision and phase event is recorded with swap ID
+- measured load duration updates p95 used for derived dwell
+
 ### P3-T22 — Phase-3 operational/security review
 **Context:** `C100`
-**Depends on:** P3-T21, P3-T19, P3-T20, P3-T18A
+**Depends on:** P3-T21, P3-T19, P3-T20, P3-T18A, P3-T25
 **Features:** gate/review
 **Read:** specs/16_SECURITY_PRIVACY_TRUST.md, specs/28_BOOTSTRAP_INIT_CLIENT.md, specs/29_MCP_SERVERS.md
 

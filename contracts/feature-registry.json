@@ -1060,6 +1060,19 @@
       "canonical_tasks": [
         "P1-T06C"
       ]
+    },
+    {
+      "id": "IW-SCHED-002",
+      "name": "Per-GPU placement and hot-swap with availability floor",
+      "phase": 3,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane+node",
+      "canonical_tasks": [
+        "P3-T23",
+        "P3-T24",
+        "P3-T25"
+      ]
     }
   ]
 }
