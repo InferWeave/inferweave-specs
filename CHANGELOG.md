@@ -1,5 +1,29 @@
 # Changelog
 
+## Unreleased
+
+### Added — operational bundle `docs/specs/dynamic-context-capabilities/`
+
+Model context capability, request-scoped weighted admission, and the Pi client
+contract, delivered as a single bundle with work breakdown and acceptance
+criteria. It operationalises clauses that `04_CAPACITY_ADMISSION_SEATS` and
+`05_ROUTING_AFFINITY` already stated and that no implementation honoured: context
+feasibility is a hard routing filter against each candidate's ceiling, and seat
+count is descriptive rather than admission capacity.
+
+The bundle adds the pieces the numbered documents left open: the three lease
+types (hard request lease, session-affinity lease, soft KV lease) as distinct
+objects with distinct limits; the reservation arithmetic
+(`prompt + bounded output + configurable margin`, never a model window); the
+capability document and its `ETag`/generation semantics, including the rule that
+an alias advertises only what it can guarantee to route; the six admission failure
+reasons and their retryability; and the client precedence chain ending in a
+conservative 128K floor with **no** generic 260K fallback anywhere.
+
+Canonical specifications are unchanged: `02`, `04` and `05` remain authoritative
+for the contract, and `docs/specs/README.md` records where the bundle sits
+relative to them.
+
 ## v12 — 2026-09-12
 
 - Added `43_GPU_PLACEMENT_HOT_SWAP`: capacity moves between models one GPU at a time; each model has
