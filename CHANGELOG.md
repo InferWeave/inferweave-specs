@@ -1,5 +1,19 @@
 # Changelog
 
+## v12 — 2026-09-12
+
+- Added `43_GPU_PLACEMENT_HOT_SWAP`: capacity moves between models one GPU at a time; each model has
+  a configurable dwell, derived from its measured load time when not set; a catalogued model never
+  falls below its healthy-instance floor; a swap drains with a bounded per-model deadline, pins every
+  runtime component to the claimed GPU, and rolls back on failure. Runtime on-demand loading and
+  eviction no longer decide placement.
+- **The specification was the defect.** The fleet autoscaler was implemented from an issue with no
+  specification. Followed literally, `03` and `05` left a runtime's least-recently-used router
+  deciding placement: on one host it reloaded models 52–82 times a day, force-killed serving instances
+  without a drain, and could evict the instance on the wrong GPU.
+- Added invariant 43, feature `IW-SCHED-002`, tasks `P3-T23`–`P3-T25` (proof `owed`), reason code
+  `INSTANCE_DRAINED`, and the GPU placement and hot-swap gate.
+
 ## v11 — 2026-09-04
 
 - Added `39_INFERENCE_RUNTIME_TUNING`: throughput figures require a measured context depth;

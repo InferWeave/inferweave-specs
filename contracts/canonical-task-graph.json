@@ -2451,6 +2451,99 @@
       "notes": ""
     },
     {
+      "id": "P3-T23",
+      "phase": 3,
+      "title": "Per-GPU claims, per-model dwell and availability floor in the autoscaler",
+      "depends_on": [
+        "P3-T03",
+        "P1-T06C"
+      ],
+      "specs": [
+        "43_GPU_PLACEMENT_HOT_SWAP",
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "05_ROUTING_AFFINITY",
+        "00_INVARIANTS"
+      ],
+      "features": [
+        "IW-SCHED-002"
+      ],
+      "context_class": "C75",
+      "outcome": "The autoscaler claims individual GPUs, rebalances one GPU per decision, holds each GPU for its model's dwell (configured, or max(300 s, 10 x measured p95 load)), never chooses a donor that would breach a model's healthy-instance floor or whose load cost is unmeasured, and persists loaded_at and swap intent on the claim.",
+      "required_tests": [
+        "GPU inside dwell is never a donor and restart cannot shorten dwell",
+        "derived dwell and per-model override",
+        "model without measured load time is never a donor",
+        "property: no decision sequence breaches an availability floor",
+        "model at floor is freed only after another instance is healthy",
+        "GpuDwell, AvailabilityFloor and UnmeasuredLoadCost holds carry their numbers",
+        "existing autoscaler invariants still hold"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P3-T23"
+    },
+    {
+      "id": "P3-T24",
+      "phase": 3,
+      "title": "Node GPU swap executor: drain, pinned load, rollback",
+      "depends_on": [
+        "P3-T23",
+        "P3-T06",
+        "P3-T14"
+      ],
+      "specs": [
+        "43_GPU_PLACEMENT_HOT_SWAP",
+        "03_NODE_BOOTSTRAP_DEPLOYMENTS",
+        "06_BACKPRESSURE_RETURN_TO_SENDER",
+        "36_GPU_WATCHDOG_RESCUE",
+        "31_RESOURCE_HEALTH_QUARANTINE",
+        "39_INFERENCE_RUNTIME_TUNING"
+      ],
+      "features": [
+        "IW-SCHED-002"
+      ],
+      "context_class": "C80",
+      "outcome": "A node executes a GPU swap from persisted intent: drain with a bounded per-model deadline and INSTANCE_DRAINED cancellation, unload, load with every runtime component pinned to the claimed GPU and verified from device memory accounting, warm through the real admission path, and roll back or quarantine on failure, with runtime on-demand loading and eviction disabled.",
+      "required_tests": [
+        "request within drain deadline completes before unload",
+        "request past drain deadline receives retryable 503 INSTANCE_DRAINED",
+        "failed load rolls back to the previous deployment and records a start failure",
+        "OOM on load is classified and not retried into the same placement",
+        "executor killed during STARTING resumes from persisted intent",
+        "weights, drafter and projector allocated on the claimed GPU",
+        "request for an unloaded model is refused and evicts nothing"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P3-T24"
+    },
+    {
+      "id": "P3-T25",
+      "phase": 3,
+      "title": "GPU hot-swap conformance and live-load swap evidence",
+      "depends_on": [
+        "P3-T24"
+      ],
+      "specs": [
+        "43_GPU_PLACEMENT_HOT_SWAP",
+        "38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE",
+        "09_OBSERVABILITY_RECEIPTS"
+      ],
+      "features": [
+        "IW-SCHED-002"
+      ],
+      "context_class": "C75",
+      "outcome": "A multi-GPU node under live load swaps a GPU to a second instance of another model while the donor model stays above its floor elsewhere, and the recorded decision and phase events show no sample where any model's healthy instances fell below its floor.",
+      "required_tests": [
+        "live swap under load keeps every model at or above its floor at every sample",
+        "every swap decision and phase event is recorded with swap ID",
+        "measured load duration updates p95 used for derived dwell"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P3-T25"
+    },
+    {
       "id": "P3-T22",
       "phase": 3,
       "title": "Phase-3 operational/security review",
@@ -2458,7 +2551,8 @@
         "P3-T21",
         "P3-T19",
         "P3-T20",
-        "P3-T18A"
+        "P3-T18A",
+        "P3-T25"
       ],
       "specs": [
         "16_SECURITY_PRIVACY_TRUST",

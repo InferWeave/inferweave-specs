@@ -33,13 +33,17 @@ Canonical machine-readable body:
 `NO_RESOURCE_HEADROOM`, `ALL_DRAINING`, `ALL_STALE`,
 `REGION_UNAVAILABLE`, `PRIVACY_CONSTRAINT`, `LICENSE_CONSTRAINT`,
 `OWNER_RESERVE`, `NODE_OVERLOADED`, `BACKEND_UNHEALTHY`,
-`CONTEXT_WINDOW_EXCEEDED`.
+`CONTEXT_WINDOW_EXCEEDED`, `INSTANCE_DRAINED`.
 
 ## Permanent versus transient capacity failures
 
 Every code above except one describes a condition that may clear on its own.
 
 `NO_CONTEXT_CAPACITY` is transient: this deployment could serve this request later.
+
+`INSTANCE_DRAINED` is transient: the request was admitted, then cancelled at its instance's drain
+deadline during a GPU swap (`specs/43_GPU_PLACEMENT_HOT_SWAP.md`). It maps to `503` with
+`"retryable": true`; the availability floor guarantees another healthy instance of the model.
 
 `CONTEXT_WINDOW_EXCEEDED` is permanent for that deployment. The request exceeds the model's
 context ceiling and no amount of waiting changes that. It maps to `413`, carries
