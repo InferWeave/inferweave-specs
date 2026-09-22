@@ -5,6 +5,18 @@ Pi and implementation agents MUST treat resolved decisions as binding.
 ## D-001 Backend language — RESOLVED
 All production backend, control-plane, routing, node, relay, local-proxy, telemetry and benchmark services use **Rust** unless a future ADR explicitly changes this.
 
+**Amended 2026-09-22 — conformant site gateways.** A *site gateway* may be
+implemented in another language provided it passes the language-neutral
+conformance suite in `specs/42_SITE_GATEWAY_CONFORMANCE.md`. New services remain
+Rust. The `metabolomics-us/inferweave-gateway` Go site gateway is such a gateway
+and stays Go.
+
+Why: spec 42 defines a language-neutral contract precisely so that "Rust and Go
+gateway implementations are interchangeable and chainable". Read absolutely,
+this decision contradicted spec 42 on its own terms — a language-neutral
+conformance contract only earns its complexity if a non-Rust gateway is expected
+to exist.
+
 Python is allowed for offline/model-ecosystem evaluation tooling only when necessary.
 
 ## D-002 Web stack — RESOLVED
@@ -107,6 +119,24 @@ Separate historical repositories are not architecture boundaries.
 
 ## D-009 Existing code — RESOLVED
 All existing InferWeave repository contents are discarded as implementation constraints.
+
+**Scope, amended 2026-09-22.** "Existing repository contents" means the
+**archived** `InferWeave/inferweave-*` prototypes this decision was resolved
+alongside: `inferweave-chain`, `-client`, `-dashboard`, `-deploy`, `-docs`,
+`-node`, `-protocol` and `-workbench`.
+
+It does **not** cover production systems, which migrate under their own
+specifications rather than being discarded:
+
+- the `metabolomics-us/inferweave-gateway` Go site gateway (see D-001);
+- the `metabolomics-us/inferweave-slurm` scheduler plant (see D-010);
+- this monorepo, `InferWeave/inferweave`, itself.
+
+Why: read without a scope, this decision contradicted spec 42 (a conformance
+contract for a gateway that would not exist), D-010 (Slurm support for a plant
+that would be discarded), and ADR 0002 in the monorepo ("the Go gateway is
+kept as the site gateway, not retired"). All three assume the production
+systems persist.
 
 Agents MUST NOT:
 - port historical code simply because it exists;
