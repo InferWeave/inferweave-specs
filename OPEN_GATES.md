@@ -21,8 +21,12 @@ Closing a gate requires an entry here and a decision record. Neither alone is su
 
 ## Production deployment gate
 
-**BLOCKED.** No InferWeave node, gateway, relay or control plane is approved for production
-deployment. No production address, endpoint, credential or DNS name exists.
+**BLOCKED for new deployments, with a bounded existing-service exception.**
+The operator authorized the console/traffic/topology release to the existing Fry
+site gateway and Rust gateway service on 2026-09-22. See
+[`decisions/2026-09-22-existing-gateway-rollout.md`](decisions/2026-09-22-existing-gateway-rollout.md)
+for the exact scope and release conditions. This approval does not assert that
+deployment has succeeded and does not open unrelated deployment or fleet gates.
 
 The archived `InferWeave/inferweave-*` implementation repositories were read-only as of
 2026-09-03 and are not a deployed system.
@@ -92,3 +96,12 @@ Approved: the specification bundle is authoritative for implementation sequencin
 BLOCKED: conformance vectors do not exist yet (`specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md`),
 so no cross-implementation conformance claim may be made. Every `owed` proof status in the
 task graph is an open gate on the control it names.
+
+## Topology v2 operational qualification gate
+
+**BLOCKED.** Spec 40 now defines the versioned authenticated topology HTTP
+surface and corrects its prior v1 example mismatch. This does not demonstrate
+that a real multi-site graph has been collected, that peer credentials are
+provisioned, or that the deployed console consumes it. Those operational proofs
+remain `owed` by P5-T11/P5-T13. Implementation unit and HTTP fixture tests may
+prove individual controls; they do not satisfy the multi-node deployment gate.
