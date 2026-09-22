@@ -252,3 +252,48 @@ makes a published context ceiling something a node proves rather than asserts.
 Source: design recovered from the archived `InferWeave/inferweave-node` repository and
 rewritten into this architecture under the clean-slate constraint. Adopted by owner direction
 on 2026-09-03.
+
+## D-024 Dispatcher is a first-class federated role — RESOLVED
+A **dispatcher** is a new role: the component that turns demand into running capacity —
+acquiring resources, fetching and staging model artifacts, and loading them. It is not a
+router and never selects the node a request runs on.
+
+- A gateway may have **zero, one or many** dispatchers, each with different capabilities
+  (workstation GPUs, Slurm allocations, large multi-GPU nodes, different storage and runtimes).
+- Dispatchers advertise **summarised** provisioning capability through gateway federation; the
+  federation does not require a global dispatcher and must work with none.
+- A dispatcher is **never in the successful inference data path**. It is consulted when a model is
+  not READY anywhere, and is out of the picture once it is.
+- Provisioning is deduplicated federation-wide: concurrent requests for the same model at the same
+  placement attach to one logical operation rather than starting several.
+
+This is distinct from, and complementary to, the inter-gateway capacity grants in
+`specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md`: spec 41 **negotiates** capacity between gateways; a
+dispatcher is what **realises** it.
+
+Adopted by owner direction on 2026-09-22.
+
+## D-025 Federation transport: HTTP/2 over established, multiplexed connections — RESOLVED
+Gateway-to-gateway and relay-to-gateway traffic uses **HTTP/2 over TLS** by default.
+
+- Connections are **established once and held**. Requests are multiplexed as streams over the
+  standing connection; a request never opens its own connection.
+- **No connection per request, and no connection per model.** One warm connection per peer is the
+  target, with a small configurable ceiling rather than a brittle one-socket invariant.
+- On failure: degrade, re-resolve, reconnect with bounded exponential backoff and jitter — and
+  prefer reusing a live connection over establishing a new one.
+- **HTTP/3 / QUIC is not the default.** It may be benchmarked behind a transport abstraction and
+  adopted by a later decision on measured evidence. The QUIC reference in
+  `specs/08_CONNECTIVITY_DATA_PLANE.md` concerns NAT-traversal rendezvous, not federation transport.
+
+**Why this is an operational requirement, not a preference.** The site's IT operators flagged
+InferWeave's connection behaviour. Connection churn is visible to the institution's network —
+firewall and connection-tracking state, TLS handshake volume, ephemeral port pressure — in a way
+per-request latency is not. Reuse is therefore required behaviour, and a regression in connection
+count is a defect even when latency is unaffected.
+
+Evidence it is achievable here: the relay (`crates/iw-relay-http`, merged in InferWeave/inferweave#524)
+already measures 60 requests multiplexed over roughly one connection
+(`tests/h2c.rs::http2_multiplexes_many_requests_over_one_connection`).
+
+Adopted by owner direction on 2026-09-22.
