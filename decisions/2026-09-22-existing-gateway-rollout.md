@@ -9,13 +9,22 @@ of those changes to the existing site gateway and existing Rust gateway service.
 It does not authorize creation of a new fleet, replacement of GPU runtimes,
 unrelated controller changes, or a claim of general multi-site qualification.
 
-Read-only deployment discovery confirmed the existing services on Fry:
+Read-only deployment discovery confirmed the existing serving path:
 
 - The Go site gateway is supervised by `inferweave-gateway.service`, with the
   CI-approved artifact installer and rollback path described in
   `metabolomics-us/inferweave-gateway/deploy/fry/README.md`.
-- The Rust gateway is the existing `inferweave-adaptive-canary-gateway-1`
-  Compose service, configured under `/opt/inferweave-adaptive-canary`.
+- The registered Rust peer is the existing Hive Slurm service `iw-gateway-rust`
+  (job `23850909` at discovery), launched by
+  `/quobyte/metabolomicsgrp/it/llm/iw-rust/scale/iw-gateway-run.sh`. Its registered
+  identity at the Fry edge is `node_hive-rust`. Updating this existing service
+  and preserving its state is within the operator-authorized rollout.
+
+An earlier discovery record named the separate Fry
+`inferweave-adaptive-canary-gateway-1` Compose service as the Rust target. The
+edge registry identifies Hive as the actual serving peer, so the release target
+is corrected here before deployment. This does not authorize changing the
+canary controller, GPU engines, worker allocations, or unrelated applications.
 
 ## Release conditions
 
