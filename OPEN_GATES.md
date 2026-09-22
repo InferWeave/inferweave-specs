@@ -21,8 +21,12 @@ Closing a gate requires an entry here and a decision record. Neither alone is su
 
 ## Production deployment gate
 
-**BLOCKED.** No InferWeave node, gateway, relay or control plane is approved for production
-deployment. No production address, endpoint, credential or DNS name exists.
+**BLOCKED for new deployments, with a bounded existing-service exception.**
+The operator authorized the console/traffic/topology release to the existing Fry
+site gateway and Rust gateway service on 2026-09-22. See
+[`decisions/2026-09-22-existing-gateway-rollout.md`](decisions/2026-09-22-existing-gateway-rollout.md)
+for the exact scope and release conditions. This approval does not assert that
+deployment has succeeded and does not open unrelated deployment or fleet gates.
 
 The archived `InferWeave/inferweave-*` implementation repositories were read-only as of
 2026-09-03 and are not a deployed system.
