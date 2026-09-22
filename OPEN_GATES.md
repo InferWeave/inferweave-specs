@@ -92,3 +92,12 @@ Approved: the specification bundle is authoritative for implementation sequencin
 BLOCKED: conformance vectors do not exist yet (`specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md`),
 so no cross-implementation conformance claim may be made. Every `owed` proof status in the
 task graph is an open gate on the control it names.
+
+## Topology v2 operational qualification gate
+
+**BLOCKED.** Spec 40 now defines the versioned authenticated topology HTTP
+surface and corrects its prior v1 example mismatch. This does not demonstrate
+that a real multi-site graph has been collected, that peer credentials are
+provisioned, or that the deployed console consumes it. Those operational proofs
+remain `owed` by P5-T11/P5-T13. Implementation unit and HTTP fixture tests may
+prove individual controls; they do not satisfy the multi-node deployment gate.

@@ -143,11 +143,88 @@ subtree containing `unknown` vertices is itself not `complete`.
 
 ## Export contract
 
-The wire format is `contracts/topology-graph.example.json`, versioned with the
-protocol of `specs/02_PROTOCOL_AND_API.md`. The dashboard of
-`specs/10_DASHBOARD_PORTAL.md` is a consumer of this contract, not the owner of
-it: the graph must be equally consumable by the CLI, by an operator's script,
-and by a test.
+The canonical HTTP export is `GET /iw/v1/topology`, returning the versioned
+v2 contract (`schemaVersion: 2`). Existing API versioning remains unchanged;
+the schema version is the topology payload version, not a claim that `/iw/v2`
+exists. The monorepo publishes `schemas/json-schema/topology_v2_graph.json`,
+generated bindings and `contracts/topology-v2.example.json`.
+
+### Specification defect corrected 2026-09-22
+
+Previously this text named `contracts/topology-graph.example.json` as though it
+implemented the graph model above. Inspection of InferWeave commit `8238290`
+showed a library-only v1 export using `node`/`child_gateway` and
+`gateway_to_node`/`gateway_to_child_gateway`/`node_to_gpu`, without an HTTP
+route or federated composition. Treating that example as canonical would
+reintroduce incompatible role vocabularies and imply an API that did not exist.
+The existing v1 library and schema remain unchanged for current consumers;
+v2 implements the canonical roles and edges above. Consumers must check
+`schemaVersion` and must not silently interpret v1 as v2.
+
+### Wire fields and default behavior
+
+The envelope contains `schemaVersion`, `rootId`, `vertices`, `edges`, `sources`
+and `truncated`. There is no network-wide freshness timestamp. Names are
+camelCase on the wire; timestamps are Unix seconds.
+
+- Vertex: `resourceId`, `kind`, `roles`, `horizon`, `snapshotAt`, `version`;
+  optional `epoch`, `label`, `address`, `ownerNodeId`, `status`, `detail`,
+  `models`, `counts`. `status` is `live`, `stale`, or `unknown`; it does not
+  substitute for completeness. `detail` is a bounded generic explanation,
+  never an exception/credential/prompt dump. GPU IDs come from registered
+  inventory, never from array indices or a guessed worker-to-GPU ratio.
+- Edge: `sourceId`, `targetId`, `kind`; optional `stale`, `cycle` booleans.
+  `registered_with` runs child to parent; `routes_to` runs parent to child.
+  These inverse relations do not by themselves constitute a cycle. Detect
+  cycles separately within registration and routing relations.
+- Source: `resourceId`, `snapshotAt`, `version`, optional `epoch`. Sources
+  record emitter-specific observations. Vertex counters from two unrelated
+  emitters are not comparable. Prefer a resource's own authorized emitter
+  to a parent's description; otherwise preserve uncertainty.
+- Counts: optional `workers`, `gpus`, `vertices`, `unknown`, `partial`.
+  Absent counts are unmeasured, not zero. Aggregates with unknown/partial
+  members must remain incomplete; counts never invent measured capacity.
+
+A restarting emitter gives its new in-memory counters a cryptographically
+random process `epoch`; counters are ordered only within the same epoch.
+An authenticated sequential fetch from a registered peer can replace its
+previous epoch and invalidate that cached subtree. Concurrent old responses
+must not restore a retired epoch. An offline composer presented with two
+epochs for the same source rejects the ambiguity; it must not order epochs by
+wall clock. A consumer of an older export without `epoch` cannot infer restart
+ordering and must retain uncertainty on a counter rollback.
+
+The local exporter automatically uses existing registration, inventory and
+telemetry state. It does not need new operator topology configuration or
+probe nodes while handling a browser request. Unknown child gateways remain
+visible until their authorized graph is available. Stale registration records
+remain visible within the bounded observation window; overflow is explicit.
+
+### Authentication, privacy and resource bounds
+
+Use existing credentials. An existing operator authorization may reveal the
+identities and addresses it permits. Recognized ordinary inference principals
+receive opaque private resource identities and no private addresses, hostnames
+or operator labels. Anonymous or unrecognized credentials receive `401`.
+A caller's forwarding header or traffic pattern grants no topology permission.
+
+Opaque identity handles use a cryptographic keyed derivation (HMAC-SHA256 or
+an equivalent existing primitive) with server-owned secret entropy and viewer
+scope. A public session ID and a noncryptographic hash are insufficient.
+Root identity remains available for authorized composition; topology shape
+itself is intentionally visible under the redaction rules above. This does not
+claim graph structure is impossible to correlate.
+
+One browser request reads one server-side snapshot. Server-side collectors
+only contact already registered, authorized peer endpoints; never follow URLs
+advertised in topology, inference headers or labels. Bound response bytes,
+concurrency, depth, vertices, edges, sources and deadlines, reusing pooled
+connections (D-025). Local v2 documents have at most 2048 vertices, 4096 edges
+and 64 sources. A bounded composition may emit typed aggregates and
+`truncated: true`; it may not silently advertise a complete network.
+
+The dashboard in `specs/10_DASHBOARD_PORTAL.md` is a consumer, not the owner,
+of this contract. CLI and scripts consume the same versioned payload.
 
 Rendering is deliberately out of scope. What is in scope is that the contract
 carries everything a renderer needs — including the completeness and staleness
@@ -170,3 +247,10 @@ covers is removed:
 
 Each test must be run against a deliberately broken fixture as well as the
 canonical one, so that a guard which has silently stopped checking is caught.
+
+Automatic gateway identity is generated once beside the deployment's existing
+state (outbox deployment directory, or node catalog sibling) and reused after
+restart. Addresses/hostnames are not identity. If that store is unavailable,
+use a distinct random process identity, explicitly mark the root partial, and
+do not claim cross-restart history continuity. An explicit existing gateway ID
+continues to take precedence.
