@@ -62,7 +62,26 @@ def write_json(repo: Path, relative_path: str, value) -> None:
 
 
 def vector_error(case):
-    return case["body"].get("error") or case["body"]["detail"]["error"]
+    body = case["body"]
+    if "type" in body:
+        return body
+    if isinstance(body.get("error"), dict):
+        return body["error"]
+    detail = body["detail"]
+    return detail.get("error") if isinstance(detail.get("error"), dict) else detail
+
+
+def set_vector_error(case, envelope, error):
+    if envelope == "top_level":
+        case["body"] = error
+    elif envelope == "error":
+        case["body"] = {"error": error}
+    elif envelope == "detail":
+        case["body"] = {"detail": error}
+    elif envelope == "detail.error":
+        case["body"] = {"detail": {"error": error}}
+    else:
+        raise AssertionError(f"unknown envelope {envelope}")
 
 
 class BackpressureContractTests(unittest.TestCase):
@@ -119,6 +138,151 @@ class BackpressureContractTests(unittest.TestCase):
         )
         self.assertTrue(any("</script>" in json.dumps(case["body"]) for case in vectors["cases"]))
 
+    def test_all_four_supported_error_envelopes_pass_validation(self):
+        for envelope in ("top_level", "error", "detail", "detail.error"):
+            with self.subTest(envelope=envelope), tempfile.TemporaryDirectory() as directory:
+                repo = self.copied_repo(directory)
+                vectors = load_json(repo, VECTOR_CONTRACT)
+                case = json.loads(json.dumps(vectors["cases"][1]))
+                case["name"] = f"supported {envelope} envelope"
+                error = vector_error(case)
+                set_vector_error(case, envelope, error)
+                vectors["cases"].append(case)
+                write_json(repo, VECTOR_CONTRACT, vectors)
+
+                result = validate(repo)
+
+                self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_vector_role_and_validity_are_required_and_closed(self):
+        mutations = (
+            ("role", None, "missing vector fields role"),
+            ("valid", None, "missing vector fields valid"),
+            ("role", "server", "invalid vector role"),
+            ("valid", "true", "valid must be boolean"),
+            ("valid", False, "producer vector must be valid"),
+        )
+        for field, value, expected_error in mutations:
+            with self.subTest(field=field, value=value), tempfile.TemporaryDirectory() as directory:
+                repo = self.copied_repo(directory)
+                vectors = load_json(repo, VECTOR_CONTRACT)
+                case = vectors["cases"][0]
+                case.update({"role": "producer", "valid": True})
+                if value is None:
+                    case.pop(field)
+                else:
+                    case[field] = value
+                write_json(repo, VECTOR_CONTRACT, vectors)
+
+                result = validate(repo)
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(expected_error, result.stdout)
+
+    def test_client_input_does_not_satisfy_producer_combination_coverage(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            vectors["cases"] = [
+                case for case in vectors["cases"]
+                if case["name"] != "model admission queue is saturated before dispatch"
+            ]
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("vectors do not cover canonical condition combinations", result.stdout)
+
+    def test_undocumented_condition_synonym_fails_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            case = vectors["cases"][0]
+            error = vector_error(case)
+            error["code"] = error["reason"] = "bad_request"
+            case["expected"]["code"] = case["expected"]["reason"] = "bad_request"
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("undocumented producer condition", result.stdout)
+
+    def test_success_status_fails_backpressure_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            vectors["cases"][0]["status"] = 200
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("invalid producer status/action/retry combination", result.stdout)
+
+    def test_invalid_status_action_retry_pair_fails_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            case = next(case for case in vectors["cases"] if case["status"] == 401)
+            error = vector_error(case)
+            error["action"] = case["expected"]["action"] = "backoff"
+            error["action_code"] = case["expected"]["action_code"] = "IW-ACT-BACKOFF"
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("invalid producer status/action/retry combination", result.stdout)
+
+    def test_producer_delay_mismatch_fails_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            case = next(case for case in vectors["cases"] if case["status"] == 408)
+            case.update({"role": "producer", "valid": True})
+            vector_error(case)["retry_after_ms"] = 1500
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("producer header/body delays must match", result.stdout)
+
+    def test_hostile_client_delay_uses_larger_hint(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            case = json.loads(json.dumps(
+                next(case for case in vectors["cases"] if case["status"] == 408)
+            ))
+            case["name"] = "hostile client delay conflict"
+            case.update({"role": "client_input", "valid": False})
+            vector_error(case)["retry_after_ms"] = 1500
+            case["expected"]["retry_after_ms"] = 2000
+            vectors["cases"].append(case)
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_phase_outcome_preserves_queue_429_capacity_503_split(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            task = repo / "tasks/phase-1/P1-T19.md"
+            text = task.read_text()
+            task.write_text(text.replace(
+                "Bounded pre-dispatch admission-queue restrictions and user/FairShare policy return 429; missing or unusable infrastructure/model capacity returns 503; retry candidate/time budgets are bounded.",
+                "Infrastructure/capacity returns 503; policy returns 429; retry budgets are bounded.",
+            ))
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("P1-T19 outcome omits canonical queue/capacity split", result.stdout)
+
     def test_undocumented_action_fails_validation(self):
         with tempfile.TemporaryDirectory() as directory:
             repo = self.copied_repo(directory)
@@ -147,7 +311,7 @@ class BackpressureContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             repo = self.copied_repo(directory)
             vectors = load_json(repo, VECTOR_CONTRACT)
-            vectors["cases"][0]["body"]["error"]["reason"] = "different_condition"
+            vector_error(vectors["cases"][0])["reason"] = "different_condition"
             write_json(repo, VECTOR_CONTRACT, vectors)
 
             result = validate(repo)
@@ -161,7 +325,7 @@ class BackpressureContractTests(unittest.TestCase):
             vectors = load_json(repo, VECTOR_CONTRACT)
             case = next(case for case in vectors["cases"] if case["expected"].get("retryable"))
             case["headers"].pop("Retry-After", None)
-            case["body"]["error"].pop("retry_after_ms", None)
+            vector_error(case).pop("retry_after_ms", None)
             case["expected"].pop("retry_after_ms", None)
             write_json(repo, VECTOR_CONTRACT, vectors)
 
@@ -179,7 +343,7 @@ class BackpressureContractTests(unittest.TestCase):
                 for case in vectors["cases"]
                 if case["expected"].get("request_state") == "dispatched"
             )
-            case["body"]["error"]["replay_safe"] = True
+            vector_error(case)["replay_safe"] = True
             case["expected"]["replay_safe"] = True
             write_json(repo, VECTOR_CONTRACT, vectors)
 
@@ -237,6 +401,21 @@ class BackpressureContractTests(unittest.TestCase):
 
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("published action table disagrees with frozen JSON", result.stdout)
+
+    def test_published_condition_table_must_match_validator_matrix(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            spec = repo / "specs/06_BACKPRESSURE_RETURN_TO_SENDER.md"
+            text = spec.read_text()
+            spec.write_text(text.replace(
+                "| `authentication_required` | 401 | `IW-ACT-AUTHENTICATE` | false |",
+                "| `authentication_required` | 401 | `IW-ACT-BACKOFF` | false |",
+            ))
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("published condition table disagrees with canonical matrix", result.stdout)
 
     def test_vectors_must_cover_every_frozen_action(self):
         with tempfile.TemporaryDirectory() as directory:

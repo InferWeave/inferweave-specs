@@ -226,14 +226,18 @@ def guard_required_artifacts(root):
     return [f"missing {rel}" for rel in required if not (root / rel).exists()]
 
 
-def _vector_error(case):
+def _vector_envelope(case):
     body = case.get("body", {})
     if isinstance(body.get("error"), dict):
-        return body["error"]
-    detail = body.get("detail", {})
+        return "error", body["error"]
+    detail = body.get("detail")
     if isinstance(detail, dict) and isinstance(detail.get("error"), dict):
-        return detail["error"]
-    return None
+        return "detail.error", detail["error"]
+    if isinstance(detail, dict):
+        return "detail", detail
+    if isinstance(body, dict):
+        return "top_level", body
+    return None, None
 
 
 def guard_backpressure_contracts(root, features, tasks):
@@ -261,12 +265,43 @@ def guard_backpressure_contracts(root, features, tasks):
         "IW-ACT-REDUCE-INPUT": "reduce_input",
         "IW-ACT-DO-NOT-RETRY": "do_not_retry",
     }
+    allowed_condition_combinations = {
+        "invalid_request": {(400, "IW-ACT-FIX-REQUEST", False)},
+        "authentication_required": {(401, "IW-ACT-AUTHENTICATE", False)},
+        "access_denied": {(403, "IW-ACT-REQUEST-ACCESS", False)},
+        "model_not_found": {(404, "IW-ACT-FIX-REQUEST", False)},
+        "request_timeout": {(408, "IW-ACT-BACKOFF", True)},
+        "idempotency_conflict": {(409, "IW-ACT-RESOLVE-CONFLICT", False)},
+        "CONTEXT_WINDOW_EXCEEDED": {(413, "IW-ACT-REDUCE-INPUT", False)},
+        "invalid_inference": {(422, "IW-ACT-FIX-REQUEST", False)},
+        "model_queue_full": {(429, "IW-ACT-BACKOFF", True)},
+        "caller_concurrency": {(429, "IW-ACT-REDUCE-CONCURRENCY", False)},
+        "internal_error": {(500, "IW-ACT-DO-NOT-RETRY", False)},
+        "invalid_upstream_response": {(502, "IW-ACT-RETRY-ALTERNATE", False)},
+        "NO_CONTEXT_CAPACITY": {(503, "IW-ACT-RETRY-ALTERNATE", True)},
+        "upstream_timeout": {(504, "IW-ACT-RETRY-ALTERNATE", True)},
+    }
+    required_condition_combinations = {
+        (condition, combination)
+        for condition, combinations in allowed_condition_combinations.items()
+        for combination in combinations
+    }
     if known_actions != set(action_names):
         errors.append("frozen action JSON disagrees with canonical action vocabulary")
     spec = (root / "specs/06_BACKPRESSURE_RETURN_TO_SENDER.md").read_text()
     published_actions = re.findall(r"^\| `(IW-ACT-[^`]+)` \|", spec, re.M)
     if published_actions != values:
         errors.append("published action table disagrees with frozen JSON")
+    published_condition_combinations = {
+        (condition, (int(status), action, retryable == "true"))
+        for condition, status, action, retryable in re.findall(
+            r"^\| `([^`]+)` \| (\d+) \| `(IW-ACT-[^`]+)` \| (true|false) \|$",
+            spec,
+            re.M,
+        )
+    }
+    if published_condition_combinations != required_condition_combinations:
+        errors.append("published condition table disagrees with canonical matrix")
 
     seen_names = set()
     unsafe_states = {"dispatched", "streaming", "unknown"}
@@ -279,21 +314,34 @@ def guard_backpressure_contracts(root, features, tasks):
     required_body_fields = required_fields | {"type", "message"}
     supported_error_types = {"inferweave_backpressure", "inference_admission"}
     covered_actions = set()
+    covered_condition_combinations = set()
+    covered_envelopes = set()
     for case in vectors.get("cases", []):
         name = case.get("name", "<unnamed>")
         if name in seen_names:
             errors.append(f"{name}: duplicate backpressure vector name")
         seen_names.add(name)
-        missing = {"name", "status", "headers", "body", "expected", "legacy"} - set(case)
+        missing = {
+            "name", "status", "headers", "body", "expected", "legacy", "role", "valid",
+        } - set(case)
         if missing:
             errors.append(f"{name}: missing vector fields {', '.join(sorted(missing))}")
             continue
 
         expected = case["expected"]
-        error = _vector_error(case)
+        role = case["role"]
+        valid = case["valid"]
+        if role not in {"producer", "client_input"}:
+            errors.append(f"{name}: invalid vector role")
+        if type(valid) is not bool:
+            errors.append(f"{name}: valid must be boolean")
+        if role == "producer" and valid is not True:
+            errors.append(f"{name}: producer vector must be valid")
+        envelope, error = _vector_envelope(case)
         if error is None:
-            errors.append(f"{name}: no error or detail.error envelope")
+            errors.append(f"{name}: no supported error envelope")
             continue
+        covered_envelopes.add(envelope)
 
         for field in sorted(required_body_fields - set(error)):
             errors.append(f"{name}: missing body field {field}")
@@ -363,6 +411,17 @@ def guard_backpressure_contracts(root, features, tasks):
                 errors.append(f"{name}: body {field} disagrees with expected {field}")
 
         condition = expected.get("code")
+        if valid is True:
+            allowed = allowed_condition_combinations.get(condition)
+            combination = (
+                case.get("status"), expected.get("action_code"), expected.get("retryable"),
+            )
+            if allowed is None:
+                errors.append(f"{name}: undocumented producer condition {condition}")
+            elif combination not in allowed:
+                errors.append(f"{name}: invalid producer status/action/retry combination")
+            elif role == "producer":
+                covered_condition_combinations.add((condition, combination))
         if condition == "model_queue_full":
             if (
                 case.get("status") != 429
@@ -406,11 +465,14 @@ def guard_backpressure_contracts(root, features, tasks):
             or expected_delay < 0
         ):
             errors.append(f"{name}: expected retry_after_ms must be nonnegative numeric")
-        delays = [
-            delay for delay in (body_delay, header_delay_ms)
-            if isinstance(delay, (int, float)) and not isinstance(delay, bool) and delay >= 0
-        ]
-        effective_delay = max(delays, default=None)
+        delays = [delay for delay in (body_delay, header_delay_ms)
+                  if isinstance(delay, (int, float)) and not isinstance(delay, bool) and delay >= 0]
+        if role == "producer" and valid is True:
+            if body_delay != header_delay_ms:
+                errors.append(f"{name}: producer header/body delays must match")
+            effective_delay = body_delay if body_delay == header_delay_ms else None
+        else:
+            effective_delay = max(delays, default=None)
         if expected_delay != effective_delay:
             if expected_delay is not None or effective_delay is not None:
                 errors.append(f"{name}: effective delay disagrees with expected retry_after_ms")
@@ -421,6 +483,19 @@ def guard_backpressure_contracts(root, features, tasks):
 
     if covered_actions != known_actions:
         errors.append("vectors do not cover frozen action codes")
+    if covered_envelopes != {"top_level", "error", "detail", "detail.error"}:
+        errors.append("vectors do not cover all supported error envelopes")
+    if covered_condition_combinations != required_condition_combinations:
+        errors.append("vectors do not cover canonical condition combinations")
+
+    task_outcome = (root / "tasks/phase-1/P1-T19.md").read_text()
+    required_outcome = (
+        "Bounded pre-dispatch admission-queue restrictions and user/FairShare policy return "
+        "429; missing or unusable infrastructure/model capacity returns 503; retry "
+        "candidate/time budgets are bounded."
+    )
+    if required_outcome not in task_outcome:
+        errors.append("P1-T19 outcome omits canonical queue/capacity split")
 
     shared = {
         "contracts/backpressure-action-codes.json",

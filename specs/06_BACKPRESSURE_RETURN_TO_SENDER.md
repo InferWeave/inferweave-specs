@@ -59,6 +59,28 @@ An unknown model is `404`; a known model with no usable capacity is `503` and
 must not be reclassified as `429`. This preserves the canonical distinction
 between admission/policy restriction and infrastructure/capacity absence.
 
+Producer-conformant vectors use only the documented condition/status/action/retry
+combinations below. Synonyms and success statuses are not condition vocabulary.
+Explicit client-input vectors are marked separately and may describe rejected or
+hostile input without extending the producer contract.
+
+| Condition | Status | Action code | Retryable |
+| --- | ---: | --- | --- |
+| `invalid_request` | 400 | `IW-ACT-FIX-REQUEST` | false |
+| `authentication_required` | 401 | `IW-ACT-AUTHENTICATE` | false |
+| `access_denied` | 403 | `IW-ACT-REQUEST-ACCESS` | false |
+| `model_not_found` | 404 | `IW-ACT-FIX-REQUEST` | false |
+| `request_timeout` | 408 | `IW-ACT-BACKOFF` | true |
+| `idempotency_conflict` | 409 | `IW-ACT-RESOLVE-CONFLICT` | false |
+| `CONTEXT_WINDOW_EXCEEDED` | 413 | `IW-ACT-REDUCE-INPUT` | false |
+| `invalid_inference` | 422 | `IW-ACT-FIX-REQUEST` | false |
+| `model_queue_full` | 429 | `IW-ACT-BACKOFF` | true |
+| `caller_concurrency` | 429 | `IW-ACT-REDUCE-CONCURRENCY` | false |
+| `internal_error` | 500 | `IW-ACT-DO-NOT-RETRY` | false |
+| `invalid_upstream_response` | 502 | `IW-ACT-RETRY-ALTERNATE` | false |
+| `NO_CONTEXT_CAPACITY` | 503 | `IW-ACT-RETRY-ALTERNATE` | true |
+| `upstream_timeout` | 504 | `IW-ACT-RETRY-ALTERNATE` | true |
+
 ## Bounded retries
 
 Retry/failover has:
@@ -72,8 +94,10 @@ Automatic replay additionally requires `retryable=true`, `replay_safe=true`,
 no committed output, a documented action, and remaining attempt and elapsed
 budgets. `dispatched`, `streaming`, and `unknown` states are not replay-safe
 without a separate inference idempotency guarantee. When header and body delay
-disagree, the larger valid value is the minimum; clients stop instead of
-shortening a server minimum that exceeds their remaining budget.
+are produced by a conformant server, their values match exactly after converting
+the whole-second header to milliseconds. For hostile client input where they
+disagree, the larger valid value is the minimum; clients stop instead of shortening
+a server minimum that exceeds their remaining budget.
 
 ## Client disconnect
 
