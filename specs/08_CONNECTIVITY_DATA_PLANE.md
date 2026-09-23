@@ -73,3 +73,12 @@ Gateway relay has explicit concurrency/bandwidth circuit breakers.
 ## Prompt persistence
 
 Direct routing does not remove the requirement to store every prompt. The local proxy or selected node performs idempotent prompt-ledger ingestion using a scoped write capability.
+
+## Optional gateway topology observation on a held link
+
+Gateway-role peers can carry spec 40's bounded canonical v2 graph in the
+existing `heartbeat.status.topology` member. It is optional observation data,
+not a routing instruction or new authority. Publication is asynchronous and
+held-link-only; ordinary HTTP heartbeat size and liveness behavior remain
+unchanged. See spec 40 for local authority isolation, byte/time limits, cache
+expiry and tolerant handling of malformed optional metadata.

@@ -230,6 +230,58 @@ Rendering is deliberately out of scope. What is in scope is that the contract
 carries everything a renderer needs — including the completeness and staleness
 fields — so that no renderer has to invent them.
 
+## Gateway inventory over an established link
+
+The 2026-09-22 console rollout exposed a transport gap: Hive was registered
+and serving over its outbound link, but its descendants remained unknown
+because the parent could not dial the local topology HTTP endpoint. An exposed
+HTTP contract alone did not make inventory available behind that held link.
+
+A gateway-role peer may attach canonical v2 `topology` to the existing
+heartbeat `status`. The frame remains `kind: heartbeat`; this is an optional
+additive member, not a new connection, frame kind, credential or operator setting.
+Ordinary node roles omit it. Older receivers ignore the optional field and old
+heartbeats lacking it decode unchanged. The published `node_status.json` schema
+references `TopologyV2Graph` without duplicating its resource vocabulary.
+
+The sender reads its own `/iw/v1/topology` using existing **local** gateway
+administrative authority (`IW_ADMIN_SECRET`), never the parent's enrollment
+credential or `--admin-secret-file`. Derive the port from the configured backend
+and pin this administrative HTTP read to literal `127.0.0.1`; do not dial the
+advertised hostname, consult proxies, follow redirects or silently downgrade an
+HTTPS backend. Missing local authority or unsupported local access leaves the
+inventory unknown while inference continues.
+
+Observation runs asynchronously to the heartbeat/inference loop, with a total
+read deadline of two seconds, at most 512 KiB of topology data, pooled local HTTP
+connections and a nominal 30-second refresh interval. Each held-link session owns
+its cache across reconnects; one session must not inherit another endpoint's
+graph. Failed reads do not renew its local cache age. After 90 seconds without a
+successful local observation, omit topology until observation succeeds again.
+These are conservative resource bounds, not measured fleet performance claims.
+
+Parse and validate the typed v2 graph, remove unnecessary private addresses,
+and ensure both the topology payload and **complete encoded heartbeat** fit their
+budgets. The existing frame limit is 1 MiB. If other status fields leave too
+little room, omit topology and preserve the ordinary heartbeat; never truncate
+JSON or rewrite source epochs/versions to fit a changing frame budget.
+Malformed, invalid or oversized optional metadata must not terminate a serving
+link. Receiver authorization remains tied to the current authenticated
+**gateway-role** connection, not to IDs or role claims inside the graph.
+
+This extension is sent on the held link only. Plain HTTP heartbeats retain their
+existing small status payload: the site gateway's 64 KiB HTTP body limit is not
+raised to accommodate inventory. A deployment with no held link continues to
+use authorized HTTP topology discovery where available; lack of reachability
+is represented as unknown.
+
+Retransmission does not change graph `snapshotAt`, `epoch` or `version`, and a
+receiver replay does not renew observation freshness. Disconnect, expiry or
+failed observation leaves previous inventory stale/unknown rather than claiming
+an empty fleet. Existing per-viewer redaction applies after authenticated
+receipt. This scoped transport extension does not approve unrelated deployment,
+scheduling, capacity-controller or fleet-operation gates.
+
 ## Conformance
 
 Per `specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md`, the rules above are

@@ -105,3 +105,9 @@ that a real multi-site graph has been collected, that peer credentials are
 provisioned, or that the deployed console consumes it. Those operational proofs
 remain `owed` by P5-T11/P5-T13. Implementation unit and HTTP fixture tests may
 prove individual controls; they do not satisfy the multi-node deployment gate.
+
+The optional held-link topology correction in spec 40 addresses the observed
+Hive descendant-visibility gap. Local wire and failure tests do not themselves
+prove live parent-link inventory delivery. That deployment evidence remains
+owed under the existing Fry/Hive service exception; unrelated controller and
+GPU-worker releases are not authorized by this correction.
