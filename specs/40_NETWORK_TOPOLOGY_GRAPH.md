@@ -220,8 +220,13 @@ zero, an empty inventory or a default hardware model. The camelCase shape is:
 - `gpus`: optional records with required `gpuId`, optional device-specific
   `name`, `vendor`, and canonical `CardMemory` (`totalMb`, `usedMb`, in MiB).
 - `deployments`: optional records with required `model`, optional `engine`,
-  `backend`, `quantization`, `contextTokens`, `gpuModel`, `gpuCount`, `gpuIds`.
+  `backend`, `quantization`, `contextTokens`, `slots`, `gpuModel`, `gpuCount`, `gpuIds`.
   These are reported configuration facts, not confirmed model residency.
+  `slots` is the existing registration advert's per-deployment value, a
+  nonnegative integer within the safe integer bound. Missing is unknown and zero
+  remains reported zero. Show it alongside model and context; never sum it across
+  aliases or worker registrations, infer node capacity from it, or introduce a
+  fixed-slot scheduling policy. Routing/admission behavior remains unchanged.
 - `servedModels`: optional observed serving model identifiers. Omission is
   unknown; an explicit empty array means the observation reported none.
 - `servedModelsEvidence`: optional `node-report` or `engine-model-list`.
