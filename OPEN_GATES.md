@@ -111,3 +111,13 @@ Hive descendant-visibility gap. Local wire and failure tests do not themselves
 prove live parent-link inventory delivery. That deployment evidence remains
 owed under the existing Fry/Hive service exception; unrelated controller and
 GPU-worker releases are not authorized by this correction.
+
+The optional configuration projection in spec 40 addresses missing per-node
+hardware/deployment display and current-serving evidence. Schema and local
+regression tests do not prove complete fleet device coverage or independently
+verified residency. Live populated map and serving-color freshness evidence
+remain `owed` to P2-T23/P5-T11/P5-T13 until recorded from the bounded Fry/Hive
+rollout. Missing per-device descriptors on older workers remain unknown; a
+future worker rollout is outside this release, and no GPU engine restarts or
+placement changes are implied. Updated gateway and parent-link CLI must be
+qualified together because older strict topology decoders reject enrichment.
