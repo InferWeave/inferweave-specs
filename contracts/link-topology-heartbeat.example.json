@@ -1,0 +1,95 @@
+{
+  "kind": "heartbeat",
+  "status": {
+    "busySlots": 0,
+    "queueDepth": 0,
+    "residentModels": [],
+    "topology": {
+      "schemaVersion": 2,
+      "rootId": "gateway-local",
+      "vertices": [
+        {
+          "resourceId": "gateway-local",
+          "kind": "gateway",
+          "roles": [
+            "gateway",
+            "coordinator"
+          ],
+          "horizon": "complete",
+          "snapshotAt": 1751961600,
+          "version": 1,
+          "epoch": "example-emitter-epoch"
+        },
+        {
+          "resourceId": "gateway-child",
+          "kind": "coordinator",
+          "roles": [
+            "gateway",
+            "coordinator"
+          ],
+          "horizon": "unknown",
+          "snapshotAt": 1751961600,
+          "version": 1,
+          "epoch": "example-emitter-epoch"
+        },
+        {
+          "resourceId": "iw-host-example",
+          "kind": "provider",
+          "roles": [
+            "provider"
+          ],
+          "horizon": "complete",
+          "snapshotAt": 1751961600,
+          "version": 1,
+          "epoch": "example-emitter-epoch"
+        },
+        {
+          "resourceId": "iw-gpu-example",
+          "kind": "gpu",
+          "roles": [],
+          "horizon": "complete",
+          "snapshotAt": 1751961600,
+          "version": 1,
+          "epoch": "example-emitter-epoch",
+          "ownerNodeId": "iw-host-example"
+        }
+      ],
+      "edges": [
+        {
+          "sourceId": "gateway-child",
+          "targetId": "gateway-local",
+          "kind": "registered_with"
+        },
+        {
+          "sourceId": "gateway-local",
+          "targetId": "gateway-child",
+          "kind": "routes_to"
+        },
+        {
+          "sourceId": "iw-host-example",
+          "targetId": "gateway-local",
+          "kind": "registered_with"
+        },
+        {
+          "sourceId": "gateway-local",
+          "targetId": "iw-host-example",
+          "kind": "routes_to"
+        },
+        {
+          "sourceId": "iw-host-example",
+          "targetId": "iw-gpu-example",
+          "kind": "hosts_gpu"
+        }
+      ],
+      "sources": [
+        {
+          "resourceId": "gateway-local",
+          "snapshotAt": 1751961600,
+          "version": 1,
+          "epoch": "example-emitter-epoch"
+        }
+      ],
+      "truncated": false
+    }
+  }
+}
