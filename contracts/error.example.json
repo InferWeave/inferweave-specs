@@ -2,9 +2,15 @@
   "error": {
     "type": "inferweave_capacity_exhausted",
     "code": "NO_CONTEXT_CAPACITY",
+    "reason": "NO_CONTEXT_CAPACITY",
     "message": "No eligible deployment has safe capacity",
     "retryable": true,
+    "replay_safe": true,
+    "request_state": "not_started",
+    "action": "retry_alternate",
+    "action_code": "IW-ACT-RETRY-ALTERNATE",
     "retry_after_ms": 2500,
+    "scope": "model",
     "request_id": "req_example"
   }
 }

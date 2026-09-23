@@ -214,6 +214,8 @@ def guard_deployment_substrate(root):
 
 def guard_required_artifacts(root):
     required = [
+        "contracts/backpressure-action-codes.json",
+        "contracts/backpressure-conformance-v1.json",
         "specs/36_GPU_WATCHDOG_RESCUE.md",
         "specs/37_CONTAINER_DEPLOYMENT_STANDARD.md",
         "specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md",
@@ -222,6 +224,107 @@ def guard_required_artifacts(root):
         "OPEN_GATES.md",
     ]
     return [f"missing {rel}" for rel in required if not (root / rel).exists()]
+
+
+def _vector_error(case):
+    body = case.get("body", {})
+    if isinstance(body.get("error"), dict):
+        return body["error"]
+    detail = body.get("detail", {})
+    if isinstance(detail, dict) and isinstance(detail.get("error"), dict):
+        return detail["error"]
+    return None
+
+
+def guard_backpressure_contracts(root, features, tasks):
+    """Reconcile the frozen actions, shared vectors, and their canonical owners."""
+    errors = []
+    action_path = root / "contracts/backpressure-action-codes.json"
+    vector_path = root / "contracts/backpressure-conformance-v1.json"
+    if not action_path.exists() or not vector_path.exists():
+        return errors
+
+    actions = json.loads(action_path.read_text())
+    vectors = json.loads(vector_path.read_text())
+    values = actions.get("values", [])
+    known_actions = set(values)
+    if len(values) != len(known_actions):
+        errors.append("duplicate backpressure action code")
+
+    seen_names = set()
+    unsafe_states = {"dispatched", "streaming", "unknown"}
+    comparable_fields = {
+        "code", "reason", "retryable", "replay_safe", "request_state", "scope"
+    }
+    for case in vectors.get("cases", []):
+        name = case.get("name", "<unnamed>")
+        if name in seen_names:
+            errors.append(f"{name}: duplicate backpressure vector name")
+        seen_names.add(name)
+        missing = {"name", "status", "headers", "body", "expected", "legacy"} - set(case)
+        if missing:
+            errors.append(f"{name}: missing vector fields {', '.join(sorted(missing))}")
+            continue
+
+        expected = case["expected"]
+        error = _vector_error(case)
+        if error is None:
+            errors.append(f"{name}: no error or detail.error envelope")
+            continue
+
+        expected_action = expected.get("action_code")
+        if expected_action is not None and expected_action not in known_actions:
+            errors.append(f"{name}: unknown expected action code {expected_action}")
+        body_action = error.get("action_code")
+        if expected_action is not None and body_action != expected_action:
+            errors.append(f"{name}: body action code disagrees with expected action code")
+        if expected_action is None and body_action in known_actions:
+            errors.append(f"{name}: known body action unexpectedly rejected")
+
+        if error.get("code") is not None and error.get("reason") is not None:
+            if error["code"] != error["reason"]:
+                errors.append(f"{name}: code and reason disagree")
+        for field in comparable_fields:
+            if field in expected and error.get(field) != expected[field]:
+                errors.append(f"{name}: body {field} disagrees with expected {field}")
+
+        body_delay = error.get("retry_after_ms")
+        header_delay = case["headers"].get("Retry-After")
+        try:
+            header_delay_ms = int(header_delay) * 1000 if header_delay is not None else None
+        except (TypeError, ValueError):
+            header_delay_ms = None
+            errors.append(f"{name}: invalid Retry-After header")
+        delays = [delay for delay in (body_delay, header_delay_ms) if isinstance(delay, int)]
+        effective_delay = max(delays, default=None)
+        if expected.get("retry_after_ms") != effective_delay:
+            if expected.get("retry_after_ms") is not None or effective_delay is not None:
+                errors.append(f"{name}: effective delay disagrees with expected retry_after_ms")
+        if expected.get("retryable") and (
+            effective_delay is None or effective_delay <= 0 or effective_delay > 86_400_000
+        ):
+            errors.append(f"{name}: retryable without bounded delay guidance")
+        if expected.get("replay_safe") and expected.get("request_state") in unsafe_states:
+            errors.append(f"{name}: replay-safe in unsafe request state")
+
+    shared = {
+        "contracts/backpressure-action-codes.json",
+        "contracts/backpressure-conformance-v1.json",
+    }
+    feature = next((item for item in features if item["id"] == "IW-BP-001"), {})
+    if not shared.issubset(set(feature.get("contracts", []))):
+        errors.append("IW-BP-001 omits shared backpressure contracts")
+    task = next((item for item in tasks if item["id"] == "P1-T19"), {})
+    if not shared.issubset(set(task.get("contracts", []))):
+        errors.append("P1-T19 omits shared backpressure contracts")
+    for relative_path in (
+        "tasks/phase-1/P1-T19.md",
+        "implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md",
+    ):
+        text = (root / relative_path).read_text()
+        if not all(contract in text for contract in shared):
+            errors.append(f"{relative_path}: omits shared backpressure contracts")
+    return errors
 
 
 # --------------------------------------------------------------------- driver
@@ -243,6 +346,7 @@ def validate():
         errors.extend(g(features, tasks, spec_exists))
     errors.extend(guard_deployment_substrate(ROOT))
     errors.extend(guard_required_artifacts(ROOT))
+    errors.extend(guard_backpressure_contracts(ROOT, features, tasks))
     return features, tasks, errors
 
 

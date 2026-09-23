@@ -1,0 +1,14 @@
+{
+  "name": "backpressure_action_code",
+  "values": [
+    "IW-ACT-BACKOFF",
+    "IW-ACT-REDUCE-CONCURRENCY",
+    "IW-ACT-RETRY-ALTERNATE",
+    "IW-ACT-FIX-REQUEST",
+    "IW-ACT-AUTHENTICATE",
+    "IW-ACT-REQUEST-ACCESS",
+    "IW-ACT-RESOLVE-CONFLICT",
+    "IW-ACT-REDUCE-INPUT",
+    "IW-ACT-DO-NOT-RETRY"
+  ]
+}

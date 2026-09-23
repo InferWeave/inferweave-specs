@@ -93,9 +93,15 @@ adversarial run has occurred. The threat surface is specified; it has not been a
 Approved: the specification bundle is authoritative for implementation sequencing, and
 `scripts/validate_specs.py` proves its structural integrity.
 
-BLOCKED: conformance vectors do not exist yet (`specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md`),
-so no cross-implementation conformance claim may be made. Every `owed` proof status in the
-task graph is an open gate on the control it names.
+The backpressure action vocabulary and version-one error vectors now exist at
+`contracts/backpressure-action-codes.json` and
+`contracts/backpressure-conformance-v1.json`. They define a contract but do not
+prove that any Rust, Go, or Pi implementation conforms to it.
+
+BLOCKED: other vectors required by `specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md`
+remain unpublished, and no cross-implementation backpressure conformance claim may be made
+until each consumer runs the shared cases. Every `owed` proof status in the task graph is an
+open gate on the control it names.
 
 ## Topology v2 operational qualification gate
 
