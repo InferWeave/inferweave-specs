@@ -263,9 +263,32 @@ them. Omit uncertain ownership edges rather than manufacturing a physical map.
 
 The local exporter uses cached registration, telemetry and device discovery.
 Opening or selecting a map node does not query the node or start another probe.
-Masked non-operator exports remove **the entire configuration**, preserving
-shape and horizon while withholding private hardware/model details. Composition
-and held-link forwarding preserve source observation times and evidence labels.
+Authorized shared-read exports, including signed-in non-operator users, retain
+read-only operational configuration so GPU foldouts and serving-model colors
+remain available to every authorized map viewer. This includes commercial GPU
+name/vendor, memory, model, engine/backend, quantization, context, reported slots,
+counts and serving evidence with its original observation times. It does not
+include private addresses, host labels, credentials, process arguments or
+environment data. Existing private address and label masking remains in force.
+
+Every raw device identifier in `reportedGpuIds`, `gpus[].gpuId`, and
+`deployments[].gpuIds` is replaced by a viewer-scoped opaque handle, including
+legacy reported labels. Repeated references to the same device within a view
+must resolve consistently, including any corresponding GPU vertex handle; a
+configuration-only device still receives a handle. Derive handles using the
+same server-secret keyed, viewer-scoped mechanism as graph identities. Raw GPU
+IDs must not survive anywhere in these fields, and one viewer's handles must
+not be reusable to identify another viewer's device handles. This does not
+claim that graph structure or shared commercial hardware/model facts are
+impossible to correlate. Operators retain the original configuration under
+existing authorization. Producing a shared view must not mutate that original
+or another viewer's copy.
+
+This shared-read policy follows the operator's explicit request that all users
+can use the network map; it supersedes the initial configuration-removal rule.
+It does not grant anonymous access, topology mutation, placement control or any
+new administrative permission. Composition and held-link forwarding preserve
+source observation times and evidence labels.
 
 This optional extension retains topology v2 but older strict typed consumers may
 reject enriched vertices. Roll out the updated gateway exporter and its parent
@@ -373,8 +396,12 @@ covers is removed:
 7. Resolution of two exports of one vertex follows `version`, not arrival order.
 8. Configuration wire/schema serialization preserves reported GPU/deployment
    facts, omits unknown fields, and rejects malformed or over-budget enrichment.
-9. Masked exports remove configuration, and cloned/composed graphs do not share
-   mutable nested configuration state.
+9. Authorized shared-read exports retain operational configuration while all
+   raw device IDs are absent from `reportedGpuIds`, `gpus[].gpuId`, and
+   `deployments[].gpuIds`. References and corresponding GPU graph handles agree
+   within a view and differ across viewers. Original operator configuration and
+   other viewer copies remain unchanged; cloned/composed graphs do not share
+   mutable nested configuration state. Anonymous access stays unauthorized.
 10. Fresh engine-answering reports, explicit empty reports, failed probes and
     stale reports remain distinct; advertised capability does not become current
     serving evidence and configuration refresh does not renew serving freshness.

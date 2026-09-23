@@ -121,3 +121,10 @@ rollout. Missing per-device descriptors on older workers remain unknown; a
 future worker rollout is outside this release, and no GPU engine restarts or
 placement changes are implied. Updated gateway and parent-link CLI must be
 qualified together because older strict topology decoders reject enrichment.
+
+The operator's shared-read map request retains operational configuration for
+signed-in authorized users while pseudonymizing device IDs and preserving
+private address/label masking. Raw-ID absence, within-view reference consistency,
+cross-viewer handle separation and unchanged operator originals require explicit
+implementation tests; live signed-in map visibility remains `owed` until verified.
+This policy does not open anonymous access, administration or placement gates.
