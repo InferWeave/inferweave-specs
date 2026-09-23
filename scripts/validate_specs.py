@@ -8,7 +8,7 @@ from a guard that has silently stopped checking. See
 """
 from pathlib import Path
 from collections import defaultdict, deque
-import copy, json, re, sys
+import copy, json, math, re, sys
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -250,12 +250,33 @@ def guard_backpressure_contracts(root, features, tasks):
     known_actions = set(values)
     if len(values) != len(known_actions):
         errors.append("duplicate backpressure action code")
+    action_names = {
+        "IW-ACT-BACKOFF": "backoff",
+        "IW-ACT-REDUCE-CONCURRENCY": "reduce_concurrency",
+        "IW-ACT-RETRY-ALTERNATE": "retry_alternate",
+        "IW-ACT-FIX-REQUEST": "fix_request",
+        "IW-ACT-AUTHENTICATE": "authenticate",
+        "IW-ACT-REQUEST-ACCESS": "request_access",
+        "IW-ACT-RESOLVE-CONFLICT": "resolve_conflict",
+        "IW-ACT-REDUCE-INPUT": "reduce_input",
+        "IW-ACT-DO-NOT-RETRY": "do_not_retry",
+    }
+    if known_actions != set(action_names):
+        errors.append("frozen action JSON disagrees with canonical action vocabulary")
+    spec = (root / "specs/06_BACKPRESSURE_RETURN_TO_SENDER.md").read_text()
+    published_actions = re.findall(r"^\| `(IW-ACT-[^`]+)` \|", spec, re.M)
+    if published_actions != values:
+        errors.append("published action table disagrees with frozen JSON")
 
     seen_names = set()
     unsafe_states = {"dispatched", "streaming", "unknown"}
-    comparable_fields = {
-        "code", "reason", "retryable", "replay_safe", "request_state", "scope"
+    request_states = {"not_started", "queued", "dispatched", "streaming", "unknown"}
+    scopes = {"request", "model", "caller", "global"}
+    required_fields = {
+        "code", "reason", "retryable", "replay_safe", "request_state",
+        "action", "action_code", "scope",
     }
+    covered_actions = set()
     for case in vectors.get("cases", []):
         name = case.get("name", "<unnamed>")
         if name in seen_names:
@@ -272,21 +293,78 @@ def guard_backpressure_contracts(root, features, tasks):
             errors.append(f"{name}: no error or detail.error envelope")
             continue
 
+        for field in sorted(required_fields - set(error)):
+            errors.append(f"{name}: missing body field {field}")
+        for field in sorted(required_fields - set(expected)):
+            errors.append(f"{name}: missing expected field {field}")
+
+        for target, envelope in (("body", error), ("expected", expected)):
+            for field in ("code", "reason"):
+                if field in envelope and (
+                    not isinstance(envelope[field], str) or not envelope[field]
+                ):
+                    errors.append(f"{name}: {target} {field} must be a nonempty string")
+            for field in ("retryable", "replay_safe"):
+                if field in envelope and type(envelope[field]) is not bool:
+                    errors.append(f"{name}: {field} must be boolean in {target}")
+            if "request_state" in envelope and envelope["request_state"] not in request_states:
+                errors.append(f"{name}: invalid {target} request_state")
+            if "scope" in envelope and envelope["scope"] not in scopes:
+                errors.append(f"{name}: invalid {target} scope")
+            for field in ("action", "action_code"):
+                value = envelope.get(field)
+                if field in envelope and target == "body" and (
+                    not isinstance(value, str) or not value
+                ):
+                    errors.append(f"{name}: body {field} must be a nonempty string")
+                if field in envelope and target == "expected" and value is not None and (
+                    not isinstance(value, str) or not value
+                ):
+                    errors.append(f"{name}: expected {field} must be a nonempty string or null")
+
         expected_action = expected.get("action_code")
         if expected_action is not None and expected_action not in known_actions:
             errors.append(f"{name}: unknown expected action code {expected_action}")
+        if expected_action in known_actions:
+            covered_actions.add(expected_action)
         body_action = error.get("action_code")
         if expected_action is not None and body_action != expected_action:
             errors.append(f"{name}: body action code disagrees with expected action code")
         if expected_action is None and body_action in known_actions:
             errors.append(f"{name}: known body action unexpectedly rejected")
+        for target, envelope in (("body", error), ("expected", expected)):
+            action_code = envelope.get("action_code")
+            if action_code in action_names and envelope.get("action") != action_names[action_code]:
+                errors.append(f"{name}: {target} action does not match action code")
 
         if error.get("code") is not None and error.get("reason") is not None:
             if error["code"] != error["reason"]:
                 errors.append(f"{name}: code and reason disagree")
-        for field in comparable_fields:
+        for field in required_fields:
+            if field in {"action", "action_code"} and expected.get(field) is None:
+                continue
             if field in expected and error.get(field) != expected[field]:
                 errors.append(f"{name}: body {field} disagrees with expected {field}")
+
+        condition = expected.get("code")
+        if condition == "model_queue_full":
+            if (
+                case.get("status") != 429
+                or expected.get("scope") != "model"
+                or expected.get("request_state") != "queued"
+                or expected.get("classification") != "admission_queue"
+            ):
+                errors.append(f"{name}: model queue admission classification drift")
+        elif case.get("status") == 429 and expected.get("scope") == "model":
+            errors.append(f"{name}: non-queue model/capacity condition uses 429")
+        if condition == "NO_CONTEXT_CAPACITY":
+            if case.get("status") == 429:
+                errors.append(f"{name}: non-queue model/capacity condition uses 429")
+            elif (
+                case.get("status") != 503
+                or expected.get("classification") != "capacity_unavailable"
+            ):
+                errors.append(f"{name}: capacity condition classification drift")
 
         body_delay = error.get("retry_after_ms")
         header_delay = case["headers"].get("Retry-After")
@@ -295,17 +373,38 @@ def guard_backpressure_contracts(root, features, tasks):
         except (TypeError, ValueError):
             header_delay_ms = None
             errors.append(f"{name}: invalid Retry-After header")
-        delays = [delay for delay in (body_delay, header_delay_ms) if isinstance(delay, int)]
-        effective_delay = max(delays, default=None)
-        if expected.get("retry_after_ms") != effective_delay:
-            if expected.get("retry_after_ms") is not None or effective_delay is not None:
-                errors.append(f"{name}: effective delay disagrees with expected retry_after_ms")
-        if expected.get("retryable") and (
-            effective_delay is None or effective_delay <= 0 or effective_delay > 86_400_000
+        if header_delay_ms is not None and header_delay_ms < 0:
+            errors.append(f"{name}: Retry-After must be nonnegative")
+        if body_delay is not None and (
+            isinstance(body_delay, bool)
+            or not isinstance(body_delay, (int, float))
+            or (isinstance(body_delay, float) and not math.isfinite(body_delay))
+            or body_delay < 0
         ):
+            errors.append(f"{name}: body retry_after_ms must be nonnegative numeric")
+        expected_delay = expected.get("retry_after_ms")
+        if expected_delay is not None and (
+            isinstance(expected_delay, bool)
+            or not isinstance(expected_delay, (int, float))
+            or (isinstance(expected_delay, float) and not math.isfinite(expected_delay))
+            or expected_delay < 0
+        ):
+            errors.append(f"{name}: expected retry_after_ms must be nonnegative numeric")
+        delays = [
+            delay for delay in (body_delay, header_delay_ms)
+            if isinstance(delay, (int, float)) and not isinstance(delay, bool) and delay >= 0
+        ]
+        effective_delay = max(delays, default=None)
+        if expected_delay != effective_delay:
+            if expected_delay is not None or effective_delay is not None:
+                errors.append(f"{name}: effective delay disagrees with expected retry_after_ms")
+        if expected.get("retryable") is True and effective_delay is None:
             errors.append(f"{name}: retryable without bounded delay guidance")
         if expected.get("replay_safe") and expected.get("request_state") in unsafe_states:
             errors.append(f"{name}: replay-safe in unsafe request state")
+
+    if covered_actions != known_actions:
+        errors.append("vectors do not cover frozen action codes")
 
     shared = {
         "contracts/backpressure-action-codes.json",

@@ -20,6 +20,17 @@ FROZEN_ACTIONS = {
     "IW-ACT-REDUCE-INPUT",
     "IW-ACT-DO-NOT-RETRY",
 }
+ACTION_NAMES = {
+    "IW-ACT-BACKOFF": "backoff",
+    "IW-ACT-REDUCE-CONCURRENCY": "reduce_concurrency",
+    "IW-ACT-RETRY-ALTERNATE": "retry_alternate",
+    "IW-ACT-FIX-REQUEST": "fix_request",
+    "IW-ACT-AUTHENTICATE": "authenticate",
+    "IW-ACT-REQUEST-ACCESS": "request_access",
+    "IW-ACT-RESOLVE-CONFLICT": "resolve_conflict",
+    "IW-ACT-REDUCE-INPUT": "reduce_input",
+    "IW-ACT-DO-NOT-RETRY": "do_not_retry",
+}
 
 
 def copy_repo(destination: Path) -> Path:
@@ -50,6 +61,10 @@ def write_json(repo: Path, relative_path: str, value) -> None:
     (repo / relative_path).write_text(json.dumps(value, indent=2) + "\n")
 
 
+def vector_error(case):
+    return case["body"].get("error") or case["body"]["detail"]["error"]
+
+
 class BackpressureContractTests(unittest.TestCase):
     def copied_repo(self, temporary_directory: str) -> Path:
         return copy_repo(Path(temporary_directory))
@@ -65,7 +80,11 @@ class BackpressureContractTests(unittest.TestCase):
             for case in vectors["cases"]
             if case["expected"].get("action_code")
         }
-        self.assertLessEqual(expected_actions, set(actions["values"]))
+        self.assertEqual(expected_actions, set(actions["values"]))
+        for case in vectors["cases"]:
+            action_code = case["expected"].get("action_code")
+            if action_code:
+                self.assertEqual(case["expected"]["action"], ACTION_NAMES[action_code])
         self.assertEqual(
             {400, 401, 403, 404, 408, 409, 413, 422, 429, 500, 502, 503, 504},
             {case["status"] for case in vectors["cases"]},
@@ -193,6 +212,125 @@ class BackpressureContractTests(unittest.TestCase):
 
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("P1-T19 omits shared backpressure contracts", result.stdout)
+
+    def test_model_capacity_condition_cannot_be_canonical_429(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            case = next(case for case in vectors["cases"] if case["name"] == "known model has no usable capacity")
+            case["status"] = 429
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("non-queue model/capacity condition uses 429", result.stdout)
+
+    def test_published_action_table_must_match_frozen_json(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            spec = repo / "specs/06_BACKPRESSURE_RETURN_TO_SENDER.md"
+            text = spec.read_text()
+            spec.write_text(text.replace("| `IW-ACT-BACKOFF` |", "| `IW-ACT-NOT-FROZEN` |", 1))
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("published action table disagrees with frozen JSON", result.stdout)
+
+    def test_vectors_must_cover_every_frozen_action(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            for case in vectors["cases"]:
+                if case["expected"].get("action_code") == "IW-ACT-AUTHENTICATE":
+                    case["expected"]["action_code"] = "IW-ACT-FIX-REQUEST"
+                    case["expected"]["action"] = "fix_request"
+                    error = vector_error(case)
+                    error["action_code"] = "IW-ACT-FIX-REQUEST"
+                    error["action"] = "fix_request"
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("vectors do not cover frozen action codes", result.stdout)
+
+    def test_canonical_body_and_expected_fields_are_required(self):
+        fields = (
+            "code", "reason", "retryable", "replay_safe", "request_state",
+            "action", "action_code", "scope",
+        )
+        for target, field in ((target, field) for target in ("body", "expected") for field in fields):
+            with self.subTest(target=target, field=field), tempfile.TemporaryDirectory() as directory:
+                repo = self.copied_repo(directory)
+                vectors = load_json(repo, VECTOR_CONTRACT)
+                case = vectors["cases"][0]
+                container = vector_error(case) if target == "body" else case["expected"]
+                container.pop(field, None)
+                write_json(repo, VECTOR_CONTRACT, vectors)
+
+                result = validate(repo)
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(f"missing {target} field {field}", result.stdout)
+
+    def test_canonical_field_types_are_checked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            case = vectors["cases"][0]
+            vector_error(case)["retryable"] = "false"
+            case["expected"]["retryable"] = "false"
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("retryable must be boolean", result.stdout)
+
+    def test_readable_action_must_match_action_code(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            case = vectors["cases"][0]
+            vector_error(case)["action"] = "authenticate"
+            case["expected"]["action"] = "authenticate"
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("action does not match action code", result.stdout)
+
+    def test_large_nonnegative_retry_delay_is_valid(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            case = next(case for case in vectors["cases"] if case["expected"].get("retryable"))
+            vector_error(case)["retry_after_ms"] = 172_800_000
+            case["headers"]["Retry-After"] = "172800"
+            case["expected"]["retry_after_ms"] = 172_800_000
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_negative_retry_delay_fails_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            case = next(case for case in vectors["cases"] if case["expected"].get("retryable"))
+            vector_error(case)["retry_after_ms"] = -1
+            case["headers"].pop("Retry-After", None)
+            case["expected"]["retry_after_ms"] = -1
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("retry_after_ms must be nonnegative numeric", result.stdout)
 
 
 if __name__ == "__main__":

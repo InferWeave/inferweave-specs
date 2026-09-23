@@ -12,7 +12,8 @@ Every layer has explicit queue/admission thresholds. When a downstream layer can
 ## HTTP semantics
 
 - `503 Service Unavailable`: infrastructure/model/context/capacity unavailable.
-- `429 Too Many Requests`: user/API-key/rate/FairShare restriction.
+- `429 Too Many Requests`: user/API-key/rate/FairShare restriction or bounded
+  admission-queue saturation before dispatch.
 - `409 no_eligible_capacity` may be used by native route-preview/constraint APIs when no candidate can satisfy a hard requested constraint without actually attempting inference.
 
 For actual OpenAI-compatible inference, prefer the 503/429 split above.
@@ -51,9 +52,12 @@ condition vocabulary; action codes separately tell a client what to do.
 The status mapping is: `400`/`404`/`422` fix the request, `401` authenticate,
 `403` request access, `409` resolve the conflict, and `413` reduce input.
 `408`, `429`, `500`, `502`, `503`, and `504` may carry bounded transient
-guidance only when the server can state it safely. An unknown model is `404`;
-a known model with no usable capacity is `503`. This does not change the
-canonical `503` infrastructure/capacity versus `429` caller-policy split.
+guidance only when the server can state it safely. `model_queue_full` with
+`scope=model` is specifically a `429` admission-queue restriction: the model is
+known and the request remains queued rather than lacking infrastructure.
+An unknown model is `404`; a known model with no usable capacity is `503` and
+must not be reclassified as `429`. This preserves the canonical distinction
+between admission/policy restriction and infrastructure/capacity absence.
 
 ## Bounded retries
 
