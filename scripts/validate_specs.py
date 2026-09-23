@@ -276,6 +276,8 @@ def guard_backpressure_contracts(root, features, tasks):
         "code", "reason", "retryable", "replay_safe", "request_state",
         "action", "action_code", "scope",
     }
+    required_body_fields = required_fields | {"type", "message"}
+    supported_error_types = {"inferweave_backpressure", "inference_admission"}
     covered_actions = set()
     for case in vectors.get("cases", []):
         name = case.get("name", "<unnamed>")
@@ -293,10 +295,24 @@ def guard_backpressure_contracts(root, features, tasks):
             errors.append(f"{name}: no error or detail.error envelope")
             continue
 
-        for field in sorted(required_fields - set(error)):
+        for field in sorted(required_body_fields - set(error)):
             errors.append(f"{name}: missing body field {field}")
         for field in sorted(required_fields - set(expected)):
             errors.append(f"{name}: missing expected field {field}")
+
+        legacy = case["legacy"]
+        if type(legacy) is not bool:
+            errors.append(f"{name}: legacy must be boolean")
+        error_type = error.get("type")
+        if not isinstance(error_type, str) or error_type not in supported_error_types:
+            errors.append(f"{name}: unsupported backpressure body type")
+        elif type(legacy) is bool:
+            expected_type = "inference_admission" if legacy else "inferweave_backpressure"
+            if error_type != expected_type:
+                errors.append(f"{name}: body type disagrees with legacy classification")
+        message = error.get("message")
+        if not isinstance(message, str) or not message:
+            errors.append(f"{name}: body message must be a nonempty string")
 
         for target, envelope in (("body", error), ("expected", expected)):
             for field in ("code", "reason"):

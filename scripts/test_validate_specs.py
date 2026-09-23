@@ -257,11 +257,16 @@ class BackpressureContractTests(unittest.TestCase):
             self.assertIn("vectors do not cover frozen action codes", result.stdout)
 
     def test_canonical_body_and_expected_fields_are_required(self):
-        fields = (
+        expected_fields = (
             "code", "reason", "retryable", "replay_safe", "request_state",
             "action", "action_code", "scope",
         )
-        for target, field in ((target, field) for target in ("body", "expected") for field in fields):
+        body_fields = expected_fields + ("type", "message")
+        mutations = (
+            [("body", field) for field in body_fields]
+            + [("expected", field) for field in expected_fields]
+        )
+        for target, field in mutations:
             with self.subTest(target=target, field=field), tempfile.TemporaryDirectory() as directory:
                 repo = self.copied_repo(directory)
                 vectors = load_json(repo, VECTOR_CONTRACT)
@@ -274,6 +279,50 @@ class BackpressureContractTests(unittest.TestCase):
 
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(f"missing {target} field {field}", result.stdout)
+
+    def test_body_message_must_be_nonempty(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            vector_error(vectors["cases"][0])["message"] = ""
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("body message must be a nonempty string", result.stdout)
+
+    def test_body_type_must_be_supported_and_match_legacy(self):
+        mutations = (
+            ("unsupported", False, "unsupported backpressure body type"),
+            ("inferweave_backpressure", True, "body type disagrees with legacy classification"),
+            ("inference_admission", False, "body type disagrees with legacy classification"),
+        )
+        for error_type, legacy, expected_error in mutations:
+            with self.subTest(error_type=error_type, legacy=legacy), tempfile.TemporaryDirectory() as directory:
+                repo = self.copied_repo(directory)
+                vectors = load_json(repo, VECTOR_CONTRACT)
+                case = vectors["cases"][0]
+                vector_error(case)["type"] = error_type
+                case["legacy"] = legacy
+                write_json(repo, VECTOR_CONTRACT, vectors)
+
+                result = validate(repo)
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(expected_error, result.stdout)
+
+    def test_legacy_must_be_boolean(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            vectors = load_json(repo, VECTOR_CONTRACT)
+            vectors["cases"][0]["legacy"] = "false"
+            write_json(repo, VECTOR_CONTRACT, vectors)
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("legacy must be boolean", result.stdout)
 
     def test_canonical_field_types_are_checked(self):
         with tempfile.TemporaryDirectory() as directory:
