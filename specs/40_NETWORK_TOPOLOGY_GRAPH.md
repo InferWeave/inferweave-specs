@@ -51,11 +51,11 @@ A role set is a property of a vertex, not a separate vertex: spec 21 permits one
 process to be several roles at once, and modelling that as multiple vertices
 would double-count capacity in every view built on this graph.
 
-GPU vertices carry a reference to the inventory and telemetry defined in
-`specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md`. This specification does not restate
-those fields and must not fork them; it stores the stable GPU ID and lets the
-consumer join. Duplicating telemetry here would create two descriptions of one
-device that drift silently.
+GPU vertices reference the inventory and telemetry defined in
+`specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md`. A bounded, display-only `configuration`
+projection may carry existing authenticated registration and telemetry facts
+with their observation times, as defined below. It does not create another
+inventory authority and must never drive placement, scheduling or GPU ownership.
 
 ## Horizon and completeness
 
@@ -169,7 +169,7 @@ camelCase on the wire; timestamps are Unix seconds.
 
 - Vertex: `resourceId`, `kind`, `roles`, `horizon`, `snapshotAt`, `version`;
   optional `epoch`, `label`, `address`, `ownerNodeId`, `status`, `detail`,
-  `models`, `counts`. `status` is `live`, `stale`, or `unknown`; it does not
+  `models`, `counts`, `configuration`. `status` is `live`, `stale`, or `unknown`; it does not
   substitute for completeness. `detail` is a bounded generic explanation,
   never an exception/credential/prompt dump. GPU IDs come from registered
   inventory, never from array indices or a guessed worker-to-GPU ratio.
@@ -200,12 +200,119 @@ probe nodes while handling a browser request. Unknown child gateways remain
 visible until their authorized graph is available. Stale registration records
 remain visible within the bounded observation window; overflow is explicit.
 
+### Display configuration and serving evidence
+
+The operator's 2026-09-22 map inspection could identify registered nodes but
+could not see their reported GPU configuration or distinguish models currently
+serving from advertised capabilities. The former text's blanket prohibition on
+carrying telemetry projections would force a consumer to make separate requests
+or leave these facts invisible. This corrects that specification defect without
+creating a second inventory source.
+
+Optional vertex `configuration` is a projection of existing authenticated
+registration and telemetry, never arbitrary process arguments, environment,
+credentials or private backend addresses. Missing fields mean **unknown**, not
+zero, an empty inventory or a default hardware model. The camelCase shape is:
+
+- `observedAt`: required configuration observation time, Unix seconds.
+- `reportedGpuIds`: optional registered identifiers. Legacy labels can remain
+  visible as reported labels; they do not prove physical device identity.
+- `gpus`: optional records with required `gpuId`, optional device-specific
+  `name`, `vendor`, and canonical `CardMemory` (`totalMb`, `usedMb`, in MiB).
+- `deployments`: optional records with required `model`, optional `engine`,
+  `backend`, `quantization`, `contextTokens`, `slots`, `gpuModel`, `gpuCount`, `gpuIds`.
+  These are reported configuration facts, not confirmed model residency.
+  `slots` is the existing registration advert's per-deployment value, a
+  nonnegative integer within the safe integer bound. Missing is unknown and zero
+  remains reported zero. Show it alongside model and context; never sum it across
+  aliases or worker registrations, infer node capacity from it, or introduce a
+  fixed-slot scheduling policy. Routing/admission behavior remains unchanged.
+- `servedModels`: optional observed serving model identifiers. Omission is
+  unknown; an explicit empty array means the observation reported none.
+- `servedModelsEvidence`: optional `node-report` or `engine-model-list`.
+- `servedModelsObservedAt`: optional time of the serving observation, Unix seconds.
+
+Bound each configuration to 64 GPU records, 64 reported GPU IDs, 64 deployments
+and 256 serving models; each deployment has at most 64 GPU IDs. Identifiers and
+model names must be nonblank and at most 512 UTF-8 bytes. Other strings have at
+most 256 UTF-8 bytes. Integer values must fit JavaScript's exact nonnegative
+integer range (at most 9007199254740991); context token counts, reported GPU
+counts and total memory are positive when present, and used memory cannot exceed
+total. The schemas reuse `CardMemory`; runtime validation also enforces byte
+length and cross-field memory limits that ordinary JSON Schema cannot express.
+Existing graph, subtree and heartbeat byte limits still apply; optional
+configuration that does not fit is omitted safely, never truncated into a false
+measurement or allowed to interrupt inference.
+
+Serving colors require a nonstale node and explicit serving evidence observed
+within 90 seconds. A newer configuration or transport receipt never refreshes an
+older serving observation. A successful engine-answering node telemetry report
+may provide `node-report` evidence, but must not be described as independent
+residency verification. Failed engine probes, stale or absent reports and
+advertised model capabilities alone cannot establish current serving colors.
+Gateway models describe routing availability and do not imply local GPU serving;
+gateway vertices remain neutral. Text labels and a model legend accompany colors.
+
+Only facts for the exact observed device may populate its name/vendor: a single
+node-wide card label does not describe every GPU on a heterogeneous host.
+Visible-device telemetry does not prove exclusive process ownership; GPU IDs
+are never invented from ordinal, serving endpoint, worker count or card name.
+Existing legacy GPU selections and scheduling identity remain unchanged.
+A node may report devices visible to its allocation without exclusively owning
+them. Omit uncertain ownership edges rather than manufacturing a physical map.
+
+The local exporter uses cached registration, telemetry and device discovery.
+Opening or selecting a map node does not query the node or start another probe.
+The shared browser map, authorized by a signed-in browser session, retains
+read-only operational configuration for non-operator users so GPU foldouts and
+serving-model colors remain available to every signed-in map viewer. This includes commercial GPU
+name/vendor, memory, model, engine/backend, quantization, context, reported slots,
+counts and serving evidence with its original observation times. It does not
+include private addresses, host labels, credentials, process arguments or
+environment data. Existing private address and label masking remains in force.
+
+Every raw device identifier in `reportedGpuIds`, `gpus[].gpuId`, and
+`deployments[].gpuIds` is replaced by a viewer-scoped opaque handle, including
+legacy reported labels. Repeated references to the same device within a view
+must resolve consistently, including any corresponding GPU vertex handle; a
+configuration-only device still receives a handle. Derive handles using the
+same server-secret keyed, viewer-scoped mechanism as graph identities. Raw GPU
+IDs must not survive anywhere in these fields, and one viewer's handles must
+not be reusable to identify another viewer's device handles. This does not
+claim that graph structure or shared commercial hardware/model facts are
+impossible to correlate. Operators retain the original configuration under
+existing authorization. Producing a shared view must not mutate that original
+or another viewer's copy.
+
+This browser shared-read policy follows the operator's explicit request that
+all signed-in users can use the network map; it supersedes configuration removal
+only for that browser-session view. It does not expand an inference API key's
+scope: a personal inference key calling `GET /iw/v1/topology` retains the existing
+structural masked view with **configuration omitted**. Administrative bearer
+credentials retain their existing full view. A generic redaction helper's ability
+to preserve pseudonymized configuration is not authorization to reveal it; the
+actual HTTP handler must enforce the credential's view. This policy grants no
+anonymous access, topology mutation, placement control or new administrative
+permission. Composition and held-link forwarding preserve
+source observation times and evidence labels.
+
+This optional extension retains topology v2 but older strict typed consumers may
+reject enriched vertices. Roll out the updated gateway exporter and its parent
+held-link CLI together; omission remains decodable by older peers. Existing GPU
+workers continue to register and serve without configuration changes or engine
+restarts. Additional per-device names from newer workers require a separate
+future worker rollout; until then unreported names remain unknown. The current
+release does not authorize changes to GPU placement, engines or worker jobs.
+
 ### Authentication, privacy and resource bounds
 
 Use existing credentials. An existing operator authorization may reveal the
 identities and addresses it permits. Recognized ordinary inference principals
-receive opaque private resource identities and no private addresses, hostnames
-or operator labels. Anonymous or unrecognized credentials receive `401`.
+receive the structural masked topology with opaque private resource identities,
+no private addresses, hostnames or operator labels, and no configuration. The
+shared operational view requires signed-in browser-session authorization, not
+merely possession of an inference key. Administrative bearer access keeps its
+existing full view. Anonymous or unrecognized credentials receive `401`.
 A caller's forwarding header or traffic pattern grants no topology permission.
 
 Opaque identity handles use a cryptographic keyed derivation (HMAC-SHA256 or
@@ -296,6 +403,22 @@ covers is removed:
    as the unredacted one.
 6. An aggregate over a subtree containing `unknown` is not reported `complete`.
 7. Resolution of two exports of one vertex follows `version`, not arrival order.
+8. Configuration wire/schema serialization preserves reported GPU/deployment
+   facts, omits unknown fields, and rejects malformed or over-budget enrichment.
+9. Signed-in browser shared-read exports retain operational configuration while all
+   raw device IDs are absent from `reportedGpuIds`, `gpus[].gpuId`, and
+   `deployments[].gpuIds`. References and corresponding GPU graph handles agree
+   within a view and differ across viewers. Original operator configuration and
+   other viewer copies remain unchanged; cloned/composed graphs do not share
+   mutable nested configuration state. Actual HTTP handler regressions prove
+   personal inference-key topology omits configuration, administrative bearer
+   topology retains its full view, and anonymous access stays unauthorized.
+10. Fresh engine-answering reports, explicit empty reports, failed probes and
+    stale reports remain distinct; advertised capability does not become current
+    serving evidence and configuration refresh does not renew serving freshness.
+11. Multi-GPU and multi-model rendering preserves reported identity, accessible
+    model labels and legend, node expansion and unknown fields without claiming
+    exclusive ownership or independently verified residency.
 
 Each test must be run against a deliberately broken fixture as well as the
 canonical one, so that a guard which has silently stopped checking is caught.
