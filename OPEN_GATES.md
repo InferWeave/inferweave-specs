@@ -123,8 +123,11 @@ placement changes are implied. Updated gateway and parent-link CLI must be
 qualified together because older strict topology decoders reject enrichment.
 
 The operator's shared-read map request retains operational configuration for
-signed-in authorized users while pseudonymizing device IDs and preserving
-private address/label masking. Raw-ID absence, within-view reference consistency,
+signed-in browser-session users while pseudonymizing device IDs and preserving
+private address/label masking. Personal inference keys retain the existing
+structural masked HTTP view without configuration; administrative bearer access
+retains the full view. Actual HTTP handler regressions must verify these distinct
+credential scopes. Raw-ID absence, within-view reference consistency,
 cross-viewer handle separation and unchanged operator originals require explicit
 implementation tests; live signed-in map visibility remains `owed` until verified.
 This policy does not open anonymous access, administration or placement gates.

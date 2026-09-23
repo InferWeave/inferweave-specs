@@ -263,9 +263,9 @@ them. Omit uncertain ownership edges rather than manufacturing a physical map.
 
 The local exporter uses cached registration, telemetry and device discovery.
 Opening or selecting a map node does not query the node or start another probe.
-Authorized shared-read exports, including signed-in non-operator users, retain
-read-only operational configuration so GPU foldouts and serving-model colors
-remain available to every authorized map viewer. This includes commercial GPU
+The shared browser map, authorized by a signed-in browser session, retains
+read-only operational configuration for non-operator users so GPU foldouts and
+serving-model colors remain available to every signed-in map viewer. This includes commercial GPU
 name/vendor, memory, model, engine/backend, quantization, context, reported slots,
 counts and serving evidence with its original observation times. It does not
 include private addresses, host labels, credentials, process arguments or
@@ -284,10 +284,16 @@ impossible to correlate. Operators retain the original configuration under
 existing authorization. Producing a shared view must not mutate that original
 or another viewer's copy.
 
-This shared-read policy follows the operator's explicit request that all users
-can use the network map; it supersedes the initial configuration-removal rule.
-It does not grant anonymous access, topology mutation, placement control or any
-new administrative permission. Composition and held-link forwarding preserve
+This browser shared-read policy follows the operator's explicit request that
+all signed-in users can use the network map; it supersedes configuration removal
+only for that browser-session view. It does not expand an inference API key's
+scope: a personal inference key calling `GET /iw/v1/topology` retains the existing
+structural masked view with **configuration omitted**. Administrative bearer
+credentials retain their existing full view. A generic redaction helper's ability
+to preserve pseudonymized configuration is not authorization to reveal it; the
+actual HTTP handler must enforce the credential's view. This policy grants no
+anonymous access, topology mutation, placement control or new administrative
+permission. Composition and held-link forwarding preserve
 source observation times and evidence labels.
 
 This optional extension retains topology v2 but older strict typed consumers may
@@ -302,8 +308,11 @@ release does not authorize changes to GPU placement, engines or worker jobs.
 
 Use existing credentials. An existing operator authorization may reveal the
 identities and addresses it permits. Recognized ordinary inference principals
-receive opaque private resource identities and no private addresses, hostnames
-or operator labels. Anonymous or unrecognized credentials receive `401`.
+receive the structural masked topology with opaque private resource identities,
+no private addresses, hostnames or operator labels, and no configuration. The
+shared operational view requires signed-in browser-session authorization, not
+merely possession of an inference key. Administrative bearer access keeps its
+existing full view. Anonymous or unrecognized credentials receive `401`.
 A caller's forwarding header or traffic pattern grants no topology permission.
 
 Opaque identity handles use a cryptographic keyed derivation (HMAC-SHA256 or
@@ -396,12 +405,14 @@ covers is removed:
 7. Resolution of two exports of one vertex follows `version`, not arrival order.
 8. Configuration wire/schema serialization preserves reported GPU/deployment
    facts, omits unknown fields, and rejects malformed or over-budget enrichment.
-9. Authorized shared-read exports retain operational configuration while all
+9. Signed-in browser shared-read exports retain operational configuration while all
    raw device IDs are absent from `reportedGpuIds`, `gpus[].gpuId`, and
    `deployments[].gpuIds`. References and corresponding GPU graph handles agree
    within a view and differ across viewers. Original operator configuration and
    other viewer copies remain unchanged; cloned/composed graphs do not share
-   mutable nested configuration state. Anonymous access stays unauthorized.
+   mutable nested configuration state. Actual HTTP handler regressions prove
+   personal inference-key topology omits configuration, administrative bearer
+   topology retains its full view, and anonymous access stays unauthorized.
 10. Fresh engine-answering reports, explicit empty reports, failed probes and
     stale reports remain distinct; advertised capability does not become current
     serving evidence and configuration refresh does not renew serving freshness.
