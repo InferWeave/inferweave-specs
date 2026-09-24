@@ -82,6 +82,10 @@
       "priority": "P0",
       "status": "required",
       "owner_component": "control-plane",
+      "contracts": [
+        "contracts/backpressure-action-codes.json",
+        "contracts/backpressure-conformance-v1.json"
+      ],
       "canonical_tasks": [
         "P1-T12",
         "P1-T19"

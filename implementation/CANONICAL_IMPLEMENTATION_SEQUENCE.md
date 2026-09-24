@@ -617,7 +617,7 @@ Rules:
 **Context:** `C65`
 **Depends on:** P1-T12, P1-T18
 **Features:** IW-BP-001
-**Read:** specs/06_BACKPRESSURE_RETURN_TO_SENDER.md, specs/04_CAPACITY_ADMISSION_SEATS.md
+**Read:** specs/06_BACKPRESSURE_RETURN_TO_SENDER.md, specs/04_CAPACITY_ADMISSION_SEATS.md, contracts/backpressure-action-codes.json, contracts/backpressure-conformance-v1.json
 
 **Outcome:** Infrastructure/capacity returns 503; user/FairShare policy returns 429; retry candidate/time budgets are bounded.
 
@@ -625,6 +625,7 @@ Rules:
 - status mapping
 - retry metadata
 - no unbounded queue/retry loop
+- frozen action vocabulary and shared conformance-vector reconciliation
 
 ### P1-T20 — Per-request performance/resource telemetry
 **Context:** `C75`

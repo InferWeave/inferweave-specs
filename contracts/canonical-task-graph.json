@@ -1083,6 +1083,10 @@
       "features": [
         "IW-BP-001"
       ],
+      "contracts": [
+        "contracts/backpressure-action-codes.json",
+        "contracts/backpressure-conformance-v1.json"
+      ],
       "context_class": "C65",
       "outcome": "Infrastructure/capacity returns 503; user/FairShare policy returns 429; retry candidate/time budgets are bounded.",
       "required_tests": [
