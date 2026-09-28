@@ -93,7 +93,10 @@ Never display ambiguous cross-model universal TPS rankings without dimensions.
 
 ## Prompt history
 
-Because every submitted prompt is stored, authorized users can inspect their own prompt/session history. Access control comes from the prompt ledger and every privileged content read is audited.
+Authorized users can inspect prompt/session history for records that reached a
+durable sink. The UI must disclose gaps reported by recorder loss metrics and
+must not imply complete history. Access control comes from the prompt ledger and
+every privileged content read is audited.
 
 ## Node administration
 

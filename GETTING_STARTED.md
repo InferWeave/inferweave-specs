@@ -66,7 +66,8 @@ The first real milestone requires:
 - two heterogeneous outbound-connected GPU nodes;
 - complete GPU/runtime/model fingerprints;
 - live temperature/power/utilization telemetry;
-- every submitted prompt persisted;
+- bounded encrypted prompt recording independent of admission;
+- explicit fail-closed durable prompt ingest;
 - `/v1/models`;
 - streaming `/v1/chat/completions`;
 - model/context hard filtering;

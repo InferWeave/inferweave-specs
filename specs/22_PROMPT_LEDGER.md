@@ -2,9 +2,21 @@
 
 ## Requirement
 
-Every submitted inference request must create a durable, queryable prompt record in the shared database.
+Every inference request is offered to an encrypted recording pipeline, including
+requests later accepted, rejected, capacity-blocked, policy-denied, failed,
+cancelled or preempted. Recording is an observational side effect of ordinary
+gateway service, not a prerequisite for admission.
 
-This includes requests that are later accepted, rejected, capacity-blocked, policy-denied, failed, cancelled or preempted. The prompt record is the ingress audit/history record; execution attempts reference it.
+The gateway derives stable prompt identity, encrypts sensitive content, and
+uses a non-blocking enqueue into a bounded process-local buffer. A full, closed,
+or unavailable recording path drops the record, increments bounded metrics,
+and leaves request validity, policy, capacity, and routing decisions unchanged.
+The prompt record remains the preferred ingress audit/history record when it is
+successfully written; execution attempts reference its stable identity.
+
+The separate durable prompt-ingest API retains a fail-closed contract. A caller
+using that API does not receive a durable-submission acknowledgement until the
+record is committed.
 
 This applies to:
 - chat/completions/responses;
@@ -17,42 +29,47 @@ This applies to:
 
 ## Direct-data-path compatibility
 
-The system must preserve prompt persistence without forcing inference bytes through the gateway.
+The system must preserve prompt recording without forcing inference bytes
+through the gateway.
 
-Recommended flow:
+Ordinary gateway flow:
 
 ```text
-client/local proxy
-    |
-    | 1. idempotent encrypted prompt ingest
-    v
-prompt-ingest service ---> shared prompt database
-    |
-    | returns prompt_id + immutable content hash
-    v
-client/local proxy
-    |
-    | 2. route request metadata + prompt_id/hash
-    v
-control plane
-    |
-    | 3. route ticket
-    v
+client/local proxy ---> gateway/control plane
+                         |              |
+                         |              | 1. derive prompt_id/hash and encrypt
+                         |              | 2. non-blocking enqueue
+                         |              v
+                         |      bounded recorder -> configured sink
+                         |
+                         | 3. issue route ticket independently
+                         v
 client/local proxy ---------------------> selected node
-        direct inference payload
+                  direct inference payload
 
 selected node
     |
-    | 4. execution acknowledgement references prompt_id/hash
+    | execution acknowledgement references prompt_id/hash
     v
 control/accounting plane
 ```
 
-The prompt-ingest service is horizontally scalable and distinct from the routing gateway, so storing every prompt does not force model traffic or response streams through the gateway.
+The recorder is distinct from routing policy. File, PostgreSQL, discard, and
+future external-queue adapters implement one batch sink interface; the request
+path does not know which sink is configured. Sink startup, acknowledgement,
+retry, flush, and synchronization never execute on or backpressure the
+admission path.
 
-If the client cannot reach prompt ingest, the request is not considered durably submitted. A local proxy may use a crash-safe outbox and complete ingestion before route acceptance.
+The default buffer is bounded to 8,192 events, drops the newest event when full,
+flushes up to 128 events or after 250 milliseconds, and retains at most one
+failed batch for retry. Retry begins at 100 milliseconds and caps at 30 seconds.
+These are configurable bounded policies, not durability guarantees. A sink call
+that never returns may strand one dedicated recorder thread; it cannot create
+unbounded replacement tasks or block request threads.
 
-Every submitted request receives a prompt record before routing. Execution/rejection/cancellation facts then reference that prompt ID.
+The durable prompt-ingest service remains horizontally scalable and distinct
+from the routing gateway. If a client explicitly chooses durable ingest and
+cannot reach it, that request is not durably submitted and the API fails closed.
 
 ## Schema
 
@@ -102,6 +119,11 @@ Requirements:
 - durable outbox for node/local-proxy ingestion;
 - documented backup/restore and deletion workflows.
 
+For gateway recording, runtime sink unavailability does not prevent startup.
+Invalid static configuration remains a startup error. Each event has a stable
+identity derived from its natural idempotency key so retry after an uncertain
+write does not create a second logical record.
+
 ## Security
 
 Because prompts may contain private code, credentials, personal data or proprietary documents:
@@ -112,9 +134,38 @@ Because prompts may contain private code, credentials, personal data or propriet
 - do not include prompt text in public snapshots, benchmark public datasets, receipts or contribution reports;
 - optionally detect likely secrets and tag sensitivity without rewriting the stored original.
 
-## Retention
+## Admission, loss, and retention
 
-The product requirement is to store every prompt. Retention duration remains policy-configurable, but no accepted prompt may bypass initial durable storage.
+For ordinary gateway admission, only request validity, authentication, policy,
+capacity, deadline, and routing errors may refuse inference. Gateway record-sink
+state may not. An explicit durable-ingest call is a different contract: it must
+withhold acknowledgement or fail when committed storage cannot be proven.
+
+Gateway records can be lost when the process exits before flush, the bounded
+buffer overflows, encoding fails, a sink outage outlasts the buffer, or explicit
+discard mode is selected. This accepted loss is never represented as durable
+success. Operators receive exact live-process counts for enqueue, overflow,
+closed-channel, encoding, and discard outcomes, plus buffer depth, sink
+failures, retry delay, last success, and a `healthy`, `delayed`, or `dropping`
+state. An abrupt process exit cannot report the records it lost; operator status
+therefore publishes the configured crash-loss upper bound (buffer capacity plus
+one retained batch) and labels crash loss as unknown rather than zero. Serving
+health stays independent of recorder health.
+
+Retention duration for records that reach a durable sink remains
+policy-configurable. Explicit durable-ingest acknowledgements retain their
+committed-storage meaning.
+
+## Incident correction
+
+The former contract required durability before routing. On 2026-09-28 a
+Quobyte-backed gateway outbox failed while the Hive allocation and model
+backends remained available; because admission synchronously depended on that
+file, all downstream requests appeared busy. The specification itself was part
+of the root cause. Retrying or rotating a shared file improves sink recovery but
+does not make synchronous storage safe for admission. The recorder boundary in
+this specification prevents a future literal implementation from recreating
+that outage.
 
 ## Benchmarks
 

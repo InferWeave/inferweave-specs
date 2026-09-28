@@ -46,7 +46,11 @@ Deployment fingerprint is immutable.
 Session ID survives multiple requests.
 Attempt ID distinguishes retries.
 Node's private stable identity is separate from rotating/public pseudonym.
-Every submitted request's prompt content is stored in the dedicated encrypted prompt-ledger tables. It is not duplicated into route/public/economic/metric tables.
+Prompt content accepted by a durable sink is stored in the dedicated encrypted
+prompt-ledger tables. Ordinary gateway requests first enter the bounded
+best-effort recorder and may be absent after an explicitly measured drop;
+explicit durable-ingest acknowledgement still proves the record exists. Prompt
+content is not duplicated into route/public/economic/metric tables.
 
 ## Time series
 Do not retain raw high-cardinality telemetry forever. Compact/roll up according to operational needs while preserving audit evidence needed for incidents or qualification.

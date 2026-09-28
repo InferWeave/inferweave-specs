@@ -62,10 +62,16 @@ Normal path:
 The gateway is the control authority, not the normal inference-byte proxy.
 
 ## D-006 Shared prompt ledger — RESOLVED
-Every **submitted** inference prompt/request payload is durably stored in a shared database, including requests later accepted, rejected, failed, cancelled, capacity-blocked, policy-blocked or preempted.
+Every inference prompt/request payload is offered to the shared encrypted prompt
+ledger, including requests later accepted, rejected, failed, cancelled,
+capacity-blocked, policy-blocked or preempted. Ordinary gateway admission is not
+conditional on storage acknowledgement: it uses the bounded asynchronous
+recording contract in
+`decisions/2026-09-28-buffered-gateway-recording.md`. Explicit durable-ingest
+callers remain fail-closed and receive proof of committed submission.
 
 Requirements:
-- exact submitted content retained;
+- exact submitted content retained for records accepted by a durable sink;
 - encrypted at rest;
 - idempotent durable ingest;
 - linked to tenant/user/API key/session/request/route/deployment/node/GPU;
@@ -185,7 +191,10 @@ Model/runtime artifacts are immutable/content-addressed and use hierarchical hos
 Workload contracts, resource lifecycle events, degradation/quarantine, demand forecasting/pre-staging and resumable benchmark tasks are first-class control-plane capabilities.
 
 ## D-017 Prompt storage abstraction — RESOLVED
-Every submitted prompt remains durably stored, but physical prompt bytes are accessed through a backend-independent PromptStore abstraction so large deployments can tier encrypted content into object storage.
+Recorded prompt bytes are accessed through a backend-independent PromptStore
+abstraction so large deployments can tier encrypted content into object
+storage. Gateway buffering and admission semantics are defined by D-006;
+explicit durable-ingest callers still require committed storage.
 
 
 ## D-018 Container deployment substrate — RESOLVED

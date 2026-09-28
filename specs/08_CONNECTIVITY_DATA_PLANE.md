@@ -51,7 +51,7 @@ Responsibilities:
 - direct-node connection establishment;
 - session affinity metadata;
 - model/capacity cache;
-- prompt-ledger durable outbox;
+- optional explicit durable-ingest outbox for workloads that require committed submission;
 - request idempotency;
 - cancellation propagation;
 - optional safe prefix/request caching;
@@ -72,7 +72,15 @@ Gateway relay has explicit concurrency/bandwidth circuit breakers.
 
 ## Prompt persistence
 
-Direct routing does not remove the requirement to store every prompt. The local proxy or selected node performs idempotent prompt-ledger ingestion using a scoped write capability.
+Direct routing does not remove prompt recording. The gateway owns pre-route
+identity derivation and the bounded asynchronous recorder, so rejected and
+accepted requests follow one admission-independent recording contract. A local
+proxy or selected node may publish post-route attempt, response, and accounting
+events through the same typed event contract using a scoped write capability;
+they do not create a second admission gate. Recording failure or saturation is
+visible but does not invalidate an otherwise admissible route. A workload that
+explicitly requires durable submission uses the fail-closed prompt-ingest API,
+optionally through the local proxy's crash-safe outbox, before routing.
 
 ## Optional gateway topology observation on a held link
 

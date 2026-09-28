@@ -16,7 +16,8 @@ Gate task: `P0-T12`.
 
 ## Gate 1 — Working direct GPU weave
 Must prove:
-- every submitted prompt durable;
+- gateway recording cannot block admission and all loss is measured;
+- explicit durable-ingest acknowledgement remains fail-closed;
 - two heterogeneous GPU nodes;
 - full fingerprints/live telemetry;
 - dynamic seat/context/KV admission;

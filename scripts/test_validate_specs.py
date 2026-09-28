@@ -59,6 +59,13 @@ def load_json(repo: Path, relative_path: str):
 
 def write_json(repo: Path, relative_path: str, value) -> None:
     (repo / relative_path).write_text(json.dumps(value, indent=2) + "\n")
+    subprocess.run(
+        ["python3", "scripts/generate_bundle_metadata.py"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
 
 
 def vector_error(case):
@@ -559,6 +566,65 @@ class BackpressureContractTests(unittest.TestCase):
 
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("retry_after_ms must be nonnegative numeric", result.stdout)
+
+
+class BundleConsistencyTests(unittest.TestCase):
+    def copied_repo(self, temporary_directory: str) -> Path:
+        return copy_repo(Path(temporary_directory))
+
+    def test_task_outcome_drift_fails_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            graph = load_json(repo, "contracts/canonical-task-graph.json")
+            graph["tasks"][0]["outcome"] = "drifted outcome"
+            write_json(repo, "contracts/canonical-task-graph.json", graph)
+            subprocess.run(
+                ["python3", "scripts/generate_bundle_metadata.py"],
+                cwd=repo,
+                check=True,
+            )
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("task-card outcome disagrees with graph", result.stdout)
+
+    def test_superseded_durable_before_route_language_fails_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            strategy = repo / "implementation/TEST_STRATEGY.md"
+            strategy.write_text(strategy.read_text() + "\nFor every submitted request fixture:\n")
+            subprocess.run(
+                ["python3", "scripts/generate_bundle_metadata.py"],
+                cwd=repo,
+                check=True,
+            )
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("superseded durable-before-route contract", result.stdout)
+
+    def test_checksum_and_index_drift_fail_validation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            readme = repo / "README.md"
+            readme.write_text(readme.read_text() + "\ndrift\n")
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("checksums.json digest mismatch for README.md", result.stdout)
+
+        with tempfile.TemporaryDirectory() as directory:
+            repo = self.copied_repo(directory)
+            index = repo / "BUNDLE_INDEX.md"
+            index.write_text(index.read_text().replace("decisions/2026-09-28-buffered-gateway-recording.md", "decisions/missing.md"))
+
+            result = validate(repo)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("BUNDLE_INDEX.md missing current entry", result.stdout)
 
 
 if __name__ == "__main__":

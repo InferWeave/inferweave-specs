@@ -19,7 +19,7 @@ InferWeave is a distributed heterogeneous GPU inference fabric with:
 - Docker-based persistent deployments;
 - Apptainer-based Slurm ephemeral workers;
 - full GPU/runtime/model telemetry;
-- every submitted prompt stored durably in the shared PromptStore;
+- bounded encrypted prompt recording that cannot block gateway admission, plus an explicit durable-ingest API;
 - model qualification and workload-specific recommendation;
 - owner-first GPU priority and FairShare;
 - GPU watchdogs, rescue and automatic rollback;

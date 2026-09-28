@@ -28,6 +28,14 @@ site gateway and its registered Hive Rust gateway service on 2026-09-22. See
 for the exact scope and release conditions. This approval does not assert that
 deployment has succeeded and does not open unrelated deployment or fleet gates.
 
+On 2026-09-28 the operator additionally authorized implementation, review,
+merge, and deployment of bounded asynchronous gateway recording to the same
+existing Fry/Hive path after a Quobyte outbox failure blocked inference
+admission while model capacity remained available. See
+[`decisions/2026-09-28-buffered-gateway-recording.md`](decisions/2026-09-28-buffered-gateway-recording.md).
+The exception covers only the recorder/admission boundary and its observability;
+it opens no new deployment target or fleet capability.
+
 The archived `InferWeave/inferweave-*` implementation repositories were read-only as of
 2026-09-03 and are not a deployed system.
 

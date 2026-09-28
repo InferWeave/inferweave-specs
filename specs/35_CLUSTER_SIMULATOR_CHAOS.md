@@ -58,7 +58,7 @@ Examples:
 - gateway byte traffic stays bounded;
 - direct-path preference maintained;
 - queues bounded;
-- prompt durability semantics upheld;
+- recorder failure/loss semantics and explicit durable-ingest acknowledgements upheld;
 - aggregate telemetry/accounting reconciles;
 - benchmark task not lost after preemption.
 

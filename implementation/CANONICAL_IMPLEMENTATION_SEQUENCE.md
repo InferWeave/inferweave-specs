@@ -366,13 +366,14 @@ Rules:
 **Features:** IW-PROMPT-001
 **Read:** specs/22_PROMPT_LEDGER.md, specs/34_PROMPT_STORE_TIERING.md
 
-**Outcome:** Persist every submitted prompt idempotently with encrypted content, metadata, lineage and access-audit primitives.
+**Outcome:** Record encrypted prompt events idempotently behind a bounded sink-neutral buffer while preserving durable-ingest access-audit primitives.
 
 **Required tests:**
 - accepted/rejected/cancelled prompt storage
 - idempotency
 - content excluded from logs
 - authorized read audit
+- bounded loss is visible and never blocks gateway admission
 
 ### P1-T08 — Prompt ingest API and submission ordering
 **Context:** `C65`
@@ -380,12 +381,13 @@ Rules:
 **Features:** IW-PROMPT-001
 **Read:** specs/22_PROMPT_LEDGER.md, specs/02_PROTOCOL_AND_API.md
 
-**Outcome:** Client/proxy obtains prompt_id/hash before routing and executions/rejections reference it.
+**Outcome:** Gateway derives prompt_id/hash before routing, offers the encrypted record without waiting for storage, and keeps the explicit durable-ingest API fail-closed.
 
 **Required tests:**
-- storage unavailable behavior
-- retry/outbox fixture
-- no route without durable submission
+- unavailable or blocked sink does not delay or refuse gateway admission
+- bounded buffer overflow is measured and does not backpressure admission
+- retry preserves stable event identity
+- explicit durable ingest still fails without committed submission
 
 ### P1-T08A — Read-side ledger integrity
 **Context:** `C75`
@@ -619,13 +621,14 @@ Rules:
 **Features:** IW-BP-001
 **Read:** specs/06_BACKPRESSURE_RETURN_TO_SENDER.md, specs/04_CAPACITY_ADMISSION_SEATS.md, contracts/backpressure-action-codes.json, contracts/backpressure-conformance-v1.json
 
-**Outcome:** Infrastructure/capacity returns 503; user/FairShare policy returns 429; retry candidate/time budgets are bounded.
+**Outcome:** Bounded pre-dispatch admission-queue restrictions and user/FairShare policy return 429; missing or unusable infrastructure/model capacity returns 503; retry candidate/time budgets are bounded.
 
 **Required tests:**
 - status mapping
 - retry metadata
 - no unbounded queue/retry loop
-- frozen action vocabulary and shared conformance-vector reconciliation
+- shared action vocabulary and conformance-vector reconciliation
+- rejection of unknown/duplicate actions, condition drift, unbounded retry guidance, and unsafe replay state
 
 ### P1-T20 — Per-request performance/resource telemetry
 **Context:** `C75`
@@ -761,9 +764,9 @@ Rules:
 **Context:** `C100`
 **Depends on:** P1-T24, P1-T20B
 **Features:** gate/review
-**Read:** specs/00_INVARIANTS.md, specs/06_BACKPRESSURE_RETURN_TO_SENDER.md, specs/09_OBSERVABILITY_RECEIPTS.md, specs/16_SECURITY_PRIVACY_TRUST.md
+**Read:** specs/00_INVARIANTS.md, specs/06_BACKPRESSURE_RETURN_TO_SENDER.md, specs/09_OBSERVABILITY_RECEIPTS.md, specs/16_SECURITY_PRIVACY_TRUST.md, specs/22_PROMPT_LEDGER.md, decisions/2026-09-28-buffered-gateway-recording.md
 
-**Outcome:** Multi-hour mixed workload validates cancellation, node loss, stale telemetry, prompt durability and direct-path invariants.
+**Outcome:** Multi-hour mixed workload validates cancellation, node loss, stale telemetry, bounded recorder loss, durable-ingest acknowledgement and direct-path invariants.
 
 **Required tests:**
 - soak
@@ -771,6 +774,9 @@ Rules:
 - gateway restart
 - Postgres hiccup
 - review requirement matrix
+- blocked recorder sink does not delay admission or change serving health
+- buffer overflow exposes bounded loss and crash-loss uncertainty
+- explicit durable ingest fails closed when storage is unavailable
 
 **Notes:** Review-only plus defect fixes; no Phase 2 features.
 

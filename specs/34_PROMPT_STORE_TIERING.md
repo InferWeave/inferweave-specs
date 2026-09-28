@@ -2,7 +2,9 @@
 
 ## Requirement
 
-Every submitted prompt remains durably stored as specified by the Prompt Ledger.
+Every record accepted by a durable sink remains stored as specified by the
+Prompt Ledger. Gateway admission uses bounded best-effort recording and may
+lose a record under the explicit conditions in spec 22.
 
 The implementation must not assume prompt bodies remain in one PostgreSQL row forever.
 
@@ -49,10 +51,14 @@ Never expose storage URLs directly without scoped short-lived authorization.
 
 ## Availability
 
-Prompt ingestion is on the submission path, so storage must have:
+The explicit durable-ingest API is on its caller's submission path, so its
+storage must have:
 - idempotency;
 - durable retry/outbox;
 - health/backpressure;
 - explicit degraded behavior.
 
-Do not silently accept a prompt that cannot satisfy the durable-storage requirement.
+Do not acknowledge the durable-ingest API when its durable-storage requirement
+was not satisfied. Ordinary gateway admission is a separate contract: it never
+waits for this storage path and reports recorder delay or loss through bounded
+operator telemetry.
