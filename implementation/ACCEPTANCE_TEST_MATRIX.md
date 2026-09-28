@@ -28,7 +28,7 @@
 | AC-024 | Solana dev adapter unavailable | inference continues |
 | AC-025 | Workbench fork | distinct conversation branch, execution ownership unchanged |
 
-| AC-026 | Accepted direct request | exact prompt stored once in shared DB |
+| AC-026 | Accepted direct request while recorder sink is blocked | route succeeds within the admission bound; buffer/drop state is visible; serving health stays healthy |
 | AC-027 | Direct route healthy | gateway carries control only, not inference stream bytes |
 | AC-028 | Direct route impossible | nearest regional relay selected before gateway relay |
 | AC-029 | Every GPU online | complete hardware/software/runtime/model fingerprint present |
@@ -75,7 +75,7 @@
 | AC-068 | Forecast pre-stage | decision is explainable and cannot override hard policy/owner constraints |
 | AC-069 | Benchmark preemption | completed leaf samples survive; expired leaf is rescheduled |
 | AC-070 | Large prompt | PromptStore can store encrypted payload outside PostgreSQL while metadata remains queryable |
-| AC-071 | Prompt object store unavailable | submission does not silently violate durable prompt requirement |
+| AC-071 | Explicit durable ingest while PromptStore is unavailable | no durable acknowledgement is returned and no route claims durable submission |
 | AC-072 | 10k synthetic workers | simulator maintains leases/queues/invariants under churn |
 | AC-073 | Duplicate identity chaos | simulator detects/prevents two authoritative leases for same physical allocation resource |
 | AC-074 | Site connector down | ephemeral workers fail over according to policy without identity corruption |

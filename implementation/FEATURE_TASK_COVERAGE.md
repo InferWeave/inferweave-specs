@@ -35,7 +35,7 @@ Features: **79**
 | `IW-FED-001` Intermediate coordinator/federation roles | P1 | 5 | control-plane | `P5-T04` |
 | `IW-TOOL-001` Workbench MCP/tool catalog and permission-aware invocation | P2 | 4 | web/workbench | `P4-T05`, `P4-T08` |
 | `IW-VERIFY-001` Node/deployment challenge and verification bands | P2 | 5 | control-plane+node | `P5-T05` |
-| `IW-PROMPT-001` Persist every submitted prompt in shared encrypted database | P0 | 1 | control-plane | `P0-T05`, `P1-T07`, `P1-T08`, `P1-T24` |
+| `IW-PROMPT-001` Record encrypted prompts without coupling gateway admission to sink availability | P0 | 1 | control-plane | `P0-T05`, `P1-T07`, `P1-T08`, `P1-T24` |
 | `IW-DP-003` Direct-first client/local-proxy to node data path | P0 | 1 | control-plane+node | `P1-T16`, `P1-T17`, `P1-T24` |
 | `IW-TEL-001` Per-GPU full hardware/software/runtime/model telemetry | P0 | 1 | node | `P0-T04`, `P0-T05`, `P1-T04`, `P1-T05`, `P1-T20` |
 | `IW-BENCH-002` Global cluster benchmark and contribution warehouse | P0 | 2 | control-plane | `P2-T01`, `P2-T03` |

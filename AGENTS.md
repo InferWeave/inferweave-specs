@@ -141,7 +141,7 @@ Use `implementation/CONTEXT_50_100K_STRATEGY.md`.
 - change resolved architecture silently;
 - add a new deployment substrate without ADR;
 - schedule Solana;
-- weaken privacy or prompt durability;
+- weaken prompt privacy, durable-ingest acknowledgement, or bounded recording observability;
 - make gateway the normal inference byte path;
 - bypass owner priority;
 - replace stable GPU identity with ephemeral worker identity;

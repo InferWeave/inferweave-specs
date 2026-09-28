@@ -11,7 +11,7 @@
   "backend_language": "Rust",
   "web_stack": "Next.js + TypeScript",
   "data_plane": "direct-first client/local-proxy to node",
-  "prompt_policy": "persist every submitted prompt in shared encrypted database",
+  "prompt_policy": "bounded encrypted gateway recording independent of admission; explicit durable ingest is fail-closed",
   "telemetry_policy": "full per-GPU hardware/software/runtime/model/thermal/power telemetry",
   "solana_policy": "deferred until working deployed GPU weave",
   "canonical_repository": "InferWeave/inferweave",

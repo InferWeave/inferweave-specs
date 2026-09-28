@@ -5,7 +5,7 @@ Review for:
 - missing feature mapping;
 - dependency cycles;
 - security/privacy;
-- prompt durability;
+- prompt privacy, durable-ingest semantics and bounded recorder loss;
 - direct-data-plane integrity;
 - owner priority;
 - stable GPU identity;

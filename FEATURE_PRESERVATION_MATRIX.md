@@ -16,7 +16,7 @@ This matrix exists specifically to prevent consolidation from deleting desired b
 | Return-to-sender | hierarchical rejection propagation | 06 | 2 |
 | NAT | outbound node connectivity | 08 | 1 |
 | Direct-first data plane | direct client/local-proxy↔node, nearest relay fallback, gateway last resort | 08 | 1 |
-| Prompt ledger | every submitted prompt persisted encrypted in shared DB | 22 | 1 |
+| Prompt ledger | bounded encrypted recording independent of admission; explicit durable ingest remains fail-closed | 22 | 1 |
 | Full GPU telemetry | hardware/software/model/settings/temp/power/utilization for every GPU | 23 | 1 |
 | Global benchmarks | cluster-wide exact-fingerprint performance/contribution warehouse | 23 | 2 |
 | Relays/direct | regional relays + route-scoped direct paths | 08 | 3 |

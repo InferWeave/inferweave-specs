@@ -21,7 +21,7 @@ These requirements override every feature spec.
 14. Backpressure propagates toward the sender; upstream layers must not hoard work rejected downstream.
 15. Model/runtime configurations are immutable deployments identified by fingerprints.
 16. Capability claims expire and must be refreshed/requalified after material configuration changes.
-17. Every submitted prompt is durably stored in the encrypted shared prompt ledger, but public telemetry contains no prompt bodies, outputs, API keys, stable private node addresses, stable wallet mappings or home-location data.
+17. Gateway admission never waits for record-storage I/O. Prompt and response content is encrypted before entering a bounded best-effort recording buffer; loss is explicit and measured. Callers that require proof of durable submission use the separate fail-closed prompt-ingest API. Public telemetry contains no prompt bodies, outputs, API keys, stable private node addresses, stable wallet mappings or home-location data.
 18. Public node identifiers are privacy-safe/pseudonymous/rotatable where practical.
 19. Owner/provider local-use priority is represented explicitly; remote capacity borrowing cannot manufacture permanent entitlement.
 20. FairShare is charged to stable parent identities so API-key/session/agent fan-out cannot create extra budget.

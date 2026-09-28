@@ -98,11 +98,17 @@ Every implementation task reports exact commands/results and skips optional hard
 For healthy direct-capable routes, instrument the gateway and assert it sees control/ticket/accounting bytes but **zero response stream payload bytes**. Repeat with regional-relay fallback and verify only the selected relay carries stream payload.
 
 ## Prompt-ledger proof
-For every submitted request fixture:
-- exactly one authoritative prompt record exists;
-- retry/failover lineage is preserved;
+For ordinary gateway request fixtures:
+- identity derivation and non-blocking record offer occur before route dispatch;
+- a blocked or unavailable sink does not delay or refuse an otherwise valid route;
+- the bounded buffer drops deterministically and exposes depth, loss, and degraded state;
+- retry/failover events retain stable identities and lineage;
 - prompt text never appears in logs/metrics/public snapshot fixtures;
-- direct-node route still records prompt durably;
+- records that reach a durable sink remain idempotent, authorized, and audited.
+
+For explicit durable-ingest fixtures:
+- exactly one authoritative prompt record exists before acknowledgement;
+- unavailable storage withholds acknowledgement or fails closed;
 - prompt-content reads require authorization and create audit records.
 
 ## GPU telemetry proof

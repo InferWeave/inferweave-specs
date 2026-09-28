@@ -26,7 +26,7 @@ These remain because they are desired product requirements:
 - explicit 503/429 backpressure;
 - absolute owner GPU priority;
 - hierarchical FairShare;
-- shared encrypted storage of every submitted prompt;
+- bounded encrypted prompt recording independent of gateway admission, with explicit durable ingest;
 - full per-GPU hardware/software/runtime/model/settings/temp/power telemetry;
 - global benchmark and contribution warehouse;
 - immutable deployment fingerprints;

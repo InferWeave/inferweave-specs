@@ -645,12 +645,13 @@
         "IW-PROMPT-001"
       ],
       "context_class": "C75",
-      "outcome": "Persist every submitted prompt idempotently with encrypted content, metadata, lineage and access-audit primitives.",
+      "outcome": "Record encrypted prompt events idempotently behind a bounded sink-neutral buffer while preserving durable-ingest access-audit primitives.",
       "required_tests": [
         "accepted/rejected/cancelled prompt storage",
         "idempotency",
         "content excluded from logs",
-        "authorized read audit"
+        "authorized read audit",
+        "bounded loss is visible and never blocks gateway admission"
       ],
       "notes": ""
     },
@@ -670,11 +671,12 @@
         "IW-PROMPT-001"
       ],
       "context_class": "C65",
-      "outcome": "Client/proxy obtains prompt_id/hash before routing and executions/rejections reference it.",
+      "outcome": "Gateway derives prompt_id/hash before routing, offers the encrypted record without waiting for storage, and keeps the explicit durable-ingest API fail-closed.",
       "required_tests": [
-        "storage unavailable behavior",
-        "retry/outbox fixture",
-        "no route without durable submission"
+        "unavailable or blocked sink does not delay or refuse gateway admission",
+        "bounded buffer overflow is measured and does not backpressure admission",
+        "retry preserves stable event identity",
+        "explicit durable ingest still fails without committed submission"
       ],
       "notes": ""
     },
@@ -1088,11 +1090,13 @@
         "contracts/backpressure-conformance-v1.json"
       ],
       "context_class": "C65",
-      "outcome": "Infrastructure/capacity returns 503; user/FairShare policy returns 429; retry candidate/time budgets are bounded.",
+      "outcome": "Bounded pre-dispatch admission-queue restrictions and user/FairShare policy return 429; missing or unusable infrastructure/model capacity returns 503; retry candidate/time budgets are bounded.",
       "required_tests": [
         "status mapping",
         "retry metadata",
-        "no unbounded queue/retry loop"
+        "no unbounded queue/retry loop",
+        "shared action vocabulary and conformance-vector reconciliation",
+        "rejection of unknown/duplicate actions, condition drift, unbounded retry guidance, and unsafe replay state"
       ],
       "notes": ""
     },
@@ -1355,17 +1359,24 @@
         "00_INVARIANTS",
         "06_BACKPRESSURE_RETURN_TO_SENDER",
         "09_OBSERVABILITY_RECEIPTS",
-        "16_SECURITY_PRIVACY_TRUST"
+        "16_SECURITY_PRIVACY_TRUST",
+        "22_PROMPT_LEDGER"
+      ],
+      "decisions": [
+        "decisions/2026-09-28-buffered-gateway-recording.md"
       ],
       "features": [],
       "context_class": "C100",
-      "outcome": "Multi-hour mixed workload validates cancellation, node loss, stale telemetry, prompt durability and direct-path invariants.",
+      "outcome": "Multi-hour mixed workload validates cancellation, node loss, stale telemetry, bounded recorder loss, durable-ingest acknowledgement and direct-path invariants.",
       "required_tests": [
         "soak",
         "node crash",
         "gateway restart",
         "Postgres hiccup",
-        "review requirement matrix"
+        "review requirement matrix",
+        "blocked recorder sink does not delay admission or change serving health",
+        "buffer overflow exposes bounded loss and crash-loss uncertainty",
+        "explicit durable ingest fails closed when storage is unavailable"
       ],
       "notes": "Review-only plus defect fixes; no Phase 2 features."
     },

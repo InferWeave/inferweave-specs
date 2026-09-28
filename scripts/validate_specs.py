@@ -8,7 +8,7 @@ from a guard that has silently stopped checking. See
 """
 from pathlib import Path
 from collections import defaultdict, deque
-import copy, json, math, re, sys
+import copy, hashlib, json, math, re, sys
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -155,6 +155,59 @@ def guard_sequence_matches_graph(features, tasks, spec_exists):
     return errors
 
 
+def _normalize_prose(value):
+    return " ".join(value.split())
+
+
+def _task_card_path(task):
+    phase_path = ROOT / f"tasks/phase-{task['phase']}/{task['id']}.md"
+    return phase_path if phase_path.exists() else ROOT / f"tasks/deferred/{task['id']}.md"
+
+
+def _markdown_section(text, heading):
+    match = re.search(
+        rf"^## {re.escape(heading)}\s*$\n(.*?)(?=^## |\Z)",
+        text,
+        re.M | re.S,
+    )
+    return match.group(1).strip() if match else None
+
+
+def _bullet_values(text):
+    return [value.strip() for value in re.findall(r"^- (.+)$", text or "", re.M)]
+
+
+def guard_task_content_matches_graph(features, tasks, spec_exists):
+    """Task outcomes/tests are canonical data, so prose projections must agree."""
+    errors = []
+    sequence = (ROOT / "implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md").read_text()
+    for task in tasks:
+        card_path = _task_card_path(task)
+        if not card_path.exists():
+            continue
+        card = card_path.read_text()
+        card_outcome = _markdown_section(card, "Outcome")
+        card_tests = _markdown_section(card, "Required tests")
+        if card_outcome is None or _normalize_prose(card_outcome) != _normalize_prose(task["outcome"]):
+            errors.append(f"{task['id']}: task-card outcome disagrees with graph")
+        if card_tests is None or _bullet_values(card_tests) != task.get("required_tests", []):
+            errors.append(f"{task['id']}: task-card required tests disagree with graph")
+
+        match = re.search(rf"^### {re.escape(task['id'])} — .+$", sequence, re.M)
+        if not match:
+            continue
+        block = sequence[match.end():]
+        next_task = re.search(r"^### ", block, re.M)
+        block = block[: next_task.start()] if next_task else block
+        outcome = re.search(r"^\*\*Outcome:\*\* (.+)$", block, re.M)
+        tests = re.search(r"^\*\*Required tests:\*\*\n((?:- .+\n?)+)", block, re.M)
+        if outcome is None or _normalize_prose(outcome.group(1)) != _normalize_prose(task["outcome"]):
+            errors.append(f"{task['id']}: sequence outcome disagrees with graph")
+        if tests is None or _bullet_values(tests.group(1)) != task.get("required_tests", []):
+            errors.append(f"{task['id']}: sequence required tests disagree with graph")
+    return errors
+
+
 def guard_every_task_has_a_card(features, tasks, spec_exists):
     return [f"{t['id']}: no task card"
             for t in tasks
@@ -185,6 +238,7 @@ DATA_GUARDS = [
     guard_task_traceability,
     guard_task_index_matches_graph,
     guard_sequence_matches_graph,
+    guard_task_content_matches_graph,
     guard_every_task_has_a_card,
     guard_coverage_tables_match,
 ]
@@ -224,6 +278,69 @@ def guard_required_artifacts(root):
         "OPEN_GATES.md",
     ]
     return [f"missing {rel}" for rel in required if not (root / rel).exists()]
+
+
+def guard_prompt_recording_contracts(root):
+    """Reject the durable-before-route language that caused the Hive outage."""
+    forbidden = {
+        "implementation/TEST_STRATEGY.md": (
+            "For every submitted request fixture:",
+            "direct-node route still records prompt durably",
+        ),
+        "implementation/DATA_MODEL.md": (
+            "Every submitted request's prompt content is stored",
+        ),
+        "implementation/ACCEPTANCE_TEST_MATRIX.md": (
+            "Accepted direct request | exact prompt stored once",
+            "submission does not silently violate durable prompt requirement",
+        ),
+    }
+    errors = []
+    for relative_path, phrases in forbidden.items():
+        text = (root / relative_path).read_text()
+        for phrase in phrases:
+            if phrase in text:
+                errors.append(f"{relative_path}: superseded durable-before-route contract")
+
+    spec = _normalize_prose((root / "specs/22_PROMPT_LEDGER.md").read_text())
+    required = (
+        "For ordinary gateway admission",
+        "explicit durable-ingest call is a different contract",
+        "Gateway record-sink state may not",
+    )
+    for phrase in required:
+        if phrase not in spec:
+            errors.append(f"specs/22_PROMPT_LEDGER.md: missing admission/ingest separation: {phrase}")
+    return errors
+
+
+def guard_bundle_metadata(root):
+    """Every bundle file is inventoried and its recorded digest matches bytes on disk."""
+    excluded = {"BUNDLE_INDEX.md", "checksums.json"}
+    actual_files = {
+        path.relative_to(root).as_posix()
+        for path in root.rglob("*")
+        if path.is_file()
+        and not ({".git", ".superpowers", "__pycache__"} & set(path.parts))
+        and path.relative_to(root).as_posix() not in excluded
+    }
+    checksums = json.loads((root / "checksums.json").read_text())
+    errors = []
+    for missing in sorted(actual_files - set(checksums)):
+        errors.append(f"checksums.json missing {missing}")
+    for extra in sorted(set(checksums) - actual_files):
+        errors.append(f"checksums.json has absent file {extra}")
+    for relative_path in sorted(actual_files & set(checksums)):
+        digest = hashlib.sha256((root / relative_path).read_bytes()).hexdigest()
+        if checksums[relative_path] != digest:
+            errors.append(f"checksums.json digest mismatch for {relative_path}")
+
+    index = (root / "BUNDLE_INDEX.md").read_text()
+    for relative_path, digest in checksums.items():
+        marker = f"- `{relative_path}` — `{digest[:12]}` —"
+        if marker not in index:
+            errors.append(f"BUNDLE_INDEX.md missing current entry for {relative_path}")
+    return errors
 
 
 def _vector_envelope(case):
@@ -536,6 +653,8 @@ def validate():
         errors.extend(g(features, tasks, spec_exists))
     errors.extend(guard_deployment_substrate(ROOT))
     errors.extend(guard_required_artifacts(ROOT))
+    errors.extend(guard_prompt_recording_contracts(ROOT))
+    errors.extend(guard_bundle_metadata(ROOT))
     errors.extend(guard_backpressure_contracts(ROOT, features, tasks))
     return features, tasks, errors
 
@@ -580,6 +699,10 @@ def _break_index_drift(features, tasks):
     tasks[0]["title"] = "a title the generated index has never seen"
 
 
+def _break_task_content_drift(features, tasks):
+    tasks[0]["outcome"] = "an outcome absent from the task card and sequence"
+
+
 def _break_card_missing(features, tasks):
     tasks.append({"id": "P9-T99", "phase": 9, "title": "no card exists for this",
                   "depends_on": [], "specs": [], "features": [], "context_class": "C50",
@@ -600,6 +723,7 @@ MUTATIONS = [
     ("invalid proof status", _break_proof_status),
     ("task with no feature and no gate record", _break_traceability),
     ("derived index drifted from the graph", _break_index_drift),
+    ("task content drifted from the graph", _break_task_content_drift),
     ("task with no card", _break_card_missing),
     ("coverage table missing a feature", _break_coverage),
 ]
