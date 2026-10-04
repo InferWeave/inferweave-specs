@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~233,985 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~252,979 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -27,7 +27,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
-- `OPEN_GATES.md` — `943c93a97168` — ~2,041t
+- `OPEN_GATES.md` — `9f53ba1eb44c` — ~2,230t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -72,7 +72,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/specs/dynamic-context-capabilities/00-overview-and-architecture.md` — `b0892f0f1915` — ~1,569t
 - `docs/specs/dynamic-context-capabilities/01-inferweave-capability-api.md` — `cd6a838fdfd6` — ~1,538t
 - `docs/specs/dynamic-context-capabilities/02-pi-provider-integration.md` — `684f5dfcc922` — ~1,243t
-- `docs/specs/dynamic-context-capabilities/03-admission-and-context-leases.md` — `ccbbe74e2409` — ~1,455t
+- `docs/specs/dynamic-context-capabilities/03-admission-and-context-leases.md` — `7120e6aecd09` — ~1,829t
 - `docs/specs/dynamic-context-capabilities/04-routing-affinity-and-kv-cache.md` — `01d60e99eabb` — ~900t
 - `docs/specs/dynamic-context-capabilities/05-compaction-and-context-policy.md` — `8a44983eb47e` — ~782t
 - `docs/specs/dynamic-context-capabilities/06-observability-and-status.md` — `679037c94782` — ~924t
@@ -88,6 +88,13 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/specs/dynamic-context-capabilities/SOURCES.md` — `a2b1685d6af2` — ~808t
 - `docs/specs/dynamic-context-capabilities/manifest.json` — `e046a933c103` — ~233t
 - `docs/superpowers/plans/2026-09-23-backpressure-actions-load-report.md` — `906fed45439c` — ~6,262t
+- `evidence/rtx4090-shared-context-2026-10-03/README.md` — `0c4fb8d36db4` — ~635t
+- `evidence/rtx4090-shared-context-2026-10-03/gpu-samples.csv` — `e21339187a8e` — ~13,279t
+- `evidence/rtx4090-shared-context-2026-10-03/node-proxy-hardware.jsonl` — `6cfa95eafc7e` — ~225t
+- `evidence/rtx4090-shared-context-2026-10-03/props.json` — `de7fc2f77f07` — ~3,034t
+- `evidence/rtx4090-shared-context-2026-10-03/requests.jsonl` — `cdc3169d1b13` — ~429t
+- `evidence/rtx4090-shared-context-2026-10-03/slots-at-start.json` — `b49accce4b4f` — ~50t
+- `evidence/rtx4090-shared-context-2026-10-03/startup.log` — `a89ace412ec7` — ~779t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `dfdf2193dedd` — ~1,773t
 - `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `354371d8f50a` — ~17,789t
 - `implementation/CANONICAL_TASK_INDEX.md` — `fd3376f4397a` — ~2,945t
