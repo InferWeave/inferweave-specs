@@ -1,6 +1,6 @@
 # Bender RTX 4090 shared-context rollout — 2026-10-04
 
-**Status:** Accepted and activated on the existing Bender/Fry service. Production routing, dynamic offers and concurrent requests passed; Pi, Hermes and OpenCode fresh text checks passed, and Pi/OpenCode image checks passed. A fresh Hermes c80k native image request also passed; other Hermes context classes were not exercised.
+**Status:** Accepted and activated on the existing Bender/Fry service. Production routing, dynamic offers and concurrent requests passed; Pi, Hermes and OpenCode fresh text checks passed, and Pi/OpenCode image checks passed. Fresh Hermes native image requests passed at c80k, c120k and c260k. A later health snapshot observed 9.14 hours of container uptime without restart or rollback; it does not establish a sustained soak.
 **Decision owner:** InferWeave operator  
 **Date:** 2026-10-04 UTC  
 **Requested scope:** The operator directed: “ok do all of these please, than PR, merge and redeploy whats needed for this to work system wide.” This covers qualification and, after the release gates, replacing the existing Bender Qwen3.8-27B vision service behind Fry.  
@@ -81,7 +81,8 @@ fleet qualification or a sustained production soak.
 | Production activation and routed capacity | proven | `production-activation.json`, `production-dynamic-slots.json` and `production-gateway-concurrency.jsonl`: exact promoted artifacts healthy, three aliases registered, routed text/colors/legacy requests passed, two120/three80/mixed returned HTTP 200 without retry, and an active 120k request showed 0/1/1 available offers |
 | Programming-client catalog refresh and fresh text | proven | `production-activation.json`: Pi, Hermes and OpenCode each expose three aliases and fresh text returned `OK`; output limits are 8192 |
 | Pi/OpenCode fresh image requests | proven | `production-activation.json`: each answered `Red` for a red image |
-| Hermes image attachment request | proven | `production-hermes-vision.json`: fresh native c80k one-shot image request exited 0 and answered `red` after the client configuration correction below. Other Hermes context classes were not exercised |
+| Hermes image attachment requests | proven | `production-hermes-vision-all-contexts.json`: fresh native one-shot image requests at c80k, c120k and c260k each exited 0 and identified the red fixture; additional c120k blue and c260k green controls answered according to the image with the same color-neutral question. These short requests test each client alias, not full-context load |
+| Later production health | observed | `production-health-9h.json`: at 2026-10-04T16:29:33Z both candidate containers had 9.14 hours uptime, zero restarts and no OOM; proxy HTTP 200, ready fence, no rollback/quarantine and three unsuspended Fry aliases. No sustained or 24-hour soak criterion is claimed |
 | CI/private GHCR pin check | waived | Operator's explicit CI waiver above; no green result or registry provenance proof claimed |
 
 The final stage7 drill used proxy image
@@ -125,7 +126,7 @@ autodeploy timer.
 
 Pi, Hermes and OpenCode consumed the production catalog and each passed a fresh text
 request. Pi and OpenCode also passed fresh red-image requests. A later fresh Hermes
-native c80k image request passed, as recorded below; the initial one-shot check
+native image request passed at each class, as recorded below; the initial one-shot check
 covered text only. The local Hermes global `max_tokens` was lowered to 8192, which also affects unrelated models;
 the OpenCode provider's stale key was synchronized. Private configuration backups were
 retained. The evidence README records these client limits. This bounded activation
@@ -153,15 +154,39 @@ configuration was removed. The three provider model entries now set
 the custom provider otherwise sends unsupported `reasoning_effort`; the existing
 default model retains its prior `medium` setting through `agent.reasoning_overrides`.
 The global output limit remains 8192. Private backups were retained and active
-sessions were not interrupted. This closes condition 6's Hermes attachment gap for
-the exercised c80k fresh session only. Gateway exact-image vision checks cover every
-class separately; no Hermes c120k/c260k image request or sustained soak is claimed.
+sessions were not interrupted. This initial observation covered the c80k fresh
+session; the subsequent checks below close the remaining per-class client gap.
+Gateway exact-image vision checks cover every class separately.
 
 The Hermes correction and sanitized observation are linked to implementation commit
 [`af4fac477c5d016c82d16f63e7c32214f1da00c1`](https://github.com/InferWeave/inferweave/commit/af4fac477c5d016c82d16f63e7c32214f1da00c1).
 Separate review, 18 focused tests and Ruff passed, together with the live red-image
 check above. This client correction does not change the promoted engine, proxy or
 watchdog identities.
+
+## Hermes per-class follow-up and later health snapshot
+
+On 2026-10-04, fresh Hermes native image requests using the same 128×128 solid-red
+PNG and the `metabolomics` provider passed at c120k (session
+`20261004_092647_ad19e1`, exit 0, answer `Red`) and c260k (session
+`20261004_092737_46ca38`, exit 0, answer `red`). Together with the earlier c80k
+result, `production-hermes-vision-all-contexts.json` closes the per-class Hermes
+attachment gap. Further color controls used the same question without a color in
+the text: c120k session `20261004_093119_c93558` identified a 128×128 blue PNG as
+`blue`, and c260k session `20261004_093219_d9f239` identified a 128×128 green PNG
+as `green`; both exited 0. These short image requests do not exercise the full
+advertised context; backend and gateway capacity qualification remain separate
+evidence.
+
+At 2026-10-04T16:29:33Z, `production-health-9h.json` observed both candidate
+containers running after 9.14 hours of uptime, with zero restarts and no OOM.
+The engine was healthy and the proxy returned HTTP 200. The watchdog timer was
+active with a ready fence, no rollback attempt and no quarantine. Fry's gateway
+and registrar timer were active, with exactly three unsuspended production
+aliases and no legacy worker. The bounded watchdog error-journal query recorded
+no entries. This snapshot does not measure workload intensity or continuous
+endpoint availability across the interval; no sustained or 24-hour soak criterion
+was exercised. The CI waiver and unrelated open gates remain unchanged.
 
 ## Requirements affected
 

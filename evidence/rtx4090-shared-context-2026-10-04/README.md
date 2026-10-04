@@ -228,13 +228,13 @@ Fry staging was restored with zero shared workers and active gateway/autodeploy 
 Pi, Hermes and OpenCode each showed the three aliases and returned `OK` in a fresh
 text request. Pi and OpenCode also returned `Red` for a fresh red-image request.
 The initial Hermes one-shot CLI check covered text only. The later native image
-attachment observation below closes that gap for a fresh c80k session.
+attachment observations below cover fresh sessions at c80k, c120k and c260k.
 Hermes' global `max_tokens` was lowered to 8192 and therefore also affects unrelated
 models. OpenCode's stale provider key was synchronized. Private configuration backups
 were retained; no keys, credential files or private backups are included here.
 
 These observations close the prior activation and catalog-refresh deferrals where
-stated. The later Hermes result below is limited to c80k; no sustained production soak,
+stated. The later Hermes results below cover each client alias; no sustained production soak,
 independent human audit or fleet-scale behavior is inferred. The operator's CI/private
 GHCR waiver remains in force and is not a green CI or provenance result.
 
@@ -267,13 +267,47 @@ The existing default model preserves its prior `medium` setting through
 `agent.reasoning_overrides`; global `max_tokens` remains 8192. Private configuration
 backups were retained and active sessions were not interrupted.
 
-Only the c80k fresh Hermes image path was exercised. Gateway exact-image vision
-checks at every class remain separate evidence; they do not prove untested Hermes
-c120k/c260k attachment paths. This closes the observed Hermes attachment gap without
-asserting a sustained production soak, fleet qualification or a green CI result.
+This initial record exercised only the c80k fresh Hermes image path. The follow-up
+records below close the c120k/c260k attachment gaps. Gateway exact-image vision
+checks at every class remain separate evidence; this client check does not replace
+full-context qualification or establish a sustained soak, fleet qualification or
+a green CI result.
 
 The Hermes correction and sanitized observation are linked to implementation commit
 [`af4fac477c5d016c82d16f63e7c32214f1da00c1`](https://github.com/InferWeave/inferweave/commit/af4fac477c5d016c82d16f63e7c32214f1da00c1).
 Separate review, 18 focused tests and Ruff passed, together with the live red-image
 check above. This client correction does not change the promoted engine, proxy or
 watchdog identities.
+
+## Hermes image attachments at every class
+
+`production-hermes-vision-all-contexts.json` consolidates the original c80k observation
+with fresh native c120k and c260k one-shot sessions on 2026-10-04. The initial
+checks used the same 128×128 solid-red PNG and `metabolomics` provider. Session
+`20261004_092647_ad19e1`
+selected c120k, exited 0 and answered `Red`; session `20261004_092737_46ca38`
+selected c260k, exited 0 and answered `red`. Additional controls kept the question
+identical and supplied no color in its text: c120k session
+`20261004_093119_c93558` answered `blue` for a 128×128 solid-blue PNG, and c260k
+session `20261004_093219_d9f239` answered `green` for a 128×128 solid-green PNG.
+Both exited 0. Prompt text, image bytes, credentials and private configuration are
+omitted. The original c80k-only record remains intact.
+
+These short requests close the remaining per-class Hermes image-attachment gap.
+They do not fill the advertised contexts. Backend/Fry vision and full-context
+capacity measurements above remain separate qualification evidence.
+
+## Health snapshot after 9.14 hours of uptime
+
+`production-health-9h.json` records the 2026-10-04T16:29:33Z observation: candidate
+engine and proxy both running after 9.14 hours of uptime, zero restarts and no OOM;
+engine healthy, proxy HTTP 200; active watchdog timer, ready fence, no rollback
+attempt and no quarantine. Fry's gateway and registrar timer were active with
+exactly three unsuspended production aliases and no legacy worker. A bounded
+watchdog error-journal query returned no entries; its literal host-time query is
+preserved in the record.
+
+This snapshot does not measure continuous endpoint availability or workload intensity
+throughout the interval. No predefined sustained or 24-hour soak criterion was
+exercised. It does not change the CI waiver, independent-review staffing gap, fleet
+qualification or any unrelated blocked gate.

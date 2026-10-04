@@ -85,15 +85,22 @@ Fry staging was restored. Sanitized `production-*` records in the evidence direc
 support these observations.
 
 Pi, Hermes and OpenCode catalog refresh and fresh text checks passed; Pi/OpenCode
-fresh red-image checks also passed. **A fresh Hermes native c80k image attachment
-request passed**, exiting 0 and answering `red`; `production-hermes-vision.json`
-records the result. Hermes c120k/c260k image requests were not exercised. The stale
+fresh red-image checks also passed. **Fresh Hermes native image attachment
+requests passed at c80k, c120k and c260k**, each exiting 0 and identifying the
+red fixture. Additional c120k blue and c260k green controls answered according
+to the image with the same color-neutral question;
+`production-hermes-vision-all-contexts.json` records the results.
+These short requests prove each client alias path, not full-context load. The stale
 auxiliary vision route was removed, the three aliases gained `supports_vision=true`,
 and unsupported global reasoning options were cleared while the existing default
 model retained its prior `medium` setting through a model-specific override.
 Hermes' global 8192 output limit also affects unrelated models; OpenCode's stale provider key was synchronized,
-with private configuration backups retained. These bounded observations do not prove
-a sustained production soak or fleet qualification. This approval opens no unrelated
+with private configuration backups retained. At 2026-10-04T16:29:33Z,
+`production-health-9h.json` recorded both candidate containers running after 9.14
+hours of uptime with zero restarts and no OOM, proxy HTTP 200, a ready fence, no
+rollback or quarantine, and three unsuspended production aliases. This bounded
+snapshot does not establish continuous availability, a sustained or 24-hour soak,
+or fleet qualification. This approval opens no unrelated
 deployment, fleet, GPU-reset or host-reboot capability.
 
 The production client compatibility correction and sanitized observations are linked

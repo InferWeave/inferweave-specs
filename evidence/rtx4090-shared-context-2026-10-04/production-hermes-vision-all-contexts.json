@@ -1,0 +1,58 @@
+{
+  "recorded_date": "2026-10-04",
+  "client": "Hermes chat new one-shot sessions",
+  "provider": "metabolomics",
+  "invocation_options": [
+    "chat",
+    "--image",
+    "-m",
+    "--provider",
+    "-Q",
+    "--oneshot"
+  ],
+  "checks": [
+    {
+      "context_class": "c80k",
+      "model": "qwen3.8-27b-modality-vision-ctx-c80k-quant-q4_k_m",
+      "observed_utc": "2026-10-04T08:12:32+00:00",
+      "observed_answer": "red",
+      "process_exit_code": 0,
+      "source": "production-hermes-vision.json",
+      "input_fixture": "128x128 solid red PNG"
+    },
+    {
+      "context_class": "c120k",
+      "model": "qwen3.8-27b-modality-vision-ctx-c120k-quant-q4_k_m",
+      "session_id": "20261004_092647_ad19e1",
+      "observed_answer": "Red",
+      "process_exit_code": 0,
+      "input_fixture": "128x128 solid red PNG"
+    },
+    {
+      "context_class": "c260k",
+      "model": "qwen3.8-27b-modality-vision-ctx-c260k-quant-q4_k_m",
+      "session_id": "20261004_092737_46ca38",
+      "observed_answer": "red",
+      "process_exit_code": 0,
+      "input_fixture": "128x128 solid red PNG"
+    },
+    {
+      "context_class": "c120k",
+      "model": "qwen3.8-27b-modality-vision-ctx-c120k-quant-q4_k_m",
+      "session_id": "20261004_093119_c93558",
+      "input_fixture": "128x128 solid blue PNG",
+      "observed_answer": "blue",
+      "process_exit_code": 0
+    },
+    {
+      "context_class": "c260k",
+      "model": "qwen3.8-27b-modality-vision-ctx-c260k-quant-q4_k_m",
+      "session_id": "20261004_093219_d9f239",
+      "input_fixture": "128x128 solid green PNG",
+      "observed_answer": "green",
+      "process_exit_code": 0
+    }
+  ],
+  "limits": "Fresh Hermes native image attachment checks at each alias using a small image and short request. These are not full-context load tests, a sustained production soak, or fleet qualification. Backend and Fry gateway vision/context qualification are recorded separately. Prompt text, image bytes, credentials and private configuration are omitted.",
+  "control_method": "Same color question for each fixture, with no color supplied in the text; native image attachment in a fresh one-shot session."
+}
