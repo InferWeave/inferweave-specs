@@ -227,14 +227,14 @@ and must not be added together.
 Fry staging was restored with zero shared workers and active gateway/autodeploy timer.
 Pi, Hermes and OpenCode each showed the three aliases and returned `OK` in a fresh
 text request. Pi and OpenCode also returned `Red` for a fresh red-image request.
-**Hermes image attachment was not tested through the one-shot CLI**; its successful
-text request and gateway image tests do not prove that client attachment path.
+The initial Hermes one-shot CLI check covered text only. The later native image
+attachment observation below closes that gap for a fresh c80k session.
 Hermes' global `max_tokens` was lowered to 8192 and therefore also affects unrelated
 models. OpenCode's stale provider key was synchronized. Private configuration backups
 were retained; no keys, credential files or private backups are included here.
 
 These observations close the prior activation and catalog-refresh deferrals where
-stated. Hermes attachment verification remains owed; no sustained production soak,
+stated. The later Hermes result below is limited to c80k; no sustained production soak,
 independent human audit or fleet-scale behavior is inferred. The operator's CI/private
 GHCR waiver remains in force and is not a green CI or provenance result.
 
@@ -249,3 +249,31 @@ promoted engine/proxy/watchdog identities. Both `pi-stack-pi-web` and
 8192 output tokens and image support. This proves model visibility in those
 containers, not a separate browser/sessiond inference request; active sessions were
 left intact.
+
+## Hermes native image attachment follow-up
+
+`production-hermes-vision.json` records a fresh Hermes one-shot request at
+2026-10-04T08:12:32Z using the c80k alias and `metabolomics` provider. The command
+shape was `hermes chat -q <color-question> --image /tmp/iw-red-128.png -m <c80k-alias>
+--provider metabolomics -Q --oneshot`. It exited 0 and answered `red` for the
+128×128 solid-red PNG. The record contains no credentials or private configuration.
+
+A stale explicit `auxiliary.vision` operator route forced text transcription through
+the old model and supplied reasoning options. Removing that route and setting
+`providers.metabolomics.models[<target-alias>].supports_vision=true` enables native
+image delivery for the three aliases. The global `agent.reasoning_effort` was also
+cleared because the custom provider otherwise sends unsupported `reasoning_effort`.
+The existing default model preserves its prior `medium` setting through
+`agent.reasoning_overrides`; global `max_tokens` remains 8192. Private configuration
+backups were retained and active sessions were not interrupted.
+
+Only the c80k fresh Hermes image path was exercised. Gateway exact-image vision
+checks at every class remain separate evidence; they do not prove untested Hermes
+c120k/c260k attachment paths. This closes the observed Hermes attachment gap without
+asserting a sustained production soak, fleet qualification or a green CI result.
+
+The Hermes correction and sanitized observation are linked to implementation commit
+[`af4fac477c5d016c82d16f63e7c32214f1da00c1`](https://github.com/InferWeave/inferweave/commit/af4fac477c5d016c82d16f63e7c32214f1da00c1).
+Separate review, 18 focused tests and Ruff passed, together with the live red-image
+check above. This client correction does not change the promoted engine, proxy or
+watchdog identities.
