@@ -26,6 +26,14 @@ InferWeave should distinguish:
    - Soft state preserved after a request.
    - Does not consume a hard caller-concurrency permit.
 
+## Node-owned shared-pool adapter for fixed-slot gateways
+
+When a legacy gateway cannot represent weighted KV capacity, InferWeave may put an authoritative Rust admission facade directly in front of one qualified runtime. The legacy gateway receives separate model/context-class identities and **only the current available slot count for each class**. It does not receive a KV pool size, token charge or lease table, and it does no shared-pool arithmetic.
+
+All class identities for that runtime must resolve to one node-owned pool ledger. Class slot counts are alternative views of the same resource and must never be added together. A current slot observation is advisory: requests through different classes may race, so the node must atomically acquire a sequence permit and weighted context before dispatch, and return retryable infrastructure capacity failure when a stale offer no longer fits. The node must verify the engine profile it can observe before publishing an offer and after request sizing. Runtime properties that cannot be attested by its API remain rollout gates tied to the pinned image and launch flags.
+
+The class ceiling includes prompt, bounded output, modality cost and safety. A vision-capable class must actually pass an image request through the same admission path. An idle session may retain a reclaimable metadata hint without consuming a hard permit; forwarded client/session labels alone are not authenticated tenant identity and must never authorize cache reuse.
+
 ## Request reservation
 
 Once InferWeave has authoritative tokenization (or the best runtime-equivalent estimate), compute:

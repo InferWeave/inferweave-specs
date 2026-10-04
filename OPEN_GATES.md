@@ -39,6 +39,16 @@ it opens no new deployment target or fleet capability.
 The archived `InferWeave/inferweave-*` implementation repositories were read-only as of
 2026-09-03 and are not a deployed system.
 
+A local RTX 4090 Qwen3.8-27B unified-KV experiment on 2026-10-03 completed a direct-engine
+matrix for one near-260K, two 120K, three 80K and a long image request. A later run through
+the Rust node facade served a 257947-token request, showed 0/1/1 current offers during a
+117448-token request, and returned `Red` for an image at each of the three context classes.
+The original two-slot 120K vision engine and authenticated gateway route were restored and
+verified. This is **not** production approval: real-backend cancellation/reuse, Fry staging
+mixed-class traffic, and runtime flag attestation remain owed. Reproduction data, the candidate
+Compose flags and post-run image IDs are in
+[`evidence/rtx4090-shared-context-2026-10-03/`](evidence/rtx4090-shared-context-2026-10-03/).
+
 ## Independent review gate
 
 **BLOCKED.** These specifications assume independent review in several places — phase gates,
