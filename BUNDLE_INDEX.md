@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~296,166 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~299,094 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -27,7 +27,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
-- `OPEN_GATES.md` — `684dc7395022` — ~2,767t
+- `OPEN_GATES.md` — `d069afc51773` — ~3,256t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -61,7 +61,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/topology-v2.example.json` — `2b9b163f6bf6` — ~465t
 - `decisions/2026-09-22-existing-gateway-rollout.md` — `3eaac9d26ffe` — ~586t
 - `decisions/2026-09-28-buffered-gateway-recording.md` — `a04b7a6d2713` — ~1,357t
-- `decisions/2026-10-04-bender-shared-context-rollout.md` — `7a365a372605` — ~3,277t
+- `decisions/2026-10-04-bender-shared-context-rollout.md` — `168574445006` — ~4,068t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `4ea092cf8917` — ~3,792t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
@@ -98,7 +98,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/rtx4090-shared-context-2026-10-03/requests.jsonl` — `cdc3169d1b13` — ~429t
 - `evidence/rtx4090-shared-context-2026-10-03/slots-at-start.json` — `b49accce4b4f` — ~50t
 - `evidence/rtx4090-shared-context-2026-10-03/startup.log` — `a89ace412ec7` — ~779t
-- `evidence/rtx4090-shared-context-2026-10-04/README.md` — `24d225dd3e42` — ~3,253t
+- `evidence/rtx4090-shared-context-2026-10-04/README.md` — `2974b5b81c51` — ~4,058t
 - `evidence/rtx4090-shared-context-2026-10-04/busy-registration-hold.jsonl` — `74a9394bd348` — ~31t
 - `evidence/rtx4090-shared-context-2026-10-04/exact-e518-color-260k.jsonl` — `2bfe1793fd3b` — ~54t
 - `evidence/rtx4090-shared-context-2026-10-04/exact-e518-full-hardware.jsonl` — `92688f76be31` — ~783t
@@ -111,6 +111,9 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/rtx4090-shared-context-2026-10-04/isolated-long-vision.jsonl` — `7bcf56cc9fec` — ~130t
 - `evidence/rtx4090-shared-context-2026-10-04/isolated-matrix.jsonl` — `4388daa7e14d` — ~277t
 - `evidence/rtx4090-shared-context-2026-10-04/probe-coexistence-final.jsonl` — `7f1ae082650f` — ~70t
+- `evidence/rtx4090-shared-context-2026-10-04/production-activation.json` — `34b44201ca19` — ~520t
+- `evidence/rtx4090-shared-context-2026-10-04/production-dynamic-slots.json` — `d2289412115a` — ~39t
+- `evidence/rtx4090-shared-context-2026-10-04/production-gateway-concurrency.jsonl` — `f3890259be4b` — ~284t
 - `evidence/rtx4090-shared-context-2026-10-04/rollback-drill-stage2.json` — `dc0def1ede65` — ~177t
 - `evidence/rtx4090-shared-context-2026-10-04/rollback-drill-stage3.json` — `caa08275d78b` — ~260t
 - `evidence/rtx4090-shared-context-2026-10-04/rollback-drill-stage4.json` — `52bd30cedc50` — ~197t

@@ -62,7 +62,7 @@ including failed runs and the exact-build successful automatic rollback.
 The final-image stage7 automatic rollback passed with SSH multiplexing explicitly
 disabled: old engine 122880/2, registrar, enabled route and authenticated HTTP 200
 were restored. Stage6's SSH sandbox failure and quarantine remain in the record.
-**Production activation is APPROVED after the reviewed PRs are merged**, limited to
+**Production activation was completed after the reviewed PRs merged**, limited to
 implementation commit [`a82ca88bc7b8235d5ce6c8ed876199321f927f21`](https://github.com/InferWeave/inferweave/commit/a82ca88bc7b8235d5ce6c8ed876199321f927f21)
 and the stage7 image/watchdog identities in the ADR. Recorded runtime source hashes
 match that reviewed commit; pre-activation runtime and validation gates are proven.
@@ -74,9 +74,35 @@ passed at every class, and earlier long-color results retain their artifact scop
 Final spec review approved the scoped decision. After a test-fixture correction,
 the final complete library suite passed 730/730 with two test threads; strict Clippy and
 formatting passed. CI is waived, not proven; agent review does not staff the
-independent-review gate below. Production readiness, client refresh and fresh-session
-checks remain owed after activation. This approval opens no unrelated deployment,
-fleet, GPU-reset or host-reboot capability.
+independent-review gate below. Production activation `prod-20261004-0722` was observed healthy at
+2026-10-04T07:41:55Z after code merge `5ffef477ff29c327e3248408d56c268227c5558e`
+and spec merge `52e899752ead34c41371bc6ede53779a2301c121`. The exact approved
+proxy/engine/watchdog identities were retained; the fence was ready with no rollback
+or quarantine. Three production aliases advertised 260000/120000/80000 total context
+and 1/2/3 idle offers. Live 120k work reduced offers to 0/1/1. Routed text, controlled
+colors, legacy compatibility and two120/three80/mixed concurrency passed without retry.
+Fry staging was restored. Sanitized `production-*` records in the evidence directory
+support these observations.
+
+Pi, Hermes and OpenCode catalog refresh and fresh text checks passed; Pi/OpenCode
+fresh red-image checks also passed. **Hermes image attachment verification remains
+owed** because its one-shot CLI test covered text only. Hermes' global 8192 output
+limit also affects unrelated models; OpenCode's stale provider key was synchronized,
+with private configuration backups retained. These bounded observations do not prove
+a sustained production soak or fleet qualification. This approval opens no unrelated
+deployment, fleet, GPU-reset or host-reboot capability.
+
+The production client compatibility correction and sanitized observations are linked
+to implementation commit
+[`c41841f8b94592e3cded4d11b4bd07e1db59a6ac`](https://github.com/InferWeave/inferweave/commit/c41841f8b94592e3cded4d11b4bd07e1db59a6ac).
+Its separate review approved the change; 13 focused tests and Ruff passed. The client
+follow-up [PR #697](https://github.com/InferWeave/inferweave/pull/697) merged as
+[`810632ab5006998a30bf4f8aa10fec4999a25247`](https://github.com/InferWeave/inferweave/commit/810632ab5006998a30bf4f8aa10fec4999a25247). It did not change the
+promoted engine/proxy/watchdog identities. Both `pi-stack-pi-web` and
+`pi-stack-pi-web-sessiond` listed all three aliases with 80k/120k/260k context,
+8192 output tokens and image support. This proves model visibility in those
+containers, not a separate browser/sessiond inference request; active sessions were
+left intact.
 
 ## Independent review gate
 

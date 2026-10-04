@@ -1,0 +1,84 @@
+{
+  "observed_utc": "2026-10-04T07:41:55+00:00",
+  "scope": "existing Bender RTX 4090 through Fry production Go gateway",
+  "code_merge_commit": "5ffef477ff29c327e3248408d56c268227c5558e",
+  "spec_merge_commit": "52e899752ead34c41371bc6ede53779a2301c121",
+  "proxy_image_id": "sha256:e5187e64ac51a5406f5e375904d57035e8f234d19b0c3275adc7ef69bf8f54f1",
+  "engine_image_id": "sha256:797c320bf6a87c72ce165fa7e28863cc374e586dab4fc3bbfd10b3d8e2ebb3cd",
+  "watchdog_binary_sha256": "7d6b9e0cbea5b4a7a9b78a2a0cd4df6e131d5d835bc1b59911a681ccdeea5f34",
+  "watchdog": {
+    "activation_id": "prod-20261004-0722",
+    "timer": "active",
+    "fence": "ready",
+    "rollback_attempted": false,
+    "quarantined": false,
+    "proxy_health_status": 200
+  },
+  "fry": {
+    "gateway_service": "active",
+    "registrar_timer": "active",
+    "worker_context_slots": {
+      "c260k": [
+        260000,
+        1
+      ],
+      "c120k": [
+        120000,
+        2
+      ],
+      "c80k": [
+        80000,
+        3
+      ]
+    },
+    "legacy_worker_retired": true,
+    "catalog_contexts": [
+      260000,
+      120000,
+      80000
+    ],
+    "routed_vision": {
+      "c260k": "red/200",
+      "c120k": "blue/200",
+      "c80k": "green/200",
+      "legacy_c64k": "red/200"
+    },
+    "routed_text_statuses": [
+      200,
+      200,
+      200
+    ],
+    "concurrent_groups": "production-gateway-concurrency.jsonl"
+  },
+  "clients": {
+    "Pi": {
+      "text": "OK",
+      "red_image": "Red",
+      "aliases": 3
+    },
+    "Hermes": {
+      "text": "OK",
+      "global_max_tokens": 8192,
+      "aliases": 3
+    },
+    "OpenCode": {
+      "text": "OK",
+      "red_image": "Red",
+      "aliases": 3,
+      "image_capability": true
+    },
+    "PiWeb": {
+      "aliases_visible_in_container": 3,
+      "request_not_replayed_in_existing_session": true
+    },
+    "PiSessiond": {
+      "aliases_visible_in_container": 3,
+      "request_not_replayed_in_existing_session": true
+    }
+  },
+  "staging_restored": {
+    "shared_workers": 0,
+    "gateway_service": "active",
+    "autodeploy_timer": "active"
+  }
+}
