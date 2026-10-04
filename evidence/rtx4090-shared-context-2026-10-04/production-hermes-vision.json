@@ -1,0 +1,17 @@
+{
+  "observed_utc": "2026-10-04T08:12:32+00:00",
+  "client": "Hermes chat new one-shot session",
+  "model": "qwen3.8-27b-modality-vision-ctx-c80k-quant-q4_k_m",
+  "input_fixture": "128x128 solid red PNG",
+  "observed_answer": "red",
+  "process_exit_code": 0,
+  "configuration": {
+    "provider_model_supports_vision": true,
+    "stale_explicit_auxiliary_vision_removed": true,
+    "agent_global_reasoning_effort": "",
+    "default_model_reasoning_override": "medium",
+    "model_global_max_tokens": 8192,
+    "private_backups_retained": true
+  },
+  "limits": "Only the c80k fresh-session image path was exercised; gateway vision at all aliases and exact-image long-context checks are recorded separately."
+}

@@ -85,9 +85,13 @@ Fry staging was restored. Sanitized `production-*` records in the evidence direc
 support these observations.
 
 Pi, Hermes and OpenCode catalog refresh and fresh text checks passed; Pi/OpenCode
-fresh red-image checks also passed. **Hermes image attachment verification remains
-owed** because its one-shot CLI test covered text only. Hermes' global 8192 output
-limit also affects unrelated models; OpenCode's stale provider key was synchronized,
+fresh red-image checks also passed. **A fresh Hermes native c80k image attachment
+request passed**, exiting 0 and answering `red`; `production-hermes-vision.json`
+records the result. Hermes c120k/c260k image requests were not exercised. The stale
+auxiliary vision route was removed, the three aliases gained `supports_vision=true`,
+and unsupported global reasoning options were cleared while the existing default
+model retained its prior `medium` setting through a model-specific override.
+Hermes' global 8192 output limit also affects unrelated models; OpenCode's stale provider key was synchronized,
 with private configuration backups retained. These bounded observations do not prove
 a sustained production soak or fleet qualification. This approval opens no unrelated
 deployment, fleet, GPU-reset or host-reboot capability.

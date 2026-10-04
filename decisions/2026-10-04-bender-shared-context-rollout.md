@@ -1,6 +1,6 @@
 # Bender RTX 4090 shared-context rollout — 2026-10-04
 
-**Status:** Accepted and activated on the existing Bender/Fry service. Production routing, dynamic offers and concurrent requests passed; Pi, Hermes and OpenCode fresh text checks passed, and Pi/OpenCode image checks passed. Hermes image attachment verification remains owed.
+**Status:** Accepted and activated on the existing Bender/Fry service. Production routing, dynamic offers and concurrent requests passed; Pi, Hermes and OpenCode fresh text checks passed, and Pi/OpenCode image checks passed. A fresh Hermes c80k native image request also passed; other Hermes context classes were not exercised.
 **Decision owner:** InferWeave operator  
 **Date:** 2026-10-04 UTC  
 **Requested scope:** The operator directed: “ok do all of these please, than PR, merge and redeploy whats needed for this to work system wide.” This covers qualification and, after the release gates, replacing the existing Bender Qwen3.8-27B vision service behind Fry.  
@@ -81,7 +81,7 @@ fleet qualification or a sustained production soak.
 | Production activation and routed capacity | proven | `production-activation.json`, `production-dynamic-slots.json` and `production-gateway-concurrency.jsonl`: exact promoted artifacts healthy, three aliases registered, routed text/colors/legacy requests passed, two120/three80/mixed returned HTTP 200 without retry, and an active 120k request showed 0/1/1 available offers |
 | Programming-client catalog refresh and fresh text | proven | `production-activation.json`: Pi, Hermes and OpenCode each expose three aliases and fresh text returned `OK`; output limits are 8192 |
 | Pi/OpenCode fresh image requests | proven | `production-activation.json`: each answered `Red` for a red image |
-| Hermes image attachment request | owed | The one-shot CLI verification exercised text only; gateway vision and the other clients do not establish Hermes attachment behavior |
+| Hermes image attachment request | proven | `production-hermes-vision.json`: fresh native c80k one-shot image request exited 0 and answered `red` after the client configuration correction below. Other Hermes context classes were not exercised |
 | CI/private GHCR pin check | waived | Operator's explicit CI waiver above; no green result or registry provenance proof claimed |
 
 The final stage7 drill used proxy image
@@ -124,9 +124,9 @@ proof. Fry staging was restored with zero shared test workers and active gateway
 autodeploy timer.
 
 Pi, Hermes and OpenCode consumed the production catalog and each passed a fresh text
-request. Pi and OpenCode also passed fresh red-image requests. Hermes image attachment
-was not tested through its one-shot CLI and remains owed under condition 6. The local
-Hermes global `max_tokens` was lowered to 8192, which also affects unrelated models;
+request. Pi and OpenCode also passed fresh red-image requests. A later fresh Hermes
+native c80k image request passed, as recorded below; the initial one-shot check
+covered text only. The local Hermes global `max_tokens` was lowered to 8192, which also affects unrelated models;
 the OpenCode provider's stale key was synchronized. Private configuration backups were
 retained. The evidence README records these client limits. This bounded activation
 observation does not establish sustained production reliability or fleet qualification.
@@ -142,6 +142,26 @@ promoted engine/proxy/watchdog identities. Both `pi-stack-pi-web` and
 8192 output tokens and image support. This proves model visibility in those
 containers, not a separate browser/sessiond inference request; active sessions were
 left intact.
+
+A fresh Hermes one-shot session at 2026-10-04T08:12:32Z used native `--image`
+attachment with the c80k alias and `metabolomics` provider, exited 0 and answered
+`red` for a 128×128 solid-red PNG. `production-hermes-vision.json` preserves the
+sanitized observation. The stale explicit `auxiliary.vision` route had forced image
+transcription through the old model and supplied reasoning options; that operator
+configuration was removed. The three provider model entries now set
+`supports_vision=true`. Hermes' global `agent.reasoning_effort` was cleared because
+the custom provider otherwise sends unsupported `reasoning_effort`; the existing
+default model retains its prior `medium` setting through `agent.reasoning_overrides`.
+The global output limit remains 8192. Private backups were retained and active
+sessions were not interrupted. This closes condition 6's Hermes attachment gap for
+the exercised c80k fresh session only. Gateway exact-image vision checks cover every
+class separately; no Hermes c120k/c260k image request or sustained soak is claimed.
+
+The Hermes correction and sanitized observation are linked to implementation commit
+[`af4fac477c5d016c82d16f63e7c32214f1da00c1`](https://github.com/InferWeave/inferweave/commit/af4fac477c5d016c82d16f63e7c32214f1da00c1).
+Separate review, 18 focused tests and Ruff passed, together with the live red-image
+check above. This client correction does not change the promoted engine, proxy or
+watchdog identities.
 
 ## Requirements affected
 
