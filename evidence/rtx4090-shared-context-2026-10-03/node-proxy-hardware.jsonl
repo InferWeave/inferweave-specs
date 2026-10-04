@@ -1,0 +1,4 @@
+{"case": "rust-node-near-max", "status": 200, "estimated_prompt_tokens": 257975, "prompt_tokens": 257947, "output_tokens": 4, "seconds": 186.61, "peak_gpu_mib": 22339}
+{"answers": ["Red", "Red", "Red"], "case": "rust-node-vision-all-classes", "classes": ["260k", "120k", "80k"], "http_statuses": [200, 200, 200], "output_tokens": [2, 2, 2], "prompt_tokens": [40, 40, 40]}
+{"case": "rust-node-medium-plus-small", "http_statuses": [200, 200], "medium_output_tokens": 2, "medium_prompt_tokens": 117448, "medium_seconds": 58.82, "offers_during_medium": {"120k": 1, "260k": 0, "80k": 1}, "small_output_tokens": 3, "small_prompt_tokens": 15, "small_seconds": 3.39}
+{"case": "rollback", "engine_alias": "qwen3.8-27b-vision-c120k-2x", "engine_n_ctx": 122880, "engine_slots": 2, "gateway_chat_output_tokens": 16, "gateway_chat_prompt_tokens": 43, "gateway_chat_status": 200, "registrar_result": "success"}
