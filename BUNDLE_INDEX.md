@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~252,979 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~280,000 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -27,7 +27,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
-- `OPEN_GATES.md` — `9f53ba1eb44c` — ~2,230t
+- `OPEN_GATES.md` — `ba9731a1b627` — ~2,237t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -88,7 +88,9 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/specs/dynamic-context-capabilities/SOURCES.md` — `a2b1685d6af2` — ~808t
 - `docs/specs/dynamic-context-capabilities/manifest.json` — `e046a933c103` — ~233t
 - `docs/superpowers/plans/2026-09-23-backpressure-actions-load-report.md` — `906fed45439c` — ~6,262t
-- `evidence/rtx4090-shared-context-2026-10-03/README.md` — `0c4fb8d36db4` — ~635t
+- `evidence/rtx4090-shared-context-2026-10-03/README.md` — `bfaec7e5b43c` — ~960t
+- `evidence/rtx4090-shared-context-2026-10-03/compose-candidate.yml` — `63c9d18d4685` — ~688t
+- `evidence/rtx4090-shared-context-2026-10-03/engine.log` — `4da44e95f913` — ~26,001t
 - `evidence/rtx4090-shared-context-2026-10-03/gpu-samples.csv` — `e21339187a8e` — ~13,279t
 - `evidence/rtx4090-shared-context-2026-10-03/node-proxy-hardware.jsonl` — `6cfa95eafc7e` — ~225t
 - `evidence/rtx4090-shared-context-2026-10-03/props.json` — `de7fc2f77f07` — ~3,034t

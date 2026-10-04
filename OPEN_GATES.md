@@ -45,8 +45,8 @@ the Rust node facade served a 257947-token request, showed 0/1/1 current offers 
 117448-token request, and returned `Red` for an image at each of the three context classes.
 The original two-slot 120K vision engine and authenticated gateway route were restored and
 verified. This is **not** production approval: real-backend cancellation/reuse, Fry staging
-mixed-class traffic, and runtime flag attestation remain owed. Reproduction data and the
-exact image/flags are in
+mixed-class traffic, and runtime flag attestation remain owed. Reproduction data, the candidate
+Compose flags and post-run image IDs are in
 [`evidence/rtx4090-shared-context-2026-10-03/`](evidence/rtx4090-shared-context-2026-10-03/).
 
 ## Independent review gate

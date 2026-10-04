@@ -1,0 +1,105 @@
+# Experimental unified-KV candidate for the local 4090. Not deployed.
+# Three physical slots share one 262,144-token pool. The Rust node proxy must
+# enforce aggregate context before this service can replace the live profile.
+# This engine binds loopback :8082 behind that proxy. Hardware qualification
+# used the same image/flags on :8081 before the proxy existed.
+name: inferweave-engine-4090
+services:
+  node-proxy:
+    image: inferweave/node-proxy:shared-context-candidate
+    build:
+      context: ../..
+      dockerfile: deploy/images/node-proxy/Containerfile
+    container_name: iw-qwen3.8-27b-shared-node-proxy
+    network_mode: host
+    restart: unless-stopped
+    depends_on:
+      - engine
+    volumes:
+      - /etc/inferweave/node-proxy.json:/etc/inferweave/node-proxy.json:ro
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    command:
+      - --config
+      - /etc/inferweave/node-proxy.json
+      - --listen
+      - 127.0.0.1:8081
+  engine:
+    image: inferweave/engine:cuda89-eaf9376
+    container_name: iw-qwen3.8-27b-vision-shared-c262k-3x-iw-gpu-dcc654423baaf0aa08f1db73578b666e
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8082:8080"
+    volumes:
+      - /srv/qwen-models:/models:ro
+    tmpfs:
+      - /tmp:size=2g
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    ipc: host
+    ulimits:
+      memlock: -1
+    cpuset: "0-11"
+    labels:
+      dev.inferweave.deployment: qwen3.8-27b-vision-shared-c262k-3x
+      dev.inferweave.gpu: iw-gpu-dcc654423baaf0aa08f1db73578b666e
+      dev.inferweave.supervisor: docker
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids:
+                - GPU-d3d5ebdd-596c-8435-d63f-96f58cd4766a
+              capabilities: [gpu]
+    command:
+      - --alias
+      - qwen3.8-27b-vision-shared-c262k-3x
+      - --model
+      - /models/qwen3.8-27b-standard/Qwen3.8-27B-UD-Q4_K_M.gguf
+      - --mmproj
+      - /models/qwen3.8-27b-standard/mmproj-F16.gguf
+      - --no-mmproj-offload
+      - --image-max-tokens
+      - "4096"
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8080"
+      - --metrics
+      - --predict
+      - "8192"
+      - --ctx-size
+      - "262144"
+      - --reasoning-effort
+      - low
+      - --fit
+      - "on"
+      - --fit-target
+      - "768"
+      - --cache-type-k
+      - q4_0
+      - --cache-type-v
+      - q4_0
+      - --kv-offload
+      - --threads
+      - "12"
+      - --threads-batch
+      - "12"
+      - --batch-size
+      - "2048"
+      - --ubatch-size
+      - "512"
+      - --flash-attn
+      - "on"
+      - --parallel
+      - "3"
+      - --kv-unified
+      - --jinja
+      - --load-mode
+      - mmap
