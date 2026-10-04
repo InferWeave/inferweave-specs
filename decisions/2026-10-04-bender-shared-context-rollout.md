@@ -135,7 +135,8 @@ The production client compatibility correction and sanitized observations are li
 to implementation commit
 [`c41841f8b94592e3cded4d11b4bd07e1db59a6ac`](https://github.com/InferWeave/inferweave/commit/c41841f8b94592e3cded4d11b4bd07e1db59a6ac).
 Its separate review approved the change; 13 focused tests and Ruff passed. The client
-follow-up PR remains pending at the time of this record; it does not change the
+follow-up [PR #697](https://github.com/InferWeave/inferweave/pull/697) merged as
+[`810632ab5006998a30bf4f8aa10fec4999a25247`](https://github.com/InferWeave/inferweave/commit/810632ab5006998a30bf4f8aa10fec4999a25247). It did not change the
 promoted engine/proxy/watchdog identities. Both `pi-stack-pi-web` and
 `pi-stack-pi-web-sessiond` listed all three aliases with 80k/120k/260k context,
 8192 output tokens and image support. This proves model visibility in those
