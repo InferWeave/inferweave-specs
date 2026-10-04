@@ -1,6 +1,6 @@
 # Bender RTX 4090 shared-context rollout — 2026-10-04
 
-**Status:** Accepted for the bounded existing-service rollout; final-image runtime and corrected-watchdog rollback qualification passed; final spec review approved the scoped decision; full-suite validation passed; the rebuilt proxy passed its hardware matrix; the final exact-image rollback passed; all pre-activation gates are proven for the reviewed commit linked below.  
+**Status:** Accepted and activated on the existing Bender/Fry service. Production routing, dynamic offers and concurrent requests passed; Pi, Hermes and OpenCode fresh text checks passed, and Pi/OpenCode image checks passed. Hermes image attachment verification remains owed.
 **Decision owner:** InferWeave operator  
 **Date:** 2026-10-04 UTC  
 **Requested scope:** The operator directed: “ok do all of these please, than PR, merge and redeploy whats needed for this to work system wide.” This covers qualification and, after the release gates, replacing the existing Bender Qwen3.8-27B vision service behind Fry.  
@@ -32,7 +32,7 @@ validation, recorded exact image identities and separate agent review remain req
 
 Choose option 3 for this existing Bender GPU only. The public 260k, 120k and 80k aliases are alternative views of one 262,144-token KV pool and at most three active sequences. Every request must pass Rust tokenization, bounded output and modality accounting, atomic admission and cancellation cleanup before reaching the engine. Idle session hints last at most ten minutes and are reclaimable on demand; they confer no cache ownership. A 260k class refers to total context, including output and safety margin.
 
-The model-serving engine and Rust ingress remain Docker Compose services. A narrowly scoped **Rust host watchdog** is approved as the Bender Docker lifecycle adapter because the Docker socket must not be given to arbitrary inference traffic. This is an explicit host-management exception to the persistent-role deployment rule, limited to inspecting and recovering the two named candidate containers and the retained old profile. It may drain, fence, perform one bounded rollback and quarantine. It may not reset the GPU, reboot the host, touch unrelated containers, or change Slurm allocations. The exact implementation still requires final source/spec review before production activation; the successful hardware drill is recorded below.
+The model-serving engine and Rust ingress remain Docker Compose services. A narrowly scoped **Rust host watchdog** is approved as the Bender Docker lifecycle adapter because the Docker socket must not be given to arbitrary inference traffic. This is an explicit host-management exception to the persistent-role deployment rule, limited to inspecting and recovering the two named candidate containers and the retained old profile. It may drain, fence, perform one bounded rollback and quarantine. It may not reset the GPU, reboot the host, touch unrelated containers, or change Slurm allocations. The exact implementation passed separate source/spec review and the hardware rollback drill before production activation, as recorded below.
 
 For this same bounded release, D-001 permits the existing Fry registration adapter and
 a one-shot Python rollback companion to restore only the saved Bender registrar,
@@ -78,7 +78,10 @@ fleet qualification or a sustained production soak.
 | Fry staging routing and probe coexistence | proven | Original routed text/vision/legacy and busy-registration checks plus probe coexistence. `exact-e518-gateway-concurrency.jsonl` repeats two120/three80/mixed through Fry on the rebuilt image: every request HTTP 200 without retry, 128 output tokens each. Earlier engine log records physical overlap |
 | Earlier watchdog rollback/quarantine | proven | Stage2 failed recovery quarantined; stage3 automatic rollback restored old 122880/2 engine, registrar and authenticated Fry HTTP 200; live drill began idle |
 | Rebuilt-image rollback | proven | `rollback-drill-stage7.json`: patched watchdog disabled inherited SSH multiplexing, restored old 122880/2 engine and active Fry registrar/route, and verified authenticated HTTP 200; rolled_back=true, quarantined=false. Stage6 failure/root cause retained |
-| Programming-client rollout and production readiness | owed | Post-activation catalog refresh and fresh-session text/image checks |
+| Production activation and routed capacity | proven | `production-activation.json`, `production-dynamic-slots.json` and `production-gateway-concurrency.jsonl`: exact promoted artifacts healthy, three aliases registered, routed text/colors/legacy requests passed, two120/three80/mixed returned HTTP 200 without retry, and an active 120k request showed 0/1/1 available offers |
+| Programming-client catalog refresh and fresh text | proven | `production-activation.json`: Pi, Hermes and OpenCode each expose three aliases and fresh text returned `OK`; output limits are 8192 |
+| Pi/OpenCode fresh image requests | proven | `production-activation.json`: each answered `Red` for a red image |
+| Hermes image attachment request | owed | The one-shot CLI verification exercised text only; gateway vision and the other clients do not establish Hermes attachment behavior |
 | CI/private GHCR pin check | waived | Operator's explicit CI waiver above; no green result or registry provenance proof claimed |
 
 The final stage7 drill used proxy image
@@ -99,11 +102,45 @@ a writable multiplexing-socket requirement. The stage7 Fry companion succeeded o
 the first attempt. Exhausted attempts still quarantine; the stage6 failure and its
 root cause remain preserved rather than replaced by the later successful result.
 
-All pre-activation conditions are proven for the linked commit and exact artifacts.
-This authorizes promotion after the reviewed PRs are merged. Condition 6 is a
-post-activation completion gate and remains owed until the production catalog can be
-consumed and fresh sessions verified. Successful staging is not a production
-readiness observation.
+## Production activation observed
+
+After implementation merge
+[`5ffef477ff29c327e3248408d56c268227c5558e`](https://github.com/InferWeave/inferweave/commit/5ffef477ff29c327e3248408d56c268227c5558e)
+and approval merge
+[`52e899752ead34c41371bc6ede53779a2301c121`](https://github.com/InferWeave/inferweave-specs/commit/52e899752ead34c41371bc6ede53779a2301c121),
+activation `prod-20261004-0722` promoted the exact stage7 proxy, engine and watchdog
+identities above. At 2026-10-04T07:41:55Z, the proxy returned HTTP 200, the watchdog
+timer was active with a ready fence, and no rollback or quarantine had occurred.
+The production Fry gateway and registrar timer were active; the old worker was retired.
+
+The three production aliases advertise total-context classes 260000/120000/80000 and
+idle offers 1/2/3. They share one pool: while a 120000-class request was active,
+observed remaining offers were 0/1/1, and that request completed with HTTP 200 and
+512 output tokens. Routed text passed all three classes; controlled red/blue/green
+requests and the legacy c64k alias passed. Production two120/three80/mixed requests
+all completed without retry. These routed concurrency checks used 55-token prompts
+and 128-token outputs; the staged full-context matrix remains the separate capacity
+proof. Fry staging was restored with zero shared test workers and active gateway and
+autodeploy timer.
+
+Pi, Hermes and OpenCode consumed the production catalog and each passed a fresh text
+request. Pi and OpenCode also passed fresh red-image requests. Hermes image attachment
+was not tested through its one-shot CLI and remains owed under condition 6. The local
+Hermes global `max_tokens` was lowered to 8192, which also affects unrelated models;
+the OpenCode provider's stale key was synchronized. Private configuration backups were
+retained. The evidence README records these client limits. This bounded activation
+observation does not establish sustained production reliability or fleet qualification.
+
+The production client compatibility correction and sanitized observations are linked
+to implementation commit
+[`c41841f8b94592e3cded4d11b4bd07e1db59a6ac`](https://github.com/InferWeave/inferweave/commit/c41841f8b94592e3cded4d11b4bd07e1db59a6ac).
+Its separate review approved the change; 13 focused tests and Ruff passed. The client
+follow-up PR remains pending at the time of this record; it does not change the
+promoted engine/proxy/watchdog identities. Both `pi-stack-pi-web` and
+`pi-stack-pi-web-sessiond` listed all three aliases with 80k/120k/260k context,
+8192 output tokens and image support. This proves model visibility in those
+containers, not a separate browser/sessiond inference request; active sessions were
+left intact.
 
 ## Requirements affected
 

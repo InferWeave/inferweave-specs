@@ -1,9 +1,9 @@
-# Bender/Fry staged shared-context qualification — 2026-10-04
+# Bender/Fry shared-context qualification and activation — 2026-10-04
 
 These files preserve the staged successes **and failures** that informed the bounded
 Bender rollout decision. They contain request metrics and operational outcomes, not
-prompt bodies or credentials. The production activation and programming-client
-checks are separate work and are not claimed here.
+prompt bodies or credentials. The final section records the later production
+activation and programming-client checks separately from staged qualification.
 
 ## What the staged runs showed
 
@@ -202,3 +202,49 @@ recorded in `stage7-attestation.json` were compared directly with this commit an
 This closes the final pre-activation linkage gate; historical pending statements above
 refer to their stage. Promotion is approved after the reviewed PRs are merged.
 Production readiness and client verification remain owed until activation is observed.
+
+
+## Production activation and client observations
+
+`production-activation.json` records the 2026-10-04T07:41:55Z observation after code
+merge `5ffef477ff29c327e3248408d56c268227c5558e` and spec approval merge
+`52e899752ead34c41371bc6ede53779a2301c121`. Activation `prod-20261004-0722`
+retained the exact stage7 proxy image `e5187e64…`, engine image `797c320b…` and
+watchdog binary `7d6b9e0c…`. Proxy health was HTTP 200, the timer active and fence
+ready, with no rollback attempt or quarantine. Fry's production gateway and registrar
+were active, the old worker retired, and the three aliases advertised per-request
+contexts 260000/120000/80000 with idle offers 1/2/3. Authenticated production text,
+red/blue/green controls and the legacy c64k image request passed.
+
+`production-gateway-concurrency.jsonl` records two120, three80 and mixed requests:
+every request returned HTTP 200 on the first attempt, using 55 prompt tokens and
+128 output tokens. This tests production routing concurrency; staged full-context
+records above establish the capacity envelope. `production-dynamic-slots.json`
+records offers 0/1/1 during an active 120000-class request that finished with HTTP 200
+and 512 output tokens. These alias offers are alternative views of one shared pool
+and must not be added together.
+
+Fry staging was restored with zero shared workers and active gateway/autodeploy timer.
+Pi, Hermes and OpenCode each showed the three aliases and returned `OK` in a fresh
+text request. Pi and OpenCode also returned `Red` for a fresh red-image request.
+**Hermes image attachment was not tested through the one-shot CLI**; its successful
+text request and gateway image tests do not prove that client attachment path.
+Hermes' global `max_tokens` was lowered to 8192 and therefore also affects unrelated
+models. OpenCode's stale provider key was synchronized. Private configuration backups
+were retained; no keys, credential files or private backups are included here.
+
+These observations close the prior activation and catalog-refresh deferrals where
+stated. Hermes attachment verification remains owed; no sustained production soak,
+independent human audit or fleet-scale behavior is inferred. The operator's CI/private
+GHCR waiver remains in force and is not a green CI or provenance result.
+
+The production client compatibility correction and sanitized observations are linked
+to implementation commit
+[`c41841f8b94592e3cded4d11b4bd07e1db59a6ac`](https://github.com/InferWeave/inferweave/commit/c41841f8b94592e3cded4d11b4bd07e1db59a6ac).
+Its separate review approved the change; 13 focused tests and Ruff passed. The client
+follow-up PR remains pending at the time of this record; it does not change the
+promoted engine/proxy/watchdog identities. Both `pi-stack-pi-web` and
+`pi-stack-pi-web-sessiond` listed all three aliases with 80k/120k/260k context,
+8192 output tokens and image support. This proves model visibility in those
+containers, not a separate browser/sessiond inference request; active sessions were
+left intact.

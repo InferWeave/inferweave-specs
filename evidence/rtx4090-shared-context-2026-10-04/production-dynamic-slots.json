@@ -1,0 +1,10 @@
+{
+  "active_class": 120000,
+  "available": {
+    "260000": 0,
+    "120000": 1,
+    "80000": 1
+  },
+  "request_status": 200,
+  "completion_tokens": 512
+}
