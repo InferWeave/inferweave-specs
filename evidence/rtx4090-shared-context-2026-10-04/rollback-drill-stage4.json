@@ -1,0 +1,25 @@
+{
+  "activation_id": "stage4-20261004-0600",
+  "trigger": "intentional final proxy stop after confirmed idle",
+  "watchdog": {
+    "rollback_attempted": true,
+    "rolled_back": false,
+    "quarantined": true
+  },
+  "old_engine": {
+    "restored": true,
+    "health_status": 200
+  },
+  "fry_companion": {
+    "attempts_observed_in_systemd": 3,
+    "result": "three immediate nonzero exits",
+    "manual_same_runuser_command_later": "success"
+  },
+  "manual_recovery": {
+    "old_registrar_timer": "active",
+    "old_worker_enabled": true,
+    "authenticated_gateway_chat_status": 200
+  },
+  "final_proxy_image_id": "sha256:0d955cc1e1bae569a9ffb4a6aa43bcc899a70df03a11bd31806b1770cdbf0d0e",
+  "qualification": "failed; bounded delayed Fry retry and repeat exact-image drill required"
+}

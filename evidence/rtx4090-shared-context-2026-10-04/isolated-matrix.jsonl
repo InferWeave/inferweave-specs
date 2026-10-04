@@ -1,0 +1,11 @@
+{"case": "two120", "completion_tokens": 2, "context": 120000, "prompt_tokens": 117468, "seconds": 65.481, "status": 200}
+{"case": "two120", "completion_tokens": 2, "context": 120000, "prompt_tokens": 117468, "seconds": 160.351, "status": 200}
+{"case": "two120-summary", "count": 2, "passed": true, "peak_busy_slots": 2}
+{"case": "three80", "completion_tokens": 2, "context": 80000, "prompt_tokens": 77468, "seconds": 38.164, "status": 200}
+{"case": "three80", "completion_tokens": 2, "context": 80000, "prompt_tokens": 77468, "seconds": 92.666, "status": 200}
+{"case": "three80", "completion_tokens": 2, "context": 80000, "prompt_tokens": 77468, "seconds": 158.281, "status": 200}
+{"case": "three80-summary", "count": 3, "passed": true, "peak_busy_slots": 3}
+{"case": "mixed", "completion_tokens": 2, "context": 80000, "prompt_tokens": 77468, "seconds": 1.985, "status": 200}
+{"case": "mixed", "completion_tokens": 2, "context": 120000, "prompt_tokens": 117468, "seconds": 35.216, "status": 200}
+{"case": "mixed-summary", "count": 2, "passed": true, "peak_busy_slots": 2}
+{"case": "summary", "passed": true}

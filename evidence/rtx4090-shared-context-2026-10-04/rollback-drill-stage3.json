@@ -1,0 +1,27 @@
+{
+  "activation_id": "stage3-20261004-0530",
+  "trigger": "intentional candidate proxy stop after leases and engine slots reached idle",
+  "watchdog": {
+    "rollback_attempted": true,
+    "rolled_back": true,
+    "quarantined": false
+  },
+  "old_engine": {
+    "container": "iw-qwen3.8-27b-vision-c120k-2x-iw-gpu-dcc654423baaf0aa08f1db73578b666e",
+    "running": true,
+    "image_id": "sha256:797c320bf6a87c72ce165fa7e28863cc374e586dab4fc3bbfd10b3d8e2ebb3cd",
+    "health_status": "ok"
+  },
+  "fry": {
+    "registrar_timer": "active",
+    "legacy_worker": "bender-rtx4090",
+    "endpoint": "http://127.0.0.1:20681",
+    "context_tokens": 122880,
+    "slots": 2,
+    "route_enabled": true,
+    "authenticated_chat_status": 200
+  },
+  "watchdog_binary_sha256": "446a634f70a874de5bfbe1d121a3bb00ae226ea39e4285632a26d7b4dc656029",
+  "candidate_proxy_image_id": "sha256:7d5aadaaced3a3178d7a6540d7e73103afffc2fc8d9ff5865bc7df63d30bda18",
+  "candidate_engine_image_id": "sha256:797c320bf6a87c72ce165fa7e28863cc374e586dab4fc3bbfd10b3d8e2ebb3cd"
+}

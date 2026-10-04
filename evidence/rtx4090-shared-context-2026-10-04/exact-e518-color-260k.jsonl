@@ -1,0 +1,2 @@
+{"case": "color-checked-260k-long-vision", "color": "blue", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 257542, "seconds": 282.149, "status": 200}
+{"case": "summary", "passed": true}

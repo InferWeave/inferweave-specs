@@ -1,0 +1,25 @@
+{
+  "stage_activation": "stage-20261004-0420",
+  "watchdog": {
+    "rollback_attempted": true,
+    "rolled_back": true,
+    "quarantined": false
+  },
+  "trigger": "intentional stop of candidate proxy after engine idle",
+  "old_engine": {
+    "container": "iw-qwen3.8-27b-vision-c120k-2x-iw-gpu-dcc654423baaf0aa08f1db73578b666e",
+    "running": true,
+    "image_id": "sha256:797c320bf6a87c72ce165fa7e28863cc374e586dab4fc3bbfd10b3d8e2ebb3cd"
+  },
+  "candidate_proxy_image_id": "sha256:553b49076038d07619bf68082dc83db166a3cfbbaf7803cdbb92b92e1512f770",
+  "engine_image_id": "sha256:797c320bf6a87c72ce165fa7e28863cc374e586dab4fc3bbfd10b3d8e2ebb3cd",
+  "fry": {
+    "legacy_worker": "bender-rtx4090",
+    "endpoint": "http://127.0.0.1:20681",
+    "context_tokens": 122880,
+    "slots": 2,
+    "route_enabled": true,
+    "authenticated_chat_status": 200
+  },
+  "note": "The earlier candidate failed the concurrency matrix; this drill verifies old-service recovery, not candidate approval."
+}

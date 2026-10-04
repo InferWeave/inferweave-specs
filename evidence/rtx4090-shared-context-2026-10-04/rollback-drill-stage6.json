@@ -1,0 +1,27 @@
+{
+  "activation_id": "stage6-20261004-0730",
+  "trigger": "intentional proxy stop after exact e518 hardware qualification",
+  "watchdog": {
+    "rollback_attempted": true,
+    "rolled_back": false,
+    "quarantined": true
+  },
+  "old_engine": {
+    "restored": true,
+    "health_status": 200
+  },
+  "fry_failure": {
+    "ssh_exit_code": 255,
+    "cause": "SSH ControlMaster auto attempted to create a socket under ProtectHome=read-only",
+    "reproduced_in_equivalent_systemd_sandbox": true,
+    "no_remote_sudo_invocation": true
+  },
+  "manual_recovery": {
+    "ssh_options": "ControlMaster=no ControlPath=none",
+    "companion_status": 0,
+    "authenticated_gateway_chat_status": 200
+  },
+  "fixed_ssh_sandbox_smoke_status": 0,
+  "final_proxy_image_id": "sha256:e5187e64ac51a5406f5e375904d57035e8f234d19b0c3275adc7ef69bf8f54f1",
+  "qualification": "failed; watchdog SSH override and repeat exact-image drill required"
+}

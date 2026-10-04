@@ -1,0 +1,28 @@
+{
+  "activation_id": "stage5-20261004-0700",
+  "trigger": "intentional final proxy stop after confirmed idle",
+  "watchdog": {
+    "rollback_attempted": true,
+    "rolled_back": true,
+    "quarantined": false
+  },
+  "old_engine": {
+    "container": "iw-qwen3.8-27b-vision-c120k-2x-iw-gpu-dcc654423baaf0aa08f1db73578b666e",
+    "running": true,
+    "image_id": "sha256:797c320bf6a87c72ce165fa7e28863cc374e586dab4fc3bbfd10b3d8e2ebb3cd",
+    "health_status": "ok"
+  },
+  "fry": {
+    "registrar_timer": "active",
+    "legacy_worker": "bender-rtx4090",
+    "endpoint": "http://127.0.0.1:20681",
+    "context_tokens": 122880,
+    "slots": 2,
+    "route_enabled": true,
+    "authenticated_chat_status": 200
+  },
+  "watchdog_binary_sha256": "762ee92bdec12516b5b7138e71a253d1fb6b8d26de656696b3332b8653dd8003",
+  "candidate_proxy_image_id": "sha256:0d955cc1e1bae569a9ffb4a6aa43bcc899a70df03a11bd31806b1770cdbf0d0e",
+  "candidate_engine_image_id": "sha256:797c320bf6a87c72ce165fa7e28863cc374e586dab4fc3bbfd10b3d8e2ebb3cd",
+  "fry_companion": "exit_code=0 category=success on first attempt"
+}

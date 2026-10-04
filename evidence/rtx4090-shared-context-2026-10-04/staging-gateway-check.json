@@ -1,0 +1,30 @@
+{
+  "gateway": "Fry staging 127.0.0.1:8083",
+  "worker_endpoint": "127.0.0.1:20680 with virtual alias path",
+  "catalog_contexts": {
+    "c260k": 260000,
+    "c120k": 120000,
+    "c80k": 80000
+  },
+  "routed_vision": {
+    "c260k": "red/HTTP 200",
+    "c120k": "blue/HTTP 200",
+    "c80k": "green/HTTP 200",
+    "legacy_c64k": "red/HTTP 200"
+  },
+  "routed_text": {
+    "c260k": 200,
+    "c120k": 200,
+    "c80k": 200
+  },
+  "busy_registration": {
+    "held_context_class": 260000,
+    "hold_prompt_tokens": 179968,
+    "hold_seconds": 106.94,
+    "temporary_c80_worker_post": "accepted during hold",
+    "all_stage_workers_hold_until": "0001-01-01T00:00:00Z",
+    "disabled_workers": [],
+    "temporary_worker_removed": true
+  },
+  "staging_workers_withdrawn_after_tests": true
+}

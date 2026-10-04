@@ -1,0 +1,15 @@
+{"case": "vision-control", "color": "red", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 46, "seconds": 0.558, "status": 200}
+{"case": "vision-control", "color": "blue", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 46, "seconds": 0.377, "status": 200}
+{"case": "vision-control", "color": "green", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 46, "seconds": 0.373, "status": 200}
+{"case": "vision-control", "color": "red", "completion_tokens": 2, "context": 120000, "correct": true, "prompt_tokens": 46, "seconds": 0.344, "status": 200}
+{"case": "vision-control", "color": "blue", "completion_tokens": 2, "context": 120000, "correct": true, "prompt_tokens": 46, "seconds": 0.453, "status": 200}
+{"case": "vision-control", "color": "green", "completion_tokens": 2, "context": 120000, "correct": true, "prompt_tokens": 46, "seconds": 0.379, "status": 200}
+{"case": "vision-control", "color": "red", "completion_tokens": 2, "context": 80000, "correct": true, "prompt_tokens": 46, "seconds": 0.409, "status": 200}
+{"case": "vision-control", "color": "blue", "completion_tokens": 2, "context": 80000, "correct": true, "prompt_tokens": 46, "seconds": 0.348, "status": 200}
+{"case": "vision-control", "color": "green", "completion_tokens": 2, "context": 80000, "correct": true, "prompt_tokens": 46, "seconds": 0.35, "status": 200}
+{"busy_samples": 916, "case": "cancel-barrier", "poll_seconds": 0.1, "sampled_only": true}
+{"case": "near-full-after-cancel", "completion_tokens": 2, "context": 260000, "prompt_tokens": 257468, "seconds": 185.841, "status": 200}
+{"case": "two120", "completion_tokens": 2, "context": 120000, "prompt_tokens": 117468, "seconds": 64.551, "status": 200}
+{"case": "two120", "completion_tokens": 2, "context": 120000, "prompt_tokens": 117468, "seconds": 161.526, "status": 200}
+{"case": "two120-summary", "count": 2, "passed": true, "peak_busy_slots": 2}
+{"case": "summary", "error": "concurrent matrix request failed", "passed": false}
