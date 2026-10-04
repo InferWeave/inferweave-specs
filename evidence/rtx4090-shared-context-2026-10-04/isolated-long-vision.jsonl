@@ -1,0 +1,4 @@
+{"case": "long-vision", "color": "blue", "completion_tokens": 2, "context": 80000, "correct": true, "prompt_tokens": 77536, "seconds": 125.878, "status": 200}
+{"case": "long-vision", "color": "blue", "completion_tokens": 2, "context": 120000, "correct": true, "prompt_tokens": 117536, "seconds": 151.997, "status": 200}
+{"case": "long-vision", "color": "blue", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 257536, "seconds": 279.471, "status": 200}
+{"case": "summary", "passed": true}

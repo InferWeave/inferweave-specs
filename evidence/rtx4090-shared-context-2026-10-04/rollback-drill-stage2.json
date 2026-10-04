@@ -1,0 +1,21 @@
+{
+  "activation_id": "stage2-20261004-0440",
+  "trigger": "intentional proxy stop after confirmed engine and proxy idle",
+  "watchdog": {
+    "rollback_attempted": true,
+    "rolled_back": false,
+    "quarantined": true
+  },
+  "old_engine": {
+    "restored": true,
+    "health_status": 200
+  },
+  "failure": "Fry companion runuser SSH command returned nonzero once; watchdog retained quarantine and made no second automatic attempt",
+  "manual_recovery": {
+    "same_runuser_ssh_companion_status": 0,
+    "old_registrar_timer": "active",
+    "old_worker_enabled": true,
+    "authenticated_gateway_chat_status": 200
+  },
+  "qualification": "failed; bounded Fry retry and repeat exact-build drill required"
+}

@@ -1,0 +1,109 @@
+{
+  "activation_id": "stage5-20261004-0700",
+  "deployment": "qwen3.8-27b-vision-shared-c262k-3x",
+  "compose_project": "inferweave-engine-4090",
+  "engine": {
+    "name": "iw-qwen3.8-27b-vision-shared-c262k-3x-iw-gpu-dcc654423baaf0aa08f1db73578b666e",
+    "id": "ea84b75a4be157271a27c537f7f599cd07b9bd85fdf0889429f4dcfd321e0a26",
+    "image_id": "sha256:797c320bf6a87c72ce165fa7e28863cc374e586dab4fc3bbfd10b3d8e2ebb3cd",
+    "command": [
+      "--alias",
+      "qwen3.8-27b-vision-shared-c262k-3x",
+      "--model",
+      "/models/qwen3.8-27b-standard/Qwen3.8-27B-UD-Q4_K_M.gguf",
+      "--mmproj",
+      "/models/qwen3.8-27b-standard/mmproj-F16.gguf",
+      "--no-mmproj-offload",
+      "--image-max-tokens",
+      "4096",
+      "--host",
+      "0.0.0.0",
+      "--port",
+      "8080",
+      "--metrics",
+      "--predict",
+      "8192",
+      "--ctx-size",
+      "262144",
+      "--reasoning-effort",
+      "low",
+      "--fit",
+      "on",
+      "--fit-target",
+      "768",
+      "--cache-type-k",
+      "q4_0",
+      "--cache-type-v",
+      "q4_0",
+      "--kv-offload",
+      "--threads",
+      "12",
+      "--threads-batch",
+      "12",
+      "--batch-size",
+      "2048",
+      "--ubatch-size",
+      "512",
+      "--flash-attn",
+      "on",
+      "--parallel",
+      "3",
+      "--kv-unified",
+      "--cache-ram",
+      "0",
+      "--slot-save-path",
+      "/tmp",
+      "--jinja",
+      "--load-mode",
+      "mmap"
+    ],
+    "entrypoint": [
+      "/usr/bin/tini",
+      "--",
+      "llama-server"
+    ],
+    "service": "engine"
+  },
+  "proxy": {
+    "name": "iw-qwen3.8-27b-shared-node-proxy",
+    "id": "e99910b087901d84000deda6ef2a20824e3ef6f13389c1541b83e1601d3d88ca",
+    "image_id": "sha256:0d955cc1e1bae569a9ffb4a6aa43bcc899a70df03a11bd31806b1770cdbf0d0e",
+    "command": [
+      "--config",
+      "/etc/inferweave/node-proxy.json",
+      "--listen",
+      "127.0.0.1:8081"
+    ],
+    "entrypoint": [
+      "inferweave-node-proxy"
+    ],
+    "service": "node-proxy"
+  },
+  "expected_props": {
+    "/model_alias": "qwen3.8-27b-vision-shared-c262k-3x",
+    "/total_slots": 3,
+    "/default_generation_settings/n_ctx": 262144,
+    "/modalities/vision": true
+  },
+  "model_artifacts": [
+    {
+      "path": "/srv/qwen-models/qwen3.8-27b-standard/Qwen3.8-27B-UD-Q4_K_M.gguf",
+      "size": 16464440224,
+      "sha256": "322e194ff79741c7baa497c240f677f54b201b0efab44ca8e50f122b39123482"
+    },
+    {
+      "path": "/srv/qwen-models/qwen3.8-27b-standard/mmproj-F16.gguf",
+      "size": 927607488,
+      "sha256": "cbb841a9ee0636b2ec172f5bb8df2ea8dfeb01e90fe7c6126581d662a0b4e43e"
+    }
+  ],
+  "rollback_bundle": "/var/lib/inferweave/rollback/shared-context-20261004T032252Z",
+  "rollback_image_archive_sha256": "ed98f058915e755ba2116fa1329f478b5ca0c4f2abbe1d67248b0c08cf2861f0",
+  "watchdog_binary_sha256": "762ee92bdec12516b5b7138e71a253d1fb6b8d26de656696b3332b8653dd8003",
+  "source_file_sha256": {
+    "crates/iw-cli/src/node_proxy.rs": "4ac30f0466b27855ec44fc036c08d4adfd527bdf15ca0d3582b3dec37ac8b3b7",
+    "crates/iw-cli/src/node_watchdog.rs": "95f1c57816eed54da252ab787ccce45018724c157f9d5994bf7fb2630a5d2cd2",
+    "deploy/engine/rtx4090-qwen3.8-27b-unified-candidate.yml": "cdfec0287bc9e46a2c8ebe351c4d45c4ff8d202860a3882bf118e08d6576c11e"
+  },
+  "provenance": "Stage5 exact final proxy and corrected watchdog profile captured from protected watchdog configuration after successful automatic rollback. Exact identities agree with stage5 drill. Source uncommitted at capture; final spec review and commit linkage remain owed."
+}

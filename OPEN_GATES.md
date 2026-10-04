@@ -45,9 +45,38 @@ the Rust node facade served a 257947-token request, showed 0/1/1 current offers 
 117448-token request, and returned `Red` for an image at each of the three context classes.
 The original two-slot 120K vision engine and authenticated gateway route were restored and
 verified. This is **not** production approval: real-backend cancellation/reuse, Fry staging
-mixed-class traffic, and runtime flag attestation remain owed. Reproduction data, the candidate
+mixed-class traffic, and runtime flag attestation were still owed at that stage. Reproduction data, the candidate
 Compose flags and post-run image IDs are in
 [`evidence/rtx4090-shared-context-2026-10-03/`](evidence/rtx4090-shared-context-2026-10-03/).
+
+**APPROVED, bounded Bender shared-context rollout only.** The operator authorized
+qualification, review, merge and replacement of the existing Bender RTX 4090 vision
+service behind Fry. The accepted
+[`2026-10-04 decision`](decisions/2026-10-04-bender-shared-context-rollout.md)
+records exact tested artifact identities, the narrow Rust host-watchdog and one-shot
+Fry operational-adapter exceptions, and the explicit CI/private GHCR waiver.
+The staged runtime evidence is preserved under
+[`evidence/rtx4090-shared-context-2026-10-04/`](evidence/rtx4090-shared-context-2026-10-04/),
+including failed runs and the exact-build successful automatic rollback.
+
+The final-image stage7 automatic rollback passed with SSH multiplexing explicitly
+disabled: old engine 122880/2, registrar, enabled route and authenticated HTTP 200
+were restored. Stage6's SSH sandbox failure and quarantine remain in the record.
+**Production activation is APPROVED after the reviewed PRs are merged**, limited to
+implementation commit [`a82ca88bc7b8235d5ce6c8ed876199321f927f21`](https://github.com/InferWeave/inferweave/commit/a82ca88bc7b8235d5ce6c8ed876199321f927f21)
+and the stage7 image/watchdog identities in the ADR. Recorded runtime source hashes
+match that reviewed commit; pre-activation runtime and validation gates are proven.
+The rebuilt image passed the full-capacity matrix with staging workers active,
+gateway-routed concurrency without retry, and an explicit blue-answer check at 260k.
+Its 80k/120k long-image cases prove context/transport only; small-image color controls
+passed at every class, and earlier long-color results retain their artifact scope.
+
+Final spec review approved the scoped decision. After a test-fixture correction,
+the final complete library suite passed 730/730 with two test threads; strict Clippy and
+formatting passed. CI is waived, not proven; agent review does not staff the
+independent-review gate below. Production readiness, client refresh and fresh-session
+checks remain owed after activation. This approval opens no unrelated deployment,
+fleet, GPU-reset or host-reboot capability.
 
 ## Independent review gate
 

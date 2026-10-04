@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~280,000 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~296,166 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -27,7 +27,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
-- `OPEN_GATES.md` — `ba9731a1b627` — ~2,237t
+- `OPEN_GATES.md` — `684dc7395022` — ~2,767t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -61,6 +61,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/topology-v2.example.json` — `2b9b163f6bf6` — ~465t
 - `decisions/2026-09-22-existing-gateway-rollout.md` — `3eaac9d26ffe` — ~586t
 - `decisions/2026-09-28-buffered-gateway-recording.md` — `a04b7a6d2713` — ~1,357t
+- `decisions/2026-10-04-bender-shared-context-rollout.md` — `7a365a372605` — ~3,277t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `4ea092cf8917` — ~3,792t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
@@ -97,6 +98,32 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/rtx4090-shared-context-2026-10-03/requests.jsonl` — `cdc3169d1b13` — ~429t
 - `evidence/rtx4090-shared-context-2026-10-03/slots-at-start.json` — `b49accce4b4f` — ~50t
 - `evidence/rtx4090-shared-context-2026-10-03/startup.log` — `a89ace412ec7` — ~779t
+- `evidence/rtx4090-shared-context-2026-10-04/README.md` — `24d225dd3e42` — ~3,253t
+- `evidence/rtx4090-shared-context-2026-10-04/busy-registration-hold.jsonl` — `74a9394bd348` — ~31t
+- `evidence/rtx4090-shared-context-2026-10-04/exact-e518-color-260k.jsonl` — `2bfe1793fd3b` — ~54t
+- `evidence/rtx4090-shared-context-2026-10-04/exact-e518-full-hardware.jsonl` — `92688f76be31` — ~783t
+- `evidence/rtx4090-shared-context-2026-10-04/exact-e518-gateway-concurrency.jsonl` — `a14d731814e0` — ~284t
+- `evidence/rtx4090-shared-context-2026-10-04/final-260k-long-vision.jsonl` — `178169dbf03b` — ~51t
+- `evidence/rtx4090-shared-context-2026-10-04/final-candidate-attestation.json` — `4cfe46499bc7` — ~897t
+- `evidence/rtx4090-shared-context-2026-10-04/final-gateway-active-hardware.jsonl` — `42e575f10f23` — ~689t
+- `evidence/rtx4090-shared-context-2026-10-04/gateway-active-concurrency.jsonl` — `5b2b9d328e99` — ~284t
+- `evidence/rtx4090-shared-context-2026-10-04/gateway-active-engine-overlap.log` — `1d7bd33a101a` — ~63t
+- `evidence/rtx4090-shared-context-2026-10-04/isolated-long-vision.jsonl` — `7bcf56cc9fec` — ~130t
+- `evidence/rtx4090-shared-context-2026-10-04/isolated-matrix.jsonl` — `4388daa7e14d` — ~277t
+- `evidence/rtx4090-shared-context-2026-10-04/probe-coexistence-final.jsonl` — `7f1ae082650f` — ~70t
+- `evidence/rtx4090-shared-context-2026-10-04/rollback-drill-stage2.json` — `dc0def1ede65` — ~177t
+- `evidence/rtx4090-shared-context-2026-10-04/rollback-drill-stage3.json` — `caa08275d78b` — ~260t
+- `evidence/rtx4090-shared-context-2026-10-04/rollback-drill-stage4.json` — `52bd30cedc50` — ~197t
+- `evidence/rtx4090-shared-context-2026-10-04/rollback-drill-stage5.json` — `809ab20f67ba` — ~271t
+- `evidence/rtx4090-shared-context-2026-10-04/rollback-drill-stage6.json` — `2619f78efbd8` — ~231t
+- `evidence/rtx4090-shared-context-2026-10-04/rollback-drill-stage7.json` — `8df1495a2e35` — ~287t
+- `evidence/rtx4090-shared-context-2026-10-04/rollback-drill.json` — `0d53aff8d420` — ~247t
+- `evidence/rtx4090-shared-context-2026-10-04/stage-cache-overcommit.jsonl` — `db0c950e6f82` — ~433t
+- `evidence/rtx4090-shared-context-2026-10-04/stage2-probe-contention.jsonl` — `8cb57f382efb` — ~513t
+- `evidence/rtx4090-shared-context-2026-10-04/stage3-attestation.json` — `69cdcd4f0c00` — ~868t
+- `evidence/rtx4090-shared-context-2026-10-04/stage5-attestation.json` — `db891d23d554` — ~887t
+- `evidence/rtx4090-shared-context-2026-10-04/stage7-attestation.json` — `bbf0558738fb` — ~926t
+- `evidence/rtx4090-shared-context-2026-10-04/staging-gateway-check.json` — `34c74ed4b338` — ~196t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `dfdf2193dedd` — ~1,773t
 - `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `354371d8f50a` — ~17,789t
 - `implementation/CANONICAL_TASK_INDEX.md` — `fd3376f4397a` — ~2,945t

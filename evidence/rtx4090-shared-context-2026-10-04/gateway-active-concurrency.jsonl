@@ -1,0 +1,10 @@
+{"attempts": 1, "case": "two120", "completion_tokens": 128, "context": 120000, "prompt_tokens": 55, "seconds": 3.529, "status": 200}
+{"attempts": 1, "case": "two120", "completion_tokens": 128, "context": 120000, "prompt_tokens": 55, "seconds": 3.553, "status": 200}
+{"case": "two120-summary", "passed": true, "count": 2, "retries": 0}
+{"attempts": 1, "case": "three80", "completion_tokens": 128, "context": 80000, "prompt_tokens": 55, "seconds": 3.859, "status": 200}
+{"attempts": 1, "case": "three80", "completion_tokens": 128, "context": 80000, "prompt_tokens": 55, "seconds": 3.86, "status": 200}
+{"attempts": 1, "case": "three80", "completion_tokens": 128, "context": 80000, "prompt_tokens": 55, "seconds": 3.833, "status": 200}
+{"case": "three80-summary", "passed": true, "count": 3, "retries": 0}
+{"attempts": 1, "case": "mixed", "completion_tokens": 128, "context": 120000, "prompt_tokens": 55, "seconds": 3.229, "status": 200}
+{"attempts": 1, "case": "mixed", "completion_tokens": 128, "context": 80000, "prompt_tokens": 55, "seconds": 3.205, "status": 200}
+{"case": "mixed-summary", "passed": true, "count": 2, "retries": 0}

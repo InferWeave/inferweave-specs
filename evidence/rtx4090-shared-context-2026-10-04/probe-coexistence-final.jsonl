@@ -1,0 +1,4 @@
+{"busy_samples": 0, "case": "small-probe-offer", "context": 260000, "passed": true}
+{"case": "probe-plus-260k", "count": 2, "passed": true, "peak_busy_slots": 2}
+{"case": "probe-plus-three80", "count": 4, "passed": true, "peak_busy_slots": 3}
+{"case": "summary", "passed": true}

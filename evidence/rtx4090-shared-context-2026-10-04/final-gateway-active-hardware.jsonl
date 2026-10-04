@@ -1,0 +1,22 @@
+{"case": "vision-control", "color": "red", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 46, "seconds": 1.479, "status": 200}
+{"case": "vision-control", "color": "blue", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 46, "seconds": 0.37, "status": 200}
+{"case": "vision-control", "color": "green", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 46, "seconds": 0.424, "status": 200}
+{"case": "vision-control", "color": "red", "completion_tokens": 2, "context": 120000, "correct": true, "prompt_tokens": 46, "seconds": 0.484, "status": 200}
+{"case": "vision-control", "color": "blue", "completion_tokens": 2, "context": 120000, "correct": true, "prompt_tokens": 46, "seconds": 0.352, "status": 200}
+{"case": "vision-control", "color": "green", "completion_tokens": 2, "context": 120000, "correct": true, "prompt_tokens": 46, "seconds": 0.349, "status": 200}
+{"case": "vision-control", "color": "red", "completion_tokens": 2, "context": 80000, "correct": true, "prompt_tokens": 46, "seconds": 0.362, "status": 200}
+{"case": "vision-control", "color": "blue", "completion_tokens": 2, "context": 80000, "correct": true, "prompt_tokens": 46, "seconds": 0.387, "status": 200}
+{"case": "vision-control", "color": "green", "completion_tokens": 2, "context": 80000, "correct": true, "prompt_tokens": 46, "seconds": 0.349, "status": 200}
+{"busy_samples": 914, "case": "cancel-barrier", "poll_seconds": 0.1, "sampled_only": true}
+{"case": "near-full-after-cancel", "completion_tokens": 2, "context": 260000, "prompt_tokens": 257468, "seconds": 185.824, "status": 200}
+{"case": "two120", "completion_tokens": 2, "context": 120000, "prompt_tokens": 117468, "seconds": 66.04, "status": 200}
+{"case": "two120", "completion_tokens": 2, "context": 120000, "prompt_tokens": 117468, "seconds": 161.186, "status": 200}
+{"case": "two120-summary", "count": 2, "passed": true, "peak_busy_slots": 2}
+{"case": "three80", "completion_tokens": 2, "context": 80000, "prompt_tokens": 77468, "seconds": 38.261, "status": 200}
+{"case": "three80", "completion_tokens": 2, "context": 80000, "prompt_tokens": 77468, "seconds": 90.516, "status": 200}
+{"case": "three80", "completion_tokens": 2, "context": 80000, "prompt_tokens": 77468, "seconds": 140.671, "status": 200}
+{"case": "three80-summary", "count": 3, "passed": true, "peak_busy_slots": 3}
+{"case": "mixed", "completion_tokens": 2, "context": 80000, "prompt_tokens": 77468, "seconds": 60.406, "status": 200}
+{"case": "mixed", "completion_tokens": 2, "context": 120000, "prompt_tokens": 117468, "seconds": 90.939, "status": 200}
+{"case": "mixed-summary", "count": 2, "passed": true, "peak_busy_slots": 2}
+{"case": "summary", "passed": true}

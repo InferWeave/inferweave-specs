@@ -1,0 +1,12 @@
+{"case": "vision-control", "color": "red", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 46, "seconds": 1.152, "status": 200}
+{"case": "vision-control", "color": "blue", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 46, "seconds": 0.503, "status": 200}
+{"case": "vision-control", "color": "green", "completion_tokens": 2, "context": 260000, "correct": true, "prompt_tokens": 46, "seconds": 0.502, "status": 200}
+{"case": "vision-control", "color": "red", "completion_tokens": 2, "context": 120000, "correct": true, "prompt_tokens": 46, "seconds": 0.349, "status": 200}
+{"case": "vision-control", "color": "blue", "completion_tokens": 2, "context": 120000, "correct": true, "prompt_tokens": 46, "seconds": 0.445, "status": 200}
+{"case": "vision-control", "color": "green", "completion_tokens": 2, "context": 120000, "correct": true, "prompt_tokens": 46, "seconds": 0.438, "status": 200}
+{"case": "vision-control", "color": "red", "completion_tokens": 2, "context": 80000, "correct": true, "prompt_tokens": 46, "seconds": 0.451, "status": 200}
+{"case": "vision-control", "color": "blue", "completion_tokens": 2, "context": 80000, "correct": true, "prompt_tokens": 46, "seconds": 0.448, "status": 200}
+{"case": "vision-control", "color": "green", "completion_tokens": 2, "context": 80000, "correct": true, "prompt_tokens": 46, "seconds": 0.447, "status": 200}
+{"busy_samples": 916, "case": "cancel-barrier", "poll_seconds": 0.1, "sampled_only": true}
+{"case": "near-full-after-cancel", "completion_tokens": 2, "context": 260000, "prompt_tokens": 257468, "seconds": 78.832, "status": 200}
+{"case": "summary", "error": "concurrent matrix request failed", "passed": false}
