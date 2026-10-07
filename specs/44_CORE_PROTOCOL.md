@@ -865,9 +865,10 @@ gateway_left
 gateway_lost
 ```
 
-This canonical list is authoritative and must be kept in one-to-one agreement with the
-lifecycle, load/unload, scale, rebalance, node-loss, partial-failure and interruption sections
-below. Any event type named there must appear here, and vice versa (invariant 41).
+This canonical list is authoritative (invariant 41). The operational sections below name the
+behaviorally meaningful subset of these events for their own purpose; they are not required to
+restate every event in the list, and no event type may be introduced in a section without also
+appearing here.
 
 ## Interruption / eviction events
 
@@ -1718,9 +1719,9 @@ reason codes, error categories, retryability, trust levels, mapping confidence, 
 — is a shared vocabulary under invariant 41. It must be expressed as **frozen machine-readable
 data**, published as a document, and reconciled by test; prose in this document is the
 normative intent, not the contract itself. The canonical lists here are the source of truth for
-that data and must be kept internally consistent (the lifecycle-event, load/unload, scale,
-rebalance, node-loss and partial-failure sections must name exactly the event types in the
-canonical lifecycle list). The conformance task (`P5-T23`) publishes and reconciles these
+that data and must be kept internally consistent: the canonical lifecycle list is the
+authoritative enumeration, the operational sections may reference it without restating every
+event, and no event type may be introduced in a section without also appearing in the list. The conformance task (`P5-T23`) publishes and reconciles these
 vocabularies.
 
 Protocol neutrality is not production-substrate approval. Naming Kubernetes (or any other

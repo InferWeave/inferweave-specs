@@ -16,16 +16,10 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~517,448 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~321,572 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
-- `.pi-eng/.orchestration-snapshot.json.1002812.8eb7e7cf-36bf-439c-a5bb-a04ab25f548c.tmp` — `e3b0c44298fc` — ~0t
-- `.pi-eng/artifacts/.artifact-lock-domain.json` — `0de5ec05f0f2` — ~25t
-- `.pi-eng/artifacts/.artifact-locks/.domain-token` — `c04f484d8b1c` — ~10t
-- `.pi-eng/ledger.jsonl` — `6bc2504c1e62` — ~1,012t
-- `.pi-eng/orchestration-snapshot.json` — `343809e925d4` — ~25,492t
-- `.pi-eng/orchestration.jsonl` — `3ffc5025fec3` — ~169,366t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
 - `CHANGELOG.md` — `105fc1500ddd` — ~1,514t
@@ -158,9 +152,9 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `pi/REVIEW_PROMPT.md` — `0fca83a1dc7a` — ~191t
 - `pi/TASK_TEMPLATE.md` — `654c899dbb32` — ~280t
 - `scripts/bootstrap-repositories.sh` — `914de3443dbc` — ~227t
-- `scripts/generate_bundle_metadata.py` — `5b44b27a58b7` — ~605t
+- `scripts/generate_bundle_metadata.py` — `8e46c94670e4` — ~608t
 - `scripts/test_validate_specs.py` — `45b7fd4b5ecc` — ~6,695t
-- `scripts/validate_specs.py` — `52dd90c89690` — ~8,152t
+- `scripts/validate_specs.py` — `a65421133ec6` — ~8,154t
 - `solana/DEVNET_ONLY.md` — `1a8ea96fcc58` — ~136t
 - `specs/00_INVARIANTS.md` — `e21827e64179` — ~1,478t
 - `specs/01_REPOSITORIES_AND_OWNERSHIP.md` — `e52f5e6e8112` — ~735t
@@ -206,7 +200,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md` — `c2f00ea9bf1d` — ~1,820t
 - `specs/42_SITE_GATEWAY_CONFORMANCE.md` — `167a020701a2` — ~2,363t
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `c8c57b73aa55` — ~3,492t
-- `specs/44_CORE_PROTOCOL.md` — `516cfac74abf` — ~11,911t
+- `specs/44_CORE_PROTOCOL.md` — `2c83aae51c91` — ~11,935t
 - `tasks/deferred/D-T01.md` — `a25f12f8d5a3` — ~228t
 - `tasks/phase-0/P0-T01.md` — `906dade5a845` — ~212t
 - `tasks/phase-0/P0-T01A.md` — `5cd8da23195c` — ~327t
