@@ -52,6 +52,40 @@ Exact caller label text is preserved. Low grounding confidence fails rather than
 
 Reserve VRAM/RAM/scratch/thermal/bandwidth before execution. Oversized requests fail before host instability. Worker crash leads to bounded retry/terminal error without duplicate accounting.
 
+## Admission probe (model-aware)
+
+A gateway admits an image worker **by observed serving** (spec 42 C4): the
+admission probe is a real `POST /v1/images/generations` against the worker,
+never a self-report or a health endpoint. The probe MUST be **model-aware**, so
+its cost scales with what the model can do cheaply and a large model can still
+be admitted:
+
+- The probe request body is the smallest standard generation:
+  `{"model": <registered model>, "prompt": "<short fixed text>",
+  "size": "512x512"}` plus the advisory step count through the optional
+  `inferweave` request object (spec 02): `"inferweave": {"steps": 4}`.
+- A conformant image worker **MUST honor `size`** (clamping to its model's
+  smallest supported size when 512 falls below it) — every probe is therefore
+  bounded by the worker's cheapest generation, whatever the model is.
+- A conformant image worker **SHOULD honor `inferweave.steps`** as an upper
+  bound on its default step count. A worker that ignores it still passes the
+  probe; it just pays its full cost, which is what the probe budget is for.
+- The probe has a **budget**. The identity step (`GET /v1/models`) always runs
+  at the default budget (30 s): a slow model list is a sick endpoint, not a
+  big model. The liveness step (the generation) takes a **model-aware
+  budget**: the default is the floor, and a registering worker MAY declare
+  `probe_budget_secs` in its registration (how long its small probe
+  generation takes on this hardware). The gateway raises sub-default values
+  to the default and clamps at a ceiling (300 s), so a genuinely slow model
+  (e.g. a 20 B+ diffusion model whose 512²/4-step probe still outlasts 30 s)
+  is admitted while a wedged endpoint can never hold admission open
+  indefinitely. The budget bounds the observation; it is never a substitute
+  for it — the probe is always a real generation, and a worker that cannot
+  complete one within its budget is refused (422), not admitted unverified.
+- The gateway rewrites the forwarded `model` to the worker's upstream name
+  exactly as for routed traffic (spec 42 C3); the probe uses the name the
+  worker actually serves, as established by the identity step.
+
 ## Workbench/AutoSpec
 
 Workbench displays actual deployment/policy/license/progress/artifacts. AutoSpec may request visual artifacts and route independent vision QA as a separate workflow.

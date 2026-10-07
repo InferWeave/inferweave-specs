@@ -71,6 +71,13 @@ chain (B1–B5).
   (model|job_id, endpoint, card, slots≥1, ctx_window; reject, never zero-fill);
   validate endpoint against an allowlist (SSRF); heartbeat/deregister by id;
   TTL-freshness liveness; clamp future `last_seen`; self-reported capacity wins.
+  Image workers are admitted by a **model-aware probe** (spec 14, admission
+  probe): identity via `GET /v1/models` at the default budget, then a real
+  small generation (`size: 512x512` + advisory `inferweave.steps`) at a
+  model-aware budget — the default (30 s) is the floor, a declared
+  `probe_budget_secs` extends it, clamped at 300 s. The probe is always a
+  real generation; a worker that cannot complete it within its budget is
+  refused (422), never admitted unverified.
 - **C5 Warm pool** — maintain ≥1 live worker per keep-warm model; reconcile
   desired-vs-actual **idempotently** on a repeating interval.
 - **C6 Capacity acquisition** — request/release/list GPU capacity; workers connect
