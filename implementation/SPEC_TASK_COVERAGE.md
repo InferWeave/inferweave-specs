@@ -44,7 +44,6 @@
 | `specs/39_INFERENCE_RUNTIME_TUNING.md` | `P1-T06C`, `P3-T24` |
 | `specs/40_NETWORK_TOPOLOGY_GRAPH.md` | `P2-T23`, `P2-T24`, `P5-T11`, `P5-T12`, `P5-T13` |
 | `specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md` | `P5-T14`, `P5-T15`, `P5-T16`, `P5-T17`, `P5-T21` |
-| `specs/43_GPU_PLACEMENT_HOT_SWAP.md` | `P3-T23`, `P3-T24`, `P3-T25` |
 | `specs/42_SITE_GATEWAY_CONFORMANCE.md` | `P5-T23` |
-| `specs/44_CORE_PROTOCOL.md` | `P5-T18`, `P5-T19`, `P5-T20`, `P5-T21`, `P5-T22`, `P5-T23` |
+| `specs/43_GPU_PLACEMENT_HOT_SWAP.md` | `P3-T23`, `P3-T24`, `P3-T25` |
 | `specs/44_CORE_PROTOCOL.md` | `P5-T18`, `P5-T19`, `P5-T20`, `P5-T21`, `P5-T22`, `P5-T23` |

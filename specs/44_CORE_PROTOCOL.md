@@ -327,6 +327,10 @@ long_context
 experimental
 ```
 
+An `experimental` serving profile is not selectable by ordinary production routing until its
+qualification gates pass (invariant 28). Advertising an experimental profile advertises it for
+evaluation and explicit policy use, never as a default production target.
+
 A model may have one, multiple, or no advertised preferred profile. This supports fleets that
 intentionally retain only one or two artifacts per model.
 
@@ -419,8 +423,9 @@ compatibility:
     - sm_90
 ```
 
-This metadata may be incomplete. Consumers must not treat missing compatibility metadata as
-incompatibility.
+This metadata may be incomplete. For **advisory** compatibility metadata, consumers must not
+treat absence as incompatibility. This tolerance does **not** extend to hard constraints:
+see the absence-tolerance rule below.
 
 ## Resource profiles / curves
 
@@ -610,6 +615,11 @@ where available rather than duplicating them.
 GPU fields: `device_id`, `vendor`, `model`, `architecture`, `vram_total`, `vram_available`,
 `compute_capability`/architecture identifier, `interconnect`, `health`. System fields:
 `ram_total`, `ram_available`, `cpu_count`, `disk_free`.
+
+Hardware advertisement that reaches public telemetry uses privacy-safe identifiers only:
+public `device_id`/`node_id` are pseudonymous and rotatable where practical, and no stable
+private node address or home-location data is exposed (invariants 17, 18). Stable internal IDs
+(`Identity stability`) are the control-plane identity; they are not the public telemetry label.
 
 ## Hardware group / placement metadata
 
@@ -825,25 +835,39 @@ model_download_failed
 
 model_loading
 model_loaded
+model_load_failed
 model_unloading
 model_unloaded
 model_failed
 
+runtime_degraded
+
 capacity_added
 capacity_removed
 
+deployment_scale_requested
 deployment_scaled_up
 deployment_scaled_down
-deployment_rebalanced
+deployment_scale_failed
+deployment_rebalance_started
+deployment_rebalance_completed
+deployment_rebalance_failed
 
 node_joined
 node_left
 node_lost
+device_lost
+node_degraded
+node_unavailable
 
 gateway_joined
 gateway_left
 gateway_lost
 ```
+
+This canonical list is authoritative and must be kept in one-to-one agreement with the
+lifecycle, load/unload, scale, rebalance, node-loss, partial-failure and interruption sections
+below. Any event type named there must appear here, and vice versa (invariant 41).
 
 ## Interruption / eviction events
 
@@ -966,8 +990,11 @@ node or site. Useful when capacity temporarily drops during movement.
 
 ## Node resource loss
 
-Generic events: `device_lost`, `node_degraded`, `node_unavailable`. Reasons: `scheduler`,
-`hardware_failure`, `maintenance`, `operator`, `network`, `unknown`.
+Generic events: `device_lost`, `node_degraded`, `node_unavailable`. Reasons come from the
+standard reason codes above (e.g. `scheduler_preempted`/`scheduler_priority`, `node_failure`,
+`node_shutdown`, `maintenance`, `operator_cancelled`/`operator_evicted`, `network_failure`,
+`unknown`). Do not invent a second, parallel reason vocabulary; the standard codes are
+authoritative (invariant 41).
 
 ## Partial failures
 
@@ -1011,7 +1038,9 @@ deprecated
 retired
 ```
 
-A production model may currently have zero live runtimes.
+A production model may currently have zero live runtimes. An `experimental` model is not
+selected by ordinary production routing until qualification passes (invariant 28); the
+lifecycle state is carried so policy layers can gate on it rather than inferring it.
 
 ## Operator annotations
 
@@ -1209,8 +1238,12 @@ Transmit structured reasons; do not embed UI wording in the protocol.
 
 The scheduler has access to capability requirements, runtime state, available capacity,
 resource requirements, hardware compatibility, queue state, trust/provenance, reliability
-metrics, and cold-start state. This specification does not require one fixed ranking formula; it
-provides the information necessary for smarter routing.
+metrics, cold-start state, model/artifact lifecycle and qualification state, and the
+availability floor. This specification does not require one fixed ranking formula; it provides
+the information necessary for smarter routing. The information is never a substitute for a hard
+constraint: routing must still respect the availability floor (invariant 43) and experimental
+qualification (invariant 28), and must never route to a node that lacks the required
+model/deployment/capability (invariant 5).
 
 ## No global composite quality in core
 
@@ -1255,6 +1288,12 @@ expires_at
 ttl_seconds
 ```
 
+Timestamps and TTLs govern staleness, but they do not replace requalification: after a material
+configuration change (engine, quantization, placement, context ceiling) a deployment's
+capability claims expire and must be refreshed/requalified (invariant 16). `expires_at`/`ttl_seconds`
+bound how long an advertisement may be believed; they do not make a materially changed
+deployment's stale claims valid again.
+
 Do not report remote availability indefinitely after a gateway disappears.
 
 ## Gateway disconnect
@@ -1280,7 +1319,24 @@ When a gateway reconnects:
 ## Backwards compatibility
 
 New model metadata is optional. Older gateways that advertise only `model`, `endpoint`, `slots`
-continue to function. Missing fields produce `unknown` rather than rejection.
+continue to function. Missing **advisory** metadata fields produce `unknown` rather than
+rejection.
+
+## Absence tolerance and hard constraints
+
+Absence tolerance is bounded by invariants 6 and 36. "Missing fields produce `unknown`" applies
+to advisory and telemetry metadata (compatibility hints, throughput/quality claims, cold-start
+estimates, provenance). It never applies to a hard constraint:
+
+- security, privacy, license, modality, context, explicit deny rules and exact-deployment
+  requirements are hard constraints (invariant 6);
+- a deployment whose context ceiling is unknown is **not admissible**, and an absent capability
+  claim is never read as an unbounded one (invariant 36).
+
+Concretely: a runtime that advertises no `max_context_tokens`, no modality, or no license must
+not be treated as unbounded, modality-neutral, or freely licensable. Capability matching
+(`Capability matching`) must treat an absent hard-constraint property as **not satisfied**,
+never as satisfied-by-default, even when the same absence is tolerated in advisory metadata.
 
 ## Versioning
 
@@ -1311,6 +1367,11 @@ Upstream systems recover after disconnect without replaying the entire historica
 Use stable IDs for gateway, node, runtime, canonical model, artifact, and serving profile. Do
 not derive IDs solely from IP addresses or transient scheduler job IDs. Scheduler job IDs may be
 metadata.
+
+Stable IDs are the internal/control-plane identity. When an ID is exposed to public telemetry or
+federation peers it is pseudonymous and rotatable where practical, and is never a stable private
+node address (invariants 17, 18). Stable internal identity and the public pseudonymous label are
+two distinct values, reconciled by the emitting gateway.
 
 ## Duplicate model names
 
@@ -1509,8 +1570,12 @@ capacity:
   available_slots: 3
 
 provenance:
-  source_type: managed
+  source_type: observed
+  trust: managed
 ```
+
+`source_type` uses the metric-provenance vocabulary (`observed` here); `trust` uses the trust
+vocabulary (`managed`). They are different dimensions and are never conflated.
 
 ## Example federated advertisement
 
@@ -1643,6 +1708,24 @@ protocol:
 The resulting protocol makes `inferweave/inferweave` the canonical, scheduler-neutral source of
 truth for model capabilities, serving requirements, capacity, runtime health, lifecycle events,
 reliability, and federation provenance.
+
+## Frozen vocabularies
+
+Every shared vocabulary this spec introduces — model types, capability IDs and properties,
+precision/quantization values, serving-profile roles, runtime classes and statuses, residency
+states, health states and reasons, metric IDs, source types, lifecycle event types, standard
+reason codes, error categories, retryability, trust levels, mapping confidence, request classes
+— is a shared vocabulary under invariant 41. It must be expressed as **frozen machine-readable
+data**, published as a document, and reconciled by test; prose in this document is the
+normative intent, not the contract itself. The canonical lists here are the source of truth for
+that data and must be kept internally consistent (the lifecycle-event, load/unload, scale,
+rebalance, node-loss and partial-failure sections must name exactly the event types in the
+canonical lifecycle list). The conformance task (`P5-T23`) publishes and reconciles these
+vocabularies.
+
+Protocol neutrality is not production-substrate approval. Naming Kubernetes (or any other
+scheduler) as an event source does not approve it as a deployment substrate; adding one still
+requires an ADR under D-018.
 
 ## Relationships
 

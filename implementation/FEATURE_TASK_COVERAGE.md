@@ -1,6 +1,6 @@
 # Feature → Canonical Task Coverage
 
-Features: **80**
+Features: **91**
 
 | Feature | Priority | Phase | Owner component | Canonical tasks |
 |---|---|---|---|---|

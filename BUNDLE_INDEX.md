@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~516,193 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~517,448 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -138,16 +138,16 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/rtx4090-shared-context-2026-10-04/staging-gateway-check.json` — `34c74ed4b338` — ~196t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `87cc4cd95cf4` — ~2,139t
 - `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `7ab3e55ac96c` — ~19,455t
-- `implementation/CANONICAL_TASK_INDEX.md` — `65ef4970be56` — ~3,096t
+- `implementation/CANONICAL_TASK_INDEX.md` — `6dd44b3b8d45` — ~3,096t
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
 - `implementation/ERROR_SEMANTICS.md` — `353b4a250389` — ~598t
-- `implementation/FEATURE_TASK_COVERAGE.md` — `9267993a4cf6` — ~2,497t
+- `implementation/FEATURE_TASK_COVERAGE.md` — `65f0911555b8` — ~2,497t
 - `implementation/IMPLEMENTATION_ORDER.md` — `1a48655f5ecc` — ~221t
 - `implementation/MILESTONES.md` — `84f77749cf80` — ~481t
 - `implementation/MONOREPO_BOOTSTRAP.md` — `7d729410dacd` — ~367t
 - `implementation/PHASE_GATES.md` — `b821ccf27648` — ~672t
-- `implementation/SPEC_TASK_COVERAGE.md` — `df64671ccc05` — ~1,259t
+- `implementation/SPEC_TASK_COVERAGE.md` — `c2fc71aaea2f` — ~1,236t
 - `implementation/TEST_STRATEGY.md` — `5ded1d51fb57` — ~1,301t
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
@@ -206,7 +206,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md` — `c2f00ea9bf1d` — ~1,820t
 - `specs/42_SITE_GATEWAY_CONFORMANCE.md` — `167a020701a2` — ~2,363t
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `c8c57b73aa55` — ~3,492t
-- `specs/44_CORE_PROTOCOL.md` — `88e31ac8d6ee` — ~10,633t
+- `specs/44_CORE_PROTOCOL.md` — `516cfac74abf` — ~11,911t
 - `tasks/deferred/D-T01.md` — `a25f12f8d5a3` — ~228t
 - `tasks/phase-0/P0-T01.md` — `906dade5a845` — ~212t
 - `tasks/phase-0/P0-T01A.md` — `5cd8da23195c` — ~327t
