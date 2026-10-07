@@ -135,10 +135,16 @@ paths:
           schema: { type: string }
       responses:
         "200":
-          description: Event stream
+          description: >-
+            Event stream. When served as Server-Sent Events each frame is one serialized
+            Event object; a cursor-based poll returns a JSON array of Event objects.
           content:
-            application/json:
+            text/event-stream:
               schema: { $ref: "#/components/schemas/Event" }
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Event" }
   /requests/{request_id}/routing:
     get:
       operationId: getRoutingExplanation

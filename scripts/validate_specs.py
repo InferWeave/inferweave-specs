@@ -679,7 +679,7 @@ def guard_protocol_vocab(root, features, tasks):
     errors = []
     base = root / "contracts/protocol-v1"
     if not base.exists():
-        return errors
+        return ["contracts/protocol-v1/: missing frozen vocabulary directory"]
     spec = _normalize_prose((root / "specs/45_PROTOCOL_V1.md").read_text())
     schema_enum_keys = {
         "error-taxonomy": ("categories", "errors/error.json", "category"),
