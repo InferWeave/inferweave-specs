@@ -17,5 +17,14 @@ The first Protocol v1 wire contract. Formalizes the scheduler-neutral vocabulary
 - aliases, routing, affinity, jobs, streaming, and async jobs
 - conformance levels and compatibility matrix
 
-Status: specification only, BLOCKED for production. All required tests are `owed` by canonical
-tasks `P5-T24`–`P5-T29` (feature `IW-PROTO-002`).
+The full canonical-protocol artifact set is delivered: 30 JSON Schemas under `schemas/v1/`
+(common, errors, topology, model, resources, runtime, requests, events, jobs, artifacts); frozen
+canonical vocabularies under `contracts/protocol-v1/` (error taxonomy, lifecycle reasons,
+workload classes, device types, provenance sources, model lifecycle events) reconciled by a
+test guard; the OpenAPI definition `openapi/inferweave-v1.yaml`; conformance profiles, fixtures,
+and the `conformance/runner.py` harness; the compatibility matrix and release manifest; and the
+cross-repo `protocol-ci` workflow. `VERSION` remains `1.0.0`.
+
+Status: specification and artifacts complete, BLOCKED for production. Production conformance by
+a running component and independent multi-node verification remain `owed` by canonical tasks
+`P5-T24`–`P5-T29` (feature `IW-PROTO-002`).

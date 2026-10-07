@@ -1,0 +1,10 @@
+{
+  "device_id": "gpu-1",
+  "type": "nvidia_gpu",
+  "vendor": "nvidia",
+  "model": "RTX 4090",
+  "memory": {
+    "total": 34359738368,
+    "free": 6760000000
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "alias_id": "qwen3.8",
+  "type": "dynamic",
+  "targets": [
+    {
+      "model": "qwen3.8-27b-q8"
+    }
+  ]
+}

@@ -1,17 +1,33 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "inferweave-protocol/schemas/v1/common/features.json",
+  "$id": "https://inferweave.dev/schemas/v1/common/features.json",
   "title": "Feature negotiation",
-  "description": "Advertised protocol features. Each key is a feature name; the value is a feature level string. Peers MUST tolerate unknown features.",
+  "description": "Advertised protocol features keyed by name to a level string. Peers MUST tolerate unknown features.",
   "type": "object",
-  "additionalProperties": { "type": "string" },
+  "additionalProperties": {
+    "type": "string"
+  },
   "properties": {
-    "events": { "type": "string" },
-    "async_jobs": { "type": "string" },
-    "dynamic_aliases": { "type": "string" },
-    "gpu_memory_breakdown": { "type": "string" },
-    "artifact_references": { "type": "string" },
-    "routing_explanations": { "type": "string" },
-    "desired_state": { "type": "string" }
+    "events": {
+      "type": "string"
+    },
+    "async_jobs": {
+      "type": "string"
+    },
+    "dynamic_aliases": {
+      "type": "string"
+    },
+    "gpu_memory_breakdown": {
+      "type": "string"
+    },
+    "artifact_references": {
+      "type": "string"
+    },
+    "routing_explanations": {
+      "type": "string"
+    },
+    "desired_state": {
+      "type": "string"
+    }
   }
 }

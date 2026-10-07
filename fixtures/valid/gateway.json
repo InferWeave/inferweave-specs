@@ -1,0 +1,13 @@
+{
+  "gateway_id": "gateway-lab",
+  "protocol": {
+    "name": "inferweave",
+    "version": "1.0.0",
+    "minimum_compatible_version": "1.0.0"
+  },
+  "features": {
+    "events": "1",
+    "async_jobs": "1"
+  },
+  "state": "ready"
+}

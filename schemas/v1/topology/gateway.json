@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/topology/gateway.json",
+  "title": "Gateway",
+  "description": "A gateway (possibly federated) in the InferWeave topology.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "gateway_id"
+  ],
+  "properties": {
+    "gateway_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string"
+    },
+    "protocol": {
+      "$ref": "../common/protocol.json"
+    },
+    "features": {
+      "$ref": "../common/features.json"
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "endpoints": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "state": {
+      "type": "string"
+    },
+    "children": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "provenance": {
+      "$ref": "../common/provenance.json"
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

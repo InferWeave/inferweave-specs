@@ -1,0 +1,7 @@
+{
+  "min_gpu_count": 1,
+  "min_vram_bytes": 48000000000,
+  "device_types": [
+    "nvidia_gpu"
+  ]
+}

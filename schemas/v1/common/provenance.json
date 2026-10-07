@@ -1,14 +1,23 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "inferweave-protocol/schemas/v1/common/provenance.json",
+  "$id": "https://inferweave.dev/schemas/v1/common/provenance.json",
   "title": "Provenance",
   "description": "Origin and confidence of reported information, especially federated telemetry.",
   "type": "object",
   "additionalProperties": true,
   "properties": {
-    "origin_gateway_id": { "type": "string" },
-    "reporting_gateway_id": { "type": "string" },
-    "federation_path": { "type": "array", "items": { "type": "string" } },
+    "origin_gateway_id": {
+      "type": "string"
+    },
+    "reporting_gateway_id": {
+      "type": "string"
+    },
+    "federation_path": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "source": {
       "type": "string",
       "enum": [
@@ -22,7 +31,13 @@
         "unknown"
       ]
     },
-    "observed_at": { "type": "string", "format": "date-time" },
-    "age_ms": { "type": "number", "minimum": 0 }
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "age_ms": {
+      "type": "number",
+      "minimum": 0
+    }
   }
 }

@@ -1,0 +1,6 @@
+{
+  "runtime_id": "rt-1",
+  "runtime_type": "vllm",
+  "version": "0.6",
+  "state": "ready"
+}

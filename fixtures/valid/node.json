@@ -1,0 +1,15 @@
+{
+  "node_id": "node-1",
+  "hostname": "worker-a",
+  "state": "ready",
+  "devices": [
+    {
+      "device_id": "gpu-1",
+      "type": "amd_gpu",
+      "vendor": "amd"
+    }
+  ],
+  "labels": {
+    "rack": "r1"
+  }
+}

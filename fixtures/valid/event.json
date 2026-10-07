@@ -1,0 +1,7 @@
+{
+  "event_id": "evt-1",
+  "event_type": "MODEL_READY",
+  "source_id": "node-1",
+  "sequence": 231,
+  "timestamp": "2026-10-07T03:17:43.321Z"
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/model/model.json",
+  "title": "Model",
+  "description": "A model identity. Display names are not canonical identifiers.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "model_id",
+    "type"
+  ],
+  "properties": {
+    "model_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "llm",
+        "embedding",
+        "reranker",
+        "vision",
+        "speech_to_text",
+        "text_to_speech",
+        "audio",
+        "image_generation",
+        "image_editing",
+        "video_generation",
+        "music_generation",
+        "prediction",
+        "multimodal",
+        "other"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "family": {
+      "type": "string"
+    },
+    "requirements": {
+      "$ref": "requirements.json"
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

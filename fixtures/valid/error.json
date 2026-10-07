@@ -1,0 +1,7 @@
+{
+  "code": "MODEL_NO_CAPACITY",
+  "category": "capacity",
+  "message": "no capacity",
+  "retryable": true,
+  "retry_after_ms": 10000
+}

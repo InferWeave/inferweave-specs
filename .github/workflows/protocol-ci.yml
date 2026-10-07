@@ -1,0 +1,25 @@
+name: Protocol CI
+
+# Anti-drift CI for the canonical Protocol v1 artifacts (specs/45_PROTOCOL_V1.md
+# "Cross-repository CI"). Fails on structural validation errors, guard self-test
+# regressions, frozen-vocabulary drift, and conformance-fixture drift.
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: pip install jsonschema pyyaml
+      - name: Structural validation
+        run: python3 scripts/validate_specs.py
+      - name: Guard self-test
+        run: python3 scripts/validate_specs.py --self-test
+      - name: Conformance fixtures
+        run: python3 conformance/runner.py

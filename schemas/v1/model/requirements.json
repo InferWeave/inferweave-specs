@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/model/requirements.json",
+  "title": "Hardware requirements",
+  "description": "Optional model hardware constraints.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "min_gpu_count": {
+      "type": "number",
+      "minimum": 0
+    },
+    "min_vram_bytes": {
+      "type": "number",
+      "minimum": 0
+    },
+    "min_ram_bytes": {
+      "type": "number",
+      "minimum": 0
+    },
+    "architecture": {
+      "type": "string"
+    },
+    "compute_capability": {
+      "type": "string"
+    },
+    "cuda": {
+      "type": "string"
+    },
+    "rocm": {
+      "type": "string"
+    },
+    "runtime": {
+      "type": "string"
+    },
+    "interconnect": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "topology": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "device_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

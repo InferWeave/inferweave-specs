@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/model/placement.json",
+  "title": "Distributed placement",
+  "description": "Explicit distributed model placement. A model is not assumed to reside on one device.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "distributed": {
+      "type": "boolean"
+    },
+    "devices": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "worker_group": {
+      "type": "string"
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

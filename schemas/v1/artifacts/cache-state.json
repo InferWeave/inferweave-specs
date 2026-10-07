@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/artifacts/cache-state.json",
+  "title": "Artifact cache state",
+  "description": "Node-side artifact cache state for model-on-demand loading.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "artifact_id",
+    "state"
+  ],
+  "properties": {
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "cached",
+        "partial",
+        "missing",
+        "pinned",
+        "evictable"
+      ]
+    },
+    "last_access": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "download_progress": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "cache_pressure": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

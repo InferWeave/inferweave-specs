@@ -21,6 +21,8 @@ jobs/        async job states and progress
 artifacts/   artifact descriptor and cache state
 ```
 
-Not every object category is populated in this repository yet. Populating a category is tracked
-by a canonical task (feature `IW-PROTO-002`); until then, objects of that category remain
-representable through the extension namespace.
+Every object category is populated in this repository (common, errors, topology, model,
+resources, runtime, requests, events, jobs, artifacts). All schemas are validated by the
+conformance runner (`conformance/runner.py`) against `fixtures/`. The schemas are frozen
+machine-readable data reconciled by test (invariant 41) via `scripts/validate_specs.py`; a
+vocabulary value in prose or a schema enum that disagrees with the frozen data fails validation.

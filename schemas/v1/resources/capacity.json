@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/capacity.json",
+  "title": "Capacity",
+  "description": "Structured scheduling capacity.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "requests": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "contexts": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "kv_cache": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "gpu_memory": {
+      "$ref": "memory.json"
+    },
+    "compute": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "slots": {
+      "type": "number",
+      "minimum": 0
+    },
+    "desired": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "observed": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

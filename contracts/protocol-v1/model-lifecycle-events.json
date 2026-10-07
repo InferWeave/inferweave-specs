@@ -1,0 +1,18 @@
+{
+  "name": "inferweave.protocol.v1.model_lifecycle_events",
+  "version": "1.0.0",
+  "description": "Frozen model lifecycle event types. Reconciled by test (invariant 41).",
+  "values": [
+    "MODEL_DOWNLOAD_STARTED",
+    "MODEL_DOWNLOAD_COMPLETED",
+    "MODEL_LOAD_REQUESTED",
+    "MODEL_LOADING",
+    "MODEL_READY",
+    "MODEL_DRAINING",
+    "MODEL_UNLOADING",
+    "MODEL_UNLOADED",
+    "MODEL_LOAD_FAILED",
+    "MODEL_EVICTED",
+    "MODEL_REBALANCED"
+  ]
+}

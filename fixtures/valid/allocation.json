@@ -1,0 +1,8 @@
+{
+  "allocation_id": "alloc-7",
+  "state": "ready",
+  "provider": "slurm",
+  "provider_metadata": {
+    "job_id": "12345"
+  }
+}

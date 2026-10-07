@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/model/alias.json",
+  "title": "Alias",
+  "description": "A first-class alias. Never pretends to be a concrete model.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "alias_id"
+  ],
+  "properties": {
+    "alias_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "static",
+        "dynamic"
+      ]
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "model"
+        ],
+        "properties": {
+          "model": {
+            "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "resolution": {
+      "type": "object",
+      "properties": {
+        "requested_model": {
+          "type": "string"
+        },
+        "resolved_model": {
+          "type": "string"
+        },
+        "alias_id": {
+          "type": "string"
+        }
+      }
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

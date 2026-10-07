@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/registration.json",
+  "title": "Registration",
+  "description": "Common registration structure for nodes and gateways.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "identity",
+    "protocol",
+    "features"
+  ],
+  "properties": {
+    "identity": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "protocol": {
+      "$ref": "../common/protocol.json"
+    },
+    "features": {
+      "$ref": "../common/features.json"
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "endpoints": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

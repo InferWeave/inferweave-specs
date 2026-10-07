@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/model/capabilities.json",
+  "title": "Capabilities",
+  "description": "Explicit capability advertisement. Never infer features from model names.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "chat": {
+      "type": "boolean"
+    },
+    "completion": {
+      "type": "boolean"
+    },
+    "vision_input": {
+      "type": "boolean"
+    },
+    "tool_calling": {
+      "type": "object",
+      "properties": {
+        "support": {
+          "type": "string",
+          "enum": [
+            "native",
+            "translated",
+            "emulated",
+            "unsupported",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "structured_output": {
+      "type": "boolean"
+    },
+    "streaming": {
+      "type": "boolean"
+    },
+    "max_context_tokens": {
+      "type": "number",
+      "minimum": 0
+    },
+    "max_output_tokens": {
+      "type": "number",
+      "minimum": 0
+    },
+    "vision": {
+      "type": "object",
+      "properties": {
+        "supported": {
+          "type": "boolean"
+        },
+        "max_images": {
+          "type": "number"
+        },
+        "formats": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "inferweave.protocol.v1.lifecycle_reasons",
+  "version": "1.0.0",
+  "description": "Frozen model lifecycle reasons. Reconciled by test (invariant 41).",
+  "values": [
+    "demand", "operator_request", "autoscale", "rebalance", "idle_timeout",
+    "memory_pressure", "allocation_loss", "preemption", "runtime_failure",
+    "hardware_failure", "maintenance", "upgrade", "cache_pressure", "unknown"
+  ]
+}

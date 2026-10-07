@@ -1,0 +1,7 @@
+{
+  "artifact_id": "art-1",
+  "type": "video",
+  "mime_type": "video/mp4",
+  "size_bytes": 920000000,
+  "checksum": "sha256:def"
+}

@@ -249,10 +249,18 @@ Protocol v1 in production, and no `schemas/v1/` schema, `state-machines/`, `conf
 `fixtures/` artifact is a deployed capability.
 
 Every required test in this specification is recorded `owed` by the canonical tasks
-`P5-T24`–`P5-T29` (feature `IW-PROTO-002`). The full `schemas/v1/` object categories
-(topology, model, resources, runtime, requests, events, errors, jobs, artifacts), the OpenAPI
-(`openapi/inferweave-v1.yaml`), the conformance scenarios and fixtures, the compatibility
-matrix, and the cross-repo CI are all `owed`. Until those land and are independently verified,
-an upstream system must not rely on Protocol v1 as a deployed wire contract, must not treat the
-foundational `schemas/v1/common/` schemas as complete, and must not assume any Protocol v1
-endpoint exists in a running system.
+`P5-T24`–`P5-T29` (feature `IW-PROTO-002`).
+
+The canonical-protocol **artifacts are delivered and locally validated**: all `schemas/v1/`
+object categories (common, errors, topology, model, resources, runtime, requests, events, jobs,
+artifacts) and 30 JSON Schemas; the frozen canonical vocabularies under `contracts/protocol-v1/`
+reconciled by a test guard; the OpenAPI (`openapi/inferweave-v1.yaml`); the conformance
+profiles, fixtures, and `conformance/runner.py` harness; the compatibility matrix and release
+manifest; the `docs/` set; and the `protocol-ci` workflow. `python3 scripts/validate_specs.py`
+(+ `--self-test`) and `python3 conformance/runner.py` pass.
+
+This does not close the production gate. **No node, runtime, or gateway emits or consumes
+Protocol v1 in production, and no Protocol v1 endpoint exists in a running system.** Production
+conformance by a running component, cross-repo CI execution against the `inferweave` reference
+implementation, and independent multi-node verification remain `owed` by `P5-T24`–`P5-T29`. An
+upstream system must not rely on Protocol v1 as a deployed wire contract.

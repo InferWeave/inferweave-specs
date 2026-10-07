@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/jobs/job.json",
+  "title": "Async job",
+  "description": "A long-running async job.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "job_id",
+    "state"
+  ],
+  "properties": {
+    "job_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "preparing",
+        "running",
+        "finalizing",
+        "completed",
+        "failed",
+        "cancelled",
+        "expired"
+      ]
+    },
+    "progress": {
+      "$ref": "progress.json"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

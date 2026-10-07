@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/artifacts/artifact.json",
+  "title": "Artifact",
+  "description": "A model or generated artifact descriptor.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "artifact_id"
+  ],
+  "properties": {
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string"
+    },
+    "mime_type": {
+      "type": "string"
+    },
+    "size_bytes": {
+      "type": "number",
+      "minimum": 0
+    },
+    "checksum": {
+      "type": "string"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "locations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

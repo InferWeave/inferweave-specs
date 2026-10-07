@@ -1,0 +1,12 @@
+# InferWeave Protocol v1 release artifact manifest
+# Immutable artifacts published per protocol version (specs/45_PROTOCOL_V1.md). Entries marked
+# `status: owed` are not yet published. Release tags: v1.0.0, v1.1.0, ...
+releases:
+  v1.0.0:
+    status: owed
+    artifacts:
+      tarball: inferweave-protocol-v1.0.0.tar.gz
+      openapi: openapi/inferweave-v1.yaml
+      json_schema_bundle: schemas/v1/
+      event_schema_bundle: schemas/v1/events/
+      conformance_fixtures: fixtures/

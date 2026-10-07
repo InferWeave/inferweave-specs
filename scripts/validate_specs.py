@@ -634,6 +634,90 @@ def guard_backpressure_contracts(root, features, tasks):
     return errors
 
 
+# ------------------------------------------------------------------- protocol v1 vocab
+# Frozen Protocol v1 vocabularies are machine-readable data reconciled against the schemas and
+# the specification prose (invariant 41). A value in prose/schema that is not in the frozen data
+# is drift; a value in the frozen data not in prose is an unpublished vocabulary change.
+
+_PROTOCOL_VOCAB = {
+    "error-taxonomy": "errors/error.json",
+    "device-types": "topology/device.json",
+    "provenance-sources": "common/provenance.json",
+}
+
+# (frozen file) -> (prose section, comma-joined canonical values to find in the prose)
+_PROTOCOL_VOCAB_PROSE = {
+    # error-taxonomy categories/codes are reconciled in the schema+prose loop above; its
+    # codes carry no separate "values" list.
+    "lifecycle-reasons": ("Model residency", [
+        "demand", "operator_request", "autoscale", "rebalance", "idle_timeout",
+        "memory_pressure", "allocation_loss", "preemption", "runtime_failure",
+        "hardware_failure", "maintenance", "upgrade", "cache_pressure", "unknown",
+    ]),
+    "workload-classes": ("Admission, queue, and priority", [
+        "interactive", "batch", "background", "system", "benchmark", "probe",
+        "maintenance",
+    ]),
+    "model-lifecycle-events": ("Events", [
+        "MODEL_DOWNLOAD_STARTED", "MODEL_DOWNLOAD_COMPLETED", "MODEL_LOAD_REQUESTED",
+        "MODEL_LOADING", "MODEL_READY", "MODEL_DRAINING", "MODEL_UNLOADING",
+        "MODEL_UNLOADED", "MODEL_LOAD_FAILED", "MODEL_EVICTED", "MODEL_REBALANCED",
+    ]),
+}
+
+
+def _vocab_values(path, key):
+    doc = json.loads(path.read_text())
+    values = doc.get(key) or doc.get("values", [])
+    if not isinstance(values, list):
+        return []
+    return values
+
+
+def guard_protocol_vocab(root, features, tasks):
+    """Reconcile frozen Protocol v1 vocabularies against schemas and prose (invariant 41)."""
+    errors = []
+    base = root / "contracts/protocol-v1"
+    if not base.exists():
+        return errors
+    spec = _normalize_prose((root / "specs/45_PROTOCOL_V1.md").read_text())
+    schema_enum_keys = {
+        "error-taxonomy": ("categories", "errors/error.json", "category"),
+        "device-types": ("values", "topology/device.json", "type"),
+        "provenance-sources": ("values", "common/provenance.json", "source"),
+    }
+    for name in sorted(_PROTOCOL_VOCAB):
+        data_path = base / f"{name}.json"
+        if not data_path.exists():
+            errors.append(f"protocol-v1/{name}.json: missing frozen vocabulary")
+            continue
+        doc = json.loads(data_path.read_text())
+        key, schema_rel, enum_key = schema_enum_keys[name]
+        values = doc.get(key, [])
+        if len(values) != len(set(values)):
+            errors.append(f"protocol-v1/{name}.json: duplicate vocabulary value")
+        schema = json.loads((root / "schemas/v1" / schema_rel).read_text())
+        schema_enum = schema.get("properties", {}).get(enum_key, {}).get("enum", [])
+        if schema_enum and sorted(schema_enum) != sorted(values):
+            errors.append(f"protocol-v1/{name}.json: schema {enum_key} enum disagrees with frozen data")
+        if name == "error-taxonomy":
+            for code in doc.get("codes", []):
+                if code not in spec:
+                    errors.append(f"protocol-v1/{name}.json: code {code} absent from specs/45 prose")
+    for name, (section, values) in _PROTOCOL_VOCAB_PROSE.items():
+        data_path = base / f"{name}.json"
+        if not data_path.exists():
+            continue
+        doc = json.loads(data_path.read_text())
+        frozen = doc.get("values", [])
+        if sorted(frozen) != sorted(values):
+            errors.append(f"protocol-v1/{name}.json: frozen vocabulary disagrees with specs/45 prose")
+        for value in frozen:
+            if value not in spec:
+                errors.append(f"protocol-v1/{name}.json: value {value} absent from specs/45 prose")
+    return errors
+
+
 # --------------------------------------------------------------------- driver
 
 def load():
@@ -656,6 +740,7 @@ def validate():
     errors.extend(guard_prompt_recording_contracts(ROOT))
     errors.extend(guard_bundle_metadata(ROOT))
     errors.extend(guard_backpressure_contracts(ROOT, features, tasks))
+    errors.extend(guard_protocol_vocab(ROOT, features, tasks))
     return features, tasks, errors
 
 
@@ -742,6 +827,27 @@ def self_test():
             errors.extend(g(features, tasks, spec_exists))
         if not errors:
             failures.append(f"no guard rejected: {label}")
+    if failures:
+        print("GUARD SELF-TEST FAILED")
+        for f in failures:
+            print(f"- {f}")
+        return 1
+
+    # file-based guard: prove guard_protocol_vocab rejects a broken frozen vocabulary
+    vocab = ROOT / "contracts/protocol-v1/workload-classes.json"
+    if vocab.exists():
+        original = vocab.read_text()
+        broken = original.replace('"background"', '"NOT_A_REAL_CLASS"')
+        if broken != original:
+            try:
+                vocab.write_text(broken)
+                fe, ft, errs = validate()
+                if not any("frozen vocabulary disagrees with specs/45 prose" in e
+                           or "absent from specs/45 prose" in e for e in errs):
+                    failures.append("no guard rejected: protocol vocab drift")
+            finally:
+                vocab.write_text(original)
+
     if failures:
         print("GUARD SELF-TEST FAILED")
         for f in failures:

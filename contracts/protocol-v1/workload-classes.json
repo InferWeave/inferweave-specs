@@ -1,0 +1,8 @@
+{
+  "name": "inferweave.protocol.v1.workload_classes",
+  "version": "1.0.0",
+  "description": "Frozen canonical workload classes, separate from numeric priority. Reconciled by test (invariant 41).",
+  "values": [
+    "interactive", "batch", "background", "system", "benchmark", "probe", "maintenance"
+  ]
+}

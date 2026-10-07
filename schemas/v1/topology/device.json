@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/topology/device.json",
+  "title": "Device",
+  "description": "A compute device. Not limited to NVIDIA GPUs.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "device_id",
+    "type"
+  ],
+  "properties": {
+    "device_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "nvidia_gpu",
+        "amd_gpu",
+        "intel_gpu",
+        "apple_gpu",
+        "tpu",
+        "npu",
+        "cpu",
+        "other"
+      ]
+    },
+    "vendor": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "memory": {
+      "$ref": "../resources/memory.json"
+    },
+    "utilization": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "telemetry": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "health": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "provenance": {
+      "$ref": "../common/provenance.json"
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

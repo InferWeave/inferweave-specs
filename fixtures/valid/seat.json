@@ -1,0 +1,5 @@
+{
+  "seat_id": "seat-1",
+  "model": "qwen3.8-27b-q8",
+  "available": true
+}
