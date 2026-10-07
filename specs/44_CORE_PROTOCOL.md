@@ -1,5 +1,15 @@
 # 44 — Core Protocol: Scheduler-Neutral Model, Runtime, Capacity, Lifecycle, and Federation Description
 
+## Relationship to Protocol v1
+
+This document defines the scheduler-neutral **vocabulary** for the core protocol.
+[`specs/45_PROTOCOL_V1.md`](45_PROTOCOL_V1.md) defines **InferWeave Protocol v1**, the
+versioned, machine-readable, language-neutral **wire contract** built on this vocabulary. Per the
+layering decision, where Protocol v1 states a wire format, enum, event, state machine, or schema,
+Protocol v1 is authoritative; this document remains normative for the object semantics. The
+canonical lifecycle-event vocabulary and enums here are frozen machine-readable data reconciled
+by test (invariant 41).
+
 ## Goal
 
 Extend InferWeave so nodes, runtimes, and gateways can describe AI workloads in a

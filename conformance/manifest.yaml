@@ -1,0 +1,11 @@
+# InferWeave Protocol v1 conformance manifest
+# Declares conformance profiles and their required scenarios. See specs/45_PROTOCOL_V1.md.
+protocol: 1.0.0
+profiles:
+  IW-DATA: { required_scenarios: ["schema", "discovery", "negotiation"] }
+  IW-NODE: { required_scenarios: ["registration", "heartbeat", "topology", "capability"] }
+  IW-GATEWAY: { required_scenarios: ["registration", "heartbeat", "topology", "capability", "routing", "errors", "aliases"] }
+  IW-FEDERATION: { required_scenarios: ["federation", "provenance", "snapshot", "replay"] }
+  IW-OBSERVABILITY: { required_scenarios: ["events", "snapshot", "metrics", "replay"] }
+  IW-ADMIN: { required_scenarios: ["admin", "drain", "rebalance"] }
+  IW-FULL: { required_scenarios: ["all"] }

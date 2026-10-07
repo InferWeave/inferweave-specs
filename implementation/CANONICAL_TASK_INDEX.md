@@ -1,6 +1,6 @@
 # Canonical Task Index
 
-Total tasks: **142**
+Total tasks: **148**
 
 | Task | Phase | Context | Depends | Title |
 |---|---:|---:|---|---|
@@ -146,3 +146,9 @@ Total tasks: **142**
 | `P5-T21` | 5 | C80 | P5-T19, P5-T04, P5-T14 | Core protocol federation provenance and reconciliation |
 | `P5-T22` | 5 | C80 | P5-T20, P5-T21, P1-T13 | Core protocol routing, fallback and error semantics |
 | `P5-T23` | 5 | C90 | P5-T22 | Core protocol conformance and scheduler-agnostic tests |
+| `P5-T24` | 5 | C80 | P5-T18, P5-T19 | Protocol v1: versioned wire contract, planes, identity, registration, heartbeat, negotiation |
+| `P5-T25` | 5 | C80 | P5-T24 | Protocol v1: canonical JSON Schemas under schemas/v1 |
+| `P5-T26` | 5 | C75 | P5-T24 | Protocol v1: state machines and canonical enums |
+| `P5-T27` | 5 | C75 | P5-T25 | Protocol v1: OpenAPI and transport-independent surfaces |
+| `P5-T28` | 5 | C90 | P5-T25, P5-T26, P5-T27 | Protocol v1: conformance suite and fixtures |
+| `P5-T29` | 5 | C75 | P5-T28 | Protocol v1: compatibility matrix, changelog, release artifacts, cross-repo CI |

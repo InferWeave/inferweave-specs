@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "inferweave-protocol/schemas/v1/common/identity.json",
+  "title": "Stable protocol identity",
+  "description": "Stable logical identifiers for protocol objects. Physical address is never identity.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "gateway_id": { "type": "string", "minLength": 1 },
+    "node_id": { "type": "string", "minLength": 1 },
+    "device_id": { "type": "string", "minLength": 1 },
+    "allocation_id": { "type": "string", "minLength": 1 },
+    "runtime_id": { "type": "string", "minLength": 1 },
+    "model_id": { "type": "string", "minLength": 1 },
+    "model_variant_id": { "type": "string", "minLength": 1 },
+    "residency_id": { "type": "string", "minLength": 1 },
+    "request_id": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "session_id": { "type": "string", "minLength": 1 },
+    "job_id": { "type": "string", "minLength": 1 },
+    "event_id": { "type": "string", "minLength": 1 },
+    "artifact_id": { "type": "string", "minLength": 1 },
+    "alias_id": { "type": "string", "minLength": 1 }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "inferweave-protocol/schemas/v1/common/error.json",
+  "title": "Protocol error envelope",
+  "description": "Canonical error response. Every error states whether retry is safe.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["code", "message", "retryable"],
+  "properties": {
+    "code": { "type": "string", "minLength": 1 },
+    "category": {
+      "type": "string",
+      "enum": [
+        "protocol",
+        "authentication",
+        "authorization",
+        "routing",
+        "model",
+        "capacity",
+        "runtime",
+        "hardware",
+        "allocation",
+        "artifact",
+        "timeout",
+        "cancellation",
+        "upstream",
+        "internal"
+      ]
+    },
+    "message": { "type": "string" },
+    "retryable": { "type": "boolean" },
+    "retry_after_ms": { "type": "number", "minimum": 0 },
+    "request_id": { "type": "string" },
+    "trace_id": { "type": "string" },
+    "model_id": { "type": "string" },
+    "gateway_id": { "type": "string" },
+    "node_id": { "type": "string" },
+    "runtime_id": { "type": "string" },
+    "details": { "type": "object", "additionalProperties": true },
+    "fallbacks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["model"],
+        "properties": {
+          "model": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      }
+    }
+  }
+}
