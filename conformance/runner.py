@@ -6,10 +6,10 @@ Validates conformance fixtures against the canonical JSON Schemas:
 - every fixture under fixtures/invalid/ must fail its schema
 - every fixture under fixtures/federation/ must validate against its schema
 
-The runner is intentionally strict so it can also be used as a self-check: a valid fixture
-that stops validating, or an invalid fixture that starts validating, fails the run.
+The runner is intentionally strict: a valid fixture that stops validating, or an invalid
+fixture that starts validating, fails the run.
 
-Usage: python3 conformance/runner.py [--self-test]
+Usage: python3 conformance/runner.py
 """
 from pathlib import Path
 import json, sys
