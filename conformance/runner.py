@@ -82,8 +82,8 @@ def validate_fixture(path, must_pass):
     stem = path.stem
     schema_rel = schema_for(stem)
     if schema_rel is None:
-        print(f"SKIP  {rel}: no schema mapped for fixture name '{stem}'")
-        return True
+        print(f"FAIL  {rel}: no schema mapped for fixture name '{stem}'")
+        return False
     fixture = json.loads(path.read_text())
     errors = list(validator(schema_rel).iter_errors(fixture))
     ok = not errors
@@ -95,17 +95,53 @@ def validate_fixture(path, must_pass):
     return False
 
 
+def check_openapi_refs():
+    """Every local $ref in the OpenAPI must resolve within components.schemas."""
+    try:
+        import yaml
+    except ImportError:
+        print("FAIL  openapi: pyyaml not installed; cannot validate refs")
+        return False
+    spec = yaml.safe_load((ROOT / "openapi" / "inferweave-v1.yaml").read_text())
+    names = set(spec.get("components", {}).get("schemas", {}).keys())
+    bad = []
+
+    def walk(node):
+        if isinstance(node, dict):
+            if isinstance(node.get("$ref"), str):
+                ref = node["$ref"]
+                if ref.startswith("#/components/schemas/"):
+                    name = ref.rsplit("/", 1)[-1]
+                    if name not in names:
+                        bad.append(ref)
+            for v in node.values():
+                walk(v)
+        elif isinstance(node, list):
+            for v in node:
+                walk(v)
+
+    walk(spec)
+    if bad:
+        print(f"FAIL  openapi: unresolvable $refs {sorted(set(bad))}")
+        return False
+    return True
+
+
 def main():
     failures = 0
-    for d in ("valid", "federation"):
-        for p in sorted((ROOT / "fixtures" / d).glob("*.json")):
-            failures += 0 if validate_fixture(p, True) else 1
-    for p in sorted((ROOT / "fixtures" / "invalid").glob("*.json")):
-        failures += 0 if validate_fixture(p, False) else 1
+    for d in ("valid", "federation", "invalid"):
+        fixtures = sorted((ROOT / "fixtures" / d).glob("*.json"))
+        if not fixtures:
+            print(f"FAIL  fixtures/{d}/: directory is empty")
+            failures += 1
+            continue
+        for p in fixtures:
+            failures += 0 if validate_fixture(p, d != "invalid") else 1
+    failures += 0 if check_openapi_refs() else 1
     if failures:
-        print(f"CONFORMANCE FAILED: {failures} fixture(s) did not behave as expected")
+        print(f"CONFORMANCE FAILED: {failures} check(s) did not behave as expected")
         sys.exit(1)
-    print("OK: all conformance fixtures validate against the Protocol v1 schemas")
+    print("OK: conformance fixtures validate and OpenAPI refs resolve")
 
 
 if __name__ == "__main__":

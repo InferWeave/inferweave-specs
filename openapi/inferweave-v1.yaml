@@ -3,9 +3,11 @@ info:
   title: InferWeave Protocol v1
   version: 1.0.0
   description: >-
-    Control, observability, and data-plane HTTP surfaces for InferWeave Protocol v1.
-    HTTP + JSON is the normative v1 transport; object semantics are transport-independent.
-    Scheduler/runtime/deployment agnostic. See specs/45_PROTOCOL_V1.md.
+    Control and observability HTTP surfaces for InferWeave Protocol v1. HTTP + JSON is the
+    normative v1 transport; object semantics are transport-independent. Scheduler/runtime/
+    deployment agnostic. The OpenAI-compatible data-plane endpoints (e.g. /v1/chat/completions)
+    are preserved by implementations per specs/45_PROTOCOL_V1.md but are defined by the OpenAI
+    API surface and are not redefined here. See specs/45_PROTOCOL_V1.md.
 servers:
   - url: /inferweave/v1
 paths:
@@ -207,6 +209,18 @@ paths:
           description: Cancelled
 components:
   schemas:
+    Topology:
+      type: object
+      required: [generation]
+      properties:
+        generation: { type: string }
+        snapshot_id: { type: string }
+        generated_at: { type: string }
+        gateways: { type: array, items: { $ref: "#/components/schemas/Gateway" } }
+        nodes: { type: array, items: { $ref: "#/components/schemas/Node" } }
+        devices: { type: array, items: { $ref: "#/components/schemas/Device" } }
+        runtimes: { type: array, items: { $ref: "#/components/schemas/RuntimeInstance" } }
+        residencies: { type: array, items: { $ref: "#/components/schemas/Residency" } }
     Protocol:
       type: object
       required: [name, version, minimum_compatible_version]

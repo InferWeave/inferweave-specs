@@ -707,6 +707,7 @@ def guard_protocol_vocab(root, features, tasks):
     for name, (section, values) in _PROTOCOL_VOCAB_PROSE.items():
         data_path = base / f"{name}.json"
         if not data_path.exists():
+            errors.append(f"protocol-v1/{name}.json: missing frozen vocabulary")
             continue
         doc = json.loads(data_path.read_text())
         frozen = doc.get("values", [])

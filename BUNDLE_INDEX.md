@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~358,758 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~359,265 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -44,7 +44,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/compatibility.yaml` — `4a500016edf0` — ~121t
 - `conformance/manifest.yaml` — `ce443b88c7f6` — ~326t
 - `conformance/release-manifest.yaml` — `198e9c2be037` — ~122t
-- `conformance/runner.py` — `725586ec80ab` — ~1,000t
+- `conformance/runner.py` — `3165873412df` — ~1,283t
 - `contracts/README.md` — `f857a528f083` — ~320t
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
@@ -200,7 +200,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `implementation/TEST_STRATEGY.md` — `5ded1d51fb57` — ~1,301t
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `openapi/README.md` — `fd85aef8a3a6` — ~98t
-- `openapi/inferweave-v1.yaml` — `221f94f86647` — ~3,209t
+- `openapi/inferweave-v1.yaml` — `ea5d591d6f20` — ~3,412t
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
 - `pi/CONTEXT_PACK_CHECKLIST.md` — `8a9c95b7ec3d` — ~200t
 - `pi/FIRST_TASKS.md` — `674dbf07c4f5` — ~462t
@@ -242,7 +242,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `scripts/bootstrap-repositories.sh` — `914de3443dbc` — ~227t
 - `scripts/generate_bundle_metadata.py` — `8e46c94670e4` — ~608t
 - `scripts/test_validate_specs.py` — `45b7fd4b5ecc` — ~6,695t
-- `scripts/validate_specs.py` — `5151a172000d` — ~9,368t
+- `scripts/validate_specs.py` — `fc3ce9ca76f0` — ~9,389t
 - `solana/DEVNET_ONLY.md` — `1a8ea96fcc58` — ~136t
 - `specs/00_INVARIANTS.md` — `e21827e64179` — ~1,478t
 - `specs/01_REPOSITORIES_AND_OWNERSHIP.md` — `e52f5e6e8112` — ~735t
