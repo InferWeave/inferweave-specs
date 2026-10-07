@@ -1,6 +1,6 @@
 # Feature → Canonical Task Coverage
 
-Features: **91**
+Features: **92**
 
 | Feature | Priority | Phase | Owner component | Canonical tasks |
 |---|---|---|---|---|
@@ -95,3 +95,4 @@ Features: **91**
 | `IW-TUNE-002` Measured runtime tuning record | P0 | 1 | node | `P1-T06C` |
 | `IW-SCHED-002` Per-GPU placement and hot-swap with availability floor | P1 | 3 | control-plane+node | `P3-T23`, `P3-T24`, `P3-T25` |
 | `IW-PROTO-001` Scheduler-neutral core protocol: model, artifact, capability, resource, capacity, lifecycle, metric, and federation description | P1 | 5 | control-plane+gateway+node | `P5-T18`, `P5-T19`, `P5-T20`, `P5-T21`, `P5-T22`, `P5-T23` |
+| `IW-PROTO-002` InferWeave Protocol v1: versioned, machine-readable, language-neutral wire contract (planes, identity, objects, events, state machines, enums, errors, aliases, routing, jobs, conformance) formalizing the scheduler-neutral core protocol | P1 | 5 | control-plane+gateway+node+consumer | `P5-T24`, `P5-T25`, `P5-T26`, `P5-T27`, `P5-T28`, `P5-T29` |

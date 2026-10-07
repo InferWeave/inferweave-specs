@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "inferweave-protocol/schemas/v1/common/protocol.json",
+  "title": "Protocol version",
+  "description": "Protocol name and semantic version advertised by every InferWeave-speaking component.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["name", "version", "minimum_compatible_version"],
+  "properties": {
+    "name": { "const": "inferweave" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "minimum_compatible_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" }
+  }
+}

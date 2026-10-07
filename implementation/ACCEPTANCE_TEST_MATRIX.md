@@ -90,3 +90,9 @@
 | AC-083 | Topology-sensitive model requires 2×24 GB | not matched to 1×48 GB unless the profile explicitly supports that placement |
 | AC-084 | Slurm-backed, Docker, manual worker, remote gateway | all present through one generic protocol; no upstream logic requires Slurm fields |
 | AC-085 | Older gateway advertises model/endpoint/slots only | keeps functioning; missing fields yield unknown, not rejection |
+| AC-086 | Protocol v1 version negotiation | peers negotiate `minimum_compatible_version`; a peer below it is rejected with `PROTOCOL_VERSION_UNSUPPORTED` |
+| AC-087 | Protocol v1 feature negotiation | unknown features are tolerated and preserved; a feature is never assumed from a peer's release |
+| AC-088 | Protocol v1 JSON Schemas | malformed enums rejected; unknown fields/enum values preserved and forwarded; extension namespace ignored by core readers |
+| AC-089 | Protocol v1 state machines and enums | invalid transitions identifiable; error taxonomy, lifecycle reasons, workload classes, device types, provenance sources reconcile by test |
+| AC-090 | Protocol v1 conformance profiles | a lightweight `IW-NODE` passes its declared scenarios without administrative features |
+| AC-091 | Protocol v1 cross-repo CI | protocol-visible drift fails reference-implementation and gateway compatibility builds |

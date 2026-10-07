@@ -47,3 +47,4 @@
 | `specs/42_SITE_GATEWAY_CONFORMANCE.md` | `P5-T23` |
 | `specs/43_GPU_PLACEMENT_HOT_SWAP.md` | `P3-T23`, `P3-T24`, `P3-T25` |
 | `specs/44_CORE_PROTOCOL.md` | `P5-T18`, `P5-T19`, `P5-T20`, `P5-T21`, `P5-T22`, `P5-T23` |
+| `specs/45_PROTOCOL_V1.md` | `P5-T24`, `P5-T25`, `P5-T26`, `P5-T27`, `P5-T28`, `P5-T29` |

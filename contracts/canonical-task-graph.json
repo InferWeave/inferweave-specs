@@ -1062,7 +1062,7 @@
         "IW-DP-002"
       ],
       "context_class": "C75",
-      "outcome": "Fallback order is direct \u2192 site/regional relay \u2192 gateway relay last resort with byte accounting/circuit breakers.",
+      "outcome": "Fallback order is direct → site/regional relay → gateway relay last resort with byte accounting/circuit breakers.",
       "required_tests": [
         "forced NAT failure",
         "fallback ordering",
@@ -1118,7 +1118,7 @@
         "IW-TEL-001"
       ],
       "context_class": "C75",
-      "outcome": "Persist request attempt facts linked prompt\u2192route\u2192deployment\u2192GPU with TTFT/prefill/decode/cache/resource/power outcome.",
+      "outcome": "Persist request attempt facts linked prompt→route→deployment→GPU with TTFT/prefill/decode/cache/resource/power outcome.",
       "required_tests": [
         "correlation completeness",
         "cancel/preemption facts",
@@ -1242,7 +1242,7 @@
         "IW-UI-003"
       ],
       "context_class": "C65",
-      "outcome": "A policy maps every route to required rendering variants \u2014 narrow, forced-colors, reduced-motion, wired or fixture, unsupported \u2014 names the single token source, and denies superseded components, enforced by the build.",
+      "outcome": "A policy maps every route to required rendering variants — narrow, forced-colors, reduced-motion, wired or fixture, unsupported — names the single token source, and denies superseded components, enforced by the build.",
       "required_tests": [
         "route absent from the policy fails the check",
         "each declared variant is exercised per route",
@@ -2204,7 +2204,7 @@
       "context_class": "C75",
       "outcome": "Large encrypted prompt payloads can live in object storage while PostgreSQL retains authoritative metadata/locator/hash/audit.",
       "required_tests": [
-        "inline\u2192object threshold",
+        "inline→object threshold",
         "object unavailable submission semantics",
         "authorized short-lived read"
       ],
@@ -2248,7 +2248,7 @@
         "IW-HEALTH-001"
       ],
       "context_class": "C75",
-      "outcome": "Implement HEALTHY\u2192SUSPECT\u2192DEGRADED\u2192DIAGNOSTIC\u2192QUARANTINED\u2192RECOVERING state and bounded recovery qualification.",
+      "outcome": "Implement HEALTHY→SUSPECT→DEGRADED→DIAGNOSTIC→QUARANTINED→RECOVERING state and bounded recovery qualification.",
       "required_tests": [
         "quarantine no shared traffic",
         "canary recovery",
@@ -2856,7 +2856,7 @@
         "IW-IMG-002"
       ],
       "context_class": "C85",
-      "outcome": "Two-stage generation\u2192grounding/segmentation\u2192deterministic annotation with exact labels/arrows and QA failure on low confidence.",
+      "outcome": "Two-stage generation→grounding/segmentation→deterministic annotation with exact labels/arrows and QA failure on low confidence.",
       "required_tests": [
         "label spelling",
         "no clipping/overlap",
@@ -3572,6 +3572,178 @@
       "notes": "",
       "proof_status": "owed",
       "proof_owed_by": "P5-T23"
+    },
+    {
+      "id": "P5-T24",
+      "phase": 5,
+      "title": "Protocol v1: versioned wire contract, planes, identity, registration, heartbeat, negotiation",
+      "depends_on": [
+        "P5-T18",
+        "P5-T19"
+      ],
+      "specs": [
+        "45_PROTOCOL_V1",
+        "44_CORE_PROTOCOL",
+        "02_PROTOCOL_AND_API",
+        "16_SECURITY_PRIVACY_TRUST"
+      ],
+      "features": [
+        "IW-PROTO-002"
+      ],
+      "context_class": "C80",
+      "outcome": "Formalize the scheduler-neutral core protocol vocabulary into a versioned, feature-negotiated wire contract with protocol versioning, stable identity, request/trace identity, registration, heartbeats, and time semantics, without assuming a scheduler, runtime, or deployment substrate.",
+      "required_tests": [
+        "protocol version envelope serializes and negotiates minimum_compatible_version",
+        "peers tolerate and preserve unknown features",
+        "stable identity never equals physical address",
+        "registration supports initial, re-registration, reconnect, metadata and capability change, and graceful unregister",
+        "heartbeat distinguishes temporarily unreachable, stale, removed, and terminated",
+        "timestamps are UTC ISO-8601 with skew detection"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T24"
+    },
+    {
+      "id": "P5-T25",
+      "phase": 5,
+      "title": "Protocol v1: canonical JSON Schemas under schemas/v1",
+      "depends_on": [
+        "P5-T24"
+      ],
+      "specs": [
+        "45_PROTOCOL_V1",
+        "44_CORE_PROTOCOL"
+      ],
+      "features": [
+        "IW-PROTO-002"
+      ],
+      "context_class": "C80",
+      "outcome": "Publish authoritative JSON Schemas for common, topology, model, resources, runtime, requests, events, errors, jobs, and artifacts that use stable IDs, reject malformed enums, document required vs optional fields, preserve forward compatibility, support extensions, and never collapse false/0/null/unknown/not_reported/unsupported.",
+      "required_tests": [
+        "common schemas validate against fixtures",
+        "malformed enums are rejected and unknown enum values are preserved where allowed",
+        "unknown fields are preserved and forwarded",
+        "extension namespace is ignored by core readers",
+        "unknown-vs-zero-vs-false semantics are preserved by schemas"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T25"
+    },
+    {
+      "id": "P5-T26",
+      "phase": 5,
+      "title": "Protocol v1: state machines and canonical enums",
+      "depends_on": [
+        "P5-T24"
+      ],
+      "specs": [
+        "45_PROTOCOL_V1",
+        "44_CORE_PROTOCOL",
+        "38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE"
+      ],
+      "features": [
+        "IW-PROTO-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Publish explicit state machines (model residency, runtime, node, allocation, job) and frozen canonical enums (error taxonomy, lifecycle reasons, workload classes, device types, provenance sources) reconciled by test as machine-readable data.",
+      "required_tests": [
+        "state machines reject invalid transitions and identify terminal states",
+        "error taxonomy frozen data matches published tables",
+        "lifecycle reasons and workload classes reconcile",
+        "device types and provenance sources reconcile",
+        "removing a vocabulary entry fails a guard test"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T26"
+    },
+    {
+      "id": "P5-T27",
+      "phase": 5,
+      "title": "Protocol v1: OpenAPI and transport-independent surfaces",
+      "depends_on": [
+        "P5-T25"
+      ],
+      "specs": [
+        "45_PROTOCOL_V1",
+        "02_PROTOCOL_AND_API",
+        "44_CORE_PROTOCOL"
+      ],
+      "features": [
+        "IW-PROTO-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Publish the OpenAPI definition for control, observability, and data-plane HTTP surfaces (discovery, topology, models, aliases, capacity, health, events, jobs, routing explanation) while keeping object semantics transport-independent and preserving OpenAI-compatible endpoints.",
+      "required_tests": [
+        "OpenAPI examples conform to the JSON Schemas",
+        "discovery endpoints return protocol version and features",
+        "routing explanation surface exposes candidates, selected route, fallbacks, retries",
+        "OpenAI-compatible endpoints are preserved",
+        "compression is supported for large topology/event responses"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T27"
+    },
+    {
+      "id": "P5-T28",
+      "phase": 5,
+      "title": "Protocol v1: conformance suite and fixtures",
+      "depends_on": [
+        "P5-T25",
+        "P5-T26",
+        "P5-T27"
+      ],
+      "specs": [
+        "45_PROTOCOL_V1",
+        "38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE",
+        "42_SITE_GATEWAY_CONFORMANCE"
+      ],
+      "features": [
+        "IW-PROTO-002"
+      ],
+      "context_class": "C90",
+      "outcome": "Publish conformance profiles, a language-neutral conformance suite, and valid/invalid/federation fixtures covering schema validation, protocol discovery, feature negotiation, registration, heartbeat, topology, events, retries, errors, aliases, federation, capability advertisement, snapshot consistency, and backwards compatibility.",
+      "required_tests": [
+        "conformance profiles are declared in manifest.yaml",
+        "valid fixtures pass and invalid fixtures fail schema validation",
+        "federation fixtures preserve provenance and reject paths containing a gateway itself",
+        "snapshot consistency holds across a snapshot plus deltas",
+        "backwards-compatibility vectors pass against the frozen protocol vocabulary"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T28"
+    },
+    {
+      "id": "P5-T29",
+      "phase": 5,
+      "title": "Protocol v1: compatibility matrix, changelog, release artifacts, cross-repo CI",
+      "depends_on": [
+        "P5-T28"
+      ],
+      "specs": [
+        "45_PROTOCOL_V1",
+        "38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE",
+        "19_CI_CD_LIVING_SPECS"
+      ],
+      "features": [
+        "IW-PROTO-002"
+      ],
+      "context_class": "C75",
+      "outcome": "Publish the machine-readable compatibility matrix, maintain VERSION and the protocol changelog, define the protocol change workflow and cross-repository compatibility CI that fails on protocol-visible drift, and define published immutable release artifacts per protocol version.",
+      "required_tests": [
+        "compatibility matrix reconciles with published protocol versions",
+        "changelog records each change's compatibility classification",
+        "protocol change workflow is documented",
+        "cross-repo CI guard rejects protocol-visible drift",
+        "release artifact manifest is reproducible for a protocol version"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T29"
     }
   ]
 }

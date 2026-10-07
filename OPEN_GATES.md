@@ -237,3 +237,22 @@ upstream system must not rely on the protocol vocabulary being a deployed
 capability, must not treat `unknown`-free advertisements as complete, and must not
 assume health-probe/benchmark request classification, federation provenance, or
 scheduler-neutral event mapping are enforced anywhere in a running system.
+
+## Protocol v1 wire contract (specs/45) — 2026-10-07
+
+**BLOCKED for production use.** `specs/45_PROTOCOL_V1.md` defines InferWeave Protocol v1, the
+versioned, machine-readable, language-neutral wire contract that formalizes and supersedes the
+spec-44 vocabulary into planes, stable identity, feature negotiation, canonical objects, JSON
+Schemas, events, state machines, enums, error taxonomy, aliases, routing, jobs, conformance
+levels, and cross-repo ownership. It is a specification only. No component emits or consumes
+Protocol v1 in production, and no `schemas/v1/` schema, `state-machines/`, `conformance/`, or
+`fixtures/` artifact is a deployed capability.
+
+Every required test in this specification is recorded `owed` by the canonical tasks
+`P5-T24`–`P5-T29` (feature `IW-PROTO-002`). The full `schemas/v1/` object categories
+(topology, model, resources, runtime, requests, events, errors, jobs, artifacts), the OpenAPI
+(`openapi/inferweave-v1.yaml`), the conformance scenarios and fixtures, the compatibility
+matrix, and the cross-repo CI are all `owed`. Until those land and are independently verified,
+an upstream system must not rely on Protocol v1 as a deployed wire contract, must not treat the
+foundational `schemas/v1/common/` schemas as complete, and must not assume any Protocol v1
+endpoint exists in a running system.

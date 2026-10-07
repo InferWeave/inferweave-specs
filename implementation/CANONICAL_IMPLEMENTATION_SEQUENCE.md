@@ -1991,3 +1991,95 @@ Rules:
 - capacity 8 to eviction 0 to load to 4 to 8 produces correct events and snapshots
 - unknown future types, metrics and events flow through the federation safely
 - conformance vectors pass against the frozen protocol vocabulary
+
+
+### P5-T24 — Protocol v1: versioned wire contract, planes, identity, registration, heartbeat, negotiation
+**Context:** `C80`
+**Depends on:** P5-T18, P5-T19
+**Features:** IW-PROTO-002
+**Read:** specs/45_PROTOCOL_V1.md, specs/44_CORE_PROTOCOL.md, specs/02_PROTOCOL_AND_API.md, specs/16_SECURITY_PRIVACY_TRUST.md
+
+**Outcome:** Formalize the scheduler-neutral core protocol vocabulary into a versioned, feature-negotiated wire contract with protocol versioning, stable identity, request/trace identity, registration, heartbeats, and time semantics, without assuming a scheduler, runtime, or deployment substrate.
+
+**Required tests:**
+- protocol version envelope serializes and negotiates minimum_compatible_version
+- peers tolerate and preserve unknown features
+- stable identity never equals physical address
+- registration supports initial, re-registration, reconnect, metadata and capability change, and graceful unregister
+- heartbeat distinguishes temporarily unreachable, stale, removed, and terminated
+- timestamps are UTC ISO-8601 with skew detection
+
+### P5-T25 — Protocol v1: canonical JSON Schemas under schemas/v1
+**Context:** `C80`
+**Depends on:** P5-T24
+**Features:** IW-PROTO-002
+**Read:** specs/45_PROTOCOL_V1.md, specs/44_CORE_PROTOCOL.md
+
+**Outcome:** Publish authoritative JSON Schemas for common, topology, model, resources, runtime, requests, events, errors, jobs, and artifacts that use stable IDs, reject malformed enums, document required vs optional fields, preserve forward compatibility, support extensions, and never collapse false/0/null/unknown/not_reported/unsupported.
+
+**Required tests:**
+- common schemas validate against fixtures
+- malformed enums are rejected and unknown enum values are preserved where allowed
+- unknown fields are preserved and forwarded
+- extension namespace is ignored by core readers
+- unknown-vs-zero-vs-false semantics are preserved by schemas
+
+### P5-T26 — Protocol v1: state machines and canonical enums
+**Context:** `C75`
+**Depends on:** P5-T24
+**Features:** IW-PROTO-002
+**Read:** specs/45_PROTOCOL_V1.md, specs/44_CORE_PROTOCOL.md, specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md
+
+**Outcome:** Publish explicit state machines (model residency, runtime, node, allocation, job) and frozen canonical enums (error taxonomy, lifecycle reasons, workload classes, device types, provenance sources) reconciled by test as machine-readable data.
+
+**Required tests:**
+- state machines reject invalid transitions and identify terminal states
+- error taxonomy frozen data matches published tables
+- lifecycle reasons and workload classes reconcile
+- device types and provenance sources reconcile
+- removing a vocabulary entry fails a guard test
+
+### P5-T27 — Protocol v1: OpenAPI and transport-independent surfaces
+**Context:** `C75`
+**Depends on:** P5-T25
+**Features:** IW-PROTO-002
+**Read:** specs/45_PROTOCOL_V1.md, specs/02_PROTOCOL_AND_API.md, specs/44_CORE_PROTOCOL.md
+
+**Outcome:** Publish the OpenAPI definition for control, observability, and data-plane HTTP surfaces (discovery, topology, models, aliases, capacity, health, events, jobs, routing explanation) while keeping object semantics transport-independent and preserving OpenAI-compatible endpoints.
+
+**Required tests:**
+- OpenAPI examples conform to the JSON Schemas
+- discovery endpoints return protocol version and features
+- routing explanation surface exposes candidates, selected route, fallbacks, retries
+- OpenAI-compatible endpoints are preserved
+- compression is supported for large topology/event responses
+
+### P5-T28 — Protocol v1: conformance suite and fixtures
+**Context:** `C90`
+**Depends on:** P5-T25, P5-T26, P5-T27
+**Features:** IW-PROTO-002
+**Read:** specs/45_PROTOCOL_V1.md, specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md, specs/42_SITE_GATEWAY_CONFORMANCE.md
+
+**Outcome:** Publish conformance profiles, a language-neutral conformance suite, and valid/invalid/federation fixtures covering schema validation, protocol discovery, feature negotiation, registration, heartbeat, topology, events, retries, errors, aliases, federation, capability advertisement, snapshot consistency, and backwards compatibility.
+
+**Required tests:**
+- conformance profiles are declared in manifest.yaml
+- valid fixtures pass and invalid fixtures fail schema validation
+- federation fixtures preserve provenance and reject paths containing a gateway itself
+- snapshot consistency holds across a snapshot plus deltas
+- backwards-compatibility vectors pass against the frozen protocol vocabulary
+
+### P5-T29 — Protocol v1: compatibility matrix, changelog, release artifacts, cross-repo CI
+**Context:** `C75`
+**Depends on:** P5-T28
+**Features:** IW-PROTO-002
+**Read:** specs/45_PROTOCOL_V1.md, specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md, specs/19_CI_CD_LIVING_SPECS.md
+
+**Outcome:** Publish the machine-readable compatibility matrix, maintain VERSION and the protocol changelog, define the protocol change workflow and cross-repository compatibility CI that fails on protocol-visible drift, and define published immutable release artifacts per protocol version.
+
+**Required tests:**
+- compatibility matrix reconciles with published protocol versions
+- changelog records each change's compatibility classification
+- protocol change workflow is documented
+- cross-repo CI guard rejects protocol-visible drift
+- release artifact manifest is reproducible for a protocol version

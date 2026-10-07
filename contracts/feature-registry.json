@@ -1093,6 +1093,22 @@
         "P5-T22",
         "P5-T23"
       ]
+    },
+    {
+      "id": "IW-PROTO-002",
+      "name": "InferWeave Protocol v1: versioned, machine-readable, language-neutral wire contract (planes, identity, objects, events, state machines, enums, errors, aliases, routing, jobs, conformance) formalizing the scheduler-neutral core protocol",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane+gateway+node+consumer",
+      "canonical_tasks": [
+        "P5-T24",
+        "P5-T25",
+        "P5-T26",
+        "P5-T27",
+        "P5-T28",
+        "P5-T29"
+      ]
     }
   ]
 }
