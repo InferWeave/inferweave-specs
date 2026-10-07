@@ -1,7 +1,8 @@
 # Runtime instance state machine
 
-States and allowed transitions for an active inference runtime instance. Frozen vocabulary
-(invariant 41).
+States and allowed transitions for an active inference runtime instance. Vocabulary governed by
+invariant 41 (frozen machine-readable form published with the `P5-T25`/`P5-T26` conformance
+publication, currently `owed`).
 
 States: `absent`, `starting`, `ready`, `degraded`, `draining`, `stopping`, `stopped`, `failed`.
 

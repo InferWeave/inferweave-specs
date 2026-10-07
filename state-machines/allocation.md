@@ -1,7 +1,9 @@
 # Allocation state machine
 
 States and allowed transitions for a generic scheduler allocation. Provider-specific metadata
-goes in `provider_metadata` and is never required by upstream. Frozen vocabulary (invariant 41).
+goes in `provider_metadata` and is never required by upstream. Vocabulary governed by invariant
+41 (frozen machine-readable form published with the `P5-T25`/`P5-T26` conformance publication,
+currently `owed`).
 
 States: `requested`, `pending`, `allocating`, `allocated`, `booting`, `staging`,
 `runtime_starting`, `ready`, `draining`, `preempting`, `terminated`, `lost`, `failed`.

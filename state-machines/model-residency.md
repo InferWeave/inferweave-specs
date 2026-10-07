@@ -1,7 +1,8 @@
 # Model residency state machine
 
-States and allowed transitions for a model variant occupying resources. Frozen vocabulary
-(invariant 41); see `specs/44_CORE_PROTOCOL.md` and `schemas/v1/model/residency.json`.
+States and allowed transitions for a model variant occupying resources. Vocabulary governed by
+invariant 41 (frozen machine-readable form published with the `P5-T25`/`P5-T26` conformance
+publication, currently `owed`); see `specs/44_CORE_PROTOCOL.md` and `schemas/v1/model/residency.json`.
 
 States: `absent`, `downloading`, `cached`, `staging`, `loading`, `warming`, `ready`, `degraded`,
 `draining`, `unloading`, `failed`.

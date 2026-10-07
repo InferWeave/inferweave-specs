@@ -1,6 +1,8 @@
 # Async job state machine
 
-States and allowed transitions for a long-running async job. Frozen vocabulary (invariant 41);
+States and allowed transitions for a long-running async job. Vocabulary governed by invariant 41
+(frozen machine-readable form published with the `P5-T25`/`P5-T26` conformance publication,
+currently `owed`);
 see `schemas/v1/jobs/` and `specs/45_PROTOCOL_V1.md` ("Async jobs").
 
 States: `queued`, `preparing`, `running`, `finalizing`, `completed`, `failed`, `cancelled`,

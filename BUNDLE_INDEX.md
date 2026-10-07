@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~339,880 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~340,021 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -163,7 +163,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/common/identity.json` — `5391823819f8` — ~295t
 - `schemas/v1/common/protocol.json` — `0c1535762b19` — ~154t
 - `schemas/v1/common/provenance.json` — `b0bdf672442e` — ~211t
-- `schemas/v1/errors/error.json` — `642ab7f06cce` — ~376t
+- `schemas/v1/errors/error.json` — `9780a1e97cda` — ~376t
 - `scripts/bootstrap-repositories.sh` — `914de3443dbc` — ~227t
 - `scripts/generate_bundle_metadata.py` — `8e46c94670e4` — ~608t
 - `scripts/test_validate_specs.py` — `45b7fd4b5ecc` — ~6,695t
@@ -216,11 +216,11 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
 - `specs/45_PROTOCOL_V1.md` — `1da9d11981b1` — ~9,094t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
-- `state-machines/allocation.md` — `28cc462b1181` — ~442t
-- `state-machines/job.md` — `b7620ac5d990` — ~205t
-- `state-machines/model-residency.md` — `3cafa3ede261` — ~310t
-- `state-machines/node.md` — `65f43d13e45b` — ~212t
-- `state-machines/runtime.md` — `4482d9e1571b` — ~155t
+- `state-machines/allocation.md` — `28e3db0859d8` — ~470t
+- `state-machines/job.md` — `6027505392aa` — ~233t
+- `state-machines/model-residency.md` — `c85210b05ef2` — ~338t
+- `state-machines/node.md` — `202034f78b69` — ~241t
+- `state-machines/runtime.md` — `8865a5af7610` — ~183t
 - `tasks/deferred/D-T01.md` — `a25f12f8d5a3` — ~228t
 - `tasks/phase-0/P0-T01.md` — `906dade5a845` — ~212t
 - `tasks/phase-0/P0-T01A.md` — `5cd8da23195c` — ~327t

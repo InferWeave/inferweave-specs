@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "inferweave-protocol/schemas/v1/common/error.json",
+  "$id": "inferweave-protocol/schemas/v1/errors/error.json",
   "title": "Protocol error envelope",
   "description": "Canonical error response. Every error states whether retry is safe.",
   "type": "object",
