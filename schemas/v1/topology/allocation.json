@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/topology/allocation.json",
+  "title": "Allocation",
+  "description": "A generic scheduler allocation.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "allocation_id",
+    "state"
+  ],
+  "properties": {
+    "allocation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provider": {
+      "type": "string"
+    },
+    "provider_metadata": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "state": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "node_id": {
+      "type": "string"
+    },
+    "runtime_id": {
+      "type": "string"
+    },
+    "desired": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "observed": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

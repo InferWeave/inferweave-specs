@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/seat.json",
+  "title": "Seat",
+  "description": "An abstract schedulable unit: the ability to accept an additional workload under specified conditions.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "seat_id": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "context_size": {
+      "type": "number",
+      "minimum": 0
+    },
+    "modality": {
+      "type": "string"
+    },
+    "memory_bytes": {
+      "type": "number",
+      "minimum": 0
+    },
+    "concurrency": {
+      "type": "number",
+      "minimum": 0
+    },
+    "priority": {
+      "type": "string"
+    },
+    "available": {
+      "type": "boolean"
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

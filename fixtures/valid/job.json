@@ -1,0 +1,8 @@
+{
+  "job_id": "job-1",
+  "state": "running",
+  "progress": {
+    "fraction": 0.42,
+    "stage": "sampling"
+  }
+}

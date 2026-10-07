@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/model/model-variant.json",
+  "title": "Model variant",
+  "description": "A deterministic, reproducible model variant.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "model_id",
+    "variant_id"
+  ],
+  "properties": {
+    "model_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "variant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "type": "string"
+    },
+    "quantization": {
+      "type": "string"
+    },
+    "precision": {
+      "type": "string"
+    },
+    "tokenizer_digest": {
+      "type": "string"
+    },
+    "artifact_digest": {
+      "type": "string"
+    },
+    "context_capability": {
+      "type": "number",
+      "minimum": 0
+    },
+    "conversion_tool": {
+      "type": "string"
+    },
+    "conversion_version": {
+      "type": "string"
+    },
+    "requirements": {
+      "$ref": "requirements.json"
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

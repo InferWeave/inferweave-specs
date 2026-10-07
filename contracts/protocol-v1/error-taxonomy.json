@@ -1,0 +1,31 @@
+{
+  "name": "inferweave.protocol.v1.error_taxonomy",
+  "version": "1.0.0",
+  "description": "Frozen error categories and canonical error codes. Reconciled by test (invariant 41).",
+  "categories": [
+    "protocol", "authentication", "authorization", "routing", "model", "capacity",
+    "runtime", "hardware", "allocation", "artifact", "timeout", "cancellation",
+    "upstream", "internal"
+  ],
+  "codes": [
+    "PROTOCOL_VERSION_UNSUPPORTED",
+    "FEATURE_UNSUPPORTED",
+    "MODEL_NOT_FOUND",
+    "MODEL_UNAVAILABLE",
+    "MODEL_NO_CAPACITY",
+    "MODEL_LOADING",
+    "MODEL_FAILED",
+    "NO_COMPATIBLE_WORKER",
+    "NO_CAPACITY",
+    "QUEUE_FULL",
+    "NODE_UNAVAILABLE",
+    "RUNTIME_UNAVAILABLE",
+    "RUNTIME_CRASHED",
+    "ALLOCATION_PENDING",
+    "ALLOCATION_PREEMPTED",
+    "ALLOCATION_TERMINATED",
+    "DEADLINE_EXCEEDED",
+    "REQUEST_CANCELLED",
+    "UPSTREAM_UNAVAILABLE"
+  ]
+}

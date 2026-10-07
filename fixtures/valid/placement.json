@@ -1,0 +1,7 @@
+{
+  "distributed": true,
+  "devices": [
+    "gpu-1",
+    "gpu-2"
+  ]
+}

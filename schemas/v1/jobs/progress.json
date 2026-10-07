@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/jobs/progress.json",
+  "title": "Job progress",
+  "description": "Async job progress.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "fraction": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "stage": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    }
+  }
+}

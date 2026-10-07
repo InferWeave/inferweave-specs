@@ -1,0 +1,11 @@
+# InferWeave Protocol v1 compatibility matrix
+# Machine-readable minimum implementation versions per protocol version. See specs/45_PROTOCOL_V1.md.
+# The inferweave reference implementation and the gateway consumer do not yet exist as
+# conforming Protocol v1 components; their minimums are recorded as `unknown` and must be
+# filled when a conforming release ships (task P5-T29).
+protocol: 1.0.0
+implementations:
+  inferweave:
+    minimum: unknown
+  gateway:
+    minimum: unknown

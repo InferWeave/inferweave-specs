@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "inferweave-protocol/schemas/v1/common/extensions.json",
+  "$id": "https://inferweave.dev/schemas/v1/common/extensions.json",
   "title": "Extension namespace",
-  "description": "Optional, organization/vendor-scoped extension metadata. Core readers MUST ignore unknown extension namespaces.",
+  "description": "Optional organization/vendor-scoped metadata. Core readers MUST ignore unknown extension namespaces.",
   "type": "object",
   "additionalProperties": {
     "type": "object",

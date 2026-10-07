@@ -1,0 +1,8 @@
+{
+  "chat": true,
+  "streaming": true,
+  "max_context_tokens": 262144,
+  "tool_calling": {
+    "support": "native"
+  }
+}

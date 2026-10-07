@@ -1,0 +1,6 @@
+{
+  "model_id": "qwen/qwen3.8-27b",
+  "variant_id": "qwen3.8-27b-q8",
+  "quantization": "q8",
+  "artifact_digest": "sha256:abc"
+}

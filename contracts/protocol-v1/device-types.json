@@ -1,0 +1,8 @@
+{
+  "name": "inferweave.protocol.v1.device_types",
+  "version": "1.0.0",
+  "description": "Frozen device types. Unknown future types remain representable. Reconciled by test (invariant 41).",
+  "values": [
+    "nvidia_gpu", "amd_gpu", "intel_gpu", "apple_gpu", "tpu", "npu", "cpu", "other"
+  ]
+}

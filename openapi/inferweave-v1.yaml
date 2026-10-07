@@ -1,0 +1,399 @@
+openapi: 3.0.3
+info:
+  title: InferWeave Protocol v1
+  version: 1.0.0
+  description: >-
+    Control and observability HTTP surfaces for InferWeave Protocol v1. HTTP + JSON is the
+    normative v1 transport; object semantics are transport-independent. Scheduler/runtime/
+    deployment agnostic. The OpenAI-compatible data-plane endpoints (e.g. /v1/chat/completions)
+    are preserved by implementations per specs/45_PROTOCOL_V1.md but are defined by the OpenAI
+    API surface and are not redefined here. See specs/45_PROTOCOL_V1.md.
+servers:
+  - url: /inferweave/v1
+paths:
+  /protocol:
+    get:
+      operationId: getProtocol
+      summary: Protocol version and supported features
+      responses:
+        "200":
+          description: Protocol version and features
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [protocol, features]
+                properties:
+                  protocol: { $ref: "#/components/schemas/Protocol" }
+                  features: { type: object, additionalProperties: { type: string } }
+  /topology:
+    get:
+      operationId: getTopology
+      summary: Whole-topology snapshot (gateway/node/device/runtime/residency)
+      responses:
+        "200":
+          description: Topology snapshot
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Topology" }
+  /gateways:
+    get:
+      operationId: listGateways
+      summary: List federated gateways
+      responses:
+        "200":
+          description: Gateway list
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Gateway" } }
+  /nodes:
+    get:
+      operationId: listNodes
+      summary: List nodes
+      responses:
+        "200":
+          description: Node list
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Node" } }
+  /devices:
+    get:
+      operationId: listDevices
+      summary: List devices and GPU memory accounting
+      responses:
+        "200":
+          description: Device list
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Device" } }
+  /runtimes:
+    get:
+      operationId: listRuntimes
+      summary: List runtime instances
+      responses:
+        "200":
+          description: Runtime list
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/RuntimeInstance" } }
+  /models:
+    get:
+      operationId: listModels
+      summary: List models, variants, and capabilities
+      responses:
+        "200":
+          description: Model list
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Model" } }
+  /aliases:
+    get:
+      operationId: listAliases
+      summary: List aliases
+      responses:
+        "200":
+          description: Alias list
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Alias" } }
+  /capacity:
+    get:
+      operationId: getCapacity
+      summary: Structured scheduling capacity
+      responses:
+        "200":
+          description: Capacity
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Capacity" }
+  /health:
+    get:
+      operationId: getHealth
+      summary: Multidimensional health
+      responses:
+        "200":
+          description: Health
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: boolean
+  /events:
+    get:
+      operationId: streamEvents
+      summary: Event stream (SSE or cursor-based) for a source
+      parameters:
+        - name: source_id
+          in: query
+          schema: { type: string }
+        - name: cursor
+          in: query
+          schema: { type: string }
+        - name: Last-Event-ID
+          in: header
+          schema: { type: string }
+      responses:
+        "200":
+          description: >-
+            Event stream. When served as Server-Sent Events each frame is one serialized
+            Event object; a cursor-based poll returns a JSON array of Event objects.
+          content:
+            text/event-stream:
+              schema: { $ref: "#/components/schemas/Event" }
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Event" }
+  /requests/{request_id}/routing:
+    get:
+      operationId: getRoutingExplanation
+      summary: Explain a routing decision
+      parameters:
+        - name: request_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Routing explanation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requested: { type: object, additionalProperties: true }
+                  alias_resolution: { type: object, additionalProperties: true }
+                  candidates: { type: array, items: { type: object, additionalProperties: true } }
+                  selected: { type: object, additionalProperties: true }
+                  fallbacks: { type: array, items: { type: object, additionalProperties: true } }
+                  retries: { type: array, items: { type: object, additionalProperties: true } }
+  /jobs:
+    post:
+      operationId: createJob
+      summary: Create an async job
+      responses:
+        "201":
+          description: Created job
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Job" }
+    get:
+      operationId: listJobs
+      summary: List async jobs
+      responses:
+        "200":
+          description: Job list
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/Job" } }
+  /jobs/{job_id}:
+    get:
+      operationId: getJob
+      summary: Get an async job
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Job
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Job" }
+    delete:
+      operationId: cancelJob
+      summary: Cancel an async job (idempotent)
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Cancelled
+components:
+  schemas:
+    Topology:
+      type: object
+      required: [generation]
+      properties:
+        generation: { type: string }
+        snapshot_id: { type: string }
+        generated_at: { type: string }
+        gateways: { type: array, items: { $ref: "#/components/schemas/Gateway" } }
+        nodes: { type: array, items: { $ref: "#/components/schemas/Node" } }
+        devices: { type: array, items: { $ref: "#/components/schemas/Device" } }
+        runtimes: { type: array, items: { $ref: "#/components/schemas/RuntimeInstance" } }
+        residencies: { type: array, items: { $ref: "#/components/schemas/Residency" } }
+    Protocol:
+      type: object
+      required: [name, version, minimum_compatible_version]
+      properties:
+        name: { const: inferweave }
+        version: { type: string }
+        minimum_compatible_version: { type: string }
+    Provenance:
+      type: object
+      properties:
+        origin_gateway_id: { type: string }
+        reporting_gateway_id: { type: string }
+        federation_path: { type: array, items: { type: string } }
+        source: { type: string }
+        observed_at: { type: string }
+        age_ms: { type: number }
+    Gateway:
+      type: object
+      required: [gateway_id]
+      properties:
+        gateway_id: { type: string }
+        name: { type: string }
+        protocol: { $ref: "#/components/schemas/Protocol" }
+        features: { type: object, additionalProperties: { type: string } }
+        state: { type: string }
+        children: { type: array, items: { type: object, additionalProperties: true } }
+        provenance: { $ref: "#/components/schemas/Provenance" }
+    Node:
+      type: object
+      required: [node_id]
+      properties:
+        node_id: { type: string }
+        hostname: { type: string }
+        state: { type: string }
+        allocation: { $ref: "#/components/schemas/Allocation" }
+        devices: { type: array, items: { $ref: "#/components/schemas/Device" } }
+        runtimes: { type: array, items: { $ref: "#/components/schemas/RuntimeInstance" } }
+        capabilities: { type: object, additionalProperties: true }
+        labels: { type: object, additionalProperties: { type: string } }
+        provenance: { $ref: "#/components/schemas/Provenance" }
+    Device:
+      type: object
+      required: [device_id, type]
+      properties:
+        device_id: { type: string }
+        type:
+          type: string
+          enum: [nvidia_gpu, amd_gpu, intel_gpu, apple_gpu, tpu, npu, cpu, other]
+        vendor: { type: string }
+        model: { type: string }
+        memory: { $ref: "#/components/schemas/Memory" }
+        telemetry: { type: object, additionalProperties: true }
+        health: { type: object, additionalProperties: true }
+    Memory:
+      type: object
+      properties:
+        total: { type: number }
+        weights: { type: number }
+        kv_cache: { type: number }
+        runtime_cache: { type: number }
+        active_requests: { type: number }
+        reserved: { type: number }
+        other_models: { type: number }
+        system: { type: number }
+        unaccounted: { type: number }
+        free: { type: number }
+    Allocation:
+      type: object
+      required: [allocation_id, state]
+      properties:
+        allocation_id: { type: string }
+        provider: { type: string }
+        provider_metadata: { type: object, additionalProperties: true }
+        state: { type: string }
+        reason: { type: string }
+        node_id: { type: string }
+    RuntimeInstance:
+      type: object
+      required: [runtime_id, runtime_type]
+      properties:
+        runtime_id: { type: string }
+        runtime_type: { type: string }
+        version: { type: string }
+        state: { type: string }
+        devices: { type: array, items: { type: string } }
+        resident_models: { type: array, items: { $ref: "#/components/schemas/Residency" } }
+    Model:
+      type: object
+      required: [model_id, type]
+      properties:
+        model_id: { type: string }
+        type:
+          type: string
+          enum: [llm, embedding, reranker, vision, speech_to_text, text_to_speech, audio, image_generation, image_editing, video_generation, music_generation, prediction, multimodal, other]
+        name: { type: string }
+        family: { type: string }
+        capabilities: { type: object, additionalProperties: true }
+        requirements: { type: object, additionalProperties: true }
+    Residency:
+      type: object
+      required: [residency_id, state]
+      properties:
+        residency_id: { type: string }
+        model_variant_id: { type: string }
+        state: { type: string }
+        node_id: { type: string }
+        runtime_id: { type: string }
+        reason: { type: string }
+    Alias:
+      type: object
+      required: [alias_id]
+      properties:
+        alias_id: { type: string }
+        type: { type: string, enum: [static, dynamic] }
+        constraints: { type: object, additionalProperties: true }
+        targets: { type: array, items: { type: object, additionalProperties: true } }
+    Capacity:
+      type: object
+      properties:
+        requests: { type: object, additionalProperties: true }
+        contexts: { type: object, additionalProperties: true }
+        kv_cache: { type: object, additionalProperties: true }
+        gpu_memory: { $ref: "#/components/schemas/Memory" }
+        compute: { type: object, additionalProperties: true }
+        slots: { type: number }
+        desired: { type: object, additionalProperties: true }
+        observed: { type: object, additionalProperties: true }
+    Event:
+      type: object
+      required: [event_id, event_type, source_id, sequence, timestamp]
+      properties:
+        event_id: { type: string }
+        event_type: { type: string }
+        source_id: { type: string }
+        sequence: { type: number }
+        timestamp: { type: string }
+        trace_id: { type: string }
+        correlation_id: { type: string }
+        causation_id: { type: string }
+        payload: { type: object, additionalProperties: true }
+    Job:
+      type: object
+      required: [job_id, state]
+      properties:
+        job_id: { type: string }
+        state:
+          type: string
+          enum: [queued, preparing, running, finalizing, completed, failed, cancelled, expired]
+        progress:
+          type: object
+          properties:
+            fraction: { type: number }
+            stage: { type: string }
+            message: { type: string }
+        request_id: { type: string }
+    Error:
+      type: object
+      required: [code, message, retryable]
+      properties:
+        code: { type: string }
+        category:
+          type: string
+          enum: [protocol, authentication, authorization, routing, model, capacity, runtime, hardware, allocation, artifact, timeout, cancellation, upstream, internal]
+        message: { type: string }
+        retryable: { type: boolean }
+        retry_after_ms: { type: number }
+        request_id: { type: string }
+        trace_id: { type: string }
+        details: { type: object, additionalProperties: true }
+        fallbacks: { type: array, items: { type: object, additionalProperties: true } }

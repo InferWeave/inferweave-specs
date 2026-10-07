@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/request.json",
+  "title": "Request metadata",
+  "description": "Request and trace identity and routing-relevant metadata.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "request_id"
+  ],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
+      "type": "string"
+    },
+    "span_id": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "mission_id": {
+      "type": "string"
+    },
+    "job_id": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "alias": {
+      "type": "string"
+    },
+    "workload_class": {
+      "type": "string"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "max_queue_ms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "max_execution_ms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "idempotency_key": {
+      "type": "string"
+    },
+    "estimated_resources": {
+      "type": "object",
+      "properties": {
+        "kv_bytes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "gpu_memory_bytes": {
+          "type": "number",
+          "minimum": 0
+        },
+        "compute_weight": {
+          "type": "number"
+        }
+      }
+    },
+    "data_locality": {
+      "type": "object",
+      "properties": {
+        "storage_domain": {
+          "type": "string"
+        },
+        "preferred_gateway": {
+          "type": "string"
+        }
+      }
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/heartbeat.json",
+  "title": "Heartbeat",
+  "description": "Heartbeat and liveness message.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "source_id",
+    "sequence",
+    "timestamp",
+    "health"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "number",
+      "minimum": 0
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "health": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "degraded",
+        "draining",
+        "unreachable",
+        "stale",
+        "failed",
+        "unknown"
+      ]
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}

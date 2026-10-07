@@ -1,0 +1,13 @@
+{
+  "identity": {
+    "node_id": "node-1"
+  },
+  "protocol": {
+    "name": "inferweave",
+    "version": "1.0.0",
+    "minimum_compatible_version": "1.0.0"
+  },
+  "features": {
+    "events": "1"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "inferweave.protocol.v1.provenance_sources",
+  "version": "1.0.0",
+  "description": "Frozen provenance source values. Reconciled by test (invariant 41).",
+  "values": [
+    "direct", "reported", "measured", "verified", "estimated", "cached",
+    "operator_supplied", "unknown"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/topology/node.json",
+  "title": "Node",
+  "description": "A node in the topology.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "node_id"
+  ],
+  "properties": {
+    "node_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hostname": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "allocation": {
+      "$ref": "allocation.json"
+    },
+    "system": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "devices": {
+      "type": "array",
+      "items": {
+        "$ref": "device.json"
+      }
+    },
+    "runtimes": {
+      "type": "array",
+      "items": {
+        "$ref": "../runtime/runtime-instance.json"
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "labels": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "$ref": "../common/provenance.json"
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}
