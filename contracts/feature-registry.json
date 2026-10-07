@@ -1077,6 +1077,22 @@
         "P3-T24",
         "P3-T25"
       ]
+    },
+    {
+      "id": "IW-PROTO-001",
+      "name": "Scheduler-neutral core protocol: model, artifact, capability, resource, capacity, lifecycle, metric, and federation description",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane+gateway+node",
+      "canonical_tasks": [
+        "P5-T18",
+        "P5-T19",
+        "P5-T20",
+        "P5-T21",
+        "P5-T22",
+        "P5-T23"
+      ]
     }
   ]
 }

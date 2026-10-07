@@ -80,3 +80,13 @@
 | AC-073 | Duplicate identity chaos | simulator detects/prevents two authoritative leases for same physical allocation resource |
 | AC-074 | Site connector down | ephemeral workers fail over according to policy without identity corruption |
 | AC-075 | Gateway byte accounting | site/regional caches/relays keep model and inference bytes off gateway normal path |
+| AC-076 | Remote gateway advertises only model/capabilities/slots | upstream derives capabilities and capacity; artifact/hardware remain explicitly unknown, never inferred |
+| AC-077 | Model with zero live runtimes | model lifecycle state is reported independently of runtime state, not treated as unavailable-by-identity |
+| AC-078 | Self-reported 82 tok/s vs locally observed 64 tok/s | both evidence values coexist with provenance; neither overwrites the other |
+| AC-079 | Downstream gateway disconnects | its capacity is marked stale/unavailable and not advertised live; historical identity is preserved |
+| AC-080 | Gateway reconnects | runtime state reconciles without duplicate runtime identities or duplicate events |
+| AC-081 | Capacity 8 → eviction → 0 → load → 4 → 8 | generic lifecycle events and a current-state snapshot let upstream compute recovery time |
+| AC-082 | 100 health probes, 0 user requests | user demand stays 0; idle model is not kept resident unless policy says otherwise; probe failures still affect health |
+| AC-083 | Topology-sensitive model requires 2×24 GB | not matched to 1×48 GB unless the profile explicitly supports that placement |
+| AC-084 | Slurm-backed, Docker, manual worker, remote gateway | all present through one generic protocol; no upstream logic requires Slurm fields |
+| AC-085 | Older gateway advertises model/endpoint/slots only | keeps functioning; missing fields yield unknown, not rejection |

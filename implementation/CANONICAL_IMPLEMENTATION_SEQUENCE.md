@@ -1895,3 +1895,99 @@ Rules:
 - each grant, refusal, revocation and expiry emits a receipt
 - receipts carry lineage so one served request bills exactly once
 - repeated revocation surfaces as an under-provisioning signal
+
+### P5-T18 — Core protocol data model: canonical identity, artifacts, capabilities, resources, provenance
+**Context:** `C80`
+**Depends on:** P4-T14
+**Features:** IW-PROTO-001
+**Read:** specs/44_CORE_PROTOCOL.md, specs/02_PROTOCOL_AND_API.md, specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md, specs/16_SECURITY_PRIVACY_TRUST.md, specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md
+
+**Outcome:** Nodes, runtimes and gateways advertise a canonical model identity, artifact identity, capabilities with extensible properties, resource requirements with topology, serving profiles, runtime engine metadata and provenance, where unknown metadata stays explicitly unknown and never forces a missing field into a guessed value.
+
+**Required tests:**
+- serialization/deserialization of the full advertisement
+- missing optional metadata yields unknown, not rejection
+- unknown capability IDs and model types are preserved and forwarded
+- capability properties are capability-specific and extensible
+- artifact quantization/precision values are preserved without assuming one framework
+- topology-sensitive resource requirements distinguish 1x80GB from 4x24GB
+
+### P5-T19 — Core protocol capacity and lifecycle events
+**Context:** `C80`
+**Depends on:** P5-T18, P3-T23
+**Features:** IW-PROTO-001
+**Read:** specs/44_CORE_PROTOCOL.md, specs/04_CAPACITY_ADMISSION_SEATS.md, specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md, specs/31_RESOURCE_HEALTH_QUARANTINE.md
+
+**Outcome:** Runtimes and deployments advertise timestamped slot/capacity, residency, cold-start, pending capacity and capacity confidence, and emit generic lifecycle, eviction, recovery, scale, rebalance and node-loss events with standard reason codes mapped from infrastructure without exposing the scheduler as a required abstraction.
+
+**Required tests:**
+- capacity advertisements are timestamped and change independently of model identity
+- model residency distinguishes a free slot on a loaded model from a required download
+- lifecycle and eviction events carry standard reason codes with scheduler mapping
+- recovery event sequence lets upstream compute recovery time without guessing
+- pending capacity never fabricates an ETA when the scheduler cannot provide one
+- health probes are classified and do not count as user demand
+
+### P5-T20 — Core protocol metric system and benchmark interchange
+**Context:** `C75`
+**Depends on:** P5-T18, P2-T04
+**Features:** IW-PROTO-001
+**Read:** specs/44_CORE_PROTOCOL.md, specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md, specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md, specs/09_OBSERVABILITY_RECEIPTS.md
+
+**Outcome:** Performance, quality, reliability and resource-usage telemetry is transported as extensible metric definitions and structured samples with provenance, windows, distributions and counters, and benchmark results use a standard interchange format attributable to the actual artifact and runtime.
+
+**Required tests:**
+- metrics use the extensible metric schema, not hard-coded global fields
+- metric samples carry source type, producer and confidence
+- percentiles (P50/P90/P95/P99) and counters with reset semantics are representable
+- benchmark results are attributable to the actual artifact and runtime
+- quality evidence transports metrics without a universal intelligence score
+- self-reported and observed values coexist without overwriting each other
+
+### P5-T21 — Core protocol federation provenance and reconciliation
+**Context:** `C80`
+**Depends on:** P5-T19, P5-T04, P5-T14
+**Features:** IW-PROTO-001
+**Read:** specs/44_CORE_PROTOCOL.md, specs/21_FEDERATION_ROLES.md, specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md, specs/16_SECURITY_PRIVACY_TRUST.md
+
+**Outcome:** Federated advertisements retain origin gateway/node, trust level and freshness, preserve independent remote deployments instead of collapsing by model_id, mark disconnected capacity stale rather than live, and reconcile on reconnect without duplicate runtime identity or duplicate event replay.
+
+**Required tests:**
+- remote deployment provenance and origin are preserved through aggregation
+- two gateways advertising the same model_id keep independent deployments, capacity, health and performance
+- a remote gateway advertising only model/capabilities/slots participates without artifact or hardware
+- disconnected capacity becomes stale/unavailable and is not advertised live
+- reconnect reconciles state without duplicate runtime identities or duplicate events
+- trust is never auto-promoted by passing through a trusted gateway
+
+### P5-T22 — Core protocol routing, fallback and error semantics
+**Context:** `C80`
+**Depends on:** P5-T20, P5-T21, P1-T13
+**Features:** IW-PROTO-001
+**Read:** specs/44_CORE_PROTOCOL.md, specs/05_ROUTING_AFFINITY.md, specs/06_BACKPRESSURE_RETURN_TO_SENDER.md, specs/02_PROTOCOL_AND_API.md
+
+**Outcome:** Schedulers and gateways match capability contracts and hard requirements, evaluate resource compatibility, cold-start and reliability signals, resolve aliases and advisory fallbacks, and return structured errors with retryability, while preserving existing OpenAI-compatible behavior and request classification.
+
+**Required tests:**
+- hard requirements determine eligibility and preferences only rank
+- topology-sensitive resource compatibility is enforced (2x24GB not 1x48GB)
+- aliases and fallbacks are advisory and never bind permanently to one deployment
+- structured routing reasons and error taxonomy/retryability are transmitted
+- request class (user/system/health_probe/benchmark/warmup/internal) is preserved
+- older gateways advertising only model/endpoint/slots keep functioning
+
+### P5-T23 — Core protocol conformance and scheduler-agnostic tests
+**Context:** `C90`
+**Depends on:** P5-T22
+**Features:** IW-PROTO-001
+**Read:** specs/44_CORE_PROTOCOL.md, specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md, specs/42_SITE_GATEWAY_CONFORMANCE.md
+
+**Outcome:** A language-neutral conformance suite proves the generic protocol surfaces Slurm-backed, Docker, manual-worker and remote-gateway runtimes identically, with no upstream logic requiring scheduler fields, and covers the protocol, federation, health-probe, event-recovery and resource-compatibility test scenarios of the core protocol.
+
+**Required tests:**
+- Slurm-backed, Docker, manual worker and remote gateway appear through the same generic protocol
+- no upstream logic requires Slurm fields
+- 100 health probes and 0 user requests yield user demand 0
+- capacity 8 to eviction 0 to load to 4 to 8 produces correct events and snapshots
+- unknown future types, metrics and events flow through the federation safely
+- conformance vectors pass against the frozen protocol vocabulary

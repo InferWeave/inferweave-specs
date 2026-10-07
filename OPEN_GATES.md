@@ -221,3 +221,19 @@ credential scopes. Raw-ID absence, within-view reference consistency,
 cross-viewer handle separation and unchanged operator originals require explicit
 implementation tests; live signed-in map visibility remains `owed` until verified.
 This policy does not open anonymous access, administration or placement gates.
+## Core protocol vocabulary (specs/44) — 2026-10-06
+
+**BLOCKED for production use.** `specs/44_CORE_PROTOCOL.md` standardizes the
+scheduler-neutral vocabulary for model identity, artifacts, capabilities, resource
+requirements, capacity, lifecycle events, metrics, health, and federation
+provenance. It is a specification only. No node, runtime, or gateway currently
+emits or consumes this vocabulary in production; the model/runtime/capacity
+surfaces remain those of the specs they amend (02, 03, 04, 05, 09, 20, 21, 23, 42).
+
+Every required test in this specification is recorded `owed` by the canonical
+tasks `P5-T18`–`P5-T23`. A schema, example, fixture, or local unit test does not
+close this gate. Until those tasks land and are independently verified, an
+upstream system must not rely on the protocol vocabulary being a deployed
+capability, must not treat `unknown`-free advertisements as complete, and must not
+assume health-probe/benchmark request classification, federation provenance, or
+scheduler-neutral event mapping are enforced anywhere in a running system.
