@@ -321,7 +321,7 @@ def guard_bundle_metadata(root):
         path.relative_to(root).as_posix()
         for path in root.rglob("*")
         if path.is_file()
-        and not ({".git", ".superpowers", "__pycache__"} & set(path.parts))
+        and not ({".git", ".superpowers", "__pycache__", ".pi-eng"} & set(path.parts))
         and path.relative_to(root).as_posix() not in excluded
     }
     checksums = json.loads((root / "checksums.json").read_text())

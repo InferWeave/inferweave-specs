@@ -1,6 +1,6 @@
 # Canonical Task Index
 
-Total tasks: **124**
+Total tasks: **142**
 
 | Task | Phase | Context | Depends | Title |
 |---|---:|---:|---|---|
@@ -140,3 +140,9 @@ Total tasks: **124**
 | `P5-T15` | 5 | C85 | P5-T14, P1-T11B | Standby slot grants and lifecycle |
 | `P5-T16` | 5 | C75 | P5-T14 | Capacity request loop and amplification control |
 | `P5-T17` | 5 | C80 | P5-T15 | Capacity grant receipts and forecast signals |
+| `P5-T18` | 5 | C80 | P4-T14 | Core protocol data model: canonical identity, artifacts, capabilities, resources, provenance |
+| `P5-T19` | 5 | C80 | P5-T18, P3-T23 | Core protocol capacity and lifecycle events |
+| `P5-T20` | 5 | C75 | P5-T18, P2-T04 | Core protocol metric system and benchmark interchange |
+| `P5-T21` | 5 | C80 | P5-T19, P5-T04, P5-T14 | Core protocol federation provenance and reconciliation |
+| `P5-T22` | 5 | C80 | P5-T20, P5-T21, P1-T13 | Core protocol routing, fallback and error semantics |
+| `P5-T23` | 5 | C90 | P5-T22 | Core protocol conformance and scheduler-agnostic tests |
