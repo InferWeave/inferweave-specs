@@ -177,7 +177,10 @@ Every important protocol object has a stable ID. Required identity classes: `gat
 `residency_id`, `request_id`, `trace_id`, `session_id`, `job_id`, `event_id`, `artifact_id`,
 `alias_id`. Physical address is not identity: `node_id` is not an IP address, `runtime_id` is
 not a port number, `gateway_id` is not a hostname. Addresses may change while logical identity
-remains stable. Identity schemas are under `schemas/v1/common/identity.json`.
+remains stable. Identity schemas are under `schemas/v1/common/identity.json`. Public exposure
+of a node/device identifier is pseudonymous and rotatable where practical and is never a
+stable private node address; stable internal identity and the public pseudonymous label are
+distinct values (invariants 17 and 18).
 
 ## Request and trace identity
 
@@ -282,8 +285,14 @@ Gateway
 ## Canonical objects and JSON Schemas
 
 The canonical object schemas live under `schemas/v1/` and are authoritative for the wire
-format. This section states the object semantics; the JSON Schema is the contract. See
-"Schema layout and rules" for the authoritative schema rules.
+format. **In v1.0.0 only `schemas/v1/common/` and `schemas/v1/errors/` are published in this
+repository.** The per-category object schemas (topology, model, resources, runtime, requests,
+events, jobs, artifacts) are normative as prose in this section and are published as JSON
+Schema by canonical task `P5-T25` (currently `owed`). A schema path named below but not yet
+published is the intended home; until it is published, this prose is authoritative for v1.0.0
+and objects remain representable through the extension namespace. This section states the
+object semantics; the JSON Schema is the contract. See "Schema layout and rules" for the
+authoritative schema rules.
 
 ### Node
 
@@ -419,7 +428,10 @@ emits events with a reason.
 ## Admission, queue, and priority
 
 Admission outcomes: `accepted`, `queued`, `rejected`, `redirected`, `fallback`, `throttled`;
-admission metadata SHALL explain the decision. Queue state exposes depth, oldest request age,
+admission metadata SHALL explain the decision. A workload whose context ceiling, modality,
+license, explicit deny rules, or exact deployment requirement is unknown is **not admissible**
+(hard constraints, invariant 6; unknown ceiling, invariant 36); the `unknown`-on-missing rule
+applies only to advisory/telemetry metadata. Queue state exposes depth, oldest request age,
 estimated wait, priority distribution, model queues, and capacity waiting (exact queue position
 is optional). Canonical workload classes (separate from numeric priority): `interactive`,
 `batch`, `background`, `system`, `benchmark`, `probe`, `maintenance`.
@@ -459,6 +471,7 @@ Canonical error envelope:
 {
   "error": {
     "code": "MODEL_NO_CAPACITY",
+    "category": "capacity",
     "message": "...",
     "retryable": true,
     "retry_after_ms": 10000,
@@ -482,7 +495,8 @@ Schema: `schemas/v1/errors/error.json`. Error categories: `protocol`, `authentic
 `NO_COMPATIBLE_WORKER`, `NO_CAPACITY`, `QUEUE_FULL`, `NODE_UNAVAILABLE`,
 `RUNTIME_UNAVAILABLE`, `RUNTIME_CRASHED`, `ALLOCATION_PENDING`, `ALLOCATION_PREEMPTED`,
 `ALLOCATION_TERMINATED`, `DEADLINE_EXCEEDED`, `REQUEST_CANCELLED`, `UPSTREAM_UNAVAILABLE`.
-This taxonomy is frozen machine-readable data reconciled by test (invariant 41).
+In v1.0.0 this taxonomy is normative prose; it is published as frozen machine-readable data
+reconciled by test under invariant 41 by canonical task `P5-T26` (currently `owed`).
 
 Errors may advertise compatible fallback options:
 
@@ -503,7 +517,10 @@ marked required; an alias never binds permanently to one deployment.
 ## Routing and affinity
 
 Routing decisions are explainable and track candidate discovered/excluded/ranked/selected,
-fallback triggered, and affinity preserved/broken. A routing explanation API
+fallback triggered, and affinity preserved/broken. Routing must respect the availability floor
+(invariant 43) as a hard constraint, and experimental serving profiles/models are not selected
+by ordinary production routing until their qualification gates pass (invariant 28). A routing
+explanation API
 `GET /inferweave/v1/requests/{request_id}/routing` exposes requested model, alias resolution,
 candidates, selected route, fallbacks, and retries. Affinity (session, cache, node, runtime,
 data locality) is advisory unless marked required. Request resource estimates, data locality,
@@ -564,9 +581,10 @@ reconciliation. Event namespaces: `gateway.*`, `node.*`, `device.*`, `allocation
 `model.*`, `artifact.*`, `routing.*`, `queue.*`, `capacity.*`, `autoscale.*`, `rebalance.*`,
 `health.*`, `request.*`, `security.*`.
 
-The canonical lifecycle-event vocabulary is frozen data reconciled by test (invariant 41) and
-defined in `specs/44_CORE_PROTOCOL.md`; Protocol v1 assigns each a wire `event_type` and schema
-under `schemas/v1/events/`. Model lifecycle transitions emit events (`MODEL_DOWNLOAD_STARTED`,
+The canonical lifecycle-event vocabulary is defined in `specs/44_CORE_PROTOCOL.md`; Protocol
+v1 assigns each a wire `event_type` and schema under `schemas/v1/events/`, published as frozen
+machine-readable data reconciled by test under invariant 41 by canonical tasks `P5-T25`/`P5-T26`
+(currently `owed`). Model lifecycle transitions emit events (`MODEL_DOWNLOAD_STARTED`,
 `MODEL_DOWNLOAD_COMPLETED`, `MODEL_LOAD_REQUESTED`, `MODEL_LOADING`, `MODEL_READY`,
 `MODEL_DRAINING`, `MODEL_UNLOADING`, `MODEL_UNLOADED`, `MODEL_LOAD_FAILED`, `MODEL_EVICTED`,
 `MODEL_REBALANCED`) with standard reasons (`demand`, `operator_request`, `autoscale`,
@@ -734,8 +752,14 @@ and does not maintain independently copied protocol enums.
 
 ### `inferweave-specs` (this PR)
 
-Complete v1 documentation, JSON Schemas, OpenAPI, events, enums, lifecycle diagrams, conformance
-fixtures, compatibility rules, changelog, and examples exist and validate.
+This PR delivers the canonical Protocol v1 specification (`specs/45_PROTOCOL_V1.md`), the
+versioned layout scaffold (`VERSION`, `CHANGELOG.md`, `docs/`, `schemas/v1/`, `state-machines/`,
+`openapi/`, `fixtures/`, `conformance/`, `tools/`), the foundational `schemas/v1/common/` and
+`schemas/v1/errors/` JSON Schemas, and the full program decomposition (feature `IW-PROTO-002`,
+tasks `P5-T24`–`P5-T29`, all `owed`). The remaining canonical-protocol deliverables — the
+per-category `schemas/v1/` object schemas, the complete OpenAPI, the conformance scenarios and
+fixtures, the compatibility matrix, and the cross-repo CI — are the tracked outcome of
+`P5-T25`–`P5-T29`, which are `owed`, not complete.
 
 ### `inferweave/inferweave` (tracked, `owed`)
 

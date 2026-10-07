@@ -1,11 +1,34 @@
 # InferWeave Protocol v1 conformance manifest
-# Declares conformance profiles and their required scenarios. See specs/45_PROTOCOL_V1.md.
+# Declares conformance profiles and the scenarios each must pass. Scenario names match
+# specs/45_PROTOCOL_V1.md ("Conformance levels"). See also conformance/scenarios/.
 protocol: 1.0.0
+scenarios:
+  schema_validation
+  protocol_discovery
+  feature_negotiation
+  registration
+  heartbeat
+  topology
+  events
+  retries
+  errors
+  aliases
+  federation
+  capability_advertisement
+  snapshot_consistency
+  backwards_compatibility
 profiles:
-  IW-DATA: { required_scenarios: ["schema", "discovery", "negotiation"] }
-  IW-NODE: { required_scenarios: ["registration", "heartbeat", "topology", "capability"] }
-  IW-GATEWAY: { required_scenarios: ["registration", "heartbeat", "topology", "capability", "routing", "errors", "aliases"] }
-  IW-FEDERATION: { required_scenarios: ["federation", "provenance", "snapshot", "replay"] }
-  IW-OBSERVABILITY: { required_scenarios: ["events", "snapshot", "metrics", "replay"] }
-  IW-ADMIN: { required_scenarios: ["admin", "drain", "rebalance"] }
-  IW-FULL: { required_scenarios: ["all"] }
+  IW-DATA:
+    required_scenarios: [schema_validation, protocol_discovery, feature_negotiation]
+  IW-NODE:
+    required_scenarios: [registration, heartbeat, topology, capability_advertisement]
+  IW-GATEWAY:
+    required_scenarios: [registration, heartbeat, topology, capability_advertisement, retries, errors, aliases]
+  IW-FEDERATION:
+    required_scenarios: [federation, snapshot_consistency, events]
+  IW-OBSERVABILITY:
+    required_scenarios: [events, snapshot_consistency, topology]
+  IW-ADMIN:
+    required_scenarios: [protocol_discovery, registration, heartbeat]
+  IW-FULL:
+    required_scenarios: [schema_validation, protocol_discovery, feature_negotiation, registration, heartbeat, topology, events, retries, errors, aliases, federation, capability_advertisement, snapshot_consistency, backwards_compatibility]

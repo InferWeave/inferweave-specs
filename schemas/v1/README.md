@@ -7,7 +7,8 @@ Layout:
 
 ```text
 common/      shared envelopes: protocol version, identity, features, provenance,
-             extensions, error
+             extensions
+errors/      protocol error envelope and error taxonomy
 topology/    gateway, node, device, allocation, residency hierarchy
 model/       model, model variant, capabilities, requirements, placement, residency,
              alias

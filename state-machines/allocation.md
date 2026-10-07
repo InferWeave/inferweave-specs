@@ -10,7 +10,7 @@ Allowed transitions:
 
 ```text
 requested         -> pending | allocating | failed
-pending           -> allocating | cancelled(terminated) | failed
+pending           -> allocating | terminated | failed
 allocating        -> allocated | pending | failed
 allocated         -> booting | staging | runtime_starting | failed
 booting           -> staging | runtime_starting | ready | failed
@@ -23,6 +23,12 @@ lost              -> terminated | pending | failed
 terminated        -> (terminal)
 failed            -> (terminal)
 ```
+
+`pending -> terminated` represents cancellation before allocation completes (`cancelled` is not
+part of the allocation vocabulary; it is reported as a `terminated` allocation with termination
+reason `operator`). `lost -> pending` represents a lost-but-recoverable allocation being
+requeued by the scheduler; whether a `lost` allocation requeues or terminates is scheduler
+policy carried in `provider_metadata`, never required by upstream.
 
 Terminal states: `terminated`, `failed`. Termination reasons: `completed`, `operator`,
 `preempted`, `scheduler_reclaim`, `timeout`, `node_failure`, `hardware_failure`,

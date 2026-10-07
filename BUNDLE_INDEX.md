@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~339,120 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~339,880 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -40,7 +40,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `agents/spec-reviewer.md` — `b428d8e915af` — ~134t
 - `bundle-manifest.json` — `d70a5b0d6742` — ~553t
 - `conformance/README.md` — `47edd57f321e` — ~154t
-- `conformance/manifest.yaml` — `fdd4bf4dae5b` — ~187t
+- `conformance/manifest.yaml` — `ce443b88c7f6` — ~326t
 - `contracts/README.md` — `f857a528f083` — ~320t
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
@@ -157,13 +157,13 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `pi/QWEN_CONTEXT_GUIDE.md` — `a016ee2cb759` — ~207t
 - `pi/REVIEW_PROMPT.md` — `0fca83a1dc7a` — ~191t
 - `pi/TASK_TEMPLATE.md` — `654c899dbb32` — ~280t
-- `schemas/v1/README.md` — `63b13a224de7` — ~268t
-- `schemas/v1/common/error.json` — `642ab7f06cce` — ~376t
+- `schemas/v1/README.md` — `4d0ff91a636b` — ~280t
 - `schemas/v1/common/extensions.json` — `55dd2edcbac6` — ~100t
 - `schemas/v1/common/features.json` — `60bd7cd23996` — ~179t
 - `schemas/v1/common/identity.json` — `5391823819f8` — ~295t
 - `schemas/v1/common/protocol.json` — `0c1535762b19` — ~154t
 - `schemas/v1/common/provenance.json` — `b0bdf672442e` — ~211t
+- `schemas/v1/errors/error.json` — `642ab7f06cce` — ~376t
 - `scripts/bootstrap-repositories.sh` — `914de3443dbc` — ~227t
 - `scripts/generate_bundle_metadata.py` — `8e46c94670e4` — ~608t
 - `scripts/test_validate_specs.py` — `45b7fd4b5ecc` — ~6,695t
@@ -214,9 +214,9 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/42_SITE_GATEWAY_CONFORMANCE.md` — `167a020701a2` — ~2,363t
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `c8c57b73aa55` — ~3,492t
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
-- `specs/45_PROTOCOL_V1.md` — `2dd9d6fe88a3` — ~8,593t
+- `specs/45_PROTOCOL_V1.md` — `1da9d11981b1` — ~9,094t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
-- `state-machines/allocation.md` — `58753ce37808` — ~334t
+- `state-machines/allocation.md` — `28cc462b1181` — ~442t
 - `state-machines/job.md` — `b7620ac5d990` — ~205t
 - `state-machines/model-residency.md` — `3cafa3ede261` — ~310t
 - `state-machines/node.md` — `65f43d13e45b` — ~212t
