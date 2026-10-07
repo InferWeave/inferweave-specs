@@ -33,6 +33,30 @@ resolved seed and settings for reproducibility.
 An image deployment is declared as an immutable pipeline manifest — see
 `contracts/deployment-manifest.image.example.yaml` (`modality: image`).
 
+### Responses API (image_generation tool)
+
+The `POST /v1/responses` surface (spec 02) exposes image generation as a
+tool: `"tools": [{"type": "image_generation"}]` on a request naming an image
+model. A gateway serving this surface MUST translate it onto its own image
+generation path — the same workers, the same admission, the same envelope —
+and MUST NOT serve it as a text request:
+
+- The prompt is the LAST user message of `input` (string or item form;
+  `input_text` parts joined in order). A request with no user prompt is not
+  an image request and goes through the text path, where the proxy's
+  validation owns it.
+- Tool parameters with an image equivalent (`size`) are forwarded; unknown
+  parameters are ignored, never forwarded to the worker.
+- The response is a Responses envelope carrying one `image_generation_call`
+  output item per image: a `b64_json` result becomes a `data:` URL, a `url`
+  result is preserved as-is.
+- Worker failures (no-worker 429 + Retry-After, 4xx) pass through
+  untouched: the wrapper invents no envelope around an error and masks
+  none.
+- No token `usage` is reported for an image generation: a diffusion
+  request has no token count, and a fabricated figure would be a false
+  statement in a metering surface.
+
 ## Data plane
 
 Large inputs/outputs normally bypass the central gateway through scoped object/direct/relay transfers. Gateway remains authoritative for auth, reservation, policy and job state.

@@ -106,6 +106,12 @@ surface the reference implementation serves (auth class in parens):
 | `POST /v1/chat/completions` · `/v1/completions` · `/v1/responses` | client | §C2 |
 | `POST /v1/embeddings` · `/v1/images/generations` | client | §C2 (SHOULD, by modality) |
 
+The `POST /v1/responses` surface MAY expose image generation as a tool
+(`"tools": [{"type": "image_generation"}]`, spec 14 §Responses API): a
+request carrying the tool is translated onto the gateway's image
+`/v1/images/generations` path — same workers, same admission — and MUST NOT
+be served as a text request.
+
 **InferWeave-custom surface — under the `iw` prefix (never bare `/v1/`):**
 | Method · path | Auth | Contract |
 |---|---|---|
