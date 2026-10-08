@@ -1,9 +1,10 @@
 # GPU memory accounting on capability-gated surfaces — 2026-10-07
 
-**Status:** Proposed  
+**Status:** Accepted for implementation  
 **Decision owner:** InferWeave operator  
 **Date:** 2026-10-07  
-**Authorizes:** Nothing until accepted. On acceptance: the Protocol 1.1.0 wire contract of
+**Accepted:** 2026-10-08 by the decision owner (the InferWeave operator), in their words: "accepted"  
+**Authorizes:** On acceptance (2026-10-08): the Protocol 1.1.0 wire contract of
 `specs/46_GPU_MEMORY_INTELLIGENCE.md` and observe-only implementations of it (wire types,
 validation, accounting reconciliation). It does **not** authorize deployment, any change to
 placement, eviction or scaling, or any action on a Slurm allocation.  
