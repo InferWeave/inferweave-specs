@@ -37,6 +37,10 @@ counted physical memory in `reserved` was following ambiguous text and must be c
   `origin.relayAgeMs` accumulates per hop and counts against `staleAfterSecs`; `origin.attachedBy`
   names an unowned node's attaching gateway; foreign-process allocations are always primary and
   unmovable; node and gateway ids refuse `/`.
+- Round-4 follow-ups: a relayed node without `relayAgeMs` is stale; every GPU of a node shares one
+  minting prefix and `attachedBy` must equal it; an unanchored unowned node carries no runtimes
+  or allocations; unknown, foreign and pre-restart cursors get `410`; pinned snapshots are
+  bounded (`pinShareSecs`, `maxPinnedSnapshots`); reservation cross-checks wait for all pages.
 - Conformance: new optional profile `IW-GPU-MEMORY` with scenario `gpu_memory_accounting`;
   `IW-FULL` is unchanged.
 - The stale "only common and errors are published" sentence of spec 45

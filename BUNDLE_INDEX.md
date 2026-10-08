@@ -16,14 +16,14 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~488,663 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~502,068 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
 - `.github/workflows/protocol-ci.yml` — `4e4a8b44a516` — ~194t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `adc117a06f07` — ~1,123t
+- `CHANGELOG.md` — `5486d69bd60f` — ~1,218t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
@@ -163,6 +163,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/federation/federation-path.json` — `4ae98d4876bf` — ~64t
 - `fixtures/invalid/device-bad-enum.json` — `8cff0b010519` — ~15t
 - `fixtures/invalid/gpu-memory-fleet-page-without-node-count.json` — `60912ad8e9c1` — ~4,136t
+- `fixtures/invalid/gpu-memory-fleet-slash-in-gateway-id.json` — `1411836be148` — ~4,130t
 - `fixtures/invalid/gpu-memory-report-capacity-not-owned.json` — `ea09bc27e2fe` — ~3,408t
 - `fixtures/invalid/gpu-memory-report-capacity-without-authority.json` — `532c790ae6fe` — ~3,400t
 - `fixtures/invalid/gpu-memory-report-control-char-id.json` — `600e10eb1fca` — ~3,408t
@@ -171,7 +172,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/gpu-memory-report-logical-in-categories.json` — `f22b60e2e315` — ~3,442t
 - `fixtures/invalid/gpu-memory-report-logical-in-physical.json` — `c4be93fc0f2a` — ~3,439t
 - `fixtures/invalid/gpu-memory-report-missing-unattributed.json` — `7f87e1f2f63e` — ~3,373t
+- `fixtures/invalid/gpu-memory-report-negative-relay-age.json` — `29f431962a6e` — ~3,412t
 - `fixtures/invalid/gpu-memory-report-non-ascii-id.json` — `d8a2a4a70522` — ~3,429t
+- `fixtures/invalid/gpu-memory-report-phantom-unowned.json` — `71fb3c1453a3` — ~1,797t
+- `fixtures/invalid/gpu-memory-report-slash-in-attached-by.json` — `d54933e090eb` — ~3,415t
 - `fixtures/invalid/gpu-memory-report-slash-in-node-id.json` — `1375526530b3` — ~3,407t
 - `fixtures/invalid/gpu-memory-report-unowned-composed.json` — `dfdbd90ea9d3` — ~3,297t
 - `fixtures/invalid/gpu-memory-report-zero-unknown.json` — `f7f55b2c131a` — ~3,396t
@@ -234,7 +238,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `implementation/TEST_STRATEGY.md` — `5ded1d51fb57` — ~1,301t
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `openapi/README.md` — `fd85aef8a3a6` — ~98t
-- `openapi/inferweave-v1.yaml` — `d13907b3fdb8` — ~4,920t
+- `openapi/inferweave-v1.yaml` — `66df7616f79c` — ~4,927t
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
 - `pi/CONTEXT_PACK_CHECKLIST.md` — `8a9c95b7ec3d` — ~200t
 - `pi/FIRST_TASKS.md` — `674dbf07c4f5` — ~462t
@@ -272,7 +276,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/resources/gpu-memory-fleet.json` — `cc509eeeb4ef` — ~983t
 - `schemas/v1/resources/gpu-memory-gpu.json` — `e79ab5796eee` — ~2,161t
 - `schemas/v1/resources/gpu-memory-postmortem.json` — `fdb261923c85` — ~1,050t
-- `schemas/v1/resources/gpu-memory-report.json` — `a4f0f0b00896` — ~1,577t
+- `schemas/v1/resources/gpu-memory-report.json` — `daab59c2cb00` — ~1,754t
 - `schemas/v1/resources/gpu-memory-runtime.json` — `a39eaa096cae` — ~3,034t
 - `schemas/v1/resources/memory.json` — `d5ce1c5bbbe1` — ~334t
 - `schemas/v1/resources/placement-simulation-request.json` — `679bed29beff` — ~709t
@@ -338,7 +342,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `c8c57b73aa55` — ~3,492t
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
 - `specs/45_PROTOCOL_V1.md` — `b080d4133157` — ~9,372t
-- `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `9d6237cfd944` — ~11,422t
+- `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `5a6656877bab` — ~11,794t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `6027505392aa` — ~233t
