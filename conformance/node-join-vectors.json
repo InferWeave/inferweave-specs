@@ -752,5 +752,305 @@
         }
       }
     ]
+  },
+  "enrollmentLifecycleCases": {
+    "$comment": "Spec 47 sections 6.2, 6.4, 3.1 rule 8, 6.6. HTTP-level step sequences replayed against one fresh gateway per case. `known` ops make an id known to the gateway (static catalog, live fleet or controller instance) by whatever test hook the gateway has. `cred` names a credential held by the test: `proof1` earned by tokenless proof, `operator1` issued by operator enrollment. `conn` names a connectionId returned by an earlier register.",
+    "cases": [
+      {
+        "id": "promotion-evicts-proof-squatter",
+        "steps": [
+          {
+            "op": "proof_enroll",
+            "node": "node_pro-1",
+            "cred": "proof1",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "register",
+            "node": "node_pro-1",
+            "cred": "proof1",
+            "hardware": true,
+            "endpoint": false,
+            "saveConn": "conn1",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "operator_enroll",
+            "node": "node_pro-1",
+            "cred": "operator1",
+            "code": "valid",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "register",
+            "node": "node_pro-1",
+            "cred": "proof1",
+            "hardware": true,
+            "endpoint": false,
+            "expect": {
+              "status": 401
+            }
+          },
+          {
+            "op": "heartbeat",
+            "node": "node_pro-1",
+            "conn": "conn1",
+            "expect": {
+              "status": 401
+            }
+          },
+          {
+            "op": "listing",
+            "node": "node_pro-1",
+            "expect": {
+              "hardwarePresent": false
+            }
+          },
+          {
+            "op": "register",
+            "node": "node_pro-1",
+            "cred": "operator1",
+            "hardware": false,
+            "endpoint": true,
+            "expect": {
+              "status": 200
+            }
+          }
+        ]
+      },
+      {
+        "id": "invalid-operator-code-unseats-nobody",
+        "steps": [
+          {
+            "op": "proof_enroll",
+            "node": "node_pro-2",
+            "cred": "proof1",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "register",
+            "node": "node_pro-2",
+            "cred": "proof1",
+            "hardware": true,
+            "endpoint": false,
+            "saveConn": "conn1",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "operator_enroll",
+            "node": "node_pro-2",
+            "cred": "operator1",
+            "code": "invalid",
+            "expect": {
+              "status": 401
+            }
+          },
+          {
+            "op": "heartbeat",
+            "node": "node_pro-2",
+            "conn": "conn1",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "listing",
+            "node": "node_pro-2",
+            "expect": {
+              "hardwarePresent": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "proof-never-replaces-operator-credential",
+        "steps": [
+          {
+            "op": "operator_enroll",
+            "node": "node_pro-3",
+            "cred": "operator1",
+            "code": "valid",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "proof_enroll",
+            "node": "node_pro-3",
+            "cred": "proof1",
+            "expect": {
+              "status": 403,
+              "errorCode": "forbidden"
+            }
+          },
+          {
+            "op": "register",
+            "node": "node_pro-3",
+            "cred": "operator1",
+            "hardware": false,
+            "endpoint": true,
+            "expect": {
+              "status": 200
+            }
+          }
+        ]
+      },
+      {
+        "id": "challenge-for-known-id-is-refused",
+        "steps": [
+          {
+            "op": "known",
+            "node": "node_known-1",
+            "kind": "static",
+            "expect": {}
+          },
+          {
+            "op": "challenge",
+            "node": "node_known-1",
+            "role": "node",
+            "expect": {
+              "status": 403,
+              "errorCode": "forbidden"
+            }
+          },
+          {
+            "op": "known",
+            "node": "node_known-2",
+            "kind": "fleet",
+            "expect": {}
+          },
+          {
+            "op": "challenge",
+            "node": "node_known-2",
+            "role": "node",
+            "expect": {
+              "status": 403,
+              "errorCode": "forbidden"
+            }
+          }
+        ]
+      },
+      {
+        "id": "id-becomes-known-between-challenge-and-proof",
+        "steps": [
+          {
+            "op": "challenge",
+            "node": "node_known-3",
+            "role": "node",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "known",
+            "node": "node_known-3",
+            "kind": "controller",
+            "expect": {}
+          },
+          {
+            "op": "proof",
+            "node": "node_known-3",
+            "expect": {
+              "status": 403,
+              "errorCode": "forbidden"
+            }
+          }
+        ]
+      },
+      {
+        "id": "reregistration-without-hardware-clears-it",
+        "steps": [
+          {
+            "op": "proof_enroll",
+            "node": "node_hw-9",
+            "cred": "proof1",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "register",
+            "node": "node_hw-9",
+            "cred": "proof1",
+            "hardware": true,
+            "endpoint": false,
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "listing",
+            "node": "node_hw-9",
+            "expect": {
+              "hardwarePresent": true
+            }
+          },
+          {
+            "op": "register",
+            "node": "node_hw-9",
+            "cred": "proof1",
+            "hardware": false,
+            "endpoint": false,
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "listing",
+            "node": "node_hw-9",
+            "expect": {
+              "hardwarePresent": false
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "requestSizeCases": {
+    "$comment": "Spec 47 section 6.6 (SHOULD). An authenticated or unauthenticated caller sends padding; the gateway refuses before parsing. statusIn lists the permitted statuses.",
+    "cases": [
+      {
+        "id": "register-body-over-256k",
+        "route": "/v1/node/register",
+        "bodyBytes": 307200,
+        "expect": {
+          "statusIn": [
+            400,
+            413
+          ]
+        }
+      },
+      {
+        "id": "challenge-body-over-16k",
+        "route": "/v1/node/challenge",
+        "bodyBytes": 20480,
+        "expect": {
+          "statusIn": [
+            400,
+            413
+          ]
+        }
+      },
+      {
+        "id": "register-body-under-caps",
+        "route": "/v1/node/register",
+        "bodyBytes": 2048,
+        "expect": {
+          "statusIn": [
+            200
+          ]
+        }
+      }
+    ]
   }
 }

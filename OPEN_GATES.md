@@ -316,6 +316,16 @@ Unsatisfied, and recorded `owed` by `P5-T33` (Rust gateway) and `P5-T34` (Go gat
   (`GatewayEnrollment::adopt`, the `node_register` gate, `hardware_registration.rs`) but not on
   `main`, and the Go gateway is being aligned; the credential origin is held in memory only, so a
   restart forgets it;
+- hardening of spec 47 sections 6.2 to 6.9 (promotion, links, known ids, bounded state, body caps,
+  hardware lifecycle, rollback safety, no capacity from hardware-only heartbeats) is implemented
+  in work trees (Rust `b7e696f`, Go `cdc0d69`), not on `main`, and is `owed` by `P5-T33` and
+  `P5-T34`. Link refusal and "close every link" are not HTTP-level and have no vector;
+- **conformance divergence:** the Go gateway keeps the stored `hardware` when a re-registration
+  omits it, while spec 47 section 3.1 rule 8 (and Rust) clears it; the Go 429 codes also differ
+  from the Rust `too_many_requests` (clients must key on the status); the Go register cap is
+  128 KiB against the recommended 256 KiB;
+- the Rust proof store is in memory, so section 6.8 rollback safety (persisting proof-only origin)
+  is met by Go only;
 - the model-execution proof has a defined transcript but no wire surface; renewal and re-proof for
   an enrolled node have no wire surface;
 - whether the Go standard-library Ed25519 verifier matches the strict verifier of the reference on

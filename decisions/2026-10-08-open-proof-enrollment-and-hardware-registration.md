@@ -49,6 +49,16 @@ against one and fail against the other without any error pointing at the cause.
    rejected: relying on the lowest trust tier alone, which limits weight but still lets a stranger
    receive traffic.
 
+7. **Hardening forced by independent security review of both implementations** (spec 47 sections
+   6.2 to 6.9): operator enrollment replaces a proof-only credential and evicts its registration,
+   hardware and links; proof-only and hardware-only nodes hold no link; a proof is refused for any
+   id the gateway knows (checked at `/challenge` and `/proof`); state created by unauthenticated
+   callers is bounded with `429`; unauthenticated bodies are size-capped before parsing; hardware
+   lives with its registration; hardware-only heartbeats add no capacity. This supersedes the
+   "first credential issued wins" reading of the previous revision for the proof-only case. The
+   reviews found that without these, a stranger could squat on an id an operator was about to
+   enroll, hold a routing link, or exhaust gateway memory unauthenticated.
+
 ## Consequences and the tension recorded
 
 Open enrollment makes a node identity free to mint. The peer-trust design in the reference

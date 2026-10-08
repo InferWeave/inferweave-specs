@@ -90,8 +90,10 @@ document: a hardware-only registration (section 4) is authenticated exactly like
 7. A refusal is transactional: a registration refused for `hardware` admits nothing, and an
    existing registration of the same `nodeId` is unchanged.
 8. `hardware` is informational. It MUST NOT be used for routing, admission, placement, trust or
-   authentication. A re-registration replaces the stored object (it is cleared when the new request
-   carries none).
+   authentication. A re-registration replaces the stored object, and **clears it when the new request
+   carries none** (a gateway MUST NOT keep the previous value). Stored hardware is also dropped
+   when its registration is reaped as stale, forgotten, withdrawn or replaced by a promotion
+   (section 6.2). A conformance divergence is recorded in `OPEN_GATES.md`.
 9. When both an authentication failure and an invalid `hardware` apply, the gateway MAY report
    either 401 or 400.
 10. `hardware` contains stable host identifiers (`hostname`, `machineId`, GPU `uuid`). A gateway
@@ -246,8 +248,8 @@ Unauthenticated: publishing a key grants nothing.
 
 The credential returned by `/proof` is the `credential` a node presents in
 `POST /v1/node/register` with `role` equal to the proven role. A gateway that issues it MUST
-accept it there (and for the heartbeat and link authentication that accept a registration
-credential) for its lifetime, until revoked. **The reference gateway does not do this yet**: it
+accept it there and for the heartbeat for its lifetime, until revoked or replaced (section 6.2).
+It is **not** accepted for a link (section 6.3): holding a link is a routing privilege. **The reference gateway does not do this yet**: it
 mints the proof credential in a store that `/v1/node/register` does not consult, so a node that
 earned a credential by proof cannot register with it (`OPEN_GATES.md`). Renewal and re-proof for a
 node that already holds a credential have no wire surface in the reference (a second proof is
@@ -346,9 +348,91 @@ so open registration must not let a stranger choose where traffic goes.
 4. A node becomes routable **only** through operator-issued enrollment (a one-time code or secret
    issued on the admin surface and spent on `/v1/node/enroll`). Whether a node already enrolled
    by code may register an endpoint and models is unchanged from today.
-5. Origin is per `nodeId` and fixed by whichever credential was issued first; a gateway MUST
-   remember it for as long as the credential is valid (the reference does so in memory only,
-   which `OPEN_GATES.md` records).
+5. Origin is per `nodeId`: *proof-only* (earned by `/v1/node/proof` and never replaced) or
+   *operator-issued*. A gateway MUST remember it for as long as the credential is valid. Section
+   6.2 supersedes "first issued wins" for the proof-only case: an operator-issued credential
+   replaces a proof-only one; the reverse never happens.
+
+### 6.2 Promotion: operator enrollment replaces a proof-only credential
+
+Anyone may publish a key and prove it under any free-looking id, so a stranger can squat on the id
+of a node an operator is about to enroll. Therefore:
+
+1. An operator-issued enrollment (a valid one-time code, or the fleet secret) for an id whose
+   credential is proof-only MUST **replace** that credential. The old credential then fails
+   authentication (`401 control_auth_failed`). No tombstone is kept: the id is not poisoned.
+2. At the same moment the gateway MUST drop the proof-only node's registration and connection (a
+   heartbeat naming the old `connectionId` is `401`), its stored `hardware`, and MUST close every
+   link it holds.
+3. An unredeemable or invalid operator code (unknown, expired, already used, wrong id) MUST NOT
+   unseat anyone: the proof-only credential, registration and hardware are unchanged.
+4. The reverse is never allowed: a proof never replaces an operator-issued credential
+   (`403 forbidden`, section 5.2).
+
+### 6.3 Links
+
+A link is a routing privilege (routing prefers a held link). Therefore a gateway MUST refuse a
+link hello (the link authentication step) from (a) a node whose credential is proof-only and (b)
+any node whose current registration is hardware-only, even with an operator-issued credential.
+Registering hardware-only on a node that holds a link MUST release that link. The link wire is not
+HTTP and is outside the conformance vectors; both are owed tests (`P5-T33`, `P5-T34`).
+
+### 6.4 Known ids
+
+A gateway MUST refuse a tokenless `/v1/node/challenge` and `/v1/node/proof` with `403 forbidden`
+for a `nodeId` it already knows or routes to: a static-catalog node, a node in the live fleet, a
+joined node, a link-only node, a controller-managed instance id, and an id that holds an
+operator-issued credential. The check runs at `/challenge` **and again at `/proof`**, because an id
+can become known between the two. `/key` is not refused (it grants nothing), but SHOULD NOT
+overwrite or reveal anything about a known id.
+
+### 6.5 Bounded state
+
+State created by unauthenticated callers is an exhaustion target. A gateway MUST bound pending
+challenges, published keys, proof-only credentials/nodes and stored hardware. When a bound is
+reached the request is refused `429`; clients MUST key on the status. The code SHOULD be
+`too_many_requests` (a bound) or `rate_limited` (a rate, with a `Retry-After` header). Operator
+enrollment MUST NOT be blocked by exhaustion of any of these bounds. Expired proof state (expired
+challenges, keys that never proved, consumed-challenge records) SHOULD be purged. An implementation
+MAY add per-source rate limiting (`429 rate_limited`, `Retry-After`).
+
+The bounds are implementation limits, not contract values; these are permitted:
+
+| Gateway | Limits |
+| --- | --- |
+| Rust | 1024 pending challenges; 10000 published keys; 10000 proved nodes; hardware stored in compact form |
+| Go | one outstanding challenge per node id (a new one replaces it); 1024 global; 10000 published keys, with a 1 h expiry for a key that never completes a proof; 2000 proof-only credentials; per-source limiter, burst 60 then 1 per second |
+
+They are not vectors. A deployment may choose other values but MUST have a bound.
+
+### 6.6 Request size
+
+An unauthenticated body is parsed only after its size is known to be acceptable. A gateway SHOULD
+refuse a body larger than **256 KiB** on `/v1/node/register` and **16 KiB** on `/v1/node/key`,
+`/challenge` and `/proof`, before parsing it, with `400 bad_request` or `413`. (Rust: 256 KiB and
+16 KiB, 400. Go: 128 KiB on register, which is stricter and permitted; the 65536-byte `hardware`
+limit of section 3.1 still applies.) A body at or under the cap is parsed normally.
+
+### 6.7 Hardware lifecycle
+
+Stored hardware lives exactly as long as the registration that sent it: it is replaced by a
+re-registration, cleared by one that omits it, and dropped when the registration is reaped,
+forgotten, withdrawn or replaced by a promotion (section 3.1 rule 8, 6.2).
+
+### 6.8 Rollback safety
+
+A gateway SHOULD persist the origin (proof-only or operator-issued) of every credential together
+with the credential, using a form an older binary does not accept as operator-issued (for example
+a role an older binary rejects), so that rolling back to a binary that predates section 6.1 fails
+**closed** (the proof-only credential does not authenticate) rather than treating it as
+operator-issued and letting it register an endpoint. The Go gateway does this; the Rust proof
+store is in memory (`OPEN_GATES.md`).
+
+### 6.9 Hardware-only nodes contribute no capacity
+
+Heartbeats and telemetry from a node whose current registration is hardware-only are accepted for
+liveness, but MUST NOT contribute devices or GPU-memory reports (spec 46) to fleet capacity,
+placement or any snapshot that routing or the rebalancer reads.
 
 ## 7. Compatibility
 
@@ -378,6 +462,8 @@ apply to the older-node vector).
 | `hw-version-*` | (d) missing or non-integer `version` is `400 bad_request`; any integer accepted |
 | `older-node-no-hardware` | (e) a node without `hardware` registers as before; `assignments: []` added |
 | `hw-unknown-keys-kept` | unknown members are stored verbatim |
+| `enrollmentLifecycleCases` | promotion evicts a proof-only squatter (old credential and connectionId `401`, hardware gone); a bad operator code unseats nobody; known ids get `403` at `/challenge` and `/proof`; omitting `hardware` clears it |
+| `requestSizeCases` | oversize bodies are refused before parsing (SHOULD) |
 | `enrollmentTrustCases` | tokenless + endpoint is 403; tokenless + models is 403; tokenless hardware-only is 200; code-enrolled with an endpoint is 200; a proof over an operator-enrolled id is 403 |
 | `enrollmentRoleCases` | tokenless challenge for role `node` is 200; for `gateway` (and other roles) is `400 bad_request` |
 | `enrollmentKnownAnswers` | (f) transcript and signature for fixed seed, challenge, nonce and claim |
