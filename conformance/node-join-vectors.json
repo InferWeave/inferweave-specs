@@ -603,16 +603,16 @@
     ]
   },
   "enrollmentRoleCases": {
-    "$comment": "After POST /v1/node/key with `key` (unauthenticated), POST /v1/node/challenge with `challenge`. Each case uses a fresh nodeId on a fresh gateway or a gateway under its cap.",
+    "$comment": "After POST /v1/node/key with `key` (unauthenticated), POST /v1/node/challenge with `challenge`. Each case uses a fresh nodeId on a fresh gateway or a gateway under its cap. The node id is the derived id of the key (section 5.2).",
     "key": {
-      "nodeId": "node_role-1",
+      "nodeId": "node_21fe31dfa154a261",
       "publicKey": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
     },
     "cases": [
       {
         "id": "challenge-role-node",
         "challenge": {
-          "nodeId": "node_role-1",
+          "nodeId": "node_21fe31dfa154a261",
           "role": "node"
         },
         "expect": {
@@ -623,7 +623,7 @@
       {
         "id": "challenge-role-gateway",
         "challenge": {
-          "nodeId": "node_role-1",
+          "nodeId": "node_21fe31dfa154a261",
           "role": "gateway"
         },
         "expect": {
@@ -634,7 +634,7 @@
       {
         "id": "challenge-role-edge",
         "challenge": {
-          "nodeId": "node_role-1",
+          "nodeId": "node_21fe31dfa154a261",
           "role": "edge"
         },
         "expect": {
@@ -645,7 +645,7 @@
       {
         "id": "challenge-role-empty",
         "challenge": {
-          "nodeId": "node_role-1",
+          "nodeId": "node_21fe31dfa154a261",
           "role": ""
         },
         "expect": {
@@ -754,14 +754,14 @@
     ]
   },
   "enrollmentLifecycleCases": {
-    "$comment": "Spec 47 sections 6.2, 6.4, 3.1 rule 8, 6.6. HTTP-level step sequences replayed against one fresh gateway per case. `known` ops make an id known to the gateway (static catalog, live fleet or controller instance) by whatever test hook the gateway has. `cred` names a credential held by the test: `proof1` earned by tokenless proof, `operator1` issued by operator enrollment. `conn` names a connectionId returned by an earlier register.",
+    "$comment": "Spec 47 sections 6.2, 6.4, 3.1 rule 8, 6.6. HTTP-level step sequences replayed against one fresh gateway per case. `known` ops make an id known to the gateway (static catalog, live fleet or controller instance) by whatever test hook the gateway has. `cred` names a credential held by the test: `proof1` earned by tokenless proof, `operator1` issued by operator enrollment. `conn` names a connectionId returned by an earlier register. Names written $derived:X stand for a node id derived from the public key of the test key X (section 5.2); a name that is not of that form on the tokenless path is refused 400 at /key.",
     "cases": [
       {
         "id": "promotion-evicts-proof-squatter",
         "steps": [
           {
             "op": "proof_enroll",
-            "node": "node_pro-1",
+            "node": "$derived:pro1",
             "cred": "proof1",
             "expect": {
               "status": 200
@@ -769,7 +769,7 @@
           },
           {
             "op": "register",
-            "node": "node_pro-1",
+            "node": "$derived:pro1",
             "cred": "proof1",
             "hardware": true,
             "endpoint": false,
@@ -780,7 +780,7 @@
           },
           {
             "op": "operator_enroll",
-            "node": "node_pro-1",
+            "node": "$derived:pro1",
             "cred": "operator1",
             "code": "valid",
             "expect": {
@@ -789,7 +789,7 @@
           },
           {
             "op": "register",
-            "node": "node_pro-1",
+            "node": "$derived:pro1",
             "cred": "proof1",
             "hardware": true,
             "endpoint": false,
@@ -799,7 +799,7 @@
           },
           {
             "op": "heartbeat",
-            "node": "node_pro-1",
+            "node": "$derived:pro1",
             "conn": "conn1",
             "expect": {
               "status": 401
@@ -807,14 +807,14 @@
           },
           {
             "op": "listing",
-            "node": "node_pro-1",
+            "node": "$derived:pro1",
             "expect": {
               "hardwarePresent": false
             }
           },
           {
             "op": "register",
-            "node": "node_pro-1",
+            "node": "$derived:pro1",
             "cred": "operator1",
             "hardware": false,
             "endpoint": true,
@@ -829,7 +829,7 @@
         "steps": [
           {
             "op": "proof_enroll",
-            "node": "node_pro-2",
+            "node": "$derived:pro2",
             "cred": "proof1",
             "expect": {
               "status": 200
@@ -837,7 +837,7 @@
           },
           {
             "op": "register",
-            "node": "node_pro-2",
+            "node": "$derived:pro2",
             "cred": "proof1",
             "hardware": true,
             "endpoint": false,
@@ -848,7 +848,7 @@
           },
           {
             "op": "operator_enroll",
-            "node": "node_pro-2",
+            "node": "$derived:pro2",
             "cred": "operator1",
             "code": "invalid",
             "expect": {
@@ -857,7 +857,7 @@
           },
           {
             "op": "heartbeat",
-            "node": "node_pro-2",
+            "node": "$derived:pro2",
             "conn": "conn1",
             "expect": {
               "status": 200
@@ -865,7 +865,7 @@
           },
           {
             "op": "listing",
-            "node": "node_pro-2",
+            "node": "$derived:pro2",
             "expect": {
               "hardwarePresent": true
             }
@@ -877,7 +877,7 @@
         "steps": [
           {
             "op": "operator_enroll",
-            "node": "node_pro-3",
+            "node": "$derived:pro3",
             "cred": "operator1",
             "code": "valid",
             "expect": {
@@ -886,7 +886,7 @@
           },
           {
             "op": "proof_enroll",
-            "node": "node_pro-3",
+            "node": "$derived:pro3",
             "cred": "proof1",
             "expect": {
               "status": 403,
@@ -895,7 +895,7 @@
           },
           {
             "op": "register",
-            "node": "node_pro-3",
+            "node": "$derived:pro3",
             "cred": "operator1",
             "hardware": false,
             "endpoint": true,
@@ -910,13 +910,13 @@
         "steps": [
           {
             "op": "known",
-            "node": "node_known-1",
+            "node": "$derived:known1",
             "kind": "static",
             "expect": {}
           },
           {
             "op": "challenge",
-            "node": "node_known-1",
+            "node": "$derived:known1",
             "role": "node",
             "expect": {
               "status": 403,
@@ -925,13 +925,13 @@
           },
           {
             "op": "known",
-            "node": "node_known-2",
+            "node": "$derived:known2",
             "kind": "fleet",
             "expect": {}
           },
           {
             "op": "challenge",
-            "node": "node_known-2",
+            "node": "$derived:known2",
             "role": "node",
             "expect": {
               "status": 403,
@@ -945,7 +945,7 @@
         "steps": [
           {
             "op": "challenge",
-            "node": "node_known-3",
+            "node": "$derived:known3",
             "role": "node",
             "expect": {
               "status": 200
@@ -953,13 +953,13 @@
           },
           {
             "op": "known",
-            "node": "node_known-3",
+            "node": "$derived:known3",
             "kind": "controller",
             "expect": {}
           },
           {
             "op": "proof",
-            "node": "node_known-3",
+            "node": "$derived:known3",
             "expect": {
               "status": 403,
               "errorCode": "forbidden"
@@ -972,7 +972,7 @@
         "steps": [
           {
             "op": "proof_enroll",
-            "node": "node_hw-9",
+            "node": "$derived:hw9",
             "cred": "proof1",
             "expect": {
               "status": 200
@@ -980,7 +980,7 @@
           },
           {
             "op": "register",
-            "node": "node_hw-9",
+            "node": "$derived:hw9",
             "cred": "proof1",
             "hardware": true,
             "endpoint": false,
@@ -990,14 +990,14 @@
           },
           {
             "op": "listing",
-            "node": "node_hw-9",
+            "node": "$derived:hw9",
             "expect": {
               "hardwarePresent": true
             }
           },
           {
             "op": "register",
-            "node": "node_hw-9",
+            "node": "$derived:hw9",
             "cred": "proof1",
             "hardware": false,
             "endpoint": false,
@@ -1007,9 +1007,167 @@
           },
           {
             "op": "listing",
-            "node": "node_hw-9",
+            "node": "$derived:hw9",
             "expect": {
               "hardwarePresent": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "challenge-is-idempotent-until-expiry",
+        "steps": [
+          {
+            "op": "key",
+            "node": "$derived:i1",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "challenge",
+            "node": "$derived:i1",
+            "role": "node",
+            "saveAs": "ch1",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "challenge",
+            "node": "$derived:i1",
+            "role": "node",
+            "expect": {
+              "status": 200,
+              "sameAs": "ch1"
+            }
+          },
+          {
+            "op": "advance",
+            "seconds": 901,
+            "expect": {}
+          },
+          {
+            "op": "challenge",
+            "node": "$derived:i1",
+            "role": "node",
+            "expect": {
+              "status": 200,
+              "sameAs": null,
+              "differsFrom": "ch1"
+            }
+          }
+        ]
+      },
+      {
+        "id": "chosen-id-refused-on-tokenless-path",
+        "steps": [
+          {
+            "op": "key",
+            "node": "node_chosen-by-me",
+            "expect": {
+              "status": 400,
+              "errorCode": "bad_request"
+            }
+          },
+          {
+            "op": "operator_enroll",
+            "node": "node_chosen-by-me",
+            "cred": "operator1",
+            "code": "valid",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "register",
+            "node": "node_chosen-by-me",
+            "cred": "operator1",
+            "hardware": false,
+            "endpoint": true,
+            "expect": {
+              "status": 200
+            }
+          }
+        ]
+      },
+      {
+        "id": "hardware-only-and-proved-connections-file-no-telemetry",
+        "steps": [
+          {
+            "op": "proof_enroll",
+            "node": "$derived:t1",
+            "cred": "proof1",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "register",
+            "node": "$derived:t1",
+            "cred": "proof1",
+            "hardware": true,
+            "endpoint": false,
+            "saveConn": "conn1",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "telemetry",
+            "node": "$derived:t1",
+            "conn": "conn1",
+            "expect": {
+              "status": 403,
+              "errorCode": "forbidden"
+            }
+          },
+          {
+            "op": "operator_enroll",
+            "node": "$derived:t2",
+            "cred": "operator1",
+            "code": "valid",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "register",
+            "node": "$derived:t2",
+            "cred": "operator1",
+            "hardware": true,
+            "endpoint": false,
+            "saveConn": "conn2",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "telemetry",
+            "node": "$derived:t2",
+            "conn": "conn2",
+            "expect": {
+              "status": 403,
+              "errorCode": "forbidden"
+            }
+          },
+          {
+            "op": "register",
+            "node": "$derived:t2",
+            "cred": "operator1",
+            "hardware": false,
+            "endpoint": true,
+            "saveConn": "conn3",
+            "expect": {
+              "status": 200
+            }
+          },
+          {
+            "op": "telemetry",
+            "node": "$derived:t2",
+            "conn": "conn3",
+            "expect": {
+              "status": 200
             }
           }
         ]
@@ -1049,6 +1207,72 @@
           "statusIn": [
             200
           ]
+        }
+      }
+    ]
+  },
+  "enrollmentIdCases": {
+    "$comment": "Spec 47 section 5.2: on the tokenless path the node id is node_ + first 16 lowercase hex of SHA-256 of the raw public key bytes. Derived with python3 hashlib.sha256(bytes.fromhex(publicKey)).hexdigest()[:16] and cross-checked with `xxd -r -p | openssl dgst -sha256`.",
+    "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+    "derivedNodeId": "node_21fe31dfa154a261",
+    "cases": [
+      {
+        "id": "key-with-derived-id",
+        "path": "/v1/node/key",
+        "request": {
+          "nodeId": "node_21fe31dfa154a261",
+          "publicKey": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+        },
+        "expect": {
+          "status": 200
+        }
+      },
+      {
+        "id": "key-with-chosen-id",
+        "path": "/v1/node/key",
+        "request": {
+          "nodeId": "node_chosen-by-me",
+          "publicKey": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+        },
+        "expect": {
+          "status": 400,
+          "errorCode": "bad_request"
+        }
+      },
+      {
+        "id": "key-with-uppercase-derived-id",
+        "path": "/v1/node/key",
+        "request": {
+          "nodeId": "node_21FE31DFA154A261",
+          "publicKey": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+        },
+        "expect": {
+          "status": 400,
+          "errorCode": "bad_request"
+        }
+      },
+      {
+        "id": "key-with-id-of-another-key",
+        "path": "/v1/node/key",
+        "request": {
+          "nodeId": "node_0000000000000000",
+          "publicKey": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+        },
+        "expect": {
+          "status": 400,
+          "errorCode": "bad_request"
+        }
+      },
+      {
+        "id": "operator-enrollment-takes-any-id",
+        "path": "/v1/node/enroll",
+        "request": {
+          "nodeId": "node_chosen-by-operator",
+          "role": "node",
+          "code": "${CODE}"
+        },
+        "expect": {
+          "status": 200
         }
       }
     ]

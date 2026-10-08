@@ -189,6 +189,14 @@ def check_node_join_vectors():
     if len(trust) < 5:
         print("FAIL  node-join trust cases: the five required cases are missing")
         ok = False
+    id_doc = doc["enrollmentIdCases"]
+    if node_join.derived_node_id(id_doc["publicKeyHex"]) != id_doc["derivedNodeId"] or id_doc["publicKeyHex"] != doc["enrollmentKnownAnswers"]["publicKeyHex"]:
+        print("FAIL  node-join derived node id does not follow from the known-answer public key")
+        ok = False
+    for c in id_doc["cases"]:
+        if node_join.id_decision(c) != c["expect"]:
+            print(f"FAIL  node-join id case {c['id']}: reference model disagrees")
+            ok = False
     for c in doc["enrollmentLifecycleCases"]["cases"]:
         got = node_join.lifecycle_decisions(c)
         for i, (step, g) in enumerate(zip(c["steps"], got)):
