@@ -16,14 +16,14 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~508,159 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~512,454 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
 - `.github/workflows/protocol-ci.yml` — `4e4a8b44a516` — ~194t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `24fefb92030b` — ~1,421t
+- `CHANGELOG.md` — `e21c51c656b3` — ~1,477t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
@@ -164,6 +164,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/device-bad-enum.json` — `8cff0b010519` — ~15t
 - `fixtures/invalid/gpu-memory-fleet-negative-served-age.json` — `2bfa8c75df42` — ~4,135t
 - `fixtures/invalid/gpu-memory-fleet-page-without-node-count.json` — `60912ad8e9c1` — ~4,136t
+- `fixtures/invalid/gpu-memory-fleet-served-age-too-large.json` — `5a8715ae660e` — ~4,138t
 - `fixtures/invalid/gpu-memory-fleet-slash-in-gateway-id.json` — `1411836be148` — ~4,130t
 - `fixtures/invalid/gpu-memory-report-capacity-not-owned.json` — `ea09bc27e2fe` — ~3,408t
 - `fixtures/invalid/gpu-memory-report-capacity-without-authority.json` — `532c790ae6fe` — ~3,400t
@@ -345,7 +346,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `c8c57b73aa55` — ~3,492t
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
 - `specs/45_PROTOCOL_V1.md` — `b080d4133157` — ~9,372t
-- `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `6f64393ab253` — ~12,481t
+- `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `800cca3e6d38` — ~12,582t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `6027505392aa` — ~233t
