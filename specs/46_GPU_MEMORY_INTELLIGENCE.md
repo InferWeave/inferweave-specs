@@ -412,19 +412,23 @@ its memory). When every pin is still live and the cap is reached, a **new first-
 refused with `503 Service Unavailable` and `Retry-After` (seconds until the oldest pin expires);
 pages of already pinned snapshots are always served. `peers`
 is repeated on **every** page (a consumer judges relay staleness per page); `reservations` are
-carried on the **first** page only. `nodeCount` is required whenever `nextCursor` is present.
+carried on the **first** page only. A producer MUST put `nodeCount` on **every** page of a
+multi-page snapshot, the last page included (the schema can only enforce it where `nextCursor` is
+present, since the last page has none).
 A consumer defers every cross-check between reservations and nodes (a reservation naming a GPU
 of a node on a later page) until all pages of the `sequence` are assembled.
 
 **Pinned pages carry their age.** A page served from a pin — or a first page sharing a pin up to
 `pinShareSecs` old — holds numbers as of `generatedAt`, while the consumer stamps receipt when it
 fetches the page, possibly `cursorTtlSecs` later. So every response carries `servedAgeMs`: the
-producer's own `now − generatedAt` when it served that response. A consumer's age of a paginated
-snapshot is measured from the receipt of its **first** page, plus that page's `servedAgeMs`; a
-node's age is that plus its `relayAgeMs`. A **paginated** response (one with `nextCursor` or
-`nodeCount`) without `servedAgeMs` cannot be judged and is stale. A single, unpaginated response
-without it is read as composed when served (`servedAgeMs` 0); producers send it on every
-response anyway.
+producer's own `now − generatedAt` when it served that response. Age is computed **per page**: a
+page's age is the consumer's receipt age of **that** page plus **that** page's `servedAgeMs` (never
+one page's receipt with another page's `servedAgeMs`, which would count the fetch interval twice);
+a node's age is its page's age plus its `relayAgeMs`. A **paginated** response — one with
+`nextCursor` or `nodeCount`, **or one the consumer fetched with a cursor** (a continuation page,
+whatever it carries) — without `servedAgeMs` cannot be judged and is stale. Only a single,
+unpaginated response, fetched without a cursor, is read as composed when served (`servedAgeMs`
+0) when it lacks the field; producers send it on every response anyway.
 
 **Forward-compatibility budget.** The count bounds above apply to the lists and objects this
 version defines. Unknown members, unknown arrays and unknown objects (from a newer minor) are
@@ -716,7 +720,7 @@ contract. `scripts/validate_specs.py` rejects a non-canonical copy.
 a byte count beside `basis: unknown`, a logical reservation inside `categories` and inside
 `physical`, a GPU with known usage and no `unattributed`, schedulable capacity on a `not-owned`
 GPU or one with no authority, slot items under `runtime-total` support, a control character or
-a non-ASCII character in an id, a boolean `intended`, composed fields on an unowned node, an unanchored unowned node with runtimes, a `/` in a node, gateway or `attachedBy` id, a negative `relayAgeMs`, a page without `nodeCount`, a phantom node carrying allocations or anomalies, a negative `servedAgeMs`, a measured quantity
+a non-ASCII character in an id, a boolean `intended`, composed fields on an unowned node, an unanchored unowned node with runtimes, a `/` in a node, gateway or `attachedBy` id, a negative `relayAgeMs`, a page without `nodeCount`, a phantom node carrying allocations or anomalies, a negative or over-2^53 `servedAgeMs`, a measured quantity
 without bytes, and a decision recorded `succeeded` without a measured outcome or with an
 estimated one. The conformance scenario is `gpu_memory_accounting`
 (`conformance/manifest.yaml`). It belongs to its own optional profile `IW-GPU-MEMORY`, not to
