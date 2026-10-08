@@ -9,7 +9,36 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "decidedAt": {
+      "type": "string",
+      "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+    },
+    "gatewayId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "The gateway whose rebalancer took the decision."
+    },
+    "minResidencyOverride": {
+      "type": "object",
+      "description": "Present when emergency protection overrode a minimum residency (product requirement §14): every override is recorded.",
+      "properties": {
+        "overridden": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "overridden"
+      ],
+      "additionalProperties": true
     },
     "action": {
       "type": "string",
@@ -70,19 +99,22 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
     },
     "runtimeInstanceId": {
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
     },
     "modelId": {
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
     },
     "placementClass": {
       "type": "string",
@@ -103,7 +135,8 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128,
-            "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+            "pattern": "^[\\x21-\\x7e]*$",
+            "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
           }
         }
       },
@@ -119,7 +152,8 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128,
-            "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+            "pattern": "^[\\x21-\\x7e]*$",
+            "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
           }
         }
       },
@@ -166,7 +200,8 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 128,
-              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
             }
           },
           "eligible": {
@@ -192,7 +227,8 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 128,
-              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
             }
           },
           "requiredEvictions": {
@@ -202,7 +238,8 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 128,
-              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
             }
           },
           "restrictions": {
@@ -440,6 +477,8 @@
   },
   "required": [
     "decisionId",
+    "decidedAt",
+    "gatewayId",
     "action",
     "mode",
     "trigger"

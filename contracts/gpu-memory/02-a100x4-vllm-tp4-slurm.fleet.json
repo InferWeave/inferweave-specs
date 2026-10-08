@@ -9,10 +9,10 @@
     {
       "allocations": [
         {
-          "allocationId": "al_node_g7-deepseek_GPU-0a7e0c11-_99812",
+          "allocationId": "al_node_g7-deepseek_GPU-0a7e0c11-_vllm-0",
           "category": "runtime-total",
           "evictable": false,
-          "intended": true,
+          "intended": "yes",
           "meta": {
             "processName": "python3 (vllm worker)"
           },
@@ -29,10 +29,10 @@
           "runtimeInstanceId": "node_g7-deepseek-vllm-0"
         },
         {
-          "allocationId": "al_node_g7-deepseek_GPU-0a7e1c11-_99812",
+          "allocationId": "al_node_g7-deepseek_GPU-0a7e1c11-_vllm-0",
           "category": "runtime-total",
           "evictable": false,
-          "intended": true,
+          "intended": "yes",
           "meta": {
             "processName": "python3 (vllm worker)"
           },
@@ -49,10 +49,10 @@
           "runtimeInstanceId": "node_g7-deepseek-vllm-0"
         },
         {
-          "allocationId": "al_node_g7-deepseek_GPU-0a7e2c11-_99812",
+          "allocationId": "al_node_g7-deepseek_GPU-0a7e2c11-_vllm-0",
           "category": "runtime-total",
           "evictable": false,
-          "intended": true,
+          "intended": "yes",
           "meta": {
             "processName": "python3 (vllm worker)"
           },
@@ -69,10 +69,10 @@
           "runtimeInstanceId": "node_g7-deepseek-vllm-0"
         },
         {
-          "allocationId": "al_node_g7-deepseek_GPU-0a7e3c11-_99812",
+          "allocationId": "al_node_g7-deepseek_GPU-0a7e3c11-_vllm-0",
           "category": "runtime-total",
           "evictable": false,
-          "intended": true,
+          "intended": "yes",
           "meta": {
             "processName": "python3 (vllm worker)"
           },

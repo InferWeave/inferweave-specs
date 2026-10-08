@@ -30,6 +30,8 @@ counted physical memory in `reserved` was following ambiguous text and must be c
   invalid conformance fixtures.
 - Correction (not a clarification): spec 45 memory fields are bytes and `reserved` is logical;
   spec 46 §11 records what the old text allowed and maps the fields onto the new model.
+- Contract fixtures are re-checked by regenerating them (`validate_specs.py`); `intended` is a
+  string enum `yes`/`no`/`unknown`; ids are printable ASCII; allocation ids never carry pids.
 - Conformance: new optional profile `IW-GPU-MEMORY` with scenario `gpu_memory_accounting`;
   `IW-FULL` is unchanged.
 - The stale "only common and errors are published" sentence of spec 45

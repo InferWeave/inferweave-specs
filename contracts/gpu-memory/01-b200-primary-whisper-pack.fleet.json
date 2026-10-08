@@ -9,10 +9,10 @@
     {
       "allocations": [
         {
-          "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_41122",
+          "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_llama.cpp-0",
           "category": "runtime-total",
           "evictable": false,
-          "intended": true,
+          "intended": "yes",
           "meta": {
             "processName": "llama-server"
           },
@@ -29,10 +29,10 @@
           "runtimeInstanceId": "node_b200-01-llama.cpp-0"
         },
         {
-          "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_41377",
+          "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_whisper-0",
           "category": "runtime-total",
           "evictable": true,
-          "intended": true,
+          "intended": "yes",
           "meta": {
             "processName": "python3"
           },
@@ -54,10 +54,10 @@
           "runtimeInstanceId": "node_b200-01-whisper-0"
         },
         {
-          "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_2231",
+          "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_foreign-0",
           "category": "foreign-process",
           "evictable": false,
-          "intended": null,
+          "intended": "unknown",
           "meta": {
             "processName": "python"
           },
@@ -68,7 +68,6 @@
             "note": "MiB resolution",
             "source": "nvidia-smi-compute-apps"
           },
-          "placementClass": "primary",
           "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01"
         }
       ],
@@ -104,7 +103,7 @@
               "basis": "measured",
               "bytes": 2147483648,
               "confidence": "high",
-              "note": "non-InferWeave process (pid 2231 python)",
+              "note": "non-InferWeave process (python)",
               "source": "nvidia-smi-compute-apps"
             },
             "prefixCache": {
@@ -290,6 +289,11 @@
                 "basis": "measured",
                 "bytes": 79456894976,
                 "source": "nvidia-smi-compute-apps"
+              },
+              "prefixCache": {
+                "basis": "estimated",
+                "bytes": 3221225472,
+                "source": "llama.cpp-props"
               },
               "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
               "weights": {

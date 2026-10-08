@@ -9,26 +9,29 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
     },
     "resourceId": {
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
     },
     "runtimeInstanceId": {
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$",
+      "pattern": "^[\\x21-\\x7e]*$",
       "description": "Absent for a process that is not InferWeave's."
     },
     "modelId": {
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
     },
     "category": {
       "type": "string",
@@ -58,17 +61,19 @@
         "normal",
         "opportunistic"
       ],
-      "description": "Absent means normal. A reader that meets a value it does not know treats it as primary (never evicted, never packed against)."
+      "description": "Absent on a foreign-process allocation, which is not InferWeave's and is not classified; otherwise absent means normal."
     },
     "evictable": {
       "type": "boolean"
     },
     "intended": {
-      "type": [
-        "boolean",
-        "null"
+      "type": "string",
+      "enum": [
+        "yes",
+        "no",
+        "unknown"
       ],
-      "description": "Pinned to this GPU. Absent: not reported; null: reported unknown."
+      "description": "Whether the allocation is pinned to this GPU. Absent: not reported."
     },
     "observedAt": {
       "type": "string",

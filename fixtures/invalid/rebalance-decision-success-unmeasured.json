@@ -1,5 +1,7 @@
 {
   "decisionId": "d-1759933865-17-a1b2",
+  "decidedAt": "2026-10-08T14:30:50Z",
+  "gatewayId": "gw_fry-rust",
   "action": "pack",
   "existingKind": "Place",
   "mode": "shadow",

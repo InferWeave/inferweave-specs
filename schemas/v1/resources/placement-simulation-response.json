@@ -9,7 +9,8 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
     },
     "basedOn": {
       "type": "object",
@@ -18,7 +19,8 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 128,
-          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+          "pattern": "^[\\x21-\\x7e]*$",
+          "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
         },
         "sequence": {
           "type": "integer",
@@ -57,7 +59,8 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 128,
-              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
             }
           },
           "eligible": {
@@ -83,7 +86,8 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 128,
-              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
             }
           },
           "requiredEvictions": {
@@ -93,7 +97,8 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 128,
-              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
             }
           },
           "restrictions": {
@@ -135,6 +140,38 @@
     "reasoning": {
       "type": "string",
       "maxLength": 2048
+    },
+    "feasibility": {
+      "type": "object",
+      "description": "Fragmentation and feasibility for the requested shape (spec 46 §9.1): the largest single placement of `requirements.gpus` GPUs that fits, the GPU groups that could host it, and free memory unusable for it because of topology. Composed by the rebalancer authority; never computed by a consumer.",
+      "properties": {
+        "largestFeasibleBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "candidatePlacementGroups": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+            }
+          }
+        },
+        "topologyUnavailableBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "additionalProperties": true
     }
   },
   "required": [

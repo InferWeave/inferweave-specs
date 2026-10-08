@@ -9,10 +9,10 @@
     {
       "allocations": [
         {
-          "allocationId": "al_node_beast_amd-0x7a3c10e5_3120",
+          "allocationId": "al_node_beast_amd-0x7a3c10e5_llama.cpp-0",
           "category": "runtime-total",
           "evictable": false,
-          "intended": null,
+          "intended": "unknown",
           "meta": {
             "processName": "llama-server"
           },
@@ -28,10 +28,10 @@
           "runtimeInstanceId": "node_beast-llama.cpp-0"
         },
         {
-          "allocationId": "al_node_beast_amd-0x7a3c10e6_3120",
+          "allocationId": "al_node_beast_amd-0x7a3c10e6_llama.cpp-0",
           "category": "runtime-total",
           "evictable": false,
-          "intended": null,
+          "intended": "unknown",
           "meta": {
             "processName": "llama-server"
           },
@@ -47,7 +47,7 @@
           "runtimeInstanceId": "node_beast-llama.cpp-0"
         },
         {
-          "allocationId": "al_node_beast_amd-0x7a3c10e6_1877",
+          "allocationId": "al_node_beast_amd-0x7a3c10e6_foreign-0",
           "category": "foreign-process",
           "evictable": false,
           "meta": {
@@ -59,7 +59,6 @@
             "bytes": 805306368,
             "source": "drm-fdinfo"
           },
-          "placementClass": "primary",
           "resourceId": "gpu:gw_beast/node_beast/amd-0x7a3c10e6"
         }
       ],

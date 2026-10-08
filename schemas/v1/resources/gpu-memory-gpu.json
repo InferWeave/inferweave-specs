@@ -9,26 +9,26 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$",
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "gpu:<mintingGatewayId|standalone>/<nodeId>/<deviceKey>, minted by the first gateway that attaches the node and preserved unchanged downstream; nodeId equals origin.nodeId. Consumers de-duplicate by resourceId, then by (nodeId, deviceKey).",
       "allOf": [
         {
           "pattern": "^gpu:[^/]+/[^/]+/.+$"
         }
-      ],
-      "description": "gpu:<mintingGatewayId|standalone>/<nodeId>/<deviceKey>, minted by the first gateway that attaches the node and preserved unchanged downstream; nodeId equals origin.nodeId. Consumers de-duplicate by resourceId, then by (nodeId, deviceKey)."
+      ]
     },
     "deviceId": {
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$",
+      "pattern": "^[\\x21-\\x7e]*$",
       "description": "Equal to the heartbeat devices[].id."
     },
     "topologyGpuId": {
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$",
+      "pattern": "^[\\x21-\\x7e]*$",
       "description": "Equal to topology v2 configuration.gpus[].gpuId."
     },
     "deviceKeyStable": {
@@ -313,14 +313,19 @@
     },
     {
       "if": {
-        "properties": {
-          "authority": {
-            "const": "not-owned"
-          }
-        },
-        "required": [
-          "authority"
-        ]
+        "not": {
+          "properties": {
+            "authority": {
+              "enum": [
+                "owned",
+                "shared-policy"
+              ]
+            }
+          },
+          "required": [
+            "authority"
+          ]
+        }
       },
       "then": {
         "properties": {

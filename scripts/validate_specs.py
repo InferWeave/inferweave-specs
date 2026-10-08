@@ -774,7 +774,30 @@ def guard_gpu_memory_contracts(root):
         text = path.read_text(encoding="utf-8")
         if text != _canonical_json(json.loads(text)):
             errors.append(f"{path.relative_to(root).as_posix()}: not in canonical bytes (sorted keys, 2-space indent, UTF-8, trailing newline)")
+    errors.extend(_gpu_memory_fixtures_match_generator(root, fixtures))
     return errors
+
+
+def _gpu_memory_fixtures_match_generator(root, fixtures):
+    """The contract fixtures are exactly what the generator writes, and the generator asserts the
+    accounting invariants before writing. A hand edit that breaks the arithmetic (used + free,
+    safe <= free, the via path, ...) therefore fails here, not in a downstream decoder."""
+    import subprocess, tempfile
+    generator = root / "tools/gen_gpu_memory_fixtures.py"
+    with tempfile.TemporaryDirectory() as out:
+        run = subprocess.run([sys.executable, "-I", "-B", str(generator), out],
+                             capture_output=True, text=True)
+        if run.returncode != 0:
+            tail = (run.stderr.strip().splitlines() or ["?"])[-1]
+            return [f"tools/gen_gpu_memory_fixtures.py: invariant check failed: {tail}"]
+        errors = []
+        produced = {p.name: p.read_bytes() for p in Path(out).glob("*.json")}
+        for path in fixtures:
+            if produced.get(path.name) != path.read_bytes():
+                errors.append(f"{path.relative_to(root).as_posix()}: differs from tools/gen_gpu_memory_fixtures.py output")
+        for missing in sorted(set(produced) - {p.name for p in fixtures}):
+            errors.append(f"contracts/gpu-memory/{missing}: generated but not committed")
+        return errors
 
 # --------------------------------------------------------------------- driver
 
@@ -916,6 +939,30 @@ def self_test():
         ("contracts/gpu-memory/01-b200-primary-whisper-pack.fleet.json", '{\n  "authority"',
          '{\n"authority"', "non-canonical contract fixture bytes"),
     ]
+    # semantic edits that keep canonical bytes: only the generator comparison catches them
+    def _edit(rel, change):
+        doc = json.loads((ROOT / rel).read_text(encoding="utf-8"))
+        change(doc)
+        return rel, _canonical_json(doc)
+    gib = 1 << 30
+    f01 = "contracts/gpu-memory/01-b200-primary-whisper-pack.fleet.json"
+    f03 = "contracts/gpu-memory/03-r9700x2-rocm-layer-split-no-slots.fleet.json"
+    semantic = [
+        ("used + 1 GiB", _edit(f01, lambda d: d["nodes"][0]["gpus"][0]["physical"]["used"].__setitem__(
+            "bytes", d["nodes"][0]["gpus"][0]["physical"]["used"]["bytes"] + gib))),
+        ("safeSchedulable above free", _edit(f01, lambda d: d["nodes"][0]["gpus"][0]["safeSchedulable"].__setitem__(
+            "bytes", 17 * gib))),
+        ("empty via", _edit(f03, lambda d: d["nodes"][0]["origin"].__setitem__("via", []))),
+    ]
+    for label, (rel, text) in semantic:
+        target = ROOT / rel
+        original = target.read_text(encoding="utf-8")
+        try:
+            target.write_text(text, encoding="utf-8")
+            if not guard_gpu_memory_contracts(ROOT):
+                failures.append(f"no guard rejected: contract fixture {label}")
+        finally:
+            target.write_text(original, encoding="utf-8")
     for rel, old, new, label in gpu_breaks:
         target = ROOT / rel
         original = target.read_text(encoding="utf-8")

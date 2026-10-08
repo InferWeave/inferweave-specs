@@ -48,10 +48,13 @@ recomputing it.
 5. **A new major is a new capability string.** Within a major, fields are only added. Readers
    ignore unknown fields **and** keep unknown enum values verbatim, reading them through the
    fallback each enum documents.
-6. **Field names and enum values are case-sensitive.** A key that differs only in case
+6. **One key, one value.** An object that repeats a key is malformed and is refused as a whole
+   (a decoder that keeps the first or last copy MUST NOT be relied on; Go `encoding/json` keeps
+   the last, Rust `serde` refuses).
+7. **Field names and enum values are case-sensitive.** A key that differs only in case
    (`ResourceId`) is not the field: a consumer whose decoder matches keys case-insensitively
    (Go `encoding/json`) MUST refuse or ignore case variants rather than bind them.
-7. **Logical is never physical.** Reservations and the placement-class view are separate
+8. **Logical is never physical.** Reservations and the placement-class view are separate
    dimensions and are never added into a physical total.
 
 ## Schemas and forward compatibility
@@ -140,15 +143,18 @@ operator-facing, never prompts, request contents or secrets).
 - **Path check.** `via` is self-reported, so a consumer checks it against what it knows itself.
   For a node in a fleet snapshot the consumer pulled from gateway `R`: the snapshot's
   `gatewayId` MUST equal `R`, `via` MUST be non-empty with `via[0] == origin.gatewayId` and
-  `via[last] == R`, and no hop may repeat. A node failing any rule is unusable (an empty or forged
-  `via` never wins). A node with `via == [R]` and `origin.gatewayId == R` is **authoritative**;
-  any other passing node is **relayed**.
+  `via[last] == R`, no hop may repeat, and `via` MUST NOT contain the consumer's own gateway id
+  (an echo of its own export). A node failing any rule is unusable (an empty or forged `via`
+  never wins). A node with `via == [R]`, `origin.gatewayId == R` and a snapshot whose
+  `authority.rebalancer` is true is **authoritative**; any other passing node is **relayed**.
 - When one GPU arrives by several paths, a consumer keeps the authoritative copy, otherwise the
   relayed copy with the shortest `via`. It **never** sums copies.
 - A relayed node is **stale** — every GPU read as `telemetry.status: stale`, its capacity
-  unknown — when the snapshot that carried it lists, for any hop of its `via`, a peer whose
-  `status` is not `fresh` or whose `receivedAgeMs` exceeds `gpuMemory.staleAfterSecs`, or when the
-  consumer's own receipt of that snapshot is older than `staleAfterSecs`.
+  unknown — when, for any hop of its `via` other than the sender `R`, the snapshot lists **no**
+  `peers` entry (the hop cannot be judged), or one whose `status` is not `fresh`, whose
+  `receivedAgeMs` is absent, or whose `receivedAgeMs` exceeds `gpuMemory.staleAfterSecs`; or when
+  the consumer's own receipt of the snapshot is older than `staleAfterSecs`. Staleness fails
+  closed.
 - Freshness is judged by the consumer's receipt time and the producer's `sequence` and
   `producerEpoch`, never by comparing producer clocks.
 
@@ -207,13 +213,19 @@ carrier's size cap sets `truncated: true` and drops slot items first, then alloc
   InferWeave's). A category the producer cannot split stays absent, never zero. A logical
   reservation name is refused inside `categories`.
 - `attributed`: the sum of the allocations' physical bytes on this GPU.
-- `unattributed`: `physical.used − attributed`. **Required whenever `physical.used` carries a
-  number**, so memory nobody explains stays visible.
-- `byClass` (`primary`, `normal`, `opportunistic`): a classification of physical usage, never
-  added to a total. Opportunistic usage is a classification of allocations, not memory on top.
+- `unattributed`: `max(0, physical.used − attributed)`. **Required whenever `physical.used`
+  carries a number**, so memory nobody explains stays visible. When `attributed` exceeds `used`
+  (routine by a few MiB, because per-process totals read in MiB round up) it is `0` with basis
+  `derived`, and an excess above the tolerance is a `negative-derived` anomaly (§3.6).
+- `byClass` (`primary`, `normal`, `opportunistic`): a classification of InferWeave's
+  allocations, never added to a total. Foreign-process allocations are not classified (they carry
+  no `placementClass`), so `Σ byClass` is the attributed memory minus foreign processes.
+  Opportunistic usage is a classification of allocations, not memory on top.
 - `logical`: `kvGrowthReserve`, `slotReserve`, `runtimeGrowthReserve`, `safetyHeadroom`,
-  `placementReservations` (unfulfilled reservations only; gateway-composed),
-  `measurementUncertainty`. Never part of any physical total.
+  `placementReservations` (gateway-composed, §5), `measurementUncertainty`. Never part of any
+  physical total. For a preallocated pool (§3.3) slot capacity is already inside
+  `categories.kvCache`, so `slotReserve`, like `kvGrowthReserve`, is absent or a declared zero:
+  subtracting it from free memory would count the pool twice.
 - `safetyHeadroom` defaults to `policy.safetyMarginPercent × physical.total`; an operator
   override is reported as `basis: declared`, `source: config`, with the override named in `note`.
 - `nodeSafeSchedulable`: the node's view, `free − Σ logical` (except placement reservations),
@@ -238,8 +250,11 @@ is another job's and is expected.
 `max(0, physical.free − Σ logical{kvGrowthReserve, slotReserve, runtimeGrowthReserve,
 safetyHeadroom, placementReservations, measurementUncertainty})`.
 
-1. A reservation whose runtime's allocation is visible in `allocations` is reconciled and no
-   longer counted in `placementReservations`: it is never subtracted twice.
+1. `placementReservations` is `Σ effectiveBytes` over the GPU's **non-terminal** reservations
+   (`pending`, `loading`, `reconciled`). As a runtime's allocation becomes visible, only that
+   visible part leaves the reservation (`effectiveBytes = max(0, requestedBytes − visible
+   physical)`, §5): a half-loaded runtime keeps the rest of its bytes reserved, so a second pack
+   cannot take them, and nothing is subtracted twice.
 2. If `physical.free` is unknown or the telemetry is not `fresh`, `safeSchedulable` is
    `{basis: unknown}` and `eligibility.opportunistic` is false.
 3. `safeSchedulable` never exceeds `physical.free`. A value above it is refused.
@@ -266,6 +281,11 @@ allocator-backed runtimes (`dynamicGrowth: allocator`), which carry
 free memory at start, so packing beside it is refused unless a `primary-restart` reservation
 (§5) holds its restart footprint.
 
+Each `perGpu` share splits the runtime's footprint on one GPU into the same mutually exclusive
+categories as §3.2 (`weights`, `kvCache`, `prefixCache`, `runtimeAllocator`, `runtimeOverhead`,
+`executionGraphs`, `workspace`); where every part is known they sum to `physicalTotal`.
+`logicalReserve` is logical and is not part of that sum.
+
 ### 3.4 Slots
 
 `slots.support`: `per-slot-measured` | `per-slot-estimated` | `runtime-total` | `unsupported`.
@@ -277,11 +297,14 @@ activity and tokens per second — never prompts, request ids or caller identity
 ### 3.5 Allocation
 
 `schemas/v1/resources/gpu-memory-allocation.json`. One attributable physical allocation:
-`allocationId` (stable for its GPU and process while it lives), `resourceId`,
-`runtimeInstanceId` (absent for a foreign process), `modelId`, `category` (`runtime-total`, a
-split category, or `foreign-process`), `physical`, `reservation`, `placementClass`, `evictable`,
-`intended` (pinned to this GPU; absent is not reported and `null` is reported unknown), and at
-most eight `meta` string pairs (never arguments, environment or secrets). Per-process totals
+`allocationId` (opaque and stable for its GPU and runtime while it lives; built from the runtime
+instance or a per-node foreign-process ordinal, **never a raw pid** — pids never leave the
+composing gateway), `resourceId`, `runtimeInstanceId` (absent for a foreign process), `modelId`,
+`category` (`runtime-total`, a split category, or `foreign-process`), `physical`, `reservation`,
+`placementClass` (absent on a foreign-process allocation, which is not classified; otherwise
+absent means `normal`), `evictable`, `intended` (`yes` | `no` | `unknown`: pinned to this GPU;
+absent is not reported — a string, so no decoder confuses absent with `null`), and at most eight
+`meta` string pairs (never arguments, environment or secrets). Per-process totals
 read in MiB convert to bytes with `basis: measured` and are rounded against placement.
 
 ### 3.6 Accounting anomaly
@@ -291,20 +314,38 @@ read in MiB convert to bytes with `basis: measured` and are rounded against plac
 `toleranceBytes`, `firstSeenAt`, `lastSeenAt`, `consecutive`, `detail`. Kinds:
 `physical-sum-mismatch` (invariant a), `attribution-sum-mismatch` (invariant b),
 `unattributed-over-tolerance`, `negative-derived`, `reservation-stale`, `slot-sum-exceeds-pool`,
-`per-process-exceeds-card`.
+`per-process-exceeds-card`. Detection, all over known numbers with the checking gateway's
+tolerance `T` (§3.2):
+
+| Kind | Raised when | `measuredBytes` |
+|---|---|---|
+| `physical-sum-mismatch` | `|used + free − total| > T` | the gap |
+| `attribution-sum-mismatch` | `|attributed + unattributed − used| > T` | the gap |
+| `unattributed-over-tolerance` | `unattributed > T` on a GPU that is not `not-owned` | `unattributed` |
+| `negative-derived` | `attributed − used > T` (raised instead of `attribution-sum-mismatch`) | `attributed − used` |
+| `per-process-exceeds-card` | one allocation's `physical` exceeds `total` | that allocation's bytes |
+| `slot-sum-exceeds-pool` | `Σ` known slot `kvCache` of a runtime exceeds `Σ` known `perGpu.kvCache` of that runtime by more than `T` of its first GPU | the excess |
+| `reservation-stale` | a non-terminal reservation is past `expiresAt`, or its node or GPU has left the report | `effectiveBytes` |
+
+`reservation-stale` and `slot-sum-exceeds-pool` need the gateway's ledger or a whole runtime and
+are raised by the composing gateway; the others are per-report.
 
 ### 3.7 Bounds
 
 Per report: at most 64 GPUs, 64 runtimes, 256 allocations, 64 slots per runtime, 32 current
 anomalies, 16 entries in `origin.via`, `telemetry.sources`, `pressure.reasons` and
-`eligibility.reasons`, 8 `meta` pairs; ids at most 128 UTF-8 bytes with no control (Cc) or format
-(Cf) characters; `note` and `reason` at most 128 characters, anomaly `detail` at most 512;
+`eligibility.reasons`, 8 `meta` pairs; ids are **printable ASCII without spaces**
+(`0x21`–`0x7e`), at most 128 characters — so 128 bytes on every decoder, whether it counts bytes
+or code points, and free of every control or format character; `note` and `reason` at most 128 characters, anomaly `detail` at most 512;
 percentages at most 100; every integer at most 2^53 − 1. A serialized report is at most 1 MiB
 (and is cut to fit a smaller carrier, `truncated: true`).
 
 Per fleet snapshot: at most 1024 nodes, 1024 reservations and 64 peers, and at most 32 MiB
 serialized. A consumer refuses a body over the byte cap **before** decoding it, so a decoder can
-bound its allocation up front.
+bound its allocation up front. A producer whose snapshot would exceed a cap **paginates**: each
+page stays within every cap, carries the same `producerEpoch` and `sequence`, and names the next
+page in `nextCursor` (`GET …/gpu-memory?cursor=<nextCursor>`); a consumer assembles the pages of
+one `sequence` before using any of them, and starts over if the `sequence` changes mid-way.
 
 ## 4. Fleet snapshot — `iw.gpu-memory.fleet/1`
 
@@ -340,8 +381,11 @@ Lifecycle (race-safe admission):
 
 1. **Plan** against `safeSchedulable`.
 2. **Reserve** in the same pass that dispatches the decision.
-3. **Validate** at dispatch against the latest report; if it is stale, or its `sequence` has not
-   advanced past the one planned against, the decision is withheld.
+3. **Validate** at dispatch against the latest report: the decision is withheld if that report
+   is stale, or if its capacity, after every reservation already made, no longer covers the
+   request. (The draft rule "withhold unless `sequence` advanced past the one planned against"
+   is dropped: planning and dispatch happen in the same pass on the same report, so it would
+   withhold every decision.)
 4. **Start** the runtime.
 5. **Reconcile**: when the runtime's physical allocation appears, `effectiveBytes` becomes
    `max(0, requestedBytes − physical)` and the state `reconciled`.
@@ -360,7 +404,10 @@ physical allocation and never released into another job's allocation.
 `forecast`.
 
 States are evaluated on **free-after-growth** = `physical.free − kvGrowthReserve −
-runtimeGrowthReserve`, as a multiple of `safetyHeadroom` — not as a fraction of total, because a
+runtimeGrowthReserve`, computed **signed** (it may be negative, which is `critical`), as a
+multiple of `safetyHeadroom`. If `safetyHeadroom` is absent, unknown or zero, the default
+`safetyMarginPercent` (5) of `physical.total` is used instead; if that is also unknown the state is
+`unknown`. So zero bytes free is never `comfortable`. Not a fraction of total, because a
 vLLM primary that preallocates 90 % of a card is not at risk with 6 % free; it only has no room to
 pack.
 
@@ -402,6 +449,15 @@ The frozen event vocabulary (`contracts/protocol-v1/gpu-memory-events.json`):
 - Rebalance: `rebalance.decision`, `rebalance.started`, `rebalance.completed`,
   `rebalance.failed`.
 
+Payloads by type: `rebalance.decision` — the decision record (§7.2);
+`rebalance.started` / `.completed` / `.failed` — `decisionId` and, when finished, the outcome;
+`gpu.memory.pressure_changed` — `resourceId`, `from`, `to`, `pressure`;
+`gpu.memory.accounting_anomaly` — the anomaly (§3.6); `gpu.memory.oom` — `resourceId`, `nodeId`,
+`runtimeInstanceId`, `detectedAt`, signature, exit status and the id of its postmortem event;
+`gpu.memory.postmortem` — §7.3; every `runtime.*` type — `runtimeInstanceId`, `modelId`,
+`nodeId`, `resourceIds`, `placementClass`, `decisionId`, `reason`, and for migrations the
+`destination`. All are in `schemas/v1/events/gpu-memory-event.json`.
+
 Model residency transitions keep the spec 45 lifecycle events and reasons (`memory_pressure`
 among them); the `rebalance.*` types wrap existing rebalancer decisions and add no second
 decision path.
@@ -409,7 +465,9 @@ decision path.
 ### 7.2 Decision record
 
 `schemas/v1/resources/rebalance-decision.json`, the payload of `rebalance.decision`:
-`decisionId`, `action` (`pack` | `move` | `evict` | `consolidate` | `restore` | `scale_up` |
+`decisionId`, `decidedAt`, `gatewayId` (the deciding rebalancer), `minResidencyOverride`
+(present when emergency protection overrode a minimum residency; every override is recorded),
+`action` (`pack` | `move` | `evict` | `consolidate` | `restore` | `scale_up` |
 `scale_down` | `place` | `repack` | `rebalance` | `renew` | `hold` | `give_back` | `suspend`),
 `existingKind` (the decision variant actually carried out), `mode` (`observe` | `shadow` | `on`;
 shadow decisions are recorded and never executed), `trigger`, `pressureState`, node, runtime and
@@ -422,9 +480,10 @@ recovered before it is measured: a `succeeded` outcome carries a measured, signe
 ### 7.3 OOM postmortem
 
 `schemas/v1/resources/gpu-memory-postmortem.json`, the payload of `gpu.memory.postmortem`: the
-last pre-failure `gpu`, `runtimes` and `allocations` for the GPU, `ownership`, `pressure`,
-`recentGrowth` (the last five minutes), at most ten `recentDecisions` from the last 30 minutes,
-and `runtimeError` (exit
+`nodeId`, the last pre-failure `gpu`, `runtimes` and `allocations` for the GPU, the report's
+`ownership` (same shape), `pressure`, `recentGrowth` (the last five minutes), at most ten
+`recentDecisions` from the last 30 minutes (each with `decisionId`, `action`, `decidedAt` and
+outcome state, so the postmortem reads without the feed), and `runtimeError` (exit
 status, signal, matched OOM signature, and at most 2 KiB of the engine's stderr scrubbed by the
 secret filters). The node keeps a ring of its last 12 reports, so a postmortem never depends on
 the failed runtime still answering. OOM sources: an engine exit with a known OOM signature (CUDA
@@ -439,6 +498,7 @@ per-model placement settings:
 ```jsonc
 "gpuMemory": {
   "mode": "observe",            // off | observe | shadow | on ; absent = off = today's behaviour
+  "telemetryIntervalSecs": 5,   // node report interval
   "safetyMarginPercent": 5, "accountingTolerancePercent": 2, "staleAfterSecs": 30,
   "pressure": { "comfortableFactor": 2.0, "constrainedFactor": 1.0, "pressureFactor": 0.5,
                 "hysteresisFactor": 0.25, "consecutive": 3, "prediction": false, "minSamples": 24 },
@@ -456,6 +516,10 @@ makes those readers refuse the whole configuration. New keys therefore go only u
 `gpuMemory` object or onto objects older readers decode permissively, never into an existing
 strictly decoded object.
 
+Metrics (`inferweave_gpu_memory_*` series and the rebalance counters of the product requirement
+§43) are implementation observability, not protocol, and are deferred to the gateway composition
+task (`P5-T31`).
+
 ## 9. Placement simulation
 
 `schemas/v1/resources/placement-simulation-request.json` and
@@ -465,6 +529,15 @@ rebalancer calls, on a cloned input with reservation disabled: it never reserves
 runtime or changes the fleet (`mode: read-only`, `reservationsMade: 0`). A gateway that is not a
 rebalancer authority refuses it with `FEATURE_UNSUPPORTED`. A consumer forwards the request to the
 authoritative gateway and only renders the answer; it never computes scores.
+
+### 9.1 Feasibility and fragmentation
+
+The product requirement's §18 (largest feasible placement, candidate placement groups, capacity
+lost to topology) is answered **only** by simulation, in the response's `feasibility` block, for
+the shape the request names (`requirements.gpus`, accelerators, bytes). It is not a field of the
+fleet snapshot: "largest feasible placement" has no meaning without a requested shape, and a
+shape-free figure would invite consumers to compute placement themselves. Free memory on
+independent GPUs is never summed into a feasibility figure.
 
 ## 10. Mixed versions
 
@@ -516,7 +589,11 @@ or put physical memory in `reserved` is non-conforming from 1.1.0 and must be co
 
 `contracts/gpu-memory/` holds four fleet snapshots, generated with exact byte arithmetic by
 `tools/gen_gpu_memory_fixtures.py`, which checks invariants (a) and (b) on every GPU before
-writing:
+writing, together with the other rules of this document that the fixtures exercise (attributed
+against the allocations, `byClass` against InferWeave's allocations, `perGpu` sums, capacity
+only with authority, the `via` path, ASCII ids, no pids). `scripts/validate_specs.py`
+regenerates them into a temporary directory and byte-compares, so a hand edit that breaks the
+arithmetic fails the gate:
 
 1. `01-b200-primary-whisper-pack` — the product requirement's worked example (a 96 GiB card
    with 80 GiB physically allocated, 16 GiB raw free, 6 GiB safely schedulable): a llama.cpp
@@ -547,7 +624,8 @@ contract. `scripts/validate_specs.py` rejects a non-canonical copy.
 `fixtures/valid/` objects of this spec, and requires each `fixtures/invalid/` object to fail:
 a byte count beside `basis: unknown`, a logical reservation inside `categories` and inside
 `physical`, a GPU with known usage and no `unattributed`, schedulable capacity on a `not-owned`
-GPU, slot items under `runtime-total` support, a control character in an id, a measured quantity
+GPU or one with no authority, slot items under `runtime-total` support, a control character or
+a non-ASCII character in an id, a boolean `intended`, a measured quantity
 without bytes, and a decision recorded `succeeded` without a measured outcome or with an
 estimated one. The conformance scenario is `gpu_memory_accounting`
 (`conformance/manifest.yaml`). It belongs to its own optional profile `IW-GPU-MEMORY`, not to

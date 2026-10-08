@@ -50,10 +50,42 @@ def finish_gpu(g, placement_res=0, compose=True):
         g["safeSchedulable"] = q(safe, weakest(p["free"], *[v for v in lg.values()]), "iw-ledger")
     return g
 
+ASCII_ID = __import__("re").compile(r"^[\x21-\x7e]{1,128}$")
+SHARE_KEYS = ["weights", "kvCache", "prefixCache", "runtimeAllocator", "runtimeOverhead",
+              "executionGraphs", "workspace"]
+
 def check(doc, name):
     nodes = doc.get("nodes") or [doc]
     for n in nodes:
+        via = n["origin"]["via"]
+        assert via and via[0] == n["origin"]["gatewayId"] and via[-1] == doc["gatewayId"], (name, "via")
+        assert len(set(via)) == len(via), (name, "via cycle")
+        flat = json.dumps(n)
+        assert '"pids"' not in flat and not __import__("re").search(r"pid \d", flat), (name, "no pid leaves the gateway")
+        assert not __import__("re").search(r"_\d{3,}\"", json.dumps([a["allocationId"] for a in n["allocations"]])), (name, "allocationId is no pid")
+        for a in n["allocations"]:
+            assert ASCII_ID.match(a["allocationId"]), (name, a["allocationId"])
+            assert a.get("intended", "yes") in ("yes", "no", "unknown"), (name, "intended")
+            if a["category"] == "foreign-process":
+                assert "placementClass" not in a and "runtimeInstanceId" not in a, (name, "foreign is unclassified")
+        for rt in n["runtimes"]:
+            for share in rt.get("perGpu", []):
+                parts = [share[k]["bytes"] for k in SHARE_KEYS if "bytes" in share.get(k, {})]
+                if "bytes" in share.get("physicalTotal", {}) and parts:
+                    assert sum(parts) == share["physicalTotal"]["bytes"], (name, rt["runtimeInstanceId"], "perGpu sum")
         for g in n["gpus"]:
+            assert ASCII_ID.match(g["resourceId"]), (name, g["resourceId"])
+            assert g["resourceId"].split("/")[1] == n["origin"]["nodeId"], (name, "resourceId node")
+            if g["authority"] not in ("owned", "shared-policy"):
+                for k in ("safeSchedulable", "nodeSafeSchedulable"):
+                    assert g.get(k, {}).get("bytes", 0) == 0, (name, "capacity without authority")
+            mine = [a for a in n["allocations"] if a["resourceId"] == g["resourceId"] and "bytes" in a["physical"]]
+            if "bytes" in g.get("attributed", {}):
+                assert sum(a["physical"]["bytes"] for a in mine) == g["attributed"]["bytes"], (name, "attributed == allocations")
+                classified = sum(a["physical"]["bytes"] for a in mine if a["category"] != "foreign-process")
+                by_class = sum(v["bytes"] for v in g.get("byClass", {}).values() if "bytes" in v)
+                if g.get("byClass"):
+                    assert by_class == classified, (name, g["resourceId"], "byClass == InferWeave allocations", by_class, classified)
             p = g["physical"]
             if "bytes" in p.get("used", {}) and "bytes" in p.get("free", {}):
                 tot = p["total"]["bytes"]
@@ -142,7 +174,7 @@ def f1():
             "kvCache": q(prim_kv, "derived", "llama.cpp-props", "medium", "nCtx 327680 x kvPerToken 32768"),
             "prefixCache": q(prim_pc, "estimated", "llama.cpp-props", "low", "--cache-ram host/device split estimate"),
             "workspace": q(prim_ws + wh_ws, "derived", "nvidia-smi-compute-apps", "medium", "process total minus other categories"),
-            "other": q(other, "measured", "nvidia-smi-compute-apps", "high", "non-InferWeave process (pid 2231 python)"),
+            "other": q(other, "measured", "nvidia-smi-compute-apps", "high", "non-InferWeave process (python)"),
         },
         "attributed": q(used, "estimated"),
         "unattributed": q(0, "derived", note="per-process totals sum to card used"),
@@ -167,6 +199,7 @@ def f1():
          "placementClass": "primary", "evictable": False, "migrationSupported": False,
          "placementGroup": {"gpus": [rid], "topology": "single", "tensorParallel": 1, "pipelineParallel": 1, "shardMovable": False},
          "perGpu": [{"resourceId": rid, "weights": q(prim_w, "estimated", "iw-registry"), "kvCache": q(prim_kv, "derived", "llama.cpp-props"),
+                     "prefixCache": q(prim_pc, "estimated", "llama.cpp-props"),
                      "workspace": q(prim_ws, "derived", "nvidia-smi-compute-apps"), "physicalTotal": q(prim_total, "measured", "nvidia-smi-compute-apps")}],
          "total": q(prim_total, "measured", "nvidia-smi-compute-apps"),
          "kvPool": {"preallocated": True, "capacityTokens": 327680, "usedTokens": sum(t for t in slot_tokens if t),
@@ -188,20 +221,20 @@ def f1():
          "lastActivityAt": "2026-10-08T14:29:40Z", "activeRequests": 0},
     ]
     allocations = [
-        {"allocationId": f"al_{node}_{dev[:13]}_41122", "resourceId": rid, "runtimeInstanceId": f"{node}-llama.cpp-0",
+        {"allocationId": f"al_{node}_{dev[:13]}_llama.cpp-0", "resourceId": rid, "runtimeInstanceId": f"{node}-llama.cpp-0",
          "modelId": "qwen3.8-27b-modality-text-quant-q8_k_xl", "category": "runtime-total",
          "physical": q(prim_total, "measured", "nvidia-smi-compute-apps", note="MiB resolution"),
-         "placementClass": "primary", "evictable": False, "intended": True, "observedAt": "2026-10-08T14:31:05Z",
+         "placementClass": "primary", "evictable": False, "intended": "yes", "observedAt": "2026-10-08T14:31:05Z",
          "meta": {"processName": "llama-server"}},
-        {"allocationId": f"al_{node}_{dev[:13]}_41377", "resourceId": rid, "runtimeInstanceId": f"{node}-whisper-0",
+        {"allocationId": f"al_{node}_{dev[:13]}_whisper-0", "resourceId": rid, "runtimeInstanceId": f"{node}-whisper-0",
          "modelId": "whisper-large-v3-turbo", "category": "runtime-total",
          "physical": q(wh_total, "measured", "nvidia-smi-compute-apps", note="MiB resolution"),
          "reservation": q(2 * GiB, "declared", "config"),
-         "placementClass": "opportunistic", "evictable": True, "intended": True, "observedAt": "2026-10-08T14:31:05Z",
+         "placementClass": "opportunistic", "evictable": True, "intended": "yes", "observedAt": "2026-10-08T14:31:05Z",
          "meta": {"processName": "python3"}},
-        {"allocationId": f"al_{node}_{dev[:13]}_2231", "resourceId": rid, "category": "foreign-process",
+        {"allocationId": f"al_{node}_{dev[:13]}_foreign-0", "resourceId": rid, "category": "foreign-process",
          "physical": q(other, "measured", "nvidia-smi-compute-apps", note="MiB resolution"),
-         "placementClass": "primary", "evictable": False, "intended": None, "observedAt": "2026-10-08T14:31:05Z",
+         "evictable": False, "intended": "unknown", "observedAt": "2026-10-08T14:31:05Z",
          "meta": {"processName": "python"}},
     ]
     n = node_report(node, gw, [g], runtimes, allocations,
@@ -262,9 +295,9 @@ def f2():
           "slots": {"support": "runtime-total"},
           "adapterResources": {"accelerators": ["cuda"], "startupSecs": 540, "eviction": "drain-then-unload", "dynamicGrowth": "preallocated", "maxConcurrency": 64},
           "lastActivityAt": "2026-10-08T14:31:02Z", "activeRequests": 11}
-    allocs = [{"allocationId": f"al_{node}_{r.split('/')[-1][:13]}_99812", "resourceId": r, "runtimeInstanceId": rt["runtimeInstanceId"],
+    allocs = [{"allocationId": f"al_{node}_{r.split('/')[-1][:13]}_vllm-0", "resourceId": r, "runtimeInstanceId": rt["runtimeInstanceId"],
                "modelId": rt["modelId"], "category": "runtime-total", "physical": q(used, "measured", "nvidia-smi-compute-apps", note="MiB resolution"),
-               "placementClass": "primary", "evictable": False, "intended": True, "observedAt": "2026-10-08T14:31:03Z",
+               "placementClass": "primary", "evictable": False, "intended": "yes", "observedAt": "2026-10-08T14:31:03Z",
                "meta": {"processName": "python3 (vllm worker)"}} for r in rids]
     n = node_report(node, gw, gpus, [rt], allocs,
                     {"manager": "slurm", "allocationId": "4823117", "allocationState": "active",
@@ -333,13 +366,13 @@ def f3():
           "activeRequests": 1}
     allocs = []
     for (w, kv, ws, oth), r in zip(specs, rids):
-        allocs.append({"allocationId": f"al_{node}_{r.split('/')[-1]}_3120", "resourceId": r, "runtimeInstanceId": rt["runtimeInstanceId"],
+        allocs.append({"allocationId": f"al_{node}_{r.split('/')[-1]}_llama.cpp-0", "resourceId": r, "runtimeInstanceId": rt["runtimeInstanceId"],
                        "modelId": rt["modelId"], "category": "runtime-total", "physical": q(w + kv + ws, "measured", "drm-fdinfo"),
-                       "placementClass": "primary", "evictable": False, "intended": None, "observedAt": "2026-10-08T14:31:04Z",
+                       "placementClass": "primary", "evictable": False, "intended": "unknown", "observedAt": "2026-10-08T14:31:04Z",
                        "meta": {"processName": "llama-server"}})
         if oth:
-            allocs.append({"allocationId": f"al_{node}_{r.split('/')[-1]}_1877", "resourceId": r, "category": "foreign-process",
-                           "physical": q(oth, "measured", "drm-fdinfo"), "placementClass": "primary", "evictable": False,
+            allocs.append({"allocationId": f"al_{node}_{r.split('/')[-1]}_foreign-0", "resourceId": r, "category": "foreign-process",
+                           "physical": q(oth, "measured", "drm-fdinfo"), "evictable": False,
                            "observedAt": "2026-10-08T14:31:04Z", "meta": {"processName": "gnome-shell"}})
     n = node_report(node, gw, gpus, [rt], allocs, {"manager": "standalone", "allocationState": "active", "actionAuthority": "origin-gateway"}, seq=5531)
     f = fleet(gw, [n], [], mode="observe", seq=2210)
@@ -416,9 +449,9 @@ def f4():
               {"slotId": 1, "state": "idle", "contextTokens": 0, "maxContextTokens": 131072,
                "kvCache": q(0, "estimated", "llama.cpp-slots", "low")}]},
           "activeRequests": 1}
-    allocs = [{"allocationId": f"al_{node}_GPU-11aa22bb_0001", "resourceId": r1, "runtimeInstanceId": rt["runtimeInstanceId"],
+    allocs = [{"allocationId": f"al_{node}_GPU-11aa22bb_llama.cpp-0", "resourceId": r1, "runtimeInstanceId": rt["runtimeInstanceId"],
                "modelId": rt["modelId"], "category": "runtime-total", "physical": q(att1, "measured", "nvidia-smi-compute-apps"),
-               "placementClass": "normal", "evictable": False, "intended": True, "observedAt": "2026-10-08T14:31:05Z",
+               "placementClass": "normal", "evictable": False, "intended": "yes", "observedAt": "2026-10-08T14:31:05Z",
                "meta": {"processName": "llama-server"}}]
     anomalies = [{"anomalyId": "an_c0df_ep_g3glma1_77", "resourceId": r1, "kind": "unattributed-over-tolerance",
                   "measuredBytes": used1 - att1, "toleranceBytes": int(total * 0.02),

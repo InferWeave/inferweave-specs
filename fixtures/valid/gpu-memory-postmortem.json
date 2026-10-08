@@ -2,6 +2,7 @@
   "resourceId": "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0df",
   "capturedAt": "2026-10-08T14:31:05Z",
   "reportSequence": 9921,
+  "nodeId": "node_g3-glm",
   "gpu": {
     "attributed": {
       "basis": "estimated",
@@ -212,10 +213,10 @@
   ],
   "allocations": [
     {
-      "allocationId": "al_node_g3-glm_GPU-11aa22bb_0001",
+      "allocationId": "al_node_g3-glm_GPU-11aa22bb_llama.cpp-0",
       "category": "runtime-total",
       "evictable": false,
-      "intended": true,
+      "intended": "yes",
       "meta": {
         "processName": "llama-server"
       },

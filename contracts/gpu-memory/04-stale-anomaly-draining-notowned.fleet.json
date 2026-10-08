@@ -9,10 +9,10 @@
     {
       "allocations": [
         {
-          "allocationId": "al_node_g3-glm_GPU-11aa22bb_0001",
+          "allocationId": "al_node_g3-glm_GPU-11aa22bb_llama.cpp-0",
           "category": "runtime-total",
           "evictable": false,
-          "intended": true,
+          "intended": "yes",
           "meta": {
             "processName": "llama-server"
           },
