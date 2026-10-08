@@ -144,17 +144,31 @@ operator-facing, never prompts, request contents or secrets).
   For a node in a fleet snapshot the consumer pulled from gateway `R`: the snapshot's
   `gatewayId` MUST equal `R`, `via` MUST be non-empty with `via[0] == origin.gatewayId` and
   `via[last] == R`, no hop may repeat, and `via` MUST NOT contain the consumer's own gateway id
-  (an echo of its own export). A node failing any rule is unusable (an empty or forged `via`
-  never wins). A node with `via == [R]`, `origin.gatewayId == R` and a snapshot whose
-  `authority.rebalancer` is true is **authoritative**; any other passing node is **relayed**.
+  (an echo of its own export). Every consumer applies these rules with its **own gateway id as an
+  input**. A node failing any rule is unusable (an empty or forged `via` never wins).
+- **Verdicts.** A node with `via == [R]` and `origin.gatewayId == R` is **authoritative** when the
+  snapshot's `authority.rebalancer` is true; a gateway that names itself the authority without
+  being a rebalancer is **invalid** (it must leave `origin.gatewayId` empty instead). A passing
+  node with a longer `via` is **relayed**.
+- **Unowned nodes.** Hardware attached to a gateway with no rebalancer (or relayed by one that
+  does not own it) has an **empty** `origin.gatewayId`. Such a node is **kept and shown**, never
+  dropped — its absence would read as missing hardware — and is read with no action authority:
+  it carries no composed fields (`safeSchedulable`, `pressure`, `eligibility` are absent; a report
+  that has them is refused), only the node's own `nodeSafeSchedulable`. Its `via` starts at the
+  gateway that attached it, which is the minting gateway of its GPU resource ids; the other path
+  rules apply unchanged.
 - When one GPU arrives by several paths, a consumer keeps the authoritative copy, otherwise the
   relayed copy with the shortest `via`. It **never** sums copies.
-- A relayed node is **stale** — every GPU read as `telemetry.status: stale`, its capacity
-  unknown — when, for any hop of its `via` other than the sender `R`, the snapshot lists **no**
-  `peers` entry (the hop cannot be judged), or one whose `status` is not `fresh`, whose
-  `receivedAgeMs` is absent, or whose `receivedAgeMs` exceeds `gpuMemory.staleAfterSecs`; or when
-  the consumer's own receipt of the snapshot is older than `staleAfterSecs`. Staleness fails
-  closed.
+- **Relay staleness, hop by hop.** The sender `R` never lists itself in `peers`, and only it
+  knows how fresh its direct upstream is. So a consumer judges exactly one hop: the gateway `R`
+  received the node from, `via[len−2]`. The node is **stale** — every GPU read as
+  `telemetry.status: stale`, its capacity unknown — when `R`'s `peers` has no entry for that hop
+  (it cannot be judged), or one whose `status` is not `fresh`, whose `receivedAgeMs` is absent, or
+  whose `receivedAgeMs` exceeds `gpuMemory.staleAfterSecs`; or when the consumer's own receipt of
+  the snapshot is older than `staleAfterSecs`. Deeper hops are judged transitively: **a relay
+  MUST mark every GPU of a node stale (and drop its composed capacity) before re-serving it when
+  its own upstream for that node was stale**, so a stale hop anywhere reaches the consumer as
+  stale data. A direct node (`via == [R]`) is judged by receipt age only. Staleness fails closed.
 - Freshness is judged by the consumer's receipt time and the producer's `sequence` and
   `producerEpoch`, never by comparing producer clocks.
 
@@ -342,10 +356,23 @@ percentages at most 100; every integer at most 2^53 − 1. A serialized report i
 
 Per fleet snapshot: at most 1024 nodes, 1024 reservations and 64 peers, and at most 32 MiB
 serialized. A consumer refuses a body over the byte cap **before** decoding it, so a decoder can
-bound its allocation up front. A producer whose snapshot would exceed a cap **paginates**: each
-page stays within every cap, carries the same `producerEpoch` and `sequence`, and names the next
-page in `nextCursor` (`GET …/gpu-memory?cursor=<nextCursor>`); a consumer assembles the pages of
-one `sequence` before using any of them, and starts over if the `sequence` changes mid-way.
+bound its allocation up front.
+
+**Large fleets are paginated, never refused.** A node report is typically 7–15 KB, so a consumer
+with a local budget smaller than these caps (for example 2 MiB) would otherwise refuse a valid
+fleet of ~150 nodes. Every page names `nodeCount`, the total across pages of its `sequence`. A
+consumer asks for pages that fit its own budget with `GET …/gpu-memory?limit=<nodes>`; the
+producer returns at most `limit` nodes (and never more than the caps above), the same
+`producerEpoch` and `sequence` on every page, and `nextCursor` while more remain
+(`?cursor=<nextCursor>&limit=<nodes>`). A consumer assembles the pages of one `sequence` before
+using any of them and starts over if the `sequence` changes mid-way. A body over the consumer's
+budget is reported as **too large** (retry with a smaller `limit`), never as malformed.
+
+**Forward-compatibility budget.** The count bounds above apply to the lists and objects this
+version defines. Unknown members, unknown arrays and unknown objects (from a newer minor) are
+not individually bounded and never refuse a document by their count; they count only against
+the byte caps (and any total item budget a decoder enforces across the whole document). A reader
+may skip them unparsed.
 
 ## 4. Fleet snapshot — `iw.gpu-memory.fleet/1`
 
@@ -625,7 +652,7 @@ contract. `scripts/validate_specs.py` rejects a non-canonical copy.
 a byte count beside `basis: unknown`, a logical reservation inside `categories` and inside
 `physical`, a GPU with known usage and no `unattributed`, schedulable capacity on a `not-owned`
 GPU or one with no authority, slot items under `runtime-total` support, a control character or
-a non-ASCII character in an id, a boolean `intended`, a measured quantity
+a non-ASCII character in an id, a boolean `intended`, composed fields on an unowned node, a measured quantity
 without bytes, and a decision recorded `succeeded` without a measured outcome or with an
 estimated one. The conformance scenario is `gpu_memory_accounting`
 (`conformance/manifest.yaml`). It belongs to its own optional profile `IW-GPU-MEMORY`, not to

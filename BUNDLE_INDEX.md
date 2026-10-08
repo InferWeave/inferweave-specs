@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~468,563 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~476,061 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -171,6 +171,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/gpu-memory-report-logical-in-physical.json` — `c4be93fc0f2a` — ~3,439t
 - `fixtures/invalid/gpu-memory-report-missing-unattributed.json` — `7f87e1f2f63e` — ~3,373t
 - `fixtures/invalid/gpu-memory-report-non-ascii-id.json` — `d8a2a4a70522` — ~3,429t
+- `fixtures/invalid/gpu-memory-report-unowned-composed.json` — `dfdbd90ea9d3` — ~3,297t
 - `fixtures/invalid/gpu-memory-report-zero-unknown.json` — `f7f55b2c131a` — ~3,396t
 - `fixtures/invalid/heartbeat-bad-health.json` — `f2d94e9a6173` — ~27t
 - `fixtures/invalid/job-bad-state.json` — `67c057277873` — ~11t
@@ -191,6 +192,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/gateway.json` — `020f83b109a9` — ~58t
 - `fixtures/valid/gpu-memory-event.json` — `3907cc8bf756` — ~250t
 - `fixtures/valid/gpu-memory-postmortem.json` — `120c51ecfc6a` — ~1,819t
+- `fixtures/valid/gpu-memory-report-unowned.json` — `3eb38782b4d8` — ~3,267t
 - `fixtures/valid/gpu-memory-report.json` — `1e122e0a1257` — ~3,407t
 - `fixtures/valid/heartbeat.json` — `56c2c0dafcbd` — ~29t
 - `fixtures/valid/job.json` — `3dced8d97621` — ~29t
@@ -229,7 +231,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `implementation/TEST_STRATEGY.md` — `5ded1d51fb57` — ~1,301t
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `openapi/README.md` — `fd85aef8a3a6` — ~98t
-- `openapi/inferweave-v1.yaml` — `a8d46ad4d121` — ~4,798t
+- `openapi/inferweave-v1.yaml` — `40b751815596` — ~4,871t
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
 - `pi/CONTEXT_PACK_CHECKLIST.md` — `8a9c95b7ec3d` — ~200t
 - `pi/FIRST_TASKS.md` — `674dbf07c4f5` — ~462t
@@ -264,10 +266,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/resources/capacity.json` — `d91c06cb5f5f` — ~243t
 - `schemas/v1/resources/gpu-memory-allocation.json` — `9e8a90b40098` — ~675t
 - `schemas/v1/resources/gpu-memory-anomaly.json` — `7618dbb67cf4` — ~478t
-- `schemas/v1/resources/gpu-memory-fleet.json` — `e8e5c60e2310` — ~863t
+- `schemas/v1/resources/gpu-memory-fleet.json` — `ecfa318f9c14` — ~922t
 - `schemas/v1/resources/gpu-memory-gpu.json` — `e79ab5796eee` — ~2,161t
 - `schemas/v1/resources/gpu-memory-postmortem.json` — `fdb261923c85` — ~1,050t
-- `schemas/v1/resources/gpu-memory-report.json` — `646a06935e8b` — ~1,164t
+- `schemas/v1/resources/gpu-memory-report.json` — `2161c7018ab5` — ~1,406t
 - `schemas/v1/resources/gpu-memory-runtime.json` — `a39eaa096cae` — ~3,034t
 - `schemas/v1/resources/memory.json` — `d5ce1c5bbbe1` — ~334t
 - `schemas/v1/resources/placement-simulation-request.json` — `679bed29beff` — ~709t
@@ -333,7 +335,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `c8c57b73aa55` — ~3,492t
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
 - `specs/45_PROTOCOL_V1.md` — `b080d4133157` — ~9,372t
-- `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `0620e1efa474` — ~10,396t
+- `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `3d2f5b3fe4a8` — ~10,956t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `6027505392aa` — ~233t

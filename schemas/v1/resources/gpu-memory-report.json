@@ -173,5 +173,53 @@
     "origin",
     "gpus"
   ],
-  "additionalProperties": true
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "origin": {
+            "properties": {
+              "gatewayId": {
+                "const": ""
+              }
+            },
+            "required": [
+              "gatewayId"
+            ]
+          }
+        },
+        "required": [
+          "origin"
+        ]
+      },
+      "then": {
+        "properties": {
+          "gpus": {
+            "items": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "safeSchedulable"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "pressure"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "eligibility"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }
