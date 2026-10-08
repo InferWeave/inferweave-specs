@@ -156,8 +156,11 @@ operator-facing, never prompts, request contents or secrets).
   it carries no composed fields (`safeSchedulable`, `pressure`, `eligibility` are absent; a report
   that has them is refused), only the node's own `nodeSafeSchedulable`. Its `via` starts at the
   gateway that attached it: `origin.attachedBy` when present, else the minting gateway of its GPU
-  resource ids. An unowned node with neither (no `attachedBy`, no GPUs) has nothing to count or
-  act on and is kept with its first hop unchecked. The other path rules apply unchanged.
+  resource ids. Every GPU id of one node carries the **same** minting prefix, and when GPUs are
+  present `attachedBy` MUST equal it; a node that breaks either is refused. An unowned node with
+  neither (no `attachedBy`, no GPUs) has nothing to count or act on: it is kept with its first hop
+  unchecked, but it may carry **only** its origin and ownership — no runtimes and no allocations
+  (a "phantom" node is refused). The other path rules apply unchanged.
 - When one GPU arrives by several paths, a consumer keeps the authoritative copy, otherwise the
   relayed copy with the shortest `via`. It **never** sums copies.
 - **Relay staleness, hop by hop.** The sender `R` never lists itself in `peers`, and only it
@@ -168,7 +171,11 @@ operator-facing, never prompts, request contents or secrets).
   whose `receivedAgeMs` exceeds `gpuMemory.staleAfterSecs`; or when the report's **accumulated
   relay age** plus the consumer's own receipt age exceeds `staleAfterSecs`. Each relay adds the
   time it held a report (receipt to re-emission) to `origin.relayAgeMs` before re-serving it, so
-  sixteen hops of 30 s each can never carry eight-minute-old data as fresh. Deeper hops are judged transitively: **a relay
+  sixteen hops of 30 s each can never carry eight-minute-old data as fresh. **A relayed node
+  (`via` of two or more hops) without `relayAgeMs` is stale**: a relay built on older types drops
+  the field when it re-serializes, which would otherwise reset the age to zero at every hop. (A
+  floor of `(len(via) − 1) ×` some minimum poll interval was considered and not adopted: poll
+  intervals are local configuration, not protocol, so no consumer could know the floor.) Deeper hops are judged transitively: **a relay
   MUST mark every GPU of a node stale (and drop its composed capacity) before re-serving it when
   its own upstream for that node was stale**, so a stale hop anywhere reaches the consumer as
   stale data. A direct node (`via == [R]`) is judged by receipt age only. Staleness fails closed.
@@ -378,10 +385,16 @@ budget is reported as **too large** (retry with a smaller `limit`), never as mal
 A cursor **pins its snapshot**: the producer keeps the snapshot of the `sequence` a cursor
 belongs to and serves every page of it from that copy for at least `cursorTtlSecs` (60) after the
 first page, even while it recomposes newer snapshots every few seconds; a slow multi-page fetch
-therefore never stalls on a moving `sequence`. A cursor past its TTL is refused with `410 Gone`
-and the consumer starts again from the first page. `peers`
+therefore never stalls on a moving `sequence`. A cursor past its TTL, a cursor the producer does
+not recognise (another producer's, a forged one), and a cursor issued before a producer restart
+(a different `producerEpoch`) are all refused with `410 Gone`, and the consumer starts again from
+the first page. Pinned snapshots are bounded: a first-page request within `pinShareSecs` (5) of
+the newest pinned snapshot shares it instead of pinning another, and at most
+`maxPinnedSnapshots` (4) are kept, the oldest evicted first (its cursors then get `410`). `peers`
 is repeated on **every** page (a consumer judges relay staleness per page); `reservations` are
 carried on the **first** page only. `nodeCount` is required whenever `nextCursor` is present.
+A consumer defers every cross-check between reservations and nodes (a reservation naming a GPU
+of a node on a later page) until all pages of the `sequence` are assembled.
 
 **Forward-compatibility budget.** The count bounds above apply to the lists and objects this
 version defines. Unknown members, unknown arrays and unknown objects (from a newer minor) are
@@ -543,6 +556,7 @@ per-model placement settings:
 "gpuMemory": {
   "mode": "observe",            // off | observe | shadow | on ; absent = off = today's behaviour
   "telemetryIntervalSecs": 5,   // node report interval
+  "cursorTtlSecs": 60, "pinShareSecs": 5, "maxPinnedSnapshots": 4,   // fleet pagination (§3.7)
   "safetyMarginPercent": 5, "accountingTolerancePercent": 2, "staleAfterSecs": 30,
   "pressure": { "comfortableFactor": 2.0, "constrainedFactor": 1.0, "pressureFactor": 0.5,
                 "hysteresisFactor": 0.25, "consecutive": 3, "prediction": false, "minSamples": 24 },
@@ -672,7 +686,7 @@ contract. `scripts/validate_specs.py` rejects a non-canonical copy.
 a byte count beside `basis: unknown`, a logical reservation inside `categories` and inside
 `physical`, a GPU with known usage and no `unattributed`, schedulable capacity on a `not-owned`
 GPU or one with no authority, slot items under `runtime-total` support, a control character or
-a non-ASCII character in an id, a boolean `intended`, composed fields on an unowned node, a measured quantity
+a non-ASCII character in an id, a boolean `intended`, composed fields on an unowned node, an unanchored unowned node with runtimes, a `/` in a node, gateway or `attachedBy` id, a negative `relayAgeMs`, a page without `nodeCount`, a measured quantity
 without bytes, and a decision recorded `succeeded` without a measured outcome or with an
 estimated one. The conformance scenario is `gpu_memory_accounting`
 (`conformance/manifest.yaml`). It belongs to its own optional profile `IW-GPU-MEMORY`, not to

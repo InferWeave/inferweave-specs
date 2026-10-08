@@ -233,6 +233,44 @@
           }
         }
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "origin": {
+            "properties": {
+              "gatewayId": {
+                "const": ""
+              }
+            },
+            "required": [
+              "gatewayId"
+            ],
+            "not": {
+              "required": [
+                "attachedBy"
+              ]
+            }
+          },
+          "gpus": {
+            "maxItems": 0
+          }
+        },
+        "required": [
+          "origin",
+          "gpus"
+        ]
+      },
+      "then": {
+        "properties": {
+          "runtimes": {
+            "maxItems": 0
+          },
+          "allocations": {
+            "maxItems": 0
+          }
+        }
+      }
     }
   ]
 }

@@ -236,7 +236,7 @@ paths:
             application/json:
               schema: { $ref: "#/components/schemas/GpuMemoryFleet" }
         "410":
-          description: The cursor's pinned snapshot expired (cursorTtlSecs); start again from the first page
+          description: The cursor is expired (cursorTtlSecs), unknown, or from before a producer restart; start again from the first page
         "501":
           description: FEATURE_UNSUPPORTED -- the capability is not in force here
           content:
