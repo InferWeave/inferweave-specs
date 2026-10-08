@@ -21,6 +21,12 @@ jobs/        async job states and progress
 artifacts/   artifact descriptor and cache state
 ```
 
+Protocol 1.1.0 adds the `iw.gpu-memory` schemas of `specs/46_GPU_MEMORY_INTELLIGENCE.md`:
+`resources/quantity.json`, `pressure.json`, `reservation.json`, `gpu-memory-*.json`,
+`rebalance-decision.json`, `placement-simulation-*.json`, and `events/gpu-memory-event.json`. They
+are camelCase and keep `additionalProperties: true`, so a newer producer's fields never break an
+older reader.
+
 Every object category is populated in this repository (common, errors, topology, model,
 resources, runtime, requests, events, jobs, artifacts). All schemas are validated by the
 conformance runner (`conformance/runner.py`) against `fixtures/`. The schemas are frozen

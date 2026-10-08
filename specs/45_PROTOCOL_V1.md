@@ -165,6 +165,14 @@ Version alone is insufficient. Each peer SHALL advertise supported protocol feat
 }
 ```
 
+Protocol 1.1.0 adds the GPU memory family `gpu_memory`, `rebalance_decisions`,
+`placement_simulation` and `card_coresidency` (`specs/46_GPU_MEMORY_INTELLIGENCE.md` §1). Each
+feature at level `"1"` names one `iw.<name>/<major>` capability (`iw.gpu-memory/1`,
+`iw.rebalance-decisions/1`, `iw.placement-simulation/1`, `iw.card-coresidency/1`), the grammar the
+link and HTTP surfaces negotiate: a capability is in force only when both sides list it, and a new
+major is a new capability. The pairing is frozen data in
+`contracts/protocol-v1/gpu-memory-capabilities.json`.
+
 Never assume a feature exists because a peer runs a particular InferWeave release. Peers MUST
 tolerate unknown features (ignore, preserve, forward) and MUST NOT reject a peer for
 advertising an unknown feature. A feature a peer advertises at a higher level than the local
@@ -285,12 +293,11 @@ Gateway
 ## Canonical objects and JSON Schemas
 
 The canonical object schemas live under `schemas/v1/` and are authoritative for the wire
-format. **In v1.0.0 only `schemas/v1/common/` and `schemas/v1/errors/` are published in this
-repository.** The per-category object schemas (topology, model, resources, runtime, requests,
-events, jobs, artifacts) are normative as prose in this section and are published as JSON
-Schema by canonical task `P5-T25` (currently `owed`). A schema path named below but not yet
-published is the intended home; until it is published, this prose is authoritative for v1.0.0
-and objects remain representable through the extension namespace. This section states the
+format. Every object category (common, errors, topology, model, resources, runtime, requests,
+events, jobs, artifacts) is published as JSON Schema under `schemas/v1/`; production
+conformance by a running component remains `owed` by canonical task `P5-T25`. Protocol 1.1.0
+adds the `iw.gpu-memory` schemas of `specs/46_GPU_MEMORY_INTELLIGENCE.md` under
+`schemas/v1/resources/` and `schemas/v1/events/`. This section states the
 object semantics; the JSON Schema is the contract. See "Schema layout and rules" for the
 authoritative schema rules.
 
@@ -312,7 +319,11 @@ Unknown device types remain representable and are preserved/forwarded.
 
 Devices expose explicit memory accounting with at minimum `total`, `weights`, `kv_cache`,
 `runtime_cache`, `active_requests`, `reserved`, `other_models`, `system`, `unaccounted`, `free`.
-Upstream dashboards must render this directly.
+Upstream dashboards must render this directly. Every value is bytes; `reserved` is logical and is
+never part of a physical total. Protocol 1.1.0 defines the detailed, provenance-carrying superset
+(`specs/46_GPU_MEMORY_INTELLIGENCE.md`): per-GPU physical, attributed and unattributed memory,
+mutually exclusive categories, logical reservations, runtimes, slots and allocations, each byte
+count with an explicit basis. `specs/46` §11 maps every field above onto it.
 
 ### Device telemetry
 
@@ -590,6 +601,9 @@ machine-readable data reconciled by test under invariant 41 by canonical tasks `
 `MODEL_REBALANCED`) with standard reasons (`demand`, `operator_request`, `autoscale`,
 `rebalance`, `idle_timeout`, `memory_pressure`, `allocation_loss`, `preemption`,
 `runtime_failure`, `hardware_failure`, `maintenance`, `upgrade`, `cache_pressure`, `unknown`).
+Protocol 1.1.0 adds the `gpu.memory.*`, `runtime.*` placement and `rebalance.*` decision events
+of `specs/46_GPU_MEMORY_INTELLIGENCE.md` §7 on their own capability-gated feed; their frozen
+vocabulary is `contracts/protocol-v1/gpu-memory-events.json`.
 
 ### Snapshot + delta model
 

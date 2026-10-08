@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/quantity.json",
+  "title": "GpuMemoryQuantity",
+  "type": "object",
+  "description": "Bytes with provenance (spec 46 §2.1). Unknown is never zero: bytes is present exactly when the basis says a number exists; an absent quantity is not reported.",
+  "properties": {
+    "bytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Present exactly when basis is measured, derived, estimated or declared."
+    },
+    "basis": {
+      "type": "string",
+      "enum": [
+        "measured",
+        "derived",
+        "estimated",
+        "declared",
+        "unknown",
+        "unsupported"
+      ],
+      "description": "measured: read directly; derived: arithmetic over measured values only; estimated: model/registry/sizer; declared: operator/config/adapter declaration; unknown: should exist but could not be read; unsupported: can never be provided. A reader that meets a value it does not know reads it as unknown and uses no number from it."
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "description": "Open vocabulary (spec 46 §2.1): nvml, nvidia-smi, nvidia-smi-compute-apps, rocm-smi, amd-smi, drm-fdinfo, sysfs, llama.cpp-props, llama.cpp-slots, llama.cpp-metrics, vllm-metrics, comfyui-system-stats, torch-allocator, systemone-metrics, iw-ledger, iw-sizer, iw-registry, iw-resource-profile, config. An unknown source is shown verbatim and graded like estimated."
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "description": "Absent defaults by basis: high for measured, medium for derived, low otherwise."
+    },
+    "observedAt": {
+      "type": "string",
+      "description": "Only when it differs from the enclosing GPU's observation time."
+    },
+    "note": {
+      "type": "string",
+      "maxLength": 128,
+      "description": "Operator-facing; never prompts, request contents or secrets."
+    }
+  },
+  "required": [
+    "basis"
+  ],
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "basis": {
+            "enum": [
+              "measured",
+              "derived",
+              "estimated",
+              "declared"
+            ]
+          }
+        },
+        "required": [
+          "basis"
+        ]
+      },
+      "then": {
+        "required": [
+          "bytes"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "basis": {
+            "enum": [
+              "unknown",
+              "unsupported"
+            ]
+          }
+        },
+        "required": [
+          "basis"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "bytes"
+          ]
+        }
+      }
+    }
+  ]
+}

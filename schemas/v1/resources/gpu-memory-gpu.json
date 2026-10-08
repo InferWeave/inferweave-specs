@@ -1,0 +1,295 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/gpu-memory-gpu.json",
+  "title": "GpuMemoryGpu",
+  "type": "object",
+  "description": "One GPU's memory (spec 46 §3.2). Invariant (b): attributed + unattributed ≈ physical.used; unattributed is present whenever physical.used has a number.",
+  "properties": {
+    "resourceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "gpu:<originGatewayId|standalone>/<nodeId>/<deviceKey>; globally distinguishable in a federated view."
+    },
+    "deviceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Equal to the heartbeat devices[].id."
+    },
+    "topologyGpuId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Equal to topology v2 configuration.gpus[].gpuId."
+    },
+    "deviceKeyStable": {
+      "type": "boolean"
+    },
+    "index": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "vendor": {
+      "type": "string",
+      "enum": [
+        "nvidia",
+        "amd",
+        "intel",
+        "apple",
+        "other"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "driver": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "runtime": {
+          "type": "string",
+          "maxLength": 64
+        }
+      },
+      "additionalProperties": true
+    },
+    "authority": {
+      "type": "string",
+      "enum": [
+        "owned",
+        "shared-policy",
+        "not-owned",
+        "unknown"
+      ],
+      "description": "Only owned and shared-policy GPUs can ever have safeSchedulable above zero."
+    },
+    "telemetry": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "fresh",
+            "stale",
+            "unavailable"
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+        },
+        "ageMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sources": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "Open vocabulary (spec 46 §2.1): nvml, nvidia-smi, nvidia-smi-compute-apps, rocm-smi, amd-smi, drm-fdinfo, sysfs, llama.cpp-props, llama.cpp-slots, llama.cpp-metrics, vllm-metrics, comfyui-system-stats, torch-allocator, systemone-metrics, iw-ledger, iw-sizer, iw-registry, iw-resource-profile, config. An unknown source is shown verbatim and graded like estimated."
+          }
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "additionalProperties": true
+    },
+    "physical": {
+      "type": "object",
+      "description": "Invariant (a): used + free ≈ total.",
+      "properties": {
+        "total": {
+          "$ref": "quantity.json"
+        },
+        "used": {
+          "$ref": "quantity.json"
+        },
+        "free": {
+          "$ref": "quantity.json"
+        }
+      },
+      "required": [
+        "total",
+        "used",
+        "free"
+      ],
+      "additionalProperties": true
+    },
+    "categories": {
+      "type": "object",
+      "description": "Mutually exclusive physical categories; their sum is attributed. A category the producer cannot split stays absent, not zero. Logical reservations are never categories.",
+      "properties": {
+        "weights": {
+          "$ref": "quantity.json"
+        },
+        "kvCache": {
+          "$ref": "quantity.json"
+        },
+        "prefixCache": {
+          "$ref": "quantity.json"
+        },
+        "runtimeAllocator": {
+          "$ref": "quantity.json"
+        },
+        "runtimeOverhead": {
+          "$ref": "quantity.json"
+        },
+        "executionGraphs": {
+          "$ref": "quantity.json"
+        },
+        "workspace": {
+          "$ref": "quantity.json"
+        },
+        "other": {
+          "$ref": "quantity.json"
+        }
+      },
+      "additionalProperties": true,
+      "propertyNames": {
+        "not": {
+          "enum": [
+            "kvGrowthReserve",
+            "slotReserve",
+            "runtimeGrowthReserve",
+            "safetyHeadroom",
+            "placementReservations",
+            "measurementUncertainty"
+          ]
+        }
+      }
+    },
+    "attributed": {
+      "$ref": "quantity.json"
+    },
+    "unattributed": {
+      "$ref": "quantity.json"
+    },
+    "byClass": {
+      "type": "object",
+      "description": "A classification of physical usage; never added to totals.",
+      "properties": {
+        "primary": {
+          "$ref": "quantity.json"
+        },
+        "normal": {
+          "$ref": "quantity.json"
+        },
+        "opportunistic": {
+          "$ref": "quantity.json"
+        }
+      },
+      "additionalProperties": true
+    },
+    "logical": {
+      "type": "object",
+      "description": "Logical reservations; never included in physical totals.",
+      "properties": {
+        "kvGrowthReserve": {
+          "$ref": "quantity.json"
+        },
+        "slotReserve": {
+          "$ref": "quantity.json"
+        },
+        "runtimeGrowthReserve": {
+          "$ref": "quantity.json"
+        },
+        "safetyHeadroom": {
+          "$ref": "quantity.json"
+        },
+        "placementReservations": {
+          "$ref": "quantity.json"
+        },
+        "measurementUncertainty": {
+          "$ref": "quantity.json"
+        }
+      },
+      "additionalProperties": true
+    },
+    "nodeSafeSchedulable": {
+      "$ref": "quantity.json"
+    },
+    "safeSchedulable": {
+      "$ref": "quantity.json"
+    },
+    "pressure": {
+      "$ref": "pressure.json"
+    },
+    "eligibility": {
+      "type": "object",
+      "properties": {
+        "opportunistic": {
+          "type": "boolean"
+        },
+        "reasons": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "enum": [
+              "telemetry-stale",
+              "not-owned",
+              "allocation-draining",
+              "cooling",
+              "anomaly",
+              "opportunistic-disabled",
+              "primary-restart-reserve-missing"
+            ]
+          }
+        }
+      },
+      "required": [
+        "opportunistic"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "resourceId",
+    "telemetry",
+    "physical"
+  ],
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "physical": {
+            "properties": {
+              "used": {
+                "required": [
+                  "bytes"
+                ]
+              }
+            },
+            "required": [
+              "used"
+            ]
+          }
+        },
+        "required": [
+          "physical"
+        ]
+      },
+      "then": {
+        "required": [
+          "unattributed"
+        ]
+      }
+    }
+  ]
+}

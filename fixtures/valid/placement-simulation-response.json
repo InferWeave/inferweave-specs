@@ -1,0 +1,26 @@
+{
+  "simulationId": "sim_7f3c01",
+  "basedOn": {
+    "gatewayId": "gw_hive-rust",
+    "sequence": 40212
+  },
+  "mode": "read-only",
+  "reservationsMade": 0,
+  "candidates": [
+    {
+      "resourceIds": [
+        "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0df"
+      ],
+      "eligible": false,
+      "rejectedBecause": "anomaly"
+    },
+    {
+      "resourceIds": [
+        "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0e0"
+      ],
+      "eligible": false,
+      "rejectedBecause": "not-owned"
+    }
+  ],
+  "reasoning": "no eligible GPU: GPU 1 has an open accounting anomaly and the allocation is draining; GPU 2 belongs to another Slurm job"
+}

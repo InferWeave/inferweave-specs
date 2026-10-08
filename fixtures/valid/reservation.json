@@ -1,0 +1,19 @@
+{
+  "createdAt": "2026-10-08T14:30:50Z",
+  "decisionId": "d-1759933865-17-a1b2",
+  "effectiveBytes": 4294967296,
+  "expiresAt": "2026-10-08T15:30:50Z",
+  "kind": "placement",
+  "modelId": "bge-m3-embedding",
+  "owner": {
+    "component": "autoscaler",
+    "gatewayId": "gw_fry-rust"
+  },
+  "placementClass": "opportunistic",
+  "placementGroupId": "pg_d-1759933865-17-a1b2",
+  "reason": "pack: nodeSafe=10.0GiB need=4.0GiB (shadow would be recorded only)",
+  "requestedBytes": 4294967296,
+  "reservationId": "rv_d-1759933865-17-a1b2_GPU-5f1e0c2a-",
+  "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
+  "state": "pending"
+}

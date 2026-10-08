@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/placement-simulation-request.json",
+  "title": "PlacementSimulationRequest",
+  "type": "object",
+  "description": "POST /iw/v1/gpu-memory/simulate (spec 46 §9). Read-only: a simulation never reserves, starts or changes anything.",
+  "properties": {
+    "modelId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "adapter": {
+      "type": "string",
+      "maxLength": 32
+    },
+    "placementClass": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "normal",
+        "opportunistic"
+      ],
+      "description": "Absent means normal. A reader that meets a value it does not know treats it as primary (never evicted, never packed against)."
+    },
+    "requirements": {
+      "type": "object",
+      "properties": {
+        "expectedVramBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "growthReserveBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "contextTokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "concurrency": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "accelerators": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "maxLength": 16
+          }
+        },
+        "gpus": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      },
+      "additionalProperties": true
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "gatewayIds": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "nodeIds": {
+          "type": "array",
+          "maxItems": 1024,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "modelId",
+    "requirements"
+  ],
+  "additionalProperties": true
+}

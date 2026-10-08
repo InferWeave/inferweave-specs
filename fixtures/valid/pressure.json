@@ -1,0 +1,13 @@
+{
+  "headroom": {
+    "basis": "derived",
+    "bytes": 6442450944,
+    "source": "iw-ledger"
+  },
+  "kvPoolOccupancy": 0.4,
+  "reasons": [
+    "free-after-growth 14 GiB = 3.5x safety"
+  ],
+  "since": "2026-10-08T14:02:00Z",
+  "state": "comfortable"
+}

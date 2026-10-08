@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/reservation.json",
+  "title": "GpuMemoryReservation",
+  "type": "object",
+  "description": "A logical VRAM reservation in a rebalancer's ledger (spec 46 §5).",
+  "properties": {
+    "reservationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "decisionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "owner": {
+      "type": "object",
+      "properties": {
+        "gatewayId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "component": {
+          "type": "string",
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "gatewayId",
+        "component"
+      ],
+      "additionalProperties": true
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "placement",
+        "primary-restart",
+        "kv-growth",
+        "runtime-growth",
+        "restore"
+      ]
+    },
+    "resourceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "placementGroupId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Shared by every GPU of a multi-GPU placement."
+    },
+    "modelId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "placementClass": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "normal",
+        "opportunistic"
+      ],
+      "description": "Absent means normal. A reader that meets a value it does not know treats it as primary (never evicted, never packed against)."
+    },
+    "requestedBytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "effectiveBytes": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Shrinks as the runtime's allocation appears, so a reservation that became physical is never subtracted twice."
+    },
+    "createdAt": {
+      "type": "string",
+      "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+    },
+    "expiresAt": {
+      "type": "string",
+      "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "loading",
+        "reconciled",
+        "released",
+        "expired",
+        "cancelled"
+      ]
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 128
+    }
+  },
+  "required": [
+    "reservationId",
+    "owner",
+    "kind",
+    "resourceId",
+    "requestedBytes",
+    "effectiveBytes",
+    "createdAt",
+    "state"
+  ],
+  "additionalProperties": true
+}

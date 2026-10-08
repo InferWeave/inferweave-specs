@@ -1,0 +1,819 @@
+{
+  "authority": {
+    "mode": "observe",
+    "rebalancer": true
+  },
+  "gatewayId": "gw_hive-rust",
+  "generatedAt": "2026-10-08T14:31:07Z",
+  "nodes": [
+    {
+      "allocations": [
+        {
+          "allocationId": "al_node_g7-deepseek_GPU-0a7e0c11-_99812",
+          "category": "runtime-total",
+          "evictable": false,
+          "intended": true,
+          "meta": {
+            "processName": "python3 (vllm worker)"
+          },
+          "modelId": "deepseek-v4.1-modality-text-quant-fp8",
+          "observedAt": "2026-10-08T14:31:03Z",
+          "physical": {
+            "basis": "measured",
+            "bytes": 78920024064,
+            "note": "MiB resolution",
+            "source": "nvidia-smi-compute-apps"
+          },
+          "placementClass": "primary",
+          "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e0c11-2f4d-4e8a-9b1c-7d6e5f4a3b20",
+          "runtimeInstanceId": "node_g7-deepseek-vllm-0"
+        },
+        {
+          "allocationId": "al_node_g7-deepseek_GPU-0a7e1c11-_99812",
+          "category": "runtime-total",
+          "evictable": false,
+          "intended": true,
+          "meta": {
+            "processName": "python3 (vllm worker)"
+          },
+          "modelId": "deepseek-v4.1-modality-text-quant-fp8",
+          "observedAt": "2026-10-08T14:31:03Z",
+          "physical": {
+            "basis": "measured",
+            "bytes": 78920024064,
+            "note": "MiB resolution",
+            "source": "nvidia-smi-compute-apps"
+          },
+          "placementClass": "primary",
+          "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e1c11-2f4d-4e8a-9b1c-7d6e5f4a3b21",
+          "runtimeInstanceId": "node_g7-deepseek-vllm-0"
+        },
+        {
+          "allocationId": "al_node_g7-deepseek_GPU-0a7e2c11-_99812",
+          "category": "runtime-total",
+          "evictable": false,
+          "intended": true,
+          "meta": {
+            "processName": "python3 (vllm worker)"
+          },
+          "modelId": "deepseek-v4.1-modality-text-quant-fp8",
+          "observedAt": "2026-10-08T14:31:03Z",
+          "physical": {
+            "basis": "measured",
+            "bytes": 78920024064,
+            "note": "MiB resolution",
+            "source": "nvidia-smi-compute-apps"
+          },
+          "placementClass": "primary",
+          "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e2c11-2f4d-4e8a-9b1c-7d6e5f4a3b22",
+          "runtimeInstanceId": "node_g7-deepseek-vllm-0"
+        },
+        {
+          "allocationId": "al_node_g7-deepseek_GPU-0a7e3c11-_99812",
+          "category": "runtime-total",
+          "evictable": false,
+          "intended": true,
+          "meta": {
+            "processName": "python3 (vllm worker)"
+          },
+          "modelId": "deepseek-v4.1-modality-text-quant-fp8",
+          "observedAt": "2026-10-08T14:31:03Z",
+          "physical": {
+            "basis": "measured",
+            "bytes": 78920024064,
+            "note": "MiB resolution",
+            "source": "nvidia-smi-compute-apps"
+          },
+          "placementClass": "primary",
+          "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e3c11-2f4d-4e8a-9b1c-7d6e5f4a3b23",
+          "runtimeInstanceId": "node_g7-deepseek-vllm-0"
+        }
+      ],
+      "anomalies": [],
+      "gpus": [
+        {
+          "attributed": {
+            "basis": "estimated",
+            "bytes": 78920024064
+          },
+          "authority": "owned",
+          "byClass": {
+            "primary": {
+              "basis": "measured",
+              "bytes": 78920024064,
+              "source": "nvidia-smi-compute-apps"
+            }
+          },
+          "categories": {
+            "executionGraphs": {
+              "basis": "estimated",
+              "bytes": 1610612736,
+              "note": "RP profile peak, CUDA graphs captured",
+              "source": "iw-resource-profile"
+            },
+            "kvCache": {
+              "basis": "derived",
+              "bytes": 32212254720,
+              "note": "num_gpu_blocks x block_bytes from cache_config_info",
+              "source": "vllm-metrics"
+            },
+            "runtimeOverhead": {
+              "basis": "derived",
+              "bytes": 2147483648,
+              "note": "process total - weights - kv - graphs",
+              "source": "nvidia-smi-compute-apps"
+            },
+            "weights": {
+              "basis": "estimated",
+              "bytes": 42949672960,
+              "note": "checkpoint bytes / TP 4",
+              "source": "iw-registry"
+            }
+          },
+          "deviceId": "GPU-0a7e0c11-2f4d-4e8a-9b1c-7d6e5f4a3b20",
+          "deviceKeyStable": true,
+          "driver": {
+            "name": "nvidia",
+            "runtime": "cuda-12.4",
+            "version": "550.127.05"
+          },
+          "eligibility": {
+            "opportunistic": false,
+            "reasons": [
+              "primary-restart-reserve-missing",
+              "opportunistic-disabled"
+            ]
+          },
+          "index": 0,
+          "logical": {
+            "kvGrowthReserve": {
+              "basis": "declared",
+              "bytes": 0,
+              "note": "vLLM KV pool preallocated (gpu_memory_utilization 0.90)"
+            },
+            "measurementUncertainty": {
+              "basis": "derived",
+              "bytes": 536870912,
+              "note": "graphs estimate +-0.5 GiB"
+            },
+            "placementReservations": {
+              "basis": "declared",
+              "bytes": 0,
+              "source": "iw-ledger"
+            },
+            "safetyHeadroom": {
+              "basis": "declared",
+              "bytes": 4294967296,
+              "note": "5% of 80 GiB",
+              "source": "config"
+            }
+          },
+          "name": "NVIDIA A100-SXM4-80GB",
+          "nodeSafeSchedulable": {
+            "basis": "derived",
+            "bytes": 2147483648,
+            "source": "iw-ledger"
+          },
+          "physical": {
+            "free": {
+              "basis": "measured",
+              "bytes": 6979321856,
+              "source": "nvidia-smi"
+            },
+            "total": {
+              "basis": "measured",
+              "bytes": 85899345920,
+              "source": "nvidia-smi"
+            },
+            "used": {
+              "basis": "measured",
+              "bytes": 78920024064,
+              "source": "nvidia-smi"
+            }
+          },
+          "pressure": {
+            "headroom": {
+              "basis": "derived",
+              "bytes": 2147483648,
+              "source": "iw-ledger"
+            },
+            "kvPoolOccupancy": 0.42,
+            "previous": "comfortable",
+            "reasons": [
+              "free-after-growth 6.5 GiB = 1.6x safety; preallocated runtime, no growth exposure"
+            ],
+            "since": "2026-10-08T09:02:11Z",
+            "state": "constrained"
+          },
+          "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e0c11-2f4d-4e8a-9b1c-7d6e5f4a3b20",
+          "safeSchedulable": {
+            "basis": "derived",
+            "bytes": 2147483648,
+            "source": "iw-ledger"
+          },
+          "telemetry": {
+            "ageMs": 2100,
+            "observedAt": "2026-10-08T14:31:03Z",
+            "sources": [
+              "nvidia-smi",
+              "nvidia-smi-compute-apps",
+              "vllm-metrics"
+            ],
+            "status": "fresh"
+          },
+          "topologyGpuId": "GPU-0a7e0c11-2f4d-4e8a-9b1c-7d6e5f4a3b20",
+          "unattributed": {
+            "basis": "derived",
+            "bytes": 0
+          },
+          "vendor": "nvidia"
+        },
+        {
+          "attributed": {
+            "basis": "estimated",
+            "bytes": 78920024064
+          },
+          "authority": "owned",
+          "byClass": {
+            "primary": {
+              "basis": "measured",
+              "bytes": 78920024064,
+              "source": "nvidia-smi-compute-apps"
+            }
+          },
+          "categories": {
+            "executionGraphs": {
+              "basis": "estimated",
+              "bytes": 1610612736,
+              "note": "RP profile peak, CUDA graphs captured",
+              "source": "iw-resource-profile"
+            },
+            "kvCache": {
+              "basis": "derived",
+              "bytes": 32212254720,
+              "note": "num_gpu_blocks x block_bytes from cache_config_info",
+              "source": "vllm-metrics"
+            },
+            "runtimeOverhead": {
+              "basis": "derived",
+              "bytes": 2147483648,
+              "note": "process total - weights - kv - graphs",
+              "source": "nvidia-smi-compute-apps"
+            },
+            "weights": {
+              "basis": "estimated",
+              "bytes": 42949672960,
+              "note": "checkpoint bytes / TP 4",
+              "source": "iw-registry"
+            }
+          },
+          "deviceId": "GPU-0a7e1c11-2f4d-4e8a-9b1c-7d6e5f4a3b21",
+          "deviceKeyStable": true,
+          "driver": {
+            "name": "nvidia",
+            "runtime": "cuda-12.4",
+            "version": "550.127.05"
+          },
+          "eligibility": {
+            "opportunistic": false,
+            "reasons": [
+              "primary-restart-reserve-missing",
+              "opportunistic-disabled"
+            ]
+          },
+          "index": 1,
+          "logical": {
+            "kvGrowthReserve": {
+              "basis": "declared",
+              "bytes": 0,
+              "note": "vLLM KV pool preallocated (gpu_memory_utilization 0.90)"
+            },
+            "measurementUncertainty": {
+              "basis": "derived",
+              "bytes": 536870912,
+              "note": "graphs estimate +-0.5 GiB"
+            },
+            "placementReservations": {
+              "basis": "declared",
+              "bytes": 0,
+              "source": "iw-ledger"
+            },
+            "safetyHeadroom": {
+              "basis": "declared",
+              "bytes": 4294967296,
+              "note": "5% of 80 GiB",
+              "source": "config"
+            }
+          },
+          "name": "NVIDIA A100-SXM4-80GB",
+          "nodeSafeSchedulable": {
+            "basis": "derived",
+            "bytes": 2147483648,
+            "source": "iw-ledger"
+          },
+          "physical": {
+            "free": {
+              "basis": "measured",
+              "bytes": 6979321856,
+              "source": "nvidia-smi"
+            },
+            "total": {
+              "basis": "measured",
+              "bytes": 85899345920,
+              "source": "nvidia-smi"
+            },
+            "used": {
+              "basis": "measured",
+              "bytes": 78920024064,
+              "source": "nvidia-smi"
+            }
+          },
+          "pressure": {
+            "headroom": {
+              "basis": "derived",
+              "bytes": 2147483648,
+              "source": "iw-ledger"
+            },
+            "kvPoolOccupancy": 0.42,
+            "previous": "comfortable",
+            "reasons": [
+              "free-after-growth 6.5 GiB = 1.6x safety; preallocated runtime, no growth exposure"
+            ],
+            "since": "2026-10-08T09:02:11Z",
+            "state": "constrained"
+          },
+          "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e1c11-2f4d-4e8a-9b1c-7d6e5f4a3b21",
+          "safeSchedulable": {
+            "basis": "derived",
+            "bytes": 2147483648,
+            "source": "iw-ledger"
+          },
+          "telemetry": {
+            "ageMs": 2100,
+            "observedAt": "2026-10-08T14:31:03Z",
+            "sources": [
+              "nvidia-smi",
+              "nvidia-smi-compute-apps",
+              "vllm-metrics"
+            ],
+            "status": "fresh"
+          },
+          "topologyGpuId": "GPU-0a7e1c11-2f4d-4e8a-9b1c-7d6e5f4a3b21",
+          "unattributed": {
+            "basis": "derived",
+            "bytes": 0
+          },
+          "vendor": "nvidia"
+        },
+        {
+          "attributed": {
+            "basis": "estimated",
+            "bytes": 78920024064
+          },
+          "authority": "owned",
+          "byClass": {
+            "primary": {
+              "basis": "measured",
+              "bytes": 78920024064,
+              "source": "nvidia-smi-compute-apps"
+            }
+          },
+          "categories": {
+            "executionGraphs": {
+              "basis": "estimated",
+              "bytes": 1610612736,
+              "note": "RP profile peak, CUDA graphs captured",
+              "source": "iw-resource-profile"
+            },
+            "kvCache": {
+              "basis": "derived",
+              "bytes": 32212254720,
+              "note": "num_gpu_blocks x block_bytes from cache_config_info",
+              "source": "vllm-metrics"
+            },
+            "runtimeOverhead": {
+              "basis": "derived",
+              "bytes": 2147483648,
+              "note": "process total - weights - kv - graphs",
+              "source": "nvidia-smi-compute-apps"
+            },
+            "weights": {
+              "basis": "estimated",
+              "bytes": 42949672960,
+              "note": "checkpoint bytes / TP 4",
+              "source": "iw-registry"
+            }
+          },
+          "deviceId": "GPU-0a7e2c11-2f4d-4e8a-9b1c-7d6e5f4a3b22",
+          "deviceKeyStable": true,
+          "driver": {
+            "name": "nvidia",
+            "runtime": "cuda-12.4",
+            "version": "550.127.05"
+          },
+          "eligibility": {
+            "opportunistic": false,
+            "reasons": [
+              "primary-restart-reserve-missing",
+              "opportunistic-disabled"
+            ]
+          },
+          "index": 2,
+          "logical": {
+            "kvGrowthReserve": {
+              "basis": "declared",
+              "bytes": 0,
+              "note": "vLLM KV pool preallocated (gpu_memory_utilization 0.90)"
+            },
+            "measurementUncertainty": {
+              "basis": "derived",
+              "bytes": 536870912,
+              "note": "graphs estimate +-0.5 GiB"
+            },
+            "placementReservations": {
+              "basis": "declared",
+              "bytes": 0,
+              "source": "iw-ledger"
+            },
+            "safetyHeadroom": {
+              "basis": "declared",
+              "bytes": 4294967296,
+              "note": "5% of 80 GiB",
+              "source": "config"
+            }
+          },
+          "name": "NVIDIA A100-SXM4-80GB",
+          "nodeSafeSchedulable": {
+            "basis": "derived",
+            "bytes": 2147483648,
+            "source": "iw-ledger"
+          },
+          "physical": {
+            "free": {
+              "basis": "measured",
+              "bytes": 6979321856,
+              "source": "nvidia-smi"
+            },
+            "total": {
+              "basis": "measured",
+              "bytes": 85899345920,
+              "source": "nvidia-smi"
+            },
+            "used": {
+              "basis": "measured",
+              "bytes": 78920024064,
+              "source": "nvidia-smi"
+            }
+          },
+          "pressure": {
+            "headroom": {
+              "basis": "derived",
+              "bytes": 2147483648,
+              "source": "iw-ledger"
+            },
+            "kvPoolOccupancy": 0.42,
+            "previous": "comfortable",
+            "reasons": [
+              "free-after-growth 6.5 GiB = 1.6x safety; preallocated runtime, no growth exposure"
+            ],
+            "since": "2026-10-08T09:02:11Z",
+            "state": "constrained"
+          },
+          "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e2c11-2f4d-4e8a-9b1c-7d6e5f4a3b22",
+          "safeSchedulable": {
+            "basis": "derived",
+            "bytes": 2147483648,
+            "source": "iw-ledger"
+          },
+          "telemetry": {
+            "ageMs": 2100,
+            "observedAt": "2026-10-08T14:31:03Z",
+            "sources": [
+              "nvidia-smi",
+              "nvidia-smi-compute-apps",
+              "vllm-metrics"
+            ],
+            "status": "fresh"
+          },
+          "topologyGpuId": "GPU-0a7e2c11-2f4d-4e8a-9b1c-7d6e5f4a3b22",
+          "unattributed": {
+            "basis": "derived",
+            "bytes": 0
+          },
+          "vendor": "nvidia"
+        },
+        {
+          "attributed": {
+            "basis": "estimated",
+            "bytes": 78920024064
+          },
+          "authority": "owned",
+          "byClass": {
+            "primary": {
+              "basis": "measured",
+              "bytes": 78920024064,
+              "source": "nvidia-smi-compute-apps"
+            }
+          },
+          "categories": {
+            "executionGraphs": {
+              "basis": "estimated",
+              "bytes": 1610612736,
+              "note": "RP profile peak, CUDA graphs captured",
+              "source": "iw-resource-profile"
+            },
+            "kvCache": {
+              "basis": "derived",
+              "bytes": 32212254720,
+              "note": "num_gpu_blocks x block_bytes from cache_config_info",
+              "source": "vllm-metrics"
+            },
+            "runtimeOverhead": {
+              "basis": "derived",
+              "bytes": 2147483648,
+              "note": "process total - weights - kv - graphs",
+              "source": "nvidia-smi-compute-apps"
+            },
+            "weights": {
+              "basis": "estimated",
+              "bytes": 42949672960,
+              "note": "checkpoint bytes / TP 4",
+              "source": "iw-registry"
+            }
+          },
+          "deviceId": "GPU-0a7e3c11-2f4d-4e8a-9b1c-7d6e5f4a3b23",
+          "deviceKeyStable": true,
+          "driver": {
+            "name": "nvidia",
+            "runtime": "cuda-12.4",
+            "version": "550.127.05"
+          },
+          "eligibility": {
+            "opportunistic": false,
+            "reasons": [
+              "primary-restart-reserve-missing",
+              "opportunistic-disabled"
+            ]
+          },
+          "index": 3,
+          "logical": {
+            "kvGrowthReserve": {
+              "basis": "declared",
+              "bytes": 0,
+              "note": "vLLM KV pool preallocated (gpu_memory_utilization 0.90)"
+            },
+            "measurementUncertainty": {
+              "basis": "derived",
+              "bytes": 536870912,
+              "note": "graphs estimate +-0.5 GiB"
+            },
+            "placementReservations": {
+              "basis": "declared",
+              "bytes": 0,
+              "source": "iw-ledger"
+            },
+            "safetyHeadroom": {
+              "basis": "declared",
+              "bytes": 4294967296,
+              "note": "5% of 80 GiB",
+              "source": "config"
+            }
+          },
+          "name": "NVIDIA A100-SXM4-80GB",
+          "nodeSafeSchedulable": {
+            "basis": "derived",
+            "bytes": 2147483648,
+            "source": "iw-ledger"
+          },
+          "physical": {
+            "free": {
+              "basis": "measured",
+              "bytes": 6979321856,
+              "source": "nvidia-smi"
+            },
+            "total": {
+              "basis": "measured",
+              "bytes": 85899345920,
+              "source": "nvidia-smi"
+            },
+            "used": {
+              "basis": "measured",
+              "bytes": 78920024064,
+              "source": "nvidia-smi"
+            }
+          },
+          "pressure": {
+            "headroom": {
+              "basis": "derived",
+              "bytes": 2147483648,
+              "source": "iw-ledger"
+            },
+            "kvPoolOccupancy": 0.42,
+            "previous": "comfortable",
+            "reasons": [
+              "free-after-growth 6.5 GiB = 1.6x safety; preallocated runtime, no growth exposure"
+            ],
+            "since": "2026-10-08T09:02:11Z",
+            "state": "constrained"
+          },
+          "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e3c11-2f4d-4e8a-9b1c-7d6e5f4a3b23",
+          "safeSchedulable": {
+            "basis": "derived",
+            "bytes": 2147483648,
+            "source": "iw-ledger"
+          },
+          "telemetry": {
+            "ageMs": 2100,
+            "observedAt": "2026-10-08T14:31:03Z",
+            "sources": [
+              "nvidia-smi",
+              "nvidia-smi-compute-apps",
+              "vllm-metrics"
+            ],
+            "status": "fresh"
+          },
+          "topologyGpuId": "GPU-0a7e3c11-2f4d-4e8a-9b1c-7d6e5f4a3b23",
+          "unattributed": {
+            "basis": "derived",
+            "bytes": 0
+          },
+          "vendor": "nvidia"
+        }
+      ],
+      "observedAt": "2026-10-08T14:31:05Z",
+      "origin": {
+        "gatewayId": "gw_hive-rust",
+        "nodeId": "node_g7-deepseek",
+        "via": [
+          "gw_hive-rust"
+        ]
+      },
+      "ownership": {
+        "actionAuthority": "origin-gateway",
+        "allocationEndsAt": "2026-10-09T02:00:00Z",
+        "allocationId": "4823117",
+        "allocationState": "active",
+        "manager": "slurm"
+      },
+      "policy": {
+        "accountingTolerancePercent": 2,
+        "safetyMarginPercent": 5,
+        "telemetryIntervalSecs": 5
+      },
+      "producerEpoch": "ep_epseeka1",
+      "runtimes": [
+        {
+          "activeRequests": 11,
+          "adapter": "vllm",
+          "adapterResources": {
+            "accelerators": [
+              "cuda"
+            ],
+            "dynamicGrowth": "preallocated",
+            "eviction": "drain-then-unload",
+            "maxConcurrency": 64,
+            "startupSecs": 540
+          },
+          "adapterVersion": "0.11.0",
+          "deployment": "dep_cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "evictable": false,
+          "kvPool": {
+            "preallocated": true,
+            "usageRatio": {
+              "basis": "measured",
+              "source": "vllm-metrics",
+              "value": 0.42
+            }
+          },
+          "lastActivityAt": "2026-10-08T14:31:02Z",
+          "migrationSupported": false,
+          "modelId": "deepseek-v4.1-modality-text-quant-fp8",
+          "perGpu": [
+            {
+              "kvCache": {
+                "basis": "derived",
+                "bytes": 32212254720,
+                "source": "vllm-metrics"
+              },
+              "physicalTotal": {
+                "basis": "measured",
+                "bytes": 78920024064,
+                "source": "nvidia-smi-compute-apps"
+              },
+              "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e0c11-2f4d-4e8a-9b1c-7d6e5f4a3b20",
+              "weights": {
+                "basis": "estimated",
+                "bytes": 42949672960,
+                "source": "iw-registry"
+              },
+              "workspace": {
+                "basis": "derived",
+                "bytes": 3758096384,
+                "source": "nvidia-smi-compute-apps"
+              }
+            },
+            {
+              "kvCache": {
+                "basis": "derived",
+                "bytes": 32212254720,
+                "source": "vllm-metrics"
+              },
+              "physicalTotal": {
+                "basis": "measured",
+                "bytes": 78920024064,
+                "source": "nvidia-smi-compute-apps"
+              },
+              "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e1c11-2f4d-4e8a-9b1c-7d6e5f4a3b21",
+              "weights": {
+                "basis": "estimated",
+                "bytes": 42949672960,
+                "source": "iw-registry"
+              },
+              "workspace": {
+                "basis": "derived",
+                "bytes": 3758096384,
+                "source": "nvidia-smi-compute-apps"
+              }
+            },
+            {
+              "kvCache": {
+                "basis": "derived",
+                "bytes": 32212254720,
+                "source": "vllm-metrics"
+              },
+              "physicalTotal": {
+                "basis": "measured",
+                "bytes": 78920024064,
+                "source": "nvidia-smi-compute-apps"
+              },
+              "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e2c11-2f4d-4e8a-9b1c-7d6e5f4a3b22",
+              "weights": {
+                "basis": "estimated",
+                "bytes": 42949672960,
+                "source": "iw-registry"
+              },
+              "workspace": {
+                "basis": "derived",
+                "bytes": 3758096384,
+                "source": "nvidia-smi-compute-apps"
+              }
+            },
+            {
+              "kvCache": {
+                "basis": "derived",
+                "bytes": 32212254720,
+                "source": "vllm-metrics"
+              },
+              "physicalTotal": {
+                "basis": "measured",
+                "bytes": 78920024064,
+                "source": "nvidia-smi-compute-apps"
+              },
+              "resourceId": "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e3c11-2f4d-4e8a-9b1c-7d6e5f4a3b23",
+              "weights": {
+                "basis": "estimated",
+                "bytes": 42949672960,
+                "source": "iw-registry"
+              },
+              "workspace": {
+                "basis": "derived",
+                "bytes": 3758096384,
+                "source": "nvidia-smi-compute-apps"
+              }
+            }
+          ],
+          "placementClass": "primary",
+          "placementGroup": {
+            "gpus": [
+              "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e0c11-2f4d-4e8a-9b1c-7d6e5f4a3b20",
+              "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e1c11-2f4d-4e8a-9b1c-7d6e5f4a3b21",
+              "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e2c11-2f4d-4e8a-9b1c-7d6e5f4a3b22",
+              "gpu:gw_hive-rust/node_g7-deepseek/GPU-0a7e3c11-2f4d-4e8a-9b1c-7d6e5f4a3b23"
+            ],
+            "pipelineParallel": 1,
+            "shardMovable": false,
+            "tensorParallel": 4,
+            "topology": "tensor"
+          },
+          "runtimeInstanceId": "node_g7-deepseek-vllm-0",
+          "slots": {
+            "support": "runtime-total"
+          },
+          "total": {
+            "basis": "measured",
+            "bytes": 315680096256,
+            "source": "nvidia-smi-compute-apps"
+          }
+        }
+      ],
+      "schema": "iw.gpu-memory.report/1",
+      "sequence": 77120,
+      "truncated": false
+    }
+  ],
+  "peers": [],
+  "producerEpoch": "ep_rust0f",
+  "reservations": [],
+  "schema": "iw.gpu-memory.fleet/1",
+  "sequence": 40211
+}

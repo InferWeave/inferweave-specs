@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/gpu-memory-postmortem.json",
+  "title": "GpuMemoryPostmortem",
+  "type": "object",
+  "description": "Payload of gpu.memory.postmortem (spec 46 §7.3): the last pre-failure state of the GPU, kept by the node so the OOM can be reconstructed without the failed runtime.",
+  "properties": {
+    "resourceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "capturedAt": {
+      "type": "string",
+      "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+    },
+    "reportSequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "gpu": {
+      "$ref": "gpu-memory-gpu.json"
+    },
+    "runtimes": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "$ref": "gpu-memory-runtime.json"
+      }
+    },
+    "allocations": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "gpu-memory-allocation.json"
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "pressure": {
+      "$ref": "pressure.json"
+    },
+    "recentGrowth": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string",
+            "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+          },
+          "usedBytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "at"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "recentDecisions": {
+      "type": "array",
+      "maxItems": 10,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "exitStatus": {
+          "type": "integer"
+        },
+        "signal": {
+          "type": "string",
+          "maxLength": 16
+        },
+        "signature": {
+          "type": "string",
+          "maxLength": 64
+        },
+        "stderrTail": {
+          "type": "string",
+          "maxLength": 2048,
+          "description": "At most 2 KiB, matched against OOM signatures and scrubbed by the secret filters; never prompts."
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "resourceId",
+    "capturedAt",
+    "gpu"
+  ],
+  "additionalProperties": true
+}

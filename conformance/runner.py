@@ -5,6 +5,7 @@ Validates conformance fixtures against the canonical JSON Schemas:
 - every fixture under fixtures/valid/ must validate against its schema
 - every fixture under fixtures/invalid/ must fail its schema
 - every fixture under fixtures/federation/ must validate against its schema
+- every pinned contract under contracts/gpu-memory/ must validate as a fleet snapshot
 
 The runner is intentionally strict: a valid fixture that stops validating, or an invalid
 fixture that starts validating, fails the run.
@@ -51,7 +52,21 @@ MAP = {
     "artifact": "artifacts/artifact.json",
     "cache-state": "artifacts/cache-state.json",
     "federation-path": "topology/node.json",
+    "quantity": "resources/quantity.json",
+    "pressure": "resources/pressure.json",
+    "reservation": "resources/reservation.json",
+    "gpu-memory-report": "resources/gpu-memory-report.json",
+    "gpu-memory-fleet": "resources/gpu-memory-fleet.json",
+    "gpu-memory-postmortem": "resources/gpu-memory-postmortem.json",
+    "gpu-memory-event": "events/gpu-memory-event.json",
+    "rebalance-decision": "resources/rebalance-decision.json",
+    "placement-simulation-request": "resources/placement-simulation-request.json",
+    "placement-simulation-response": "resources/placement-simulation-response.json",
 }
+
+# Pinned iw.gpu-memory/1 contract fixtures (spec 46), shared byte-for-byte with the reference
+# implementation; each is a fleet snapshot and must validate as one.
+CONTRACT_DIRS = {"contracts/gpu-memory": "resources/gpu-memory-fleet.json"}
 
 # Load every schema once and register it under its absolute $id so relative $refs resolve.
 _STORE = {}
@@ -70,17 +85,18 @@ def validator(schema_rel):
 
 
 def schema_for(stem):
-    # exact basename match first; otherwise map invalid fixtures by prefix before the first "-"
+    # exact basename match first; otherwise map invalid fixtures by the longest MAP key that is
+    # a "-"-delimited prefix of the name ("gpu-memory-report-zero-unknown" -> "gpu-memory-report")
     if stem in MAP:
         return MAP[stem]
-    prefix = stem.split("-")[0]
-    return MAP.get(prefix)
+    prefixes = [k for k in MAP if stem.startswith(k + "-")]
+    return MAP[max(prefixes, key=len)] if prefixes else None
 
 
-def validate_fixture(path, must_pass):
+def validate_fixture(path, must_pass, schema_rel=None):
     rel = path.relative_to(ROOT).as_posix()
     stem = path.stem
-    schema_rel = schema_for(stem)
+    schema_rel = schema_rel or schema_for(stem)
     if schema_rel is None:
         print(f"FAIL  {rel}: no schema mapped for fixture name '{stem}'")
         return False
@@ -137,6 +153,13 @@ def main():
             continue
         for p in fixtures:
             failures += 0 if validate_fixture(p, d != "invalid") else 1
+    for d, schema_rel in CONTRACT_DIRS.items():
+        contracts = sorted((ROOT / d).glob("*.json"))
+        if not contracts:
+            print(f"FAIL  {d}/: directory is empty")
+            failures += 1
+        for p in contracts:
+            failures += 0 if validate_fixture(p, True, schema_rel) else 1
     failures += 0 if check_openapi_refs() else 1
     if failures:
         print(f"CONFORMANCE FAILED: {failures} check(s) did not behave as expected")

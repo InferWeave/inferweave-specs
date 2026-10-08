@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/gpu-memory-allocation.json",
+  "title": "GpuMemoryAllocation",
+  "type": "object",
+  "description": "One attributable physical allocation (spec 46 §3.7, spec §5.1).",
+  "properties": {
+    "allocationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "resourceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "runtimeInstanceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Absent for a process that is not InferWeave's."
+    },
+    "modelId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "runtime-total",
+        "weights",
+        "kvCache",
+        "prefixCache",
+        "runtimeAllocator",
+        "runtimeOverhead",
+        "executionGraphs",
+        "workspace",
+        "other",
+        "foreign-process"
+      ]
+    },
+    "physical": {
+      "$ref": "quantity.json"
+    },
+    "reservation": {
+      "$ref": "quantity.json"
+    },
+    "placementClass": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "normal",
+        "opportunistic"
+      ],
+      "description": "Absent means normal. A reader that meets a value it does not know treats it as primary (never evicted, never packed against)."
+    },
+    "evictable": {
+      "type": "boolean"
+    },
+    "intended": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "Pinned to this GPU. Absent: not reported; null: reported unknown."
+    },
+    "observedAt": {
+      "type": "string",
+      "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+    },
+    "meta": {
+      "type": "object",
+      "maxProperties": 8,
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 128
+      },
+      "description": "At most 8 string pairs; never arguments, environment or secrets."
+    }
+  },
+  "required": [
+    "allocationId",
+    "resourceId",
+    "category",
+    "physical"
+  ],
+  "additionalProperties": true
+}

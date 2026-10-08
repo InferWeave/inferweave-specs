@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/common/features.json",
   "title": "Feature negotiation",
-  "description": "Advertised protocol features keyed by name to a level string. Peers MUST tolerate unknown features.",
+  "description": "Advertised protocol features keyed by name to a level string. Peers MUST tolerate unknown features. The iw.gpu-memory family (specs/46) pairs each feature below with the iw.<name>/<major> capability it names on the link and HTTP surfaces; the pairing is frozen in contracts/protocol-v1/gpu-memory-capabilities.json.",
   "type": "object",
   "additionalProperties": {
     "type": "string"
@@ -28,6 +28,22 @@
     },
     "desired_state": {
       "type": "string"
+    },
+    "gpu_memory": {
+      "type": "string",
+      "description": "Level \"1\" names capability iw.gpu-memory/1 (specs/46 §1)."
+    },
+    "rebalance_decisions": {
+      "type": "string",
+      "description": "Level \"1\" names capability iw.rebalance-decisions/1 (specs/46 §1)."
+    },
+    "placement_simulation": {
+      "type": "string",
+      "description": "Level \"1\" names capability iw.placement-simulation/1 (specs/46 §1)."
+    },
+    "card_coresidency": {
+      "type": "string",
+      "description": "Level \"1\" names capability iw.card-coresidency/1 (specs/46 §1)."
     }
   }
 }

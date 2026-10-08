@@ -1,0 +1,21 @@
+{
+  "description": "Frozen iw.gpu-memory event vocabulary (spec 46 §7.1). Reconciled against schemas/v1/events/gpu-memory-event.json and specs/46 prose by scripts/validate_specs.py (invariant 41).",
+  "values": [
+    "gpu.memory.updated",
+    "gpu.memory.pressure_changed",
+    "gpu.memory.accounting_anomaly",
+    "gpu.memory.oom",
+    "gpu.memory.postmortem",
+    "runtime.opportunistic_placed",
+    "runtime.eviction_started",
+    "runtime.evicted",
+    "runtime.restore_started",
+    "runtime.restored",
+    "runtime.migration_started",
+    "runtime.migrated",
+    "rebalance.decision",
+    "rebalance.started",
+    "rebalance.completed",
+    "rebalance.failed"
+  ]
+}

@@ -23,6 +23,14 @@ Events are first-class protocol objects (`schemas/v1/events/event.json`):
 `routing.*`, `queue.*`, `capacity.*`, `autoscale.*`, `rebalance.*`, `health.*`, `request.*`,
 `security.*`.
 
+## GPU memory events (1.1.0)
+
+`specs/46_GPU_MEMORY_INTELLIGENCE.md` §7 adds a capability-gated feed (`iw.rebalance-decisions/1`)
+with its own camelCase envelope (`schemas/v1/events/gpu-memory-event.json`): `gpu.memory.*`,
+`runtime.*` placement and `rebalance.*` decision events, idempotent by `eventId`, resumed by a
+`<producerEpoch>:<sequence>` cursor. The vocabulary is frozen in
+`contracts/protocol-v1/gpu-memory-events.json`.
+
 ## Snapshot + delta
 
 Observability consumers SHOULD retrieve a consistent snapshot then receive events/deltas. A

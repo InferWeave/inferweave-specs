@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: InferWeave Protocol v1
-  version: 1.0.0
+  version: 1.1.0
   description: >-
     Control and observability HTTP surfaces for InferWeave Protocol v1. HTTP + JSON is the
     normative v1 transport; object semantics are transport-independent. Scheduler/runtime/
@@ -213,6 +213,61 @@ paths:
       responses:
         "204":
           description: Cancelled
+  /gpu-memory:
+    get:
+      operationId: getGpuMemory
+      summary: GPU memory fleet snapshot (iw.gpu-memory.fleet/1, specs/46 §4)
+      description: >-
+        Served while iw.gpu-memory/1 is in force. The reference implementation serves the same
+        document at /iw/v1/gpu-memory beside /iw/v1/topology. Authoritative schema:
+        schemas/v1/resources/gpu-memory-fleet.json.
+      responses:
+        "200":
+          description: Fleet snapshot
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GpuMemoryFleet" }
+  /gpu-memory/events:
+    get:
+      operationId: listGpuMemoryEvents
+      summary: GPU memory, runtime placement and rebalance decision events (specs/46 §7)
+      description: >-
+        Served while iw.rebalance-decisions/1 is in force. Authoritative schema:
+        schemas/v1/events/gpu-memory-event.json.
+      parameters:
+        - name: after
+          in: query
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Events after the cursor, oldest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/GpuMemoryEvent" }
+  /gpu-memory/simulate:
+    post:
+      operationId: simulateGpuMemoryPlacement
+      summary: Read-only placement simulation from the real rebalancer evaluation (specs/46 §9)
+      description: >-
+        Served while iw.placement-simulation/1 is in force; never reserves, starts or changes
+        anything. Authoritative schemas: schemas/v1/resources/placement-simulation-request.json
+        and placement-simulation-response.json.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PlacementSimulationRequest" }
+      responses:
+        "200":
+          description: Simulation result
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PlacementSimulationResponse" }
 components:
   schemas:
     Topology:
@@ -397,3 +452,49 @@ components:
         trace_id: { type: string }
         details: { type: object, additionalProperties: true }
         fallbacks: { type: array, items: { type: object, additionalProperties: true } }
+    GpuMemoryFleet:
+      type: object
+      description: Summary; authoritative schema schemas/v1/resources/gpu-memory-fleet.json.
+      required: [schema, gatewayId, producerEpoch, sequence, generatedAt, authority, nodes]
+      properties:
+        schema: { type: string, enum: [iw.gpu-memory.fleet/1] }
+        gatewayId: { type: string }
+        producerEpoch: { type: string }
+        sequence: { type: integer }
+        generatedAt: { type: string }
+        authority: { type: object, additionalProperties: true }
+        nodes: { type: array, items: { type: object, additionalProperties: true } }
+        reservations: { type: array, items: { type: object, additionalProperties: true } }
+        peers: { type: array, items: { type: object, additionalProperties: true } }
+    GpuMemoryEvent:
+      type: object
+      description: Summary; authoritative schema schemas/v1/events/gpu-memory-event.json.
+      required: [eventId, cursor, type, occurredAt, gatewayId, payload]
+      properties:
+        eventId: { type: string }
+        cursor: { type: string }
+        type: { type: string }
+        occurredAt: { type: string }
+        gatewayId: { type: string }
+        correlationId: { type: string }
+        payload: { type: object, additionalProperties: true }
+    PlacementSimulationRequest:
+      type: object
+      description: Summary; authoritative schema schemas/v1/resources/placement-simulation-request.json.
+      required: [modelId, requirements]
+      properties:
+        modelId: { type: string }
+        placementClass: { type: string }
+        requirements: { type: object, additionalProperties: true }
+        scope: { type: object, additionalProperties: true }
+    PlacementSimulationResponse:
+      type: object
+      description: Summary; authoritative schema schemas/v1/resources/placement-simulation-response.json.
+      required: [simulationId, basedOn, mode, reservationsMade, candidates]
+      properties:
+        simulationId: { type: string }
+        basedOn: { type: object, additionalProperties: true }
+        mode: { type: string, enum: [read-only] }
+        reservationsMade: { type: integer, enum: [0] }
+        candidates: { type: array, items: { type: object, additionalProperties: true } }
+        reasoning: { type: string }

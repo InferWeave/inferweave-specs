@@ -1,0 +1,29 @@
+{
+  "eventId": "ev_gw_hive-rust_ep_hive0f_000123",
+  "cursor": "ep_hive0f:123",
+  "type": "gpu.memory.accounting_anomaly",
+  "occurredAt": "2026-10-08T14:22:35Z",
+  "gatewayId": "gw_hive-rust",
+  "origin": {
+    "gatewayId": "gw_hive-rust",
+    "nodeId": "node_g3-glm",
+    "via": [
+      "gw_hive-rust"
+    ]
+  },
+  "correlationId": "an_c0df_ep_g3glma1_77",
+  "resourceIds": [
+    "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0df"
+  ],
+  "payload": {
+    "anomalyId": "an_c0df_ep_g3glma1_77",
+    "consecutive": 103,
+    "detail": "22 GiB on card not owned by any process nvidia-smi lists; candidates: leaked context of a crashed engine, MPS server, process in another PID namespace",
+    "firstSeenAt": "2026-10-08T14:22:35Z",
+    "kind": "unattributed-over-tolerance",
+    "lastSeenAt": "2026-10-08T14:31:05Z",
+    "measuredBytes": 23622320128,
+    "resourceId": "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0df",
+    "toleranceBytes": 1717986918
+  }
+}

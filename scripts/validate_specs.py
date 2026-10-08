@@ -719,6 +719,63 @@ def guard_protocol_vocab(root, features, tasks):
     return errors
 
 
+
+# ------------------------------------------------------------------- GPU memory (specs/46)
+# The iw.gpu-memory family carries two frozen vocabularies and four contract fixtures that the
+# reference implementation and the gateway consumer copy byte-for-byte. Each is reconciled here:
+# a value in one place and not the other is drift, and a fixture that is not in canonical bytes
+# would make the copies disagree even though the JSON means the same thing.
+
+_CAPABILITY = re.compile(r"^iw\.[a-z0-9-]+/(0|[1-9][0-9]*)$")
+
+
+def _canonical_json(doc):
+    return json.dumps(doc, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+
+
+def guard_gpu_memory_contracts(root):
+    errors = []
+    spec_path = root / "specs/46_GPU_MEMORY_INTELLIGENCE.md"
+    if not spec_path.exists():
+        return ["specs/46_GPU_MEMORY_INTELLIGENCE.md: missing"]
+    spec = _normalize_prose(spec_path.read_text())
+
+    events = json.loads((root / "contracts/protocol-v1/gpu-memory-events.json").read_text())
+    values = events.get("values", [])
+    if len(values) != len(set(values)):
+        errors.append("protocol-v1/gpu-memory-events.json: duplicate event type")
+    schema = json.loads((root / "schemas/v1/events/gpu-memory-event.json").read_text())
+    if sorted(schema.get("properties", {}).get("type", {}).get("enum", [])) != sorted(values):
+        errors.append("protocol-v1/gpu-memory-events.json: event schema type enum disagrees with frozen data")
+    for value in values:
+        if f"`{value}`" not in spec:
+            errors.append(f"protocol-v1/gpu-memory-events.json: value {value} absent from specs/46 prose")
+
+    pairs = json.loads((root / "contracts/protocol-v1/gpu-memory-capabilities.json").read_text())
+    features = json.loads((root / "schemas/v1/common/features.json").read_text()).get("properties", {})
+    seen = set()
+    for entry in pairs.get("capabilities", []):
+        feature, capability = entry.get("feature"), entry.get("capability")
+        if feature in seen:
+            errors.append(f"protocol-v1/gpu-memory-capabilities.json: duplicate feature {feature}")
+        seen.add(feature)
+        if feature not in features:
+            errors.append(f"protocol-v1/gpu-memory-capabilities.json: feature {feature} absent from features.json")
+        if not isinstance(capability, str) or not _CAPABILITY.match(capability):
+            errors.append(f"protocol-v1/gpu-memory-capabilities.json: malformed capability {capability}")
+        row = f"| `{feature}` | `{entry.get('level')}` | `{capability}` |"
+        if row not in spec:
+            errors.append(f"protocol-v1/gpu-memory-capabilities.json: {feature} -> {capability} absent from specs/46 §1 table")
+
+    fixtures = sorted((root / "contracts/gpu-memory").glob("*.json"))
+    if len(fixtures) != 4:
+        errors.append(f"contracts/gpu-memory/: expected the 4 contract fixtures, found {len(fixtures)}")
+    for path in fixtures:
+        text = path.read_text(encoding="utf-8")
+        if text != _canonical_json(json.loads(text)):
+            errors.append(f"{path.relative_to(root).as_posix()}: not in canonical bytes (sorted keys, 2-space indent, UTF-8, trailing newline)")
+    return errors
+
 # --------------------------------------------------------------------- driver
 
 def load():
@@ -742,6 +799,7 @@ def validate():
     errors.extend(guard_bundle_metadata(ROOT))
     errors.extend(guard_backpressure_contracts(ROOT, features, tasks))
     errors.extend(guard_protocol_vocab(ROOT, features, tasks))
+    errors.extend(guard_gpu_memory_contracts(ROOT))
     return features, tasks, errors
 
 
@@ -848,6 +906,29 @@ def self_test():
                     failures.append("no guard rejected: protocol vocab drift")
             finally:
                 vocab.write_text(original)
+
+    # file-based guard: prove guard_gpu_memory_contracts rejects each kind of drift
+    gpu_breaks = [
+        ("contracts/protocol-v1/gpu-memory-events.json", '"rebalance.failed"', '"rebalance.NOT_A_TYPE"',
+         "gpu memory event vocabulary drift"),
+        ("contracts/protocol-v1/gpu-memory-capabilities.json", '"iw.card-coresidency/1"',
+         '"iw.card-coresidency/01"', "gpu memory capability drift"),
+        ("contracts/gpu-memory/01-b200-primary-whisper-pack.fleet.json", '{\n  "authority"',
+         '{\n"authority"', "non-canonical contract fixture bytes"),
+    ]
+    for rel, old, new, label in gpu_breaks:
+        target = ROOT / rel
+        original = target.read_text(encoding="utf-8")
+        broken = original.replace(old, new, 1)
+        if broken == original:
+            failures.append(f"self-test could not break: {label}")
+            continue
+        try:
+            target.write_text(broken, encoding="utf-8")
+            if not guard_gpu_memory_contracts(ROOT):
+                failures.append(f"no guard rejected: {label}")
+        finally:
+            target.write_text(original, encoding="utf-8")
 
     if failures:
         print("GUARD SELF-TEST FAILED")

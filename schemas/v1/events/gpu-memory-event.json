@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/events/gpu-memory-event.json",
+  "title": "GpuMemoryEvent",
+  "type": "object",
+  "description": "GET /iw/v1/gpu-memory/events entry (spec 46 §7.1). gpu.memory.updated is reserved for push transports and is not emitted on the pull feed.",
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "Unique; the idempotency key."
+    },
+    "cursor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "description": "<producerEpoch>:<sequence>; an epoch change means resynchronize from a snapshot."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "gpu.memory.updated",
+        "gpu.memory.pressure_changed",
+        "gpu.memory.accounting_anomaly",
+        "gpu.memory.oom",
+        "gpu.memory.postmortem",
+        "runtime.opportunistic_placed",
+        "runtime.eviction_started",
+        "runtime.evicted",
+        "runtime.restore_started",
+        "runtime.restored",
+        "runtime.migration_started",
+        "runtime.migrated",
+        "rebalance.decision",
+        "rebalance.started",
+        "rebalance.completed",
+        "rebalance.failed"
+      ]
+    },
+    "occurredAt": {
+      "type": "string",
+      "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+    },
+    "gatewayId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "origin": {
+      "type": "object",
+      "properties": {
+        "gatewayId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "nodeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "via": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "required": [
+        "gatewayId",
+        "nodeId"
+      ],
+      "additionalProperties": true
+    },
+    "correlationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "description": "The decision id where one exists."
+    },
+    "resourceIds": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      }
+    },
+    "runtimeInstanceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "modelId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "eventId",
+    "cursor",
+    "type",
+    "occurredAt",
+    "gatewayId",
+    "payload"
+  ],
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "rebalance.decision"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "../resources/rebalance-decision.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "gpu.memory.accounting_anomaly"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "../resources/gpu-memory-anomaly.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "gpu.memory.postmortem"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "../resources/gpu-memory-postmortem.json"
+          }
+        }
+      }
+    }
+  ]
+}

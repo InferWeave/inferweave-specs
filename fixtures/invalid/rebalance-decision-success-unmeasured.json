@@ -1,0 +1,54 @@
+{
+  "decisionId": "d-1759933865-17-a1b2",
+  "action": "pack",
+  "existingKind": "Place",
+  "mode": "shadow",
+  "trigger": "safe-capacity-available",
+  "pressureState": "comfortable",
+  "nodeId": "node_b200-01",
+  "modelId": "bge-m3-embedding",
+  "placementClass": "opportunistic",
+  "source": {
+    "resourceIds": []
+  },
+  "destination": {
+    "resourceIds": [
+      "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01"
+    ]
+  },
+  "resourceSnapshot": {
+    "reportSequence": 1842,
+    "safeSchedulableBytes": 6442450944,
+    "basis": "derived"
+  },
+  "candidates": [
+    {
+      "resourceIds": [
+        "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01"
+      ],
+      "eligible": true,
+      "score": 0.82,
+      "terms": {
+        "fit": 1.0,
+        "cache": 1.0,
+        "startupPenalty": -0.1,
+        "recentEvictionPenalty": 0
+      },
+      "rejectedBecause": null
+    }
+  ],
+  "selected": 0,
+  "reason": "pack bge-m3 into 6.0GiB safe on GPU-5f1e (shadow: recorded, not executed)",
+  "estimatedCost": {
+    "startupSecs": 20,
+    "downloadBytes": 0,
+    "drainSecs": 0
+  },
+  "expected": {
+    "physicalDeltaBytes": 4294967296
+  },
+  "outcome": {
+    "state": "succeeded",
+    "durationMs": 23000
+  }
+}

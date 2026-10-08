@@ -1,0 +1,25 @@
+{
+  "description": "snake_case Protocol v1 feature names (schemas/v1/common/features.json) and the iw.<name>/<major> capability each one names on the link and HTTP surfaces (spec 46 §1). Reconciled by scripts/validate_specs.py.",
+  "capabilities": [
+    {
+      "feature": "gpu_memory",
+      "level": "1",
+      "capability": "iw.gpu-memory/1"
+    },
+    {
+      "feature": "rebalance_decisions",
+      "level": "1",
+      "capability": "iw.rebalance-decisions/1"
+    },
+    {
+      "feature": "placement_simulation",
+      "level": "1",
+      "capability": "iw.placement-simulation/1"
+    },
+    {
+      "feature": "card_coresidency",
+      "level": "1",
+      "capability": "iw.card-coresidency/1"
+    }
+  ]
+}

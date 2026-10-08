@@ -264,3 +264,26 @@ Protocol v1 in production, and no Protocol v1 endpoint exists in a running syste
 conformance by a running component, cross-repo CI execution against the `inferweave` reference
 implementation, and independent multi-node verification remain `owed` by `P5-T24`–`P5-T29`. An
 upstream system must not rely on Protocol v1 as a deployed wire contract.
+
+## GPU memory accounting (specs/46) — 2026-10-07
+
+**BLOCKED for production use.** `specs/46_GPU_MEMORY_INTELLIGENCE.md` defines the capability-gated
+`iw.gpu-memory` family of Protocol 1.1.0: per-GPU physical, attributed and unattributed memory with
+an explicit basis on every byte count, reservations, pressure, decision records, OOM postmortems
+and read-only placement simulation. Its decision record
+(`decisions/2026-10-07-gpu-memory-accounting.md`) is `Proposed`. It is a specification with
+schemas, four canonical contract fixtures and conformance fixtures that
+`python3 conformance/runner.py` validates.
+
+Unsatisfied, and recorded `owed` by `P5-T30`–`P5-T32` (feature `IW-GPUMEM-001`):
+
+- a node producer whose physical memory is measured on **NVIDIA** hardware — not exercised;
+- a node producer whose physical memory is measured on **AMD** hardware (ROCm, sysfs, DRM
+  fdinfo) — not exercised;
+- gateway composition of `safeSchedulable`, pressure and eligibility, the reservation ledger and
+  the fleet snapshot — not built;
+- the decision/event feed, OOM postmortems from a real OOM, and placement simulation — not built;
+- nested-gateway de-duplication across real relays — not exercised.
+
+No placement, eviction, packing or scaling behaviour may depend on this surface until those
+tests are `proven` and an operator decision approves it.

@@ -1,0 +1,380 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/rebalance-decision.json",
+  "title": "RebalanceDecision",
+  "type": "object",
+  "description": "Payload of rebalance.decision (spec 46 §7.2): one meaningful rebalancer decision, acted or simulated.",
+  "properties": {
+    "decisionId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "pack",
+        "move",
+        "evict",
+        "consolidate",
+        "restore",
+        "scale_up",
+        "scale_down",
+        "place",
+        "repack",
+        "rebalance",
+        "renew",
+        "hold",
+        "give_back",
+        "suspend"
+      ]
+    },
+    "existingKind": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "The rebalancer decision variant actually carried out (reference implementation: iw_core::autoscaler::Decision)."
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "observe",
+        "shadow",
+        "on"
+      ],
+      "description": "shadow decisions are recorded and never executed."
+    },
+    "trigger": {
+      "type": "string",
+      "enum": [
+        "demand",
+        "pressure",
+        "restore",
+        "consolidation",
+        "operator",
+        "allocation-loss",
+        "safe-capacity-available"
+      ]
+    },
+    "pressureState": {
+      "type": "string",
+      "enum": [
+        "comfortable",
+        "constrained",
+        "pressure",
+        "critical",
+        "unknown"
+      ]
+    },
+    "nodeId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "runtimeInstanceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "modelId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "placementClass": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "normal",
+        "opportunistic"
+      ],
+      "description": "Absent means normal. A reader that meets a value it does not know treats it as primary (never evicted, never packed against)."
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "resourceIds": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "destination": {
+      "type": "object",
+      "properties": {
+        "resourceIds": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "resourceSnapshot": {
+      "type": "object",
+      "description": "A reference plus key numbers, not a copy of the snapshot.",
+      "properties": {
+        "reportSequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "safeSchedulableBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "basis": {
+          "type": "string",
+          "enum": [
+            "measured",
+            "derived",
+            "estimated",
+            "declared",
+            "unknown",
+            "unsupported"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "candidates": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "properties": {
+          "resourceIds": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "score": {
+            "type": "number"
+          },
+          "terms": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Named score terms (fit, cache, startupPenalty, migrationPenalty, recentEvictionPenalty, swapCost)."
+          },
+          "headroomAfter": {
+            "$ref": "quantity.json"
+          },
+          "conflictingReservations": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "requiredEvictions": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "restrictions": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          "rejectedBecause": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              null,
+              "not-owned",
+              "telemetry-stale",
+              "allocation-draining",
+              "insufficient-safe-capacity",
+              "incompatible-accelerator",
+              "topology",
+              "cooling",
+              "anomaly",
+              "opportunistic-disabled",
+              "primary-restart-reserve-missing",
+              "no-authority"
+            ]
+          }
+        },
+        "required": [
+          "resourceIds",
+          "eligible"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "selected": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 15
+    },
+    "reason": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "estimatedCost": {
+      "type": "object",
+      "properties": {
+        "startupSecs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "downloadBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "drainSecs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "additionalProperties": true
+    },
+    "expected": {
+      "type": "object",
+      "properties": {
+        "physicalDeltaBytes": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "additionalProperties": true
+    },
+    "outcome": {
+      "type": "object",
+      "description": "Filled by rebalance.completed / rebalance.failed. Memory is never claimed recovered before it is measured: a succeeded outcome carries a measured delta.",
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "succeeded",
+            "failed",
+            "expired",
+            "rolled_back"
+          ]
+        },
+        "measured": {
+          "type": "object",
+          "properties": {
+            "physicalDeltaBytes": {
+              "type": "object",
+              "description": "A signed byte delta with its basis; an eviction frees memory, so deltas may be negative.",
+              "properties": {
+                "bytes": {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                "basis": {
+                  "type": "string",
+                  "enum": [
+                    "measured",
+                    "derived",
+                    "estimated",
+                    "unknown"
+                  ]
+                }
+              },
+              "required": [
+                "basis"
+              ],
+              "additionalProperties": true
+            },
+            "measuredAt": {
+              "type": "string",
+              "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+            },
+            "reportSequence": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "physicalDeltaBytes"
+          ],
+          "additionalProperties": true
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 512
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "succeeded"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "required": [
+              "measured"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "decisionId",
+    "action",
+    "mode",
+    "trigger"
+  ],
+  "additionalProperties": true
+}

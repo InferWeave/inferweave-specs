@@ -1109,6 +1109,19 @@
         "P5-T28",
         "P5-T29"
       ]
+    },
+    {
+      "id": "IW-GPUMEM-001",
+      "name": "GPU memory accounting, reservations, pressure, decision records, OOM postmortem and placement simulation on the capability-gated iw.gpu-memory family (Protocol 1.1.0)",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "control-plane+gateway+node+consumer",
+      "canonical_tasks": [
+        "P5-T30",
+        "P5-T31",
+        "P5-T32"
+      ]
     }
   ]
 }
