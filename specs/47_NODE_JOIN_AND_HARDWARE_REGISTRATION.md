@@ -226,7 +226,10 @@ Unauthenticated: publishing a key grants nothing.
 - `200 { "nodeId": ..., "role": "node", "credential": "<secret>", "expiresAt": ... }`. The
   credential is revealed exactly once. Its lifetime is 90 days.
 - A malformed body: `400 bad_request`.
-- Every proof failure is `401 control_auth_failed`: unknown, expired or already-used challenge, a
+- A proof for a `nodeId` whose credential was issued by operator enrollment (the one-time code
+  path) is `403 forbidden`, checked before the signature: a proof MUST NOT replace or take over an
+  operator-issued credential, because anyone may publish a key under any unclaimed-looking id.
+- Every other proof failure is `401 control_auth_failed`: unknown, expired or already-used challenge, a
   challenge issued to another node, a `claim` that differs from the challenged claim in any member,
   a node with no key, a signature that does not verify, a revoked node, and a node that already
   holds a role credential.
@@ -326,6 +329,27 @@ anything above the lowest tier. This repository does not define the tier names o
 ladder (the specification is silent; the design lives in `InferWeave/inferweave`), and this
 document does not constrain a deployment that chooses the open policy.
 
+### 6.1 What a tokenless credential may do
+
+A credential earned **only** through tokenless proof enrollment (a *proved* credential) is
+limited to hardware-only use. A rationale first: a routable node receives other people's prompts,
+so open registration must not let a stranger choose where traffic goes.
+
+1. A node holding a proved credential MAY register **hardware-only** (section 4) and MAY heartbeat.
+2. Such a node MUST NOT register a non-empty `endpoint` or any `models`. Every registration that
+   is not hardware-only (including an endpoint with no models, or models with no endpoint) is
+   refused `403 forbidden`, after authentication succeeds, and admits nothing. This is a different
+   outcome from 401 (credential not accepted) and 400 (malformed).
+3. A proof MUST NOT replace or take over an operator-issued credential (section 5.2: `403`). The
+   operator's credential keeps working. A second proof for an id that already holds a proved
+   credential does not replace it either (the reference answers `401`, section 5.3).
+4. A node becomes routable **only** through operator-issued enrollment (a one-time code or secret
+   issued on the admin surface and spent on `/v1/node/enroll`). Whether a node already enrolled
+   by code may register an endpoint and models is unchanged from today.
+5. Origin is per `nodeId` and fixed by whichever credential was issued first; a gateway MUST
+   remember it for as long as the credential is valid (the reference does so in memory only,
+   which `OPEN_GATES.md` records).
+
 ## 7. Compatibility
 
 - Additive and capability-free: an older node never sends `hardware`; an older gateway that
@@ -354,6 +378,7 @@ apply to the older-node vector).
 | `hw-version-*` | (d) missing or non-integer `version` is `400 bad_request`; any integer accepted |
 | `older-node-no-hardware` | (e) a node without `hardware` registers as before; `assignments: []` added |
 | `hw-unknown-keys-kept` | unknown members are stored verbatim |
+| `enrollmentTrustCases` | tokenless + endpoint is 403; tokenless + models is 403; tokenless hardware-only is 200; code-enrolled with an endpoint is 200; a proof over an operator-enrolled id is 403 |
 | `enrollmentRoleCases` | tokenless challenge for role `node` is 200; for `gateway` (and other roles) is `400 bad_request` |
 | `enrollmentKnownAnswers` | (f) transcript and signature for fixed seed, challenge, nonce and claim |
 

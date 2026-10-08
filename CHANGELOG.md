@@ -87,6 +87,9 @@ counted physical memory in `reserved` was following ambiguous text and must be c
 - Tokenless proof enrollment grants only the role `node`; other roles are refused with
   `400 bad_request` at `/v1/node/challenge`. Caps on pending challenges and keys are permitted
   implementation limits (a `429` is allowed).
+- A credential earned only by tokenless proof may register hardware-only and heartbeat, but a
+  non-empty endpoint or any models is `403 forbidden`, and a proof never replaces an
+  operator-issued credential (`403`); only operator-issued enrollment makes a node routable.
 - Schemas `requests/node-hardware.json`, `requests/node-hardware-report.json`; fixtures; vectors
   `conformance/node-join-vectors.json`; reference model `conformance/node_join.py`; manifest
   scenarios `node_enrollment`, `hardware_registration`.

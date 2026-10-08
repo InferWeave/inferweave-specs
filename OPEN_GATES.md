@@ -311,6 +311,11 @@ Unsatisfied, and recorded `owed` by `P5-T33` (Rust gateway) and `P5-T34` (Go gat
 - the Rust reference accepts a tokenless challenge for any well-formed role; spec 47 requires only
   `node` (others `400 bad_request`), and the Go gateway's role set (`node`/`gateway`) must be
   narrowed to match; neither is changed or tested here;
+- the tokenless-credential limits of spec 47 section 6.1 (403 on endpoint or models, 403 on a proof
+  over an operator-enrolled id) are implemented and tested in the Rust gateway work tree
+  (`GatewayEnrollment::adopt`, the `node_register` gate, `hardware_registration.rs`) but not on
+  `main`, and the Go gateway is being aligned; the credential origin is held in memory only, so a
+  restart forgets it;
 - the model-execution proof has a defined transcript but no wire surface; renewal and re-proof for
   an enrolled node have no wire surface;
 - whether the Go standard-library Ed25519 verifier matches the strict verifier of the reference on

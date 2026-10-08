@@ -41,6 +41,14 @@ against one and fail against the other without any error pointing at the cause.
    rejected: letting a proof earn any well-formed role, which would let a free identity register
    as a gateway.
 
+6. **A tokenless credential cannot make a node routable.** A node whose credential was earned only
+   by proof may register hardware-only and heartbeat; a non-empty endpoint or any models is
+   `403 forbidden`, and a proof never replaces an operator-issued credential (`403`). Routability
+   requires operator-issued enrollment. Rationale: a routable node receives other people's
+   prompts, so open registration must not let a stranger choose where traffic goes. Alternative
+   rejected: relying on the lowest trust tier alone, which limits weight but still lets a stranger
+   receive traffic.
+
 ## Consequences and the tension recorded
 
 Open enrollment makes a node identity free to mint. The peer-trust design in the reference

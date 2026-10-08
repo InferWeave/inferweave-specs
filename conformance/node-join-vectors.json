@@ -654,5 +654,103 @@
         }
       }
     ]
+  },
+  "enrollmentTrustCases": {
+    "$comment": "credentialOrigin is how the node earned the credential it registers with: `proof` = tokenless /v1/node/proof only; `code` = operator-issued enrollment code on /v1/node/enroll. `register` overlays the baselineRegister (hardware-only). The proof-over-operator-id case instead POSTs a valid, correctly signed proof for an id whose credential came from a code.",
+    "cases": [
+      {
+        "id": "tokenless-with-endpoint",
+        "credentialOrigin": "proof",
+        "register": {
+          "endpoint": "127.0.0.1:9101",
+          "deployment": "dep_9f8e7d6c"
+        },
+        "expect": {
+          "status": 403,
+          "errorCode": "forbidden",
+          "nodeAdmitted": false
+        }
+      },
+      {
+        "id": "tokenless-with-models",
+        "credentialOrigin": "proof",
+        "register": {
+          "endpoint": "127.0.0.1:9101",
+          "deployment": "dep_9f8e7d6c",
+          "vramBytes": 100000000,
+          "kvBytes": 10000000,
+          "kvBytesPerToken": 10,
+          "gpuIds": [
+            "iw-gpu-0"
+          ],
+          "models": [
+            {
+              "model": "qwen3-8b-modality-text-quant-q4_k_m",
+              "contextSupported": 131072,
+              "maxContextTokens": 32768,
+              "engine": "llama.cpp",
+              "backend": "cuda",
+              "slots": 1,
+              "vramBytes": 100
+            }
+          ]
+        },
+        "expect": {
+          "status": 403,
+          "errorCode": "forbidden",
+          "nodeAdmitted": false
+        }
+      },
+      {
+        "id": "tokenless-hardware-only",
+        "credentialOrigin": "proof",
+        "register": {},
+        "expect": {
+          "status": 200,
+          "hardwareOnly": true,
+          "routable": false
+        }
+      },
+      {
+        "id": "code-enrolled-with-endpoint",
+        "credentialOrigin": "code",
+        "register": {
+          "endpoint": "127.0.0.1:9101",
+          "deployment": "dep_9f8e7d6c",
+          "vramBytes": 100000000,
+          "kvBytes": 10000000,
+          "kvBytesPerToken": 10,
+          "gpuIds": [
+            "iw-gpu-0"
+          ],
+          "models": [
+            {
+              "model": "qwen3-8b-modality-text-quant-q4_k_m",
+              "contextSupported": 131072,
+              "maxContextTokens": 32768,
+              "engine": "llama.cpp",
+              "backend": "cuda",
+              "slots": 1,
+              "vramBytes": 100
+            }
+          ]
+        },
+        "expect": {
+          "status": 200,
+          "hardwareOnly": false,
+          "routable": true
+        }
+      },
+      {
+        "id": "proof-over-operator-enrolled-id",
+        "credentialOrigin": "code",
+        "proofAttempt": true,
+        "expect": {
+          "status": 403,
+          "errorCode": "forbidden",
+          "operatorCredentialStillWorks": true
+        }
+      }
+    ]
   }
 }

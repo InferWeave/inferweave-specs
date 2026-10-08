@@ -181,6 +181,14 @@ def check_node_join_vectors():
         if node_join.challenge_decision(c["challenge"]) != c["expect"]:
             print(f"FAIL  node-join role case {c['id']}: reference model disagrees")
             ok = False
+    trust = doc["enrollmentTrustCases"]["cases"]
+    for c in trust:
+        if node_join.trust_decision(c) != c["expect"]:
+            print(f"FAIL  node-join trust case {c['id']}: reference model disagrees")
+            ok = False
+    if len(trust) < 5:
+        print("FAIL  node-join trust cases: the five required cases are missing")
+        ok = False
     hw_errors = node_join.check_hardware(doc["hardwareSample"])
     if hw_errors:
         print(f"FAIL  node-join hardwareSample: {hw_errors}")

@@ -171,6 +171,20 @@ def challenge_decision(request):
     return {"status": 400, "errorCode": "bad_request"}
 
 
+def trust_decision(case):
+    """spec 47 section 6.1: what a credential may do, by how it was earned."""
+    if case.get("proofAttempt"):
+        if case["credentialOrigin"] == "code":
+            return {"status": 403, "errorCode": "forbidden", "operatorCredentialStillWorks": True}
+        return {"status": 401, "errorCode": "control_auth_failed"}
+    body = {"endpoint": "", "models": [], "deployment": ""}
+    body.update(case.get("register", {}))
+    hw_only = is_hardware_only(body)
+    if case["credentialOrigin"] == "proof" and not hw_only:
+        return {"status": 403, "errorCode": "forbidden", "nodeAdmitted": False}
+    return {"status": 200, "hardwareOnly": hw_only, "routable": (not hw_only) and bool(body["models"])}
+
+
 # --- hardware field and hardware-only registration ------------------------------------------
 class _Float(float):
     """Marks a JSON number written with a fraction or exponent (not an integer)."""
