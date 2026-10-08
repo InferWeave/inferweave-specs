@@ -183,6 +183,14 @@ Unauthenticated: publishing a key grants nothing.
 - `200 {"status":"ok"}`; re-publishing the same key is idempotent.
 - A different key for a `nodeId` that already has one: `400 bad_request`. The first publisher owns
   the id; a later impostor cannot replace it.
+- **On the tokenless path the `nodeId` MUST be derived from the key:** `"node_"` followed by the
+  first 16 lowercase hexadecimal digits of the SHA-256 of the **raw** public key bytes (the 32
+  bytes the hex `publicKey` decodes to). `/key` with any other id (including the same digits in
+  uppercase) is `400 bad_request`. This makes an identity cost a key, stops a caller from choosing
+  or squatting a human-readable id, and ties the id to the key that will sign. Operator-issued
+  enrollment (`/v1/node/enroll`) still takes any id. Example: the RFC 8032 public key of the known
+  answers, `d75a98...511a`, derives `node_21fe31dfa154a261`. The known-id `403` of section 6.4 is
+  evaluated first, before this rule, at `/challenge` and `/proof`.
 - `nodeId`: non-empty, at most 128 bytes, no whitespace or control characters. `publicKey`:
   non-empty, at most 512 bytes, no whitespace or control characters. A gateway MUST accept any
   well-formed 64-hex key. The reference does not check the key encoding at publication (a malformed
@@ -212,6 +220,12 @@ Unauthenticated: publishing a key grants nothing.
   with `400 bad_request`, and no challenge is issued. Privileged roles continue to require
   operator-issued enrollment (the one-time code path of `/v1/node/enroll`); no proof can earn them.
   The reference gateway currently accepts any well-formed role here and must be tightened.
+- **`/challenge` is idempotent.** If the id already has an unexpired pending challenge (for the
+  same claim), the gateway MUST return that same challenge again (same `challengeId`, `nonce` and
+  `expiresAt`) and MUST NOT replace it; a challenge is replaced only once it has expired. Rationale:
+  `/challenge` needs only the node id, so a gateway that replaced the pending challenge on every
+  request would let anyone invalidate the challenge a real agent is about to answer, and so grief
+  its proof indefinitely.
 - A node with no published key or a revoked node: `400 bad_request`.
 - Only the role claim is reachable over HTTP. The model-execution claim (model, context class,
   measured resource claim) has a defined transcript (section 5.4) but **no wire surface yet**; the
@@ -249,9 +263,10 @@ Unauthenticated: publishing a key grants nothing.
 The credential returned by `/proof` is the `credential` a node presents in
 `POST /v1/node/register` with `role` equal to the proven role. A gateway that issues it MUST
 accept it there and for the heartbeat for its lifetime, until revoked or replaced (section 6.2).
-It is **not** accepted for a link (section 6.3): holding a link is a routing privilege. **The reference gateway does not do this yet**: it
-mints the proof credential in a store that `/v1/node/register` does not consult, so a node that
-earned a credential by proof cannot register with it (`OPEN_GATES.md`). Renewal and re-proof for a
+It is **not** accepted for link authentication (section 6.3): holding a link is a routing
+privilege, so a link hello presenting a proof-only credential is refused. (An earlier revision
+recorded that the Rust reference minted the proof credential in a store `register` never consulted;
+that was fixed before release and no longer applies.) Renewal and re-proof for a
 node that already holds a credential have no wire surface in the reference (a second proof is
 `401`); a gateway MAY let a fresh valid proof by the bound key supersede the earlier credential,
 which invalidates it, and MUST NOT leave two valid credentials for one `nodeId` and role.
@@ -434,6 +449,38 @@ Heartbeats and telemetry from a node whose current registration is hardware-only
 liveness, but MUST NOT contribute devices or GPU-memory reports (spec 46) to fleet capacity,
 placement or any snapshot that routing or the rebalancer reads.
 
+### 6.10 Release of proof-only nodes
+
+A node that holds only a proved credential is released (its credential and registration dropped) by
+a gateway only after a **long silence**. The control freshness window (30 s in the reference) MUST
+NOT release it, because that window is meant for routable nodes and would force an honest agent to
+re-prove every time it paused. Permitted range: the Rust gateway releases after 1 hour of silence
+(or if it never registers within an hour of proving); the Go gateway persists proof-only
+credentials with a longer TTL. A gateway SHOULD NOT release earlier than one hour and MUST have an
+upper bound (section 6.5).
+
+### 6.11 Per-source live-state caps and rate limits
+
+Per-source caps on live state are **permitted and RECOMMENDED** in addition to the global bounds of
+section 6.5. The reference values (not contract values): each source holds at most 16 unproved
+keys, 8 outstanding challenges and 4 proved credentials, with IPv6 sources grouped by /64; a full
+key table evicts the **oldest unproved** key rather than refusing; a repeat of a held key or of an
+outstanding challenge is free. The token-free routes `/key`, `/challenge` and `/proof` use a token
+bucket of burst 30 then 10 per second per source; register and heartbeat of proved credentials draw
+from a separate bucket; operator-issued credentials are never charged. A cap or bucket that
+refuses answers `429` (section 6.5). Reverse-proxy caveat: the source is the TCP peer address, so
+behind a reverse proxy every caller shares the proxy's address and these limits then apply to the
+proxy as a whole; a deployment behind a proxy should either trust a forwarded-address header from
+that proxy only or accept the shared limit.
+
+### 6.12 Telemetry and body bounds
+
+A connection whose registration is hardware-only, or whose credential is proof-only, MUST NOT be
+allowed to file telemetry: `POST /v1/node/telemetry` is `403 forbidden`. Its heartbeat is accepted
+for liveness but keeps only `busySlots`, `queueDepth` and `leaving`; everything else in the status
+(devices, residency, GPU memory) is discarded (section 6.9). Heartbeat and telemetry bodies SHOULD be
+size-capped before parsing (Rust: 1 MiB).
+
 ## 7. Compatibility
 
 - Additive and capability-free: an older node never sends `hardware`; an older gateway that
@@ -462,7 +509,8 @@ apply to the older-node vector).
 | `hw-version-*` | (d) missing or non-integer `version` is `400 bad_request`; any integer accepted |
 | `older-node-no-hardware` | (e) a node without `hardware` registers as before; `assignments: []` added |
 | `hw-unknown-keys-kept` | unknown members are stored verbatim |
-| `enrollmentLifecycleCases` | promotion evicts a proof-only squatter (old credential and connectionId `401`, hardware gone); a bad operator code unseats nobody; known ids get `403` at `/challenge` and `/proof`; omitting `hardware` clears it |
+| `enrollmentIdCases` | tokenless `/key` accepts only the derived id (`node_` + 16 hex of SHA-256 of the raw key); any other id or uppercase is 400; operator enrollment takes any id |
+| `enrollmentLifecycleCases` | promotion evicts a proof-only squatter (old credential and connectionId `401`, hardware gone); a bad operator code unseats nobody; known ids get `403` at `/challenge` and `/proof`; a repeated `/challenge` returns the same challenge until it expires; hardware-only and proved connections cannot file telemetry; omitting `hardware` clears it |
 | `requestSizeCases` | oversize bodies are refused before parsing (SHOULD) |
 | `enrollmentTrustCases` | tokenless + endpoint is 403; tokenless + models is 403; tokenless hardware-only is 200; code-enrolled with an endpoint is 200; a proof over an operator-enrolled id is 403 |
 | `enrollmentRoleCases` | tokenless challenge for role `node` is 200; for `gateway` (and other roles) is `400 bad_request` |

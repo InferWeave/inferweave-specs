@@ -59,6 +59,16 @@ against one and fail against the other without any error pointing at the cause.
    reviews found that without these, a stranger could squat on an id an operator was about to
    enroll, hold a routing link, or exhaust gateway memory unauthenticated.
 
+8. **Final Rust protocol changes** (InferWeave/inferweave PR #761), spec 47 sections 5.2, 6.10 to
+   6.12: `/challenge` is idempotent while a challenge is unexpired (replacing it let anyone grief a
+   real agent's proof, since the request needs only the node id); a tokenless node id must be
+   `node_` plus the first 16 hex of the SHA-256 of the raw public key (an identity then costs a
+   key and cannot be chosen or squatted; operator enrollment keeps any id); a proof-only node is
+   released only after a long silence, never by the 30 s freshness window; per-source live-state
+   caps and rate limits are recommended; a hardware-only or proved connection cannot file
+   telemetry. Alternative rejected for the id: a gateway-assigned id, which needs state before
+   any proof exists.
+
 ## Consequences and the tension recorded
 
 Open enrollment makes a node identity free to mint. The peer-trust design in the reference

@@ -16,19 +16,19 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~551,895 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~555,732 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
 - `.github/workflows/protocol-ci.yml` — `4e4a8b44a516` — ~194t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `873e4ba73cb5` — ~2,349t
+- `CHANGELOG.md` — `7d4df42ec327` — ~2,529t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
-- `OPEN_GATES.md` — `3eb1b3efcbb2` — ~5,449t
+- `OPEN_GATES.md` — `b5beb3d179ff` — ~5,597t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -43,10 +43,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/README.md` — `1a7935310fb9` — ~277t
 - `conformance/compatibility.yaml` — `3fd71a88951f` — ~121t
 - `conformance/manifest.yaml` — `6c044faddf2a` — ~395t
-- `conformance/node-join-vectors.json` — `28d3a4d7fa44` — ~7,483t
-- `conformance/node_join.py` — `9dde79d6d992` — ~3,182t
+- `conformance/node-join-vectors.json` — `d7aa10218ed6` — ~9,063t
+- `conformance/node_join.py` — `606158868345` — ~3,836t
 - `conformance/release-manifest.yaml` — `06b831d5d0cc` — ~197t
-- `conformance/runner.py` — `2227144bf2cc` — ~2,470t
+- `conformance/runner.py` — `e0b6d193462e` — ~2,596t
 - `contracts/README.md` — `82ce0097eabe` — ~467t
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
@@ -84,7 +84,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-09-28-buffered-gateway-recording.md` — `a04b7a6d2713` — ~1,357t
 - `decisions/2026-10-04-bender-shared-context-rollout.md` — `275977d415e7` — ~4,987t
 - `decisions/2026-10-07-gpu-memory-accounting.md` — `4d308b939760` — ~1,408t
-- `decisions/2026-10-08-open-proof-enrollment-and-hardware-registration.md` — `89311d9f01f4` — ~1,399t
+- `decisions/2026-10-08-open-proof-enrollment-and-hardware-registration.md` — `bc7f9361bf52` — ~1,596t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `4ea092cf8917` — ~3,792t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
@@ -362,7 +362,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
 - `specs/45_PROTOCOL_V1.md` — `b3bcfd0e2ff1` — ~9,479t
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `4ef07f017b84` — ~13,331t
-- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `2192b6a867f0` — ~7,535t
+- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `1786ac327c17` — ~8,487t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `6027505392aa` — ~233t

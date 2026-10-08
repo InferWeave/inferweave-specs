@@ -15,6 +15,7 @@ reproducible from the seed.
 """
 import hashlib
 import json
+import re
 import struct
 
 PROOF_DOMAIN = "iw-proof-enrollment-v1"
@@ -185,6 +186,23 @@ def trust_decision(case):
     return {"status": 200, "hardwareOnly": hw_only, "routable": (not hw_only) and bool(body["models"])}
 
 
+def derived_node_id(public_key_hex):
+    """spec 47 section 5.2: node_ + first 16 lowercase hex of SHA-256 of the raw public key."""
+    return "node_" + hashlib.sha256(bytes.fromhex(public_key_hex)).hexdigest()[:16]
+
+
+def id_decision(case):
+    """Tokenless /key accepts only the derived id; operator enrollment takes any id."""
+    if case["path"] == "/v1/node/enroll":
+        return {"status": 200}
+    if case["request"]["nodeId"] == derived_node_id(case["request"]["publicKey"]):
+        return {"status": 200}
+    return {"status": 400, "errorCode": "bad_request"}
+
+
+CHALLENGE_TTL = 900
+
+
 REGISTER_BODY_CAP = 256 * 1024
 ENROLLMENT_BODY_CAP = 16 * 1024
 
@@ -204,10 +222,34 @@ class _Gateway:
         self.known = set()
         self.reg = {}        # node -> {"cred","conn","hardware"}
         self.conns = 0
-        self.pending = {}
+        self.pending = {}   # node -> {id, expires}
+        self.clock = 0
+        self.n = 0
+        self.saved_ch = {}
+        self.keyed = set()
+
+    @staticmethod
+    def _derived(node):
+        return node.startswith("$derived:") or bool(re.fullmatch(r"node_[0-9a-f]{16}", node))
 
     def run(self, step):
         op, node = step["op"], step.get("node")
+        if op == "advance":
+            self.clock += step["seconds"]
+            return {}
+        if op == "key":
+            if not self._derived(node):
+                return {"status": 400, "errorCode": "bad_request"}
+            self.keyed.add(node)
+            return {"status": 200}
+        if op == "telemetry":
+            r = self.reg.get(node)
+            own = self.owner.get(node, {})
+            if r is None or r["conn"] != self.saved.get(step["conn"]):
+                return {"status": 401}
+            if r["hardwareOnly"] or own.get("origin") == "proof":
+                return {"status": 403, "errorCode": "forbidden"}
+            return {"status": 200}
         if op == "known":
             self.known.add(node)
             return {}
@@ -216,10 +258,25 @@ class _Gateway:
                 return {"status": 400, "errorCode": "bad_request"}
             if node in self.known or self.owner.get(node, {}).get("origin") == "operator":
                 return {"status": 403, "errorCode": "forbidden"}
-            self.pending[node] = True
-            return {"status": 200}
+            if not self._derived(node):
+                return {"status": 400, "errorCode": "bad_request"}
+            cur = self.pending.get(node)
+            if cur is None or cur["expires"] <= self.clock:  # idempotent until expiry
+                self.n += 1
+                cur = self.pending[node] = {"id": f"ch{self.n}", "expires": self.clock + CHALLENGE_TTL}
+            if step.get("saveAs"):
+                self.saved_ch[step["saveAs"]] = cur["id"]
+            out = {"status": 200}
+            if "sameAs" in step["expect"] and step["expect"]["sameAs"]:
+                out["sameAs"] = step["expect"]["sameAs"] if cur["id"] == self.saved_ch[step["expect"]["sameAs"]] else None
+            if "differsFrom" in step["expect"]:
+                out["sameAs"] = None if cur["id"] != self.saved_ch[step["expect"]["differsFrom"]] else step["expect"]["differsFrom"]
+                out["differsFrom"] = step["expect"]["differsFrom"]
+            return out
         if op in ("proof", "proof_enroll"):
             if op == "proof_enroll":
+                if not self._derived(node):
+                    return {"status": 400, "errorCode": "bad_request"}
                 r = self.run(dict(step, op="challenge", role="node"))
                 if r["status"] != 200:
                     return r
@@ -243,7 +300,8 @@ class _Gateway:
                 return {"status": 403, "errorCode": "forbidden"}
             self.conns += 1
             self.reg[node] = {"cred": step["cred"], "conn": f"c{self.conns}",
-                              "hardware": bool(step.get("hardware"))}
+                              "hardware": bool(step.get("hardware")),
+                              "hardwareOnly": not step.get("endpoint")}
             if step.get("saveConn"):
                 self.saved = getattr(self, "saved", {})
                 self.saved[step["saveConn"]] = self.reg[node]["conn"]

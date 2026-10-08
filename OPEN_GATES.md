@@ -326,6 +326,13 @@ Unsatisfied, and recorded `owed` by `P5-T33` (Rust gateway) and `P5-T34` (Go gat
   128 KiB against the recommended 256 KiB;
 - the Rust proof store is in memory, so section 6.8 rollback safety (persisting proof-only origin)
   is met by Go only;
+- spec 47 sections 5.2 (derived tokenless id, idempotent challenge) and 6.10 to 6.12 are
+  implemented in the Rust gateway (PR #761) and `owed` in the Go gateway: Go parity is in progress
+  on the Go branch `feat/tokenless-idempotent-challenge-derived-id`, and until it merges the Go
+  gateway replaces a pending challenge, accepts any tokenless id and has its own release TTL;
+  neither is exercised by a running replay of the vectors;
+- per-source caps and rate limits are keyed on the TCP peer address, so behind a reverse proxy they
+  apply to the proxy as a whole (spec 47 section 6.11);
 - the model-execution proof has a defined transcript but no wire surface; renewal and re-proof for
   an enrolled node have no wire surface;
 - whether the Go standard-library Ed25519 verifier matches the strict verifier of the reference on

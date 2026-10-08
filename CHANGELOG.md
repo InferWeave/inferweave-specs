@@ -97,6 +97,14 @@ counted physical memory in `reserved` was following ambiguous text and must be c
   bodies are size-capped before parsing; hardware is cleared when omitted and dropped with its
   registration; hardware-only heartbeats add no capacity; proof-only credentials SHOULD persist
   fail-closed for rollback. This supersedes "first issued wins" for the proof-only case.
+- Final Rust protocol changes (spec 47 sections 5.2, 5.3, 6.10 to 6.12): `/challenge` is
+  idempotent while unexpired; the tokenless node id must be `node_` plus 16 hex of the SHA-256 of
+  the raw public key (`400` otherwise, operator enrollment takes any id, known-id `403` first); a
+  proof-only node is released only after a long silence; per-source caps and rate limits are
+  recommended; hardware-only and proved connections cannot file telemetry and keep only
+  `busySlots`, `queueDepth` and `leaving` from heartbeats; heartbeat and telemetry bodies SHOULD
+  be size-capped. Section 5.3's stale note about the Rust register store is removed. Vectors
+  `enrollmentIdCases` and extended `enrollmentLifecycleCases`.
 - Schemas `requests/node-hardware.json`, `requests/node-hardware-report.json`; fixtures; vectors
   `conformance/node-join-vectors.json`; reference model `conformance/node_join.py`; manifest
   scenarios `node_enrollment`, `hardware_registration`.
