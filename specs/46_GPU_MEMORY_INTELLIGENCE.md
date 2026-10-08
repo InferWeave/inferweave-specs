@@ -2,7 +2,7 @@
 
 ## Status
 
-**SPECIFICATION ONLY — BLOCKED for production use.** This document defines the `iw.gpu-memory`
+**SPECIFICATION ONLY — ACCEPTED for implementation (2026-10-08, by the decision owner, "accepted"); BLOCKED for production use.** This document defines the `iw.gpu-memory`
 capability family of InferWeave Protocol 1.1.0. No deployed component emits or consumes it.
 Every required test is recorded `owed` by canonical tasks `P5-T30`–`P5-T32` (feature
 `IW-GPUMEM-001`). NVIDIA and AMD hardware validation are owed (`OPEN_GATES.md`). The design

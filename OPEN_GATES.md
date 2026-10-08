@@ -271,7 +271,7 @@ upstream system must not rely on Protocol v1 as a deployed wire contract.
 `iw.gpu-memory` family of Protocol 1.1.0: per-GPU physical, attributed and unattributed memory with
 an explicit basis on every byte count, reservations, pressure, decision records, OOM postmortems
 and read-only placement simulation. Its decision record
-(`decisions/2026-10-07-gpu-memory-accounting.md`) is `Proposed`. It is a specification with
+(`decisions/2026-10-07-gpu-memory-accounting.md`) is `Accepted for implementation` (2026-10-08). It is a specification with
 schemas, four canonical contract fixtures and conformance fixtures that
 `python3 conformance/runner.py` validates.
 
