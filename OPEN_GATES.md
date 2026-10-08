@@ -287,3 +287,34 @@ Unsatisfied, and recorded `owed` by `P5-T30`–`P5-T32` (feature `IW-GPUMEM-001`
 
 No placement, eviction, packing or scaling behaviour may depend on this surface until those
 tests are `proven` and an operator decision approves it.
+
+## Node join: hardware-only registration and tokenless enrollment (specs/47) — 2026-10-08
+
+**BLOCKED for production use.** `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` defines the
+optional `hardware` report on `POST /v1/node/register`, hardware-only registration, the
+always-present `assignments: []` and the wire contract of tokenless proof enrollment. Its decision
+record (`decisions/2026-10-08-open-proof-enrollment-and-hardware-registration.md`) is `Proposed`.
+It is a specification with two schemas, schema fixtures, HTTP-level vectors and two Ed25519 known
+answers that `python3 conformance/runner.py` checks.
+
+Unsatisfied, and recorded `owed` by `P5-T33` (Rust gateway) and `P5-T34` (Go gateway), feature
+`IW-NODEHW-001`:
+
+- neither gateway implements hardware storage, hardware-only registration or `assignments`; no
+  running gateway has replayed `conformance/node-join-vectors.json`;
+- the Rust reference refuses `deployment: ""` at deserialization, and its proof-earned credential
+  is minted in a store that `/v1/node/register` does not consult, so a node that enrolled by proof
+  cannot yet register with the credential (read from source at `2c98035`, not run);
+- the Rust proof store (keys, challenges, credentials) is in memory: the first-publisher-owns-the-id
+  binding does not survive a restart, and `/key` and `/challenge` are unauthenticated and
+  unbounded;
+- the model-execution proof has a defined transcript but no wire surface; renewal and re-proof for
+  an enrolled node have no wire surface;
+- whether the Go standard-library Ed25519 verifier matches the strict verifier of the reference on
+  small-order keys and non-canonical encodings is not tested;
+- the Rust repository's own `conformance/MANIFEST.json` does not yet include these vectors;
+- the open enrollment policy (a free node identity against the identity-scarcity assumption of the
+  peer-trust design) has no accepted decision; the record is `Proposed`.
+
+No deployment may enable open enrollment, and no placement or routing behaviour may depend on
+`hardware`, until those tests are `proven` and an operator decision approves it.

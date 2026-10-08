@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/node-hardware.json",
+  "title": "NodeHardware (gateway acceptance rule)",
+  "description": "What a gateway MUST accept in the optional `hardware` member of POST /v1/node/register (specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md section 3). Deliberately minimal: a JSON object with an integer `version`. Every other member, known or unknown, is stored verbatim and never validated by the gateway, so a mistyped known field is NOT grounds for refusal. The 65536-byte limit is a size rule and cannot be expressed here; the conformance vectors carry it. Producers should validate against node-hardware-report.json instead.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["version"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "description": "Layout version of the report. Producers send 1. A gateway accepts any JSON integer in the signed 64-bit range."
+    }
+  }
+}

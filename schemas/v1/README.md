@@ -27,6 +27,10 @@ Protocol 1.1.0 adds the `iw.gpu-memory` schemas of `specs/46_GPU_MEMORY_INTELLIG
 are camelCase and keep `additionalProperties: true`, so a newer producer's fields never break an
 older reader.
 
+Protocol 1.1.0 also adds `requests/node-hardware.json` (what a gateway accepts in the optional
+`hardware` member of `POST /v1/node/register`) and `requests/node-hardware-report.json` (the
+version 1 layout a node should send) of `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md`.
+
 Every object category is populated in this repository (common, errors, topology, model,
 resources, runtime, requests, events, jobs, artifacts). All schemas are validated by the
 conformance runner (`conformance/runner.py`) against `fixtures/`. The schemas are frozen

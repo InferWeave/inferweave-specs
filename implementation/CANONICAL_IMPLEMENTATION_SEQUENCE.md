@@ -2131,3 +2131,37 @@ Rules:
 - a postmortem reconstructs the OOM without the failed runtime answering
 - a simulation leaves the ledger, the router and every allocation unchanged
 - a gateway without rebalancer authority refuses a simulation
+
+### P5-T33 — Node join: hardware-only registration, assignments and tokenless enrollment in the Rust gateway
+**Context:** `C80`
+**Depends on:** P5-T24, P5-T25
+**Features:** IW-NODEHW-001
+**Read:** specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md, specs/45_PROTOCOL_V1.md, specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md
+
+**Outcome:** Implement the specs/47 node-join contract in the Rust gateway (InferWeave/inferweave): the optional versioned hardware member stored verbatim, hardware-only registration that is recorded but never routable or dialled, the always-present empty assignments array, and tokenless enrollment whose proof credential is accepted by register, replaying conformance/node-join-vectors.json.
+
+**Required tests:**
+- every register vector in conformance/node-join-vectors.json passes over HTTP against a running gateway
+- hardware that is not an object, lacks an integer version or exceeds 65536 compact bytes is refused with 400 bad_request and admits nothing
+- unknown members of hardware are stored verbatim and shown only on the operator surface
+- a hardware-only node heartbeats, is listed with its hardware, is absent from /v1/models and its endpoint is never dialled
+- an older node registering without hardware is unchanged and its response carries assignments []
+- the enrollment known answers verify, and a proof credential earned over /v1/node/proof is accepted by /v1/node/register
+- a proof with a non-canonical signature or a small-order key is refused and the multi-byte hex input does not poison the proof store
+
+### P5-T34 — Node join: hardware-only registration, assignments and tokenless enrollment in the Go gateway
+**Context:** `C80`
+**Depends on:** P5-T24, P5-T25
+**Features:** IW-NODEHW-001
+**Read:** specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md, specs/45_PROTOCOL_V1.md, specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md
+
+**Outcome:** Implement the specs/47 node-join contract in the in-house Go gateway (metabolomics-us/inferweave-gateway): the optional versioned hardware member stored verbatim, hardware-only registration that is recorded but never routable or dialled, the always-present empty assignments array, and the three tokenless enrollment endpoints with the exact signed transcript, replaying conformance/node-join-vectors.json.
+
+**Required tests:**
+- every register vector in conformance/node-join-vectors.json passes over HTTP against a running gateway
+- hardware that is not an object, lacks an integer version or exceeds 65536 compact bytes is refused with 400 bad_request and admits nothing
+- unknown members of hardware are stored verbatim and shown only on the operator surface
+- a hardware-only node heartbeats, is listed with its hardware, is absent from /v1/models and its endpoint is never dialled
+- an older node registering without hardware is unchanged and its response carries assignments []
+- the enrollment known answers verify with the gateway's own verifier, and a proof credential is accepted by /v1/node/register
+- a nonce above 2^53 round-trips as an unsigned 64-bit integer and the verifier refuses non-canonical signatures and small-order keys
