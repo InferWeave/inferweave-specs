@@ -84,6 +84,9 @@ counted physical memory in `reserved` was following ambiguous text and must be c
 - Tokenless enrollment (`/v1/node/key`, `/challenge`, `/proof`) is specified on the wire, with the
   exact signed transcript and known answers; open registration at the lowest trust tier is
   permitted and its tension with identity scarcity is recorded.
+- Tokenless proof enrollment grants only the role `node`; other roles are refused with
+  `400 bad_request` at `/v1/node/challenge`. Caps on pending challenges and keys are permitted
+  implementation limits (a `429` is allowed).
 - Schemas `requests/node-hardware.json`, `requests/node-hardware-report.json`; fixtures; vectors
   `conformance/node-join-vectors.json`; reference model `conformance/node_join.py`; manifest
   scenarios `node_enrollment`, `hardware_registration`.

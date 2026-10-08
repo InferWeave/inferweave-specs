@@ -36,7 +36,10 @@ against one and fail against the other without any error pointing at the cause.
    known answers, because a transcript is the one part where two correct-looking implementations
    silently disagree.
 5. **Open registration is permitted**, not required: a gateway MAY accept proof enrollment from
-   any key, at the lowest trust tier.
+   any key, at the lowest trust tier, and only for the role `node`. A challenge for any other role
+   (`gateway`, `edge`, ...) is `400 bad_request`; privileged roles stay operator-issued. Alternative
+   rejected: letting a proof earn any well-formed role, which would let a free identity register
+   as a gateway.
 
 ## Consequences and the tension recorded
 

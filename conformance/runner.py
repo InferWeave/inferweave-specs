@@ -173,6 +173,14 @@ def check_node_join_vectors():
     for missing in sorted(required - seen):
         print(f"FAIL  node-join vectors: required case {missing} is missing")
         ok = False
+    roles = doc["enrollmentRoleCases"]["cases"]
+    if {c["expect"]["status"] for c in roles} != {200, 400}:
+        print("FAIL  node-join role cases must cover both 200 and 400")
+        ok = False
+    for c in roles:
+        if node_join.challenge_decision(c["challenge"]) != c["expect"]:
+            print(f"FAIL  node-join role case {c['id']}: reference model disagrees")
+            ok = False
     hw_errors = node_join.check_hardware(doc["hardwareSample"])
     if hw_errors:
         print(f"FAIL  node-join hardwareSample: {hw_errors}")

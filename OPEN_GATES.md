@@ -308,6 +308,9 @@ Unsatisfied, and recorded `owed` by `P5-T33` (Rust gateway) and `P5-T34` (Go gat
 - the Rust proof store (keys, challenges, credentials) is in memory: the first-publisher-owns-the-id
   binding does not survive a restart, and `/key` and `/challenge` are unauthenticated and
   unbounded;
+- the Rust reference accepts a tokenless challenge for any well-formed role; spec 47 requires only
+  `node` (others `400 bad_request`), and the Go gateway's role set (`node`/`gateway`) must be
+  narrowed to match; neither is changed or tested here;
 - the model-execution proof has a defined transcript but no wire surface; renewal and re-proof for
   an enrolled node have no wire surface;
 - whether the Go standard-library Ed25519 verifier matches the strict verifier of the reference on

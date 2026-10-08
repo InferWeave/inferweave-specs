@@ -164,6 +164,13 @@ def check_known_answers(kat):
     return errors
 
 
+def challenge_decision(request):
+    """spec 47 section 5.2: tokenless enrollment grants only the role `node`."""
+    if request.get("role") == "node":
+        return {"status": 200, "claimRole": "node"}
+    return {"status": 400, "errorCode": "bad_request"}
+
+
 # --- hardware field and hardware-only registration ------------------------------------------
 class _Float(float):
     """Marks a JSON number written with a fraction or exponent (not an integer)."""

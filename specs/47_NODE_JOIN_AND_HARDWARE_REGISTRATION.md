@@ -205,8 +205,12 @@ Unauthenticated: publishing a key grants nothing.
   as one (never as a binary64 float; values above 2^53 are normal). `claim` is the exact claim the
   proof must repeat; the four members are always present, absent members as explicit `null`.
   `expiresAt` is Unix seconds; the challenge lifetime is 900 seconds.
-- A node with no published key, a revoked node, or an invalid `role` (non-empty, at most 256 bytes,
-  no whitespace or control characters): `400 bad_request`.
+- **Tokenless enrollment grants only the role `node`.** A challenge request whose `role` is
+  anything else (for example `gateway`, `edge`, or an empty or malformed value) MUST be refused
+  with `400 bad_request`, and no challenge is issued. Privileged roles continue to require
+  operator-issued enrollment (the one-time code path of `/v1/node/enroll`); no proof can earn them.
+  The reference gateway currently accepts any well-formed role here and must be tightened.
+- A node with no published key or a revoked node: `400 bad_request`.
 - Only the role claim is reachable over HTTP. The model-execution claim (model, context class,
   measured resource claim) has a defined transcript (section 5.4) but **no wire surface yet**; the
   spec was silent and this document does not invent one.
@@ -297,10 +301,16 @@ gateway that does so:
 
 - MUST start every newly enrolled node at the lowest trust tier of whatever trust ladder it runs;
   a proof of key possession proves identity continuity, not honesty or capability;
+- MUST grant only the role `node` (section 5.2); a gateway, edge or other privileged role is never
+  earned by proof, so open enrollment cannot mint a node that is allowed to act as a gateway;
 - MUST NOT treat a role credential as proof of any model or context capability (spec 03: a
   capability claim that has not been challenged does not license serving it);
 - SHOULD bound what unauthenticated callers can make it store (published keys, pending
-  challenges), because `/key` and `/challenge` need no credential. The reference gateway keeps both
+  challenges), because `/key` and `/challenge` need no credential. Such limits are permitted
+  implementation limits and are not part of the conformance vectors; the in-house Go gateway caps
+  pending challenges at 1024 and published keys at 10000 and answers `429` when a cap is hit. A
+  gateway MAY use `429` for this (it is not otherwise in this contract), and a node SHOULD retry
+  with backoff. The reference gateway keeps both
   maps in memory without a bound, and loses the key-to-id binding at restart, so "the first
   publisher owns the id" holds for one process lifetime only;
 - SHOULD rate limit the three endpoints per source.
@@ -344,6 +354,7 @@ apply to the older-node vector).
 | `hw-version-*` | (d) missing or non-integer `version` is `400 bad_request`; any integer accepted |
 | `older-node-no-hardware` | (e) a node without `hardware` registers as before; `assignments: []` added |
 | `hw-unknown-keys-kept` | unknown members are stored verbatim |
+| `enrollmentRoleCases` | tokenless challenge for role `node` is 200; for `gateway` (and other roles) is `400 bad_request` |
 | `enrollmentKnownAnswers` | (f) transcript and signature for fixed seed, challenge, nonce and claim |
 
 The reference gateway replays the vectors in addition to its own `conformance/MANIFEST.json`; that
