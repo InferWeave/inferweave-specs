@@ -1,0 +1,22 @@
+{
+  "modelId": "whisper-large-v3-turbo",
+  "adapter": "whisper",
+  "placementClass": "opportunistic",
+  "requirements": {
+    "expectedVramBytes": 4294967296,
+    "growthReserveBytes": 1073741824,
+    "contextTokens": null,
+    "concurrency": 2,
+    "accelerators": [
+      "cuda",
+      "rocm"
+    ],
+    "gpus": 1
+  },
+  "scope": {
+    "gatewayIds": [
+      "gw_hive-rust"
+    ],
+    "nodeIds": []
+  }
+}

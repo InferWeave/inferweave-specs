@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/resources/memory.json",
   "title": "GPU memory",
-  "description": "Explicit GPU memory accounting. Unknown remains unknown, never 0.",
+  "description": "Explicit GPU memory accounting. Unknown remains unknown, never 0. All values are bytes (Protocol 1.1.0 clarification; the published fixture and every known producer use bytes). The capability-gated iw.gpu-memory family (specs/46, schemas/v1/resources/gpu-memory-*.json) is the detailed superset; specs/46 §11 maps each field here onto it. `reserved` is logical and never part of a physical total.",
   "type": "object",
   "additionalProperties": true,
   "properties": {

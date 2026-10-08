@@ -152,3 +152,6 @@ Total tasks: **148**
 | `P5-T27` | 5 | C75 | P5-T25 | Protocol v1: OpenAPI and transport-independent surfaces |
 | `P5-T28` | 5 | C90 | P5-T25, P5-T26, P5-T27 | Protocol v1: conformance suite and fixtures |
 | `P5-T29` | 5 | C75 | P5-T28 | Protocol v1: compatibility matrix, changelog, release artifacts, cross-repo CI |
+| `P5-T30` | 5 | C80 | P5-T24, P5-T25 | GPU memory: accounting wire contract, node report and reconciliation |
+| `P5-T31` | 5 | C85 | P5-T30 | GPU memory: gateway composition, reservations, pressure and fleet snapshot |
+| `P5-T32` | 5 | C85 | P5-T31 | GPU memory: decision records, lifecycle events, OOM postmortem and placement simulation |

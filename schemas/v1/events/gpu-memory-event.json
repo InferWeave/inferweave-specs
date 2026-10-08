@@ -1,0 +1,464 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/events/gpu-memory-event.json",
+  "title": "GpuMemoryEvent",
+  "type": "object",
+  "description": "GET /iw/v1/gpu-memory/events entry (spec 46 §7.1). gpu.memory.updated is reserved for push transports and is not emitted on the pull feed.",
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Unique; the idempotency key."
+    },
+    "cursor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "description": "<producerEpoch>:<sequence>; an epoch change means resynchronize from a snapshot."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "gpu.memory.updated",
+        "gpu.memory.pressure_changed",
+        "gpu.memory.accounting_anomaly",
+        "gpu.memory.oom",
+        "gpu.memory.postmortem",
+        "runtime.opportunistic_placed",
+        "runtime.eviction_started",
+        "runtime.evicted",
+        "runtime.restore_started",
+        "runtime.restored",
+        "runtime.migration_started",
+        "runtime.migrated",
+        "rebalance.decision",
+        "rebalance.started",
+        "rebalance.completed",
+        "rebalance.failed"
+      ]
+    },
+    "occurredAt": {
+      "type": "string",
+      "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+    },
+    "gatewayId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "origin": {
+      "type": "object",
+      "properties": {
+        "gatewayId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "nodeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]*$",
+          "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+        },
+        "via": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]*$",
+            "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+          }
+        }
+      },
+      "required": [
+        "gatewayId",
+        "nodeId"
+      ],
+      "additionalProperties": true
+    },
+    "correlationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "The decision id where one exists, otherwise the id of the episode (e.g. the anomaly id)."
+    },
+    "resourceIds": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128,
+        "pattern": "^[\\x21-\\x7e]*$",
+        "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+      }
+    },
+    "runtimeInstanceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "modelId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "eventId",
+    "cursor",
+    "type",
+    "occurredAt",
+    "gatewayId",
+    "payload"
+  ],
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "rebalance.decision"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "../resources/rebalance-decision.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "gpu.memory.accounting_anomaly"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "../resources/gpu-memory-anomaly.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "gpu.memory.postmortem"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "../resources/gpu-memory-postmortem.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "gpu.memory.pressure_changed"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "resourceId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]*$",
+                "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+              },
+              "from": {
+                "type": "string",
+                "enum": [
+                  "comfortable",
+                  "constrained",
+                  "pressure",
+                  "critical",
+                  "unknown"
+                ]
+              },
+              "to": {
+                "type": "string",
+                "enum": [
+                  "comfortable",
+                  "constrained",
+                  "pressure",
+                  "critical",
+                  "unknown"
+                ]
+              },
+              "pressure": {
+                "$ref": "../resources/pressure.json"
+              }
+            },
+            "required": [
+              "resourceId",
+              "from",
+              "to"
+            ],
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "gpu.memory.oom"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "resourceId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]*$",
+                "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+              },
+              "nodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]*$",
+                "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+              },
+              "runtimeInstanceId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]*$",
+                "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+              },
+              "detectedAt": {
+                "type": "string",
+                "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+              },
+              "signature": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "exitStatus": {
+                "type": "integer"
+              },
+              "postmortemEventId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]*$",
+                "description": "The gpu.memory.postmortem event that carries the pre-failure state."
+              }
+            },
+            "required": [
+              "resourceId",
+              "nodeId",
+              "detectedAt"
+            ],
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "enum": [
+              "runtime.opportunistic_placed",
+              "runtime.eviction_started",
+              "runtime.evicted",
+              "runtime.restore_started",
+              "runtime.restored",
+              "runtime.migration_started",
+              "runtime.migrated"
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "properties": {
+              "runtimeInstanceId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]*$",
+                "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+              },
+              "modelId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]*$",
+                "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+              },
+              "nodeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]*$",
+                "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+              },
+              "resourceIds": {
+                "type": "array",
+                "maxItems": 64,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[\\x21-\\x7e]*$",
+                  "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+                }
+              },
+              "placementClass": {
+                "type": "string",
+                "enum": [
+                  "primary",
+                  "normal",
+                  "opportunistic"
+                ],
+                "description": "Absent means normal. A reader that meets a value it does not know treats it as primary (never evicted, never packed against)."
+              },
+              "decisionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]*$",
+                "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 128
+              },
+              "destination": {
+                "type": "object",
+                "description": "Migrations only.",
+                "properties": {
+                  "nodeId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[\\x21-\\x7e]*$",
+                    "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+                  },
+                  "resourceIds": {
+                    "type": "array",
+                    "maxItems": 64,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[\\x21-\\x7e]*$",
+                      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+                    }
+                  }
+                },
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "runtimeInstanceId",
+              "resourceIds"
+            ],
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "enum": [
+              "rebalance.started",
+              "rebalance.completed",
+              "rebalance.failed"
+            ]
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "description": "rebalance.completed and rebalance.failed carry the outcome; a completed outcome carries a measured delta.",
+            "properties": {
+              "decisionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]*$",
+                "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+              },
+              "outcome": {
+                "$ref": "../resources/rebalance-decision.json#/properties/outcome"
+              }
+            },
+            "required": [
+              "decisionId"
+            ],
+            "additionalProperties": true
+          }
+        }
+      }
+    }
+  ]
+}

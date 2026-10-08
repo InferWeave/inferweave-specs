@@ -1,0 +1,446 @@
+{
+  "authority": {
+    "mode": "observe",
+    "rebalancer": true
+  },
+  "gatewayId": "gw_beast",
+  "generatedAt": "2026-10-08T14:31:07Z",
+  "nodes": [
+    {
+      "allocations": [
+        {
+          "allocationId": "al_node_beast_amd-0x7a3c10e5_llama.cpp-0",
+          "category": "runtime-total",
+          "evictable": false,
+          "intended": "unknown",
+          "meta": {
+            "processName": "llama-server"
+          },
+          "modelId": "qwen3.8-27b-modality-text-quant-q8_k_xl",
+          "observedAt": "2026-10-08T14:31:04Z",
+          "physical": {
+            "basis": "measured",
+            "bytes": 26306674688,
+            "source": "drm-fdinfo"
+          },
+          "placementClass": "primary",
+          "resourceId": "gpu:gw_beast/node_beast/amd-0x7a3c10e5",
+          "runtimeInstanceId": "node_beast-llama.cpp-0"
+        },
+        {
+          "allocationId": "al_node_beast_amd-0x7a3c10e6_llama.cpp-0",
+          "category": "runtime-total",
+          "evictable": false,
+          "intended": "unknown",
+          "meta": {
+            "processName": "llama-server"
+          },
+          "modelId": "qwen3.8-27b-modality-text-quant-q8_k_xl",
+          "observedAt": "2026-10-08T14:31:04Z",
+          "physical": {
+            "basis": "measured",
+            "bytes": 24964497408,
+            "source": "drm-fdinfo"
+          },
+          "placementClass": "primary",
+          "resourceId": "gpu:gw_beast/node_beast/amd-0x7a3c10e6",
+          "runtimeInstanceId": "node_beast-llama.cpp-0"
+        },
+        {
+          "allocationId": "al_node_beast_amd-0x7a3c10e6_foreign-0",
+          "category": "foreign-process",
+          "evictable": false,
+          "meta": {
+            "processName": "gnome-shell"
+          },
+          "observedAt": "2026-10-08T14:31:04Z",
+          "physical": {
+            "basis": "measured",
+            "bytes": 805306368,
+            "source": "drm-fdinfo"
+          },
+          "resourceId": "gpu:gw_beast/node_beast/amd-0x7a3c10e6"
+        }
+      ],
+      "anomalies": [],
+      "gpus": [
+        {
+          "attributed": {
+            "basis": "estimated",
+            "bytes": 26306674688
+          },
+          "authority": "owned",
+          "byClass": {
+            "primary": {
+              "basis": "measured",
+              "bytes": 26306674688,
+              "source": "drm-fdinfo"
+            }
+          },
+          "categories": {
+            "kvCache": {
+              "basis": "derived",
+              "bytes": 9663676416,
+              "note": "nCtx x kvPerToken / 2 devices",
+              "source": "llama.cpp-props"
+            },
+            "weights": {
+              "basis": "estimated",
+              "bytes": 15032385536,
+              "note": "GGUF tensor split share",
+              "source": "iw-registry"
+            },
+            "workspace": {
+              "basis": "derived",
+              "bytes": 1610612736,
+              "note": "process drm-memory-vram minus weights+kv",
+              "source": "drm-fdinfo"
+            }
+          },
+          "deviceId": "amd-0x7a3c10e5",
+          "deviceKeyStable": true,
+          "driver": {
+            "name": "amdgpu",
+            "runtime": "rocm-7.0.1",
+            "version": "6.14"
+          },
+          "eligibility": {
+            "opportunistic": false,
+            "reasons": [
+              "opportunistic-disabled"
+            ]
+          },
+          "index": 0,
+          "logical": {
+            "kvGrowthReserve": {
+              "basis": "declared",
+              "bytes": 0,
+              "note": "llama.cpp KV preallocated"
+            },
+            "placementReservations": {
+              "basis": "declared",
+              "bytes": 0,
+              "source": "iw-ledger"
+            },
+            "safetyHeadroom": {
+              "basis": "declared",
+              "bytes": 1717567488,
+              "source": "config"
+            }
+          },
+          "name": "AMD Radeon AI PRO R9700",
+          "nodeSafeSchedulable": {
+            "basis": "derived",
+            "bytes": 6335496192,
+            "source": "iw-ledger"
+          },
+          "physical": {
+            "free": {
+              "basis": "derived",
+              "bytes": 8053063680,
+              "source": "sysfs"
+            },
+            "total": {
+              "basis": "measured",
+              "bytes": 34359738368,
+              "note": "mem_info_vram_total, rounded down",
+              "source": "sysfs"
+            },
+            "used": {
+              "basis": "measured",
+              "bytes": 26306674688,
+              "note": "mem_info_vram_used, rounded up",
+              "source": "sysfs"
+            }
+          },
+          "pressure": {
+            "headroom": {
+              "basis": "derived",
+              "bytes": 6335496192,
+              "source": "iw-ledger"
+            },
+            "reasons": [],
+            "since": "2026-10-08T08:00:00Z",
+            "state": "comfortable"
+          },
+          "resourceId": "gpu:gw_beast/node_beast/amd-0x7a3c10e5",
+          "safeSchedulable": {
+            "basis": "derived",
+            "bytes": 6335496192,
+            "source": "iw-ledger"
+          },
+          "telemetry": {
+            "ageMs": 900,
+            "observedAt": "2026-10-08T14:31:04Z",
+            "sources": [
+              "sysfs",
+              "drm-fdinfo",
+              "rocm-smi",
+              "llama.cpp-props"
+            ],
+            "status": "fresh"
+          },
+          "topologyGpuId": "amd-0x7a3c10e5",
+          "unattributed": {
+            "basis": "derived",
+            "bytes": 0
+          },
+          "vendor": "amd"
+        },
+        {
+          "attributed": {
+            "basis": "estimated",
+            "bytes": 25769803776
+          },
+          "authority": "owned",
+          "byClass": {
+            "primary": {
+              "basis": "measured",
+              "bytes": 24964497408,
+              "source": "drm-fdinfo"
+            }
+          },
+          "categories": {
+            "kvCache": {
+              "basis": "derived",
+              "bytes": 9663676416,
+              "note": "nCtx x kvPerToken / 2 devices",
+              "source": "llama.cpp-props"
+            },
+            "other": {
+              "basis": "measured",
+              "bytes": 805306368,
+              "note": "gnome-shell / Xwayland",
+              "source": "drm-fdinfo"
+            },
+            "weights": {
+              "basis": "estimated",
+              "bytes": 13958643712,
+              "note": "GGUF tensor split share",
+              "source": "iw-registry"
+            },
+            "workspace": {
+              "basis": "derived",
+              "bytes": 1342177280,
+              "note": "process drm-memory-vram minus weights+kv",
+              "source": "drm-fdinfo"
+            }
+          },
+          "deviceId": "amd-0x7a3c10e6",
+          "deviceKeyStable": true,
+          "driver": {
+            "name": "amdgpu",
+            "runtime": "rocm-7.0.1",
+            "version": "6.14"
+          },
+          "eligibility": {
+            "opportunistic": false,
+            "reasons": [
+              "opportunistic-disabled"
+            ]
+          },
+          "index": 1,
+          "logical": {
+            "kvGrowthReserve": {
+              "basis": "declared",
+              "bytes": 0,
+              "note": "llama.cpp KV preallocated"
+            },
+            "placementReservations": {
+              "basis": "declared",
+              "bytes": 0,
+              "source": "iw-ledger"
+            },
+            "safetyHeadroom": {
+              "basis": "declared",
+              "bytes": 1717567488,
+              "source": "config"
+            }
+          },
+          "name": "AMD Radeon AI PRO R9700",
+          "nodeSafeSchedulable": {
+            "basis": "derived",
+            "bytes": 6872367104,
+            "source": "iw-ledger"
+          },
+          "physical": {
+            "free": {
+              "basis": "derived",
+              "bytes": 8589934592,
+              "source": "sysfs"
+            },
+            "total": {
+              "basis": "measured",
+              "bytes": 34359738368,
+              "note": "mem_info_vram_total, rounded down",
+              "source": "sysfs"
+            },
+            "used": {
+              "basis": "measured",
+              "bytes": 25769803776,
+              "note": "mem_info_vram_used, rounded up",
+              "source": "sysfs"
+            }
+          },
+          "pressure": {
+            "headroom": {
+              "basis": "derived",
+              "bytes": 6872367104,
+              "source": "iw-ledger"
+            },
+            "reasons": [],
+            "since": "2026-10-08T08:00:00Z",
+            "state": "comfortable"
+          },
+          "resourceId": "gpu:gw_beast/node_beast/amd-0x7a3c10e6",
+          "safeSchedulable": {
+            "basis": "derived",
+            "bytes": 6872367104,
+            "source": "iw-ledger"
+          },
+          "telemetry": {
+            "ageMs": 900,
+            "observedAt": "2026-10-08T14:31:04Z",
+            "sources": [
+              "sysfs",
+              "drm-fdinfo",
+              "rocm-smi",
+              "llama.cpp-props"
+            ],
+            "status": "fresh"
+          },
+          "topologyGpuId": "amd-0x7a3c10e6",
+          "unattributed": {
+            "basis": "derived",
+            "bytes": 0
+          },
+          "vendor": "amd"
+        }
+      ],
+      "observedAt": "2026-10-08T14:31:05Z",
+      "origin": {
+        "gatewayId": "gw_beast",
+        "nodeId": "node_beast",
+        "via": [
+          "gw_beast"
+        ]
+      },
+      "ownership": {
+        "actionAuthority": "origin-gateway",
+        "allocationState": "active",
+        "manager": "standalone"
+      },
+      "policy": {
+        "accountingTolerancePercent": 2,
+        "safetyMarginPercent": 5,
+        "telemetryIntervalSecs": 5
+      },
+      "producerEpoch": "ep__beasta1",
+      "runtimes": [
+        {
+          "activeRequests": 1,
+          "adapter": "llama.cpp",
+          "adapterResources": {
+            "accelerators": [
+              "rocm",
+              "vulkan"
+            ],
+            "dynamicGrowth": "preallocated",
+            "eviction": "drain-then-unload",
+            "maxConcurrency": 2,
+            "startupSecs": 70
+          },
+          "adapterVersion": "b6402-rocm",
+          "deployment": "dep_dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "evictable": false,
+          "kvPool": {
+            "capacityTokens": 262144,
+            "preallocated": true,
+            "usageRatio": {
+              "basis": "unsupported",
+              "note": "engine started without --slots; no occupancy endpoint"
+            }
+          },
+          "migrationSupported": false,
+          "modelId": "qwen3.8-27b-modality-text-quant-q8_k_xl",
+          "perGpu": [
+            {
+              "kvCache": {
+                "basis": "derived",
+                "bytes": 9663676416,
+                "source": "llama.cpp-props"
+              },
+              "physicalTotal": {
+                "basis": "measured",
+                "bytes": 26306674688,
+                "source": "drm-fdinfo"
+              },
+              "resourceId": "gpu:gw_beast/node_beast/amd-0x7a3c10e5",
+              "weights": {
+                "basis": "estimated",
+                "bytes": 15032385536,
+                "source": "iw-registry"
+              },
+              "workspace": {
+                "basis": "derived",
+                "bytes": 1610612736,
+                "source": "drm-fdinfo"
+              }
+            },
+            {
+              "kvCache": {
+                "basis": "derived",
+                "bytes": 9663676416,
+                "source": "llama.cpp-props"
+              },
+              "physicalTotal": {
+                "basis": "measured",
+                "bytes": 24964497408,
+                "source": "drm-fdinfo"
+              },
+              "resourceId": "gpu:gw_beast/node_beast/amd-0x7a3c10e6",
+              "weights": {
+                "basis": "estimated",
+                "bytes": 13958643712,
+                "source": "iw-registry"
+              },
+              "workspace": {
+                "basis": "derived",
+                "bytes": 1342177280,
+                "source": "drm-fdinfo"
+              }
+            }
+          ],
+          "placementClass": "primary",
+          "placementGroup": {
+            "gpus": [
+              "gpu:gw_beast/node_beast/amd-0x7a3c10e5",
+              "gpu:gw_beast/node_beast/amd-0x7a3c10e6"
+            ],
+            "pipelineParallel": 2,
+            "shardMovable": false,
+            "tensorParallel": 1,
+            "topology": "layer-split"
+          },
+          "runtimeInstanceId": "node_beast-llama.cpp-0",
+          "slots": {
+            "support": "unsupported"
+          },
+          "total": {
+            "basis": "measured",
+            "bytes": 51271172096,
+            "source": "drm-fdinfo"
+          }
+        }
+      ],
+      "schema": "iw.gpu-memory.report/1",
+      "sequence": 5531,
+      "truncated": false
+    }
+  ],
+  "peers": [],
+  "producerEpoch": "ep_east0f",
+  "reservations": [],
+  "schema": "iw.gpu-memory.fleet/1",
+  "sequence": 2210
+}

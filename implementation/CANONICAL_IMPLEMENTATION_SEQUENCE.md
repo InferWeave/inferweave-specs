@@ -2083,3 +2083,51 @@ Rules:
 - protocol change workflow is documented
 - cross-repo CI guard rejects protocol-visible drift
 - release artifact manifest is reproducible for a protocol version
+
+### P5-T30 — GPU memory: accounting wire contract, node report and reconciliation
+**Context:** `C80`
+**Depends on:** P5-T24, P5-T25
+**Features:** IW-GPUMEM-001
+**Read:** specs/46_GPU_MEMORY_INTELLIGENCE.md, specs/45_PROTOCOL_V1.md
+
+**Outcome:** Publish and implement the iw.gpu-memory/1 node report: byte quantities with an explicit basis, per-GPU physical, attributed and unattributed memory, runtimes, slots, allocations, ownership and authority, carried only as optional members of node telemetry and the heartbeat status, with accounting reconciliation that emits anomalies and never treats unknown as zero.
+
+**Required tests:**
+- every contract fixture round-trips byte-stable through the reference implementation types
+- a quantity carrying bytes beside basis unknown or unsupported is refused
+- used plus free and attributed plus unattributed reconcile within the configured tolerance, otherwise an anomaly is emitted
+- unattributed memory is present whenever physical used is known
+- an older node's telemetry and heartbeat parse unchanged and a malformed report never refuses the carrier
+- topology v2 carries no GPU-memory member
+- NVIDIA and AMD producers report physical memory measured on real hardware
+
+### P5-T31 — GPU memory: gateway composition, reservations, pressure and fleet snapshot
+**Context:** `C85`
+**Depends on:** P5-T30
+**Features:** IW-GPUMEM-001
+**Read:** specs/46_GPU_MEMORY_INTELLIGENCE.md, specs/04_CAPACITY_ADMISSION_SEATS.md, specs/43_GPU_PLACEMENT_HOT_SWAP.md
+
+**Outcome:** Compose safeSchedulable, pressure and eligibility only in the gateway whose rebalancer owns the node, keep a race-safe reservation ledger reconciled against measured allocations, and serve the iw.gpu-memory.fleet/1 snapshot that federated consumers de-duplicate by resource id without recomputing it.
+
+**Required tests:**
+- a reservation already visible as a physical allocation is not subtracted twice
+- two decisions in one pass cannot reserve the same bytes
+- a not-owned or stale GPU has no schedulable capacity
+- pressure states follow free-after-growth with hysteresis
+- a resource relayed by two paths is counted once
+- a gateway that is not the authority never composes safeSchedulable
+
+### P5-T32 — GPU memory: decision records, lifecycle events, OOM postmortem and placement simulation
+**Context:** `C85`
+**Depends on:** P5-T31
+**Features:** IW-GPUMEM-001
+**Read:** specs/46_GPU_MEMORY_INTELLIGENCE.md, specs/36_GPU_WATCHDOG_RESCUE.md, specs/35_CLUSTER_SIMULATOR_CHAOS.md
+
+**Outcome:** Record every meaningful rebalancer decision with candidates, scores and measured outcomes on a cursor-based idempotent event feed, preserve the last pre-failure state of a GPU in an OOM postmortem, and answer read-only placement simulations from the real rebalancer evaluation.
+
+**Required tests:**
+- an event replayed with the same eventId is recorded once
+- a decision outcome is never succeeded before a measured delta exists
+- a postmortem reconstructs the OOM without the failed runtime answering
+- a simulation leaves the ledger, the router and every allocation unchanged
+- a gateway without rebalancer authority refuses a simulation

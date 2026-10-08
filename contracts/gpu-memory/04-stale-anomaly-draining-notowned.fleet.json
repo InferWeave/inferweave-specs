@@ -1,0 +1,424 @@
+{
+  "authority": {
+    "mode": "observe",
+    "rebalancer": true
+  },
+  "gatewayId": "gw_hive-rust",
+  "generatedAt": "2026-10-08T14:31:07Z",
+  "nodes": [
+    {
+      "allocations": [
+        {
+          "allocationId": "al_node_g3-glm_GPU-11aa22bb_llama.cpp-0",
+          "category": "runtime-total",
+          "evictable": false,
+          "intended": "yes",
+          "meta": {
+            "processName": "llama-server"
+          },
+          "modelId": "glm-4.7-modality-text-quant-q4_k_m",
+          "observedAt": "2026-10-08T14:31:05Z",
+          "physical": {
+            "basis": "measured",
+            "bytes": 55834574848,
+            "source": "nvidia-smi-compute-apps"
+          },
+          "placementClass": "normal",
+          "resourceId": "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0df",
+          "runtimeInstanceId": "node_g3-glm-llama.cpp-0"
+        }
+      ],
+      "anomalies": [
+        {
+          "anomalyId": "an_c0df_ep_g3glma1_77",
+          "consecutive": 103,
+          "detail": "22 GiB on card not owned by any process nvidia-smi lists; candidates: leaked context of a crashed engine, MPS server, process in another PID namespace",
+          "firstSeenAt": "2026-10-08T14:22:35Z",
+          "kind": "unattributed-over-tolerance",
+          "lastSeenAt": "2026-10-08T14:31:05Z",
+          "measuredBytes": 23622320128,
+          "resourceId": "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0df",
+          "toleranceBytes": 1717986918
+        }
+      ],
+      "gpus": [
+        {
+          "authority": "owned",
+          "deviceId": "GPU-11aa22bb-0000-4000-8000-00000000c0de",
+          "deviceKeyStable": true,
+          "eligibility": {
+            "opportunistic": false,
+            "reasons": [
+              "telemetry-stale",
+              "allocation-draining"
+            ]
+          },
+          "index": 0,
+          "logical": {
+            "safetyHeadroom": {
+              "basis": "declared",
+              "bytes": 4294967296,
+              "source": "config"
+            }
+          },
+          "name": "NVIDIA A100-SXM4-80GB",
+          "nodeSafeSchedulable": {
+            "basis": "unknown",
+            "note": "telemetry not fresh"
+          },
+          "physical": {
+            "free": {
+              "basis": "unknown",
+              "note": "last reading 244 s old; not carried forward"
+            },
+            "total": {
+              "basis": "measured",
+              "bytes": 85899345920,
+              "source": "nvidia-smi"
+            },
+            "used": {
+              "basis": "unknown",
+              "note": "last reading 244 s old; not carried forward"
+            }
+          },
+          "pressure": {
+            "previous": "comfortable",
+            "reasons": [
+              "telemetry-stale"
+            ],
+            "since": "2026-10-08T14:27:31Z",
+            "state": "unknown"
+          },
+          "resourceId": "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0de",
+          "safeSchedulable": {
+            "basis": "unknown",
+            "note": "telemetry not fresh"
+          },
+          "telemetry": {
+            "ageMs": 244000,
+            "observedAt": "2026-10-08T14:27:01Z",
+            "sources": [
+              "nvidia-smi"
+            ],
+            "status": "stale"
+          },
+          "topologyGpuId": "GPU-11aa22bb-0000-4000-8000-00000000c0de",
+          "vendor": "nvidia"
+        },
+        {
+          "attributed": {
+            "basis": "estimated",
+            "bytes": 55834574848
+          },
+          "authority": "owned",
+          "byClass": {
+            "primary": {
+              "basis": "measured",
+              "bytes": 55834574848,
+              "source": "nvidia-smi-compute-apps"
+            }
+          },
+          "categories": {
+            "kvCache": {
+              "basis": "derived",
+              "bytes": 12884901888,
+              "source": "llama.cpp-props"
+            },
+            "weights": {
+              "basis": "estimated",
+              "bytes": 40802189312,
+              "source": "iw-registry"
+            },
+            "workspace": {
+              "basis": "derived",
+              "bytes": 2147483648,
+              "source": "nvidia-smi-compute-apps"
+            }
+          },
+          "deviceId": "GPU-11aa22bb-0000-4000-8000-00000000c0df",
+          "deviceKeyStable": true,
+          "eligibility": {
+            "opportunistic": false,
+            "reasons": [
+              "anomaly",
+              "allocation-draining"
+            ]
+          },
+          "index": 1,
+          "logical": {
+            "placementReservations": {
+              "basis": "declared",
+              "bytes": 0,
+              "source": "iw-ledger"
+            },
+            "safetyHeadroom": {
+              "basis": "declared",
+              "bytes": 4294967296,
+              "source": "config"
+            }
+          },
+          "name": "NVIDIA A100-SXM4-80GB",
+          "nodeSafeSchedulable": {
+            "basis": "derived",
+            "bytes": 2147483648,
+            "source": "iw-ledger"
+          },
+          "physical": {
+            "free": {
+              "basis": "measured",
+              "bytes": 6442450944,
+              "source": "nvidia-smi"
+            },
+            "total": {
+              "basis": "measured",
+              "bytes": 85899345920,
+              "source": "nvidia-smi"
+            },
+            "used": {
+              "basis": "measured",
+              "bytes": 79456894976,
+              "source": "nvidia-smi"
+            }
+          },
+          "pressure": {
+            "headroom": {
+              "basis": "derived",
+              "bytes": 2147483648,
+              "source": "iw-ledger"
+            },
+            "previous": "comfortable",
+            "reasons": [
+              "free-after-growth 6 GiB = 1.5x safety",
+              "unattributed 22 GiB > tolerance"
+            ],
+            "since": "2026-10-08T14:22:40Z",
+            "state": "constrained"
+          },
+          "resourceId": "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0df",
+          "safeSchedulable": {
+            "basis": "derived",
+            "bytes": 2147483648,
+            "source": "iw-ledger"
+          },
+          "telemetry": {
+            "ageMs": 1500,
+            "observedAt": "2026-10-08T14:31:05Z",
+            "sources": [
+              "nvidia-smi",
+              "nvidia-smi-compute-apps"
+            ],
+            "status": "fresh"
+          },
+          "topologyGpuId": "GPU-11aa22bb-0000-4000-8000-00000000c0df",
+          "unattributed": {
+            "basis": "derived",
+            "bytes": 23622320128,
+            "note": "card used minus all per-process totals"
+          },
+          "vendor": "nvidia"
+        },
+        {
+          "attributed": {
+            "basis": "derived",
+            "bytes": 0,
+            "note": "no InferWeave process; foreign job not attributable"
+          },
+          "authority": "not-owned",
+          "deviceId": "GPU-11aa22bb-0000-4000-8000-00000000c0e0",
+          "deviceKeyStable": true,
+          "eligibility": {
+            "opportunistic": false,
+            "reasons": [
+              "not-owned"
+            ]
+          },
+          "index": 2,
+          "logical": {},
+          "name": "NVIDIA A100-SXM4-80GB",
+          "nodeSafeSchedulable": {
+            "basis": "declared",
+            "bytes": 0,
+            "note": "not owned: belongs to another Slurm allocation (spec §36)"
+          },
+          "physical": {
+            "free": {
+              "basis": "measured",
+              "bytes": 64424509440,
+              "source": "nvidia-smi"
+            },
+            "total": {
+              "basis": "measured",
+              "bytes": 85899345920,
+              "source": "nvidia-smi"
+            },
+            "used": {
+              "basis": "measured",
+              "bytes": 21474836480,
+              "source": "nvidia-smi"
+            }
+          },
+          "pressure": {
+            "reasons": [
+              "not-owned"
+            ],
+            "state": "unknown"
+          },
+          "resourceId": "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0e0",
+          "safeSchedulable": {
+            "basis": "declared",
+            "bytes": 0,
+            "note": "not owned: belongs to another Slurm allocation (spec §36)"
+          },
+          "telemetry": {
+            "ageMs": 1500,
+            "observedAt": "2026-10-08T14:31:05Z",
+            "sources": [
+              "nvidia-smi"
+            ],
+            "status": "fresh"
+          },
+          "topologyGpuId": "GPU-11aa22bb-0000-4000-8000-00000000c0e0",
+          "unattributed": {
+            "basis": "derived",
+            "bytes": 21474836480
+          },
+          "vendor": "nvidia"
+        }
+      ],
+      "observedAt": "2026-10-08T14:31:05Z",
+      "origin": {
+        "gatewayId": "gw_hive-rust",
+        "nodeId": "node_g3-glm",
+        "via": [
+          "gw_hive-rust"
+        ]
+      },
+      "ownership": {
+        "actionAuthority": "origin-gateway",
+        "allocationEndsAt": "2026-10-08T14:41:00Z",
+        "allocationId": "4822960",
+        "allocationState": "draining",
+        "manager": "slurm"
+      },
+      "policy": {
+        "accountingTolerancePercent": 2,
+        "safetyMarginPercent": 5,
+        "telemetryIntervalSecs": 5
+      },
+      "producerEpoch": "ep_g3-glma1",
+      "runtimes": [
+        {
+          "activeRequests": 1,
+          "adapter": "llama.cpp",
+          "adapterVersion": "b6380",
+          "deployment": "dep_eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "evictable": false,
+          "kvPool": {
+            "preallocated": true,
+            "usageRatio": {
+              "basis": "derived",
+              "source": "llama.cpp-slots",
+              "value": 0.18
+            }
+          },
+          "migrationSupported": false,
+          "modelId": "glm-4.7-modality-text-quant-q4_k_m",
+          "perGpu": [
+            {
+              "physicalTotal": {
+                "basis": "unknown",
+                "note": "stale"
+              },
+              "resourceId": "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0de"
+            },
+            {
+              "kvCache": {
+                "basis": "derived",
+                "bytes": 12884901888,
+                "source": "llama.cpp-props"
+              },
+              "physicalTotal": {
+                "basis": "measured",
+                "bytes": 55834574848,
+                "source": "nvidia-smi-compute-apps"
+              },
+              "resourceId": "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0df",
+              "weights": {
+                "basis": "estimated",
+                "bytes": 40802189312,
+                "source": "iw-registry"
+              },
+              "workspace": {
+                "basis": "derived",
+                "bytes": 2147483648,
+                "source": "nvidia-smi-compute-apps"
+              }
+            }
+          ],
+          "placementClass": "normal",
+          "placementGroup": {
+            "gpus": [
+              "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0de",
+              "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0df"
+            ],
+            "pipelineParallel": 2,
+            "shardMovable": false,
+            "tensorParallel": 1,
+            "topology": "layer-split"
+          },
+          "runtimeInstanceId": "node_g3-glm-llama.cpp-0",
+          "slots": {
+            "items": [
+              {
+                "contextTokens": 20480,
+                "kvCache": {
+                  "basis": "estimated",
+                  "bytes": 1006632960,
+                  "confidence": "low",
+                  "source": "llama.cpp-slots"
+                },
+                "maxContextTokens": 131072,
+                "slotId": 0,
+                "state": "active"
+              },
+              {
+                "contextTokens": 0,
+                "kvCache": {
+                  "basis": "estimated",
+                  "bytes": 0,
+                  "confidence": "low",
+                  "source": "llama.cpp-slots"
+                },
+                "maxContextTokens": 131072,
+                "slotId": 1,
+                "state": "idle"
+              }
+            ],
+            "support": "per-slot-estimated"
+          },
+          "total": {
+            "basis": "unknown",
+            "note": "one participating GPU stale"
+          }
+        }
+      ],
+      "schema": "iw.gpu-memory.report/1",
+      "sequence": 9921,
+      "truncated": false
+    }
+  ],
+  "peers": [
+    {
+      "capabilities": [
+        "iw.gpu-memory/1"
+      ],
+      "gatewayId": "gw_beast",
+      "receivedAgeMs": 184000,
+      "status": "stale"
+    }
+  ],
+  "producerEpoch": "ep_rust0f",
+  "reservations": [],
+  "schema": "iw.gpu-memory.fleet/1",
+  "sequence": 40212
+}

@@ -1,0 +1,185 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/placement-simulation-response.json",
+  "title": "PlacementSimulationResponse",
+  "type": "object",
+  "description": "Answered by the same function the rebalancer calls, on a cloned input with reserve=false (spec 46 §9).",
+  "properties": {
+    "simulationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "basedOn": {
+      "type": "object",
+      "properties": {
+        "gatewayId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]*$",
+          "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "gatewayId",
+        "sequence"
+      ],
+      "additionalProperties": true
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "read-only"
+      ]
+    },
+    "reservationsMade": {
+      "type": "integer",
+      "enum": [
+        0
+      ]
+    },
+    "candidates": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "properties": {
+          "resourceIds": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+            }
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "score": {
+            "type": "number"
+          },
+          "terms": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Named score terms (fit, cache, startupPenalty, migrationPenalty, recentEvictionPenalty, swapCost)."
+          },
+          "headroomAfter": {
+            "$ref": "quantity.json"
+          },
+          "conflictingReservations": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+            }
+          },
+          "requiredEvictions": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+            }
+          },
+          "restrictions": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          "rejectedBecause": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              null,
+              "not-owned",
+              "telemetry-stale",
+              "allocation-draining",
+              "insufficient-safe-capacity",
+              "incompatible-accelerator",
+              "topology",
+              "cooling",
+              "anomaly",
+              "opportunistic-disabled",
+              "primary-restart-reserve-missing",
+              "no-authority"
+            ]
+          }
+        },
+        "required": [
+          "resourceIds",
+          "eligible"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "reasoning": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "feasibility": {
+      "type": "object",
+      "description": "Fragmentation and feasibility for the requested shape (spec 46 §9.1): the largest single placement of `requirements.gpus` GPUs that fits, the GPU groups that could host it, and free memory unusable for it because of topology. Composed by the rebalancer authority; never computed by a consumer.",
+      "properties": {
+        "largestFeasibleBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "candidatePlacementGroups": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]*$",
+              "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+            }
+          }
+        },
+        "topologyUnavailableBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "simulationId",
+    "basedOn",
+    "mode",
+    "reservationsMade",
+    "candidates"
+  ],
+  "additionalProperties": true
+}

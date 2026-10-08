@@ -25,6 +25,16 @@ Existing InferWeave APIs must not abruptly disappear; adapters map legacy struct
 count) to protocol capacity and deprecate gradually. Older gateways advertising only
 model/endpoint/slots keep functioning; missing fields yield `unknown`, not rejection.
 
+## GPU memory (1.1.0)
+
+The `iw.gpu-memory` family (`specs/46_GPU_MEMORY_INTELLIGENCE.md`) is additive and
+capability-gated: an older node never sends `gpuMemory`, an older gateway never asks for the
+fleet snapshot, and a malformed report never refuses the telemetry or heartbeat carrying it.
+Topology v2 is never a carrier, because deployed decoders refuse unknown members there. New
+configuration goes only under a new top-level `gpuMemory` object, never into an existing strictly
+decoded object. Unknown enum values are kept verbatim and read through a documented fallback.
+Spec 46 §10 is the full mixed-version matrix.
+
 ## Compatibility matrix
 
 Machine-readable minimums per protocol version are in `conformance/compatibility.yaml`; they are

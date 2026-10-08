@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/pressure.json",
+  "title": "GpuMemoryPressure",
+  "type": "object",
+  "description": "GPU memory pressure (spec 46 §6), composed by the rebalancer's gateway; absent in a raw node report. Thresholds are multiples of the safety headroom on free-after-growth, not a fraction of total.",
+  "properties": {
+    "state": {
+      "type": "string",
+      "enum": [
+        "comfortable",
+        "constrained",
+        "pressure",
+        "critical",
+        "unknown"
+      ]
+    },
+    "since": {
+      "type": "string",
+      "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+    },
+    "previous": {
+      "type": "string",
+      "enum": [
+        "comfortable",
+        "constrained",
+        "pressure",
+        "critical",
+        "unknown"
+      ]
+    },
+    "headroom": {
+      "$ref": "quantity.json"
+    },
+    "kvPoolOccupancy": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Admission pressure: the fullest preallocated KV pool on this GPU. Absent when unknown."
+    },
+    "reasons": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "type": "string",
+        "maxLength": 128
+      }
+    },
+    "forecast": {
+      "type": "object",
+      "description": "Absent unless the sample count reaches gpuMemory.pressure.minSamples. Never a guarantee.",
+      "properties": {
+        "method": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "horizonSecs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "samples": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "growthBytesPerMin": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "timeToPressureSecs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        }
+      },
+      "required": [
+        "method",
+        "horizonSecs",
+        "samples"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "state"
+  ],
+  "additionalProperties": true
+}

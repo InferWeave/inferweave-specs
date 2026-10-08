@@ -1,9 +1,9 @@
 # InferWeave Specs Repository Index
 
 Version: **12.0**
-Specifications: **46**
-Tracked features: **92**
-Canonical tasks: **148**
+Specifications: **47**
+Tracked features: **93**
+Canonical tasks: **151**
 Deployment: **Docker Compose persistent / Apptainer Slurm**
 GPU watchdog/rescue: **required**
 
@@ -16,24 +16,24 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~359,356 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~476,061 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
 - `.github/workflows/protocol-ci.yml` — `4e4a8b44a516` — ~194t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `ccc77678c758` — ~433t
+- `CHANGELOG.md` — `c638708eaa12` — ~1,015t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
-- `OPEN_GATES.md` — `81af0c80ae05` — ~4,199t
+- `OPEN_GATES.md` — `f55306fd1748` — ~4,539t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
 - `START_HERE.md` — `e6132cc6b8ed` — ~439t
-- `VERSION` — `598549848531` — ~2t
+- `VERSION` — `1575e1af4a95` — ~2t
 - `agents/README.md` — `7102d9ae3274` — ~203t
 - `agents/hardware-ops-reviewer.md` — `076714dfeea3` — ~127t
 - `agents/implementation-planner.md` — `0479376063d5` — ~106t
@@ -41,20 +41,24 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `agents/spec-reviewer.md` — `b428d8e915af` — ~134t
 - `bundle-manifest.json` — `d70a5b0d6742` — ~553t
 - `conformance/README.md` — `1a7935310fb9` — ~277t
-- `conformance/compatibility.yaml` — `4a500016edf0` — ~121t
-- `conformance/manifest.yaml` — `ce443b88c7f6` — ~326t
-- `conformance/release-manifest.yaml` — `198e9c2be037` — ~122t
-- `conformance/runner.py` — `3165873412df` — ~1,283t
-- `contracts/README.md` — `f857a528f083` — ~320t
+- `conformance/compatibility.yaml` — `3fd71a88951f` — ~121t
+- `conformance/manifest.yaml` — `e59748033a47` — ~364t
+- `conformance/release-manifest.yaml` — `06b831d5d0cc` — ~197t
+- `conformance/runner.py` — `4585a9ec9abd` — ~1,643t
+- `contracts/README.md` — `51ba922c97b2` — ~396t
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
-- `contracts/canonical-task-graph.json` — `5648b6ac1bfa` — ~28,857t
+- `contracts/canonical-task-graph.json` — `8495f8b592c3` — ~29,864t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~167t
 - `contracts/deployment-manifest.image.example.yaml` — `94c2bd1e9061` — ~577t
 - `contracts/error.example.json` — `fa977ed47913` — ~111t
-- `contracts/feature-registry.json` — `eb3e97f39ee7` — ~6,668t
+- `contracts/feature-registry.json` — `d917c8059f5b` — ~6,780t
+- `contracts/gpu-memory/01-b200-primary-whisper-pack.fleet.json` — `b41b6dd4151c` — ~4,130t
+- `contracts/gpu-memory/02-a100x4-vllm-tp4-slurm.fleet.json` — `699cb3543660` — ~6,637t
+- `contracts/gpu-memory/03-r9700x2-rocm-layer-split-no-slots.fleet.json` — `13fb12227d16` — ~3,322t
+- `contracts/gpu-memory/04-stale-anomaly-draining-notowned.fleet.json` — `c4bfc54a9042` — ~3,257t
 - `contracts/gpu-telemetry.example.json` — `e3d37a58ab37` — ~237t
 - `contracts/image-artifact.example.json` — `5b56874a3bca` — ~253t
 - `contracts/image-job.example.json` — `0abd0a414cfa` — ~237t
@@ -64,6 +68,8 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/prompt-record.example.json` — `8b199a55dc53` — ~137t
 - `contracts/protocol-v1/device-types.json` — `a95cf75d2a7e` — ~74t
 - `contracts/protocol-v1/error-taxonomy.json` — `0211bd0e86c2` — ~223t
+- `contracts/protocol-v1/gpu-memory-capabilities.json` — `18ccae99b274` — ~179t
+- `contracts/protocol-v1/gpu-memory-events.json` — `7058ee8f1787` — ~169t
 - `contracts/protocol-v1/lifecycle-reasons.json` — `5b1950bf3e2e` — ~104t
 - `contracts/protocol-v1/model-lifecycle-events.json` — `3908c9d493ae` — ~115t
 - `contracts/protocol-v1/provenance-sources.json` — `cdba40960903` — ~74t
@@ -75,14 +81,15 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-09-22-existing-gateway-rollout.md` — `3eaac9d26ffe` — ~586t
 - `decisions/2026-09-28-buffered-gateway-recording.md` — `a04b7a6d2713` — ~1,357t
 - `decisions/2026-10-04-bender-shared-context-rollout.md` — `275977d415e7` — ~4,987t
+- `decisions/2026-10-07-gpu-memory-accounting.md` — `fe8b48333f1e` — ~1,381t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `4ea092cf8917` — ~3,792t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
 - `docs/AI_INSTALL_INFERWEAVE.md` — `64b97a39d222` — ~509t
 - `docs/README.md` — `514ce6279d55` — ~100t
 - `docs/architecture.md` — `3d2cc8e44219` — ~377t
-- `docs/compatibility.md` — `7a8040a14cb3` — ~441t
-- `docs/events.md` — `456400f4081a` — ~373t
+- `docs/compatibility.md` — `c480ba205269` — ~597t
+- `docs/events.md` — `a957e821624f` — ~481t
 - `docs/extensions.md` — `64c0b09b4dcb` — ~227t
 - `docs/federation.md` — `dfe0a66eaf91` — ~320t
 - `docs/lifecycle.md` — `d17f7ed1827f` — ~408t
@@ -155,10 +162,24 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/README.md` — `adbef0b4231f` — ~101t
 - `fixtures/federation/federation-path.json` — `4ae98d4876bf` — ~64t
 - `fixtures/invalid/device-bad-enum.json` — `8cff0b010519` — ~15t
+- `fixtures/invalid/gpu-memory-report-capacity-not-owned.json` — `ea09bc27e2fe` — ~3,408t
+- `fixtures/invalid/gpu-memory-report-capacity-without-authority.json` — `532c790ae6fe` — ~3,400t
+- `fixtures/invalid/gpu-memory-report-control-char-id.json` — `600e10eb1fca` — ~3,408t
+- `fixtures/invalid/gpu-memory-report-fabricated-slots.json` — `10afdd69c2d3` — ~3,406t
+- `fixtures/invalid/gpu-memory-report-intended-boolean.json` — `a7bed2e686f9` — ~3,407t
+- `fixtures/invalid/gpu-memory-report-logical-in-categories.json` — `f22b60e2e315` — ~3,442t
+- `fixtures/invalid/gpu-memory-report-logical-in-physical.json` — `c4be93fc0f2a` — ~3,439t
+- `fixtures/invalid/gpu-memory-report-missing-unattributed.json` — `7f87e1f2f63e` — ~3,373t
+- `fixtures/invalid/gpu-memory-report-non-ascii-id.json` — `d8a2a4a70522` — ~3,429t
+- `fixtures/invalid/gpu-memory-report-unowned-composed.json` — `dfdbd90ea9d3` — ~3,297t
+- `fixtures/invalid/gpu-memory-report-zero-unknown.json` — `f7f55b2c131a` — ~3,396t
 - `fixtures/invalid/heartbeat-bad-health.json` — `f2d94e9a6173` — ~27t
 - `fixtures/invalid/job-bad-state.json` — `67c057277873` — ~11t
 - `fixtures/invalid/node-missing-id.json` — `6df7ff2a4a7d` — ~13t
 - `fixtures/invalid/protocol-bad-version.json` — `56625bd802e2` — ~25t
+- `fixtures/invalid/quantity-measured-without-bytes.json` — `ac70bd5bc496` — ~13t
+- `fixtures/invalid/rebalance-decision-success-estimated.json` — `b87c5b07075c` — ~355t
+- `fixtures/invalid/rebalance-decision-success-unmeasured.json` — `122109aaf998` — ~331t
 - `fixtures/valid/alias.json` — `0cc716160809` — ~29t
 - `fixtures/valid/allocation.json` — `8efa00bf970b` — ~32t
 - `fixtures/valid/artifact.json` — `27d1931cf085` — ~33t
@@ -169,6 +190,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/error.json` — `ea400949eb2a` — ~34t
 - `fixtures/valid/event.json` — `31822bbe42fa` — ~36t
 - `fixtures/valid/gateway.json` — `020f83b109a9` — ~58t
+- `fixtures/valid/gpu-memory-event.json` — `3907cc8bf756` — ~250t
+- `fixtures/valid/gpu-memory-postmortem.json` — `120c51ecfc6a` — ~1,819t
+- `fixtures/valid/gpu-memory-report-unowned.json` — `3eb38782b4d8` — ~3,267t
+- `fixtures/valid/gpu-memory-report.json` — `1e122e0a1257` — ~3,407t
 - `fixtures/valid/heartbeat.json` — `56c2c0dafcbd` — ~29t
 - `fixtures/valid/job.json` — `3dced8d97621` — ~29t
 - `fixtures/valid/memory.json` — `293b143fa85e` — ~26t
@@ -176,31 +201,37 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/model-variant.json` — `913c5690bbbe` — ~33t
 - `fixtures/valid/model.json` — `73854ced3bff` — ~14t
 - `fixtures/valid/node.json` — `b9f3cf13f185` — ~54t
+- `fixtures/valid/placement-simulation-request.json` — `8222889ff43c` — ~102t
+- `fixtures/valid/placement-simulation-response.json` — `0e8854a9c38f` — ~173t
 - `fixtures/valid/placement.json` — `aa543d63062f` — ~18t
+- `fixtures/valid/pressure.json` — `0ff6301946f1` — ~63t
 - `fixtures/valid/progress.json` — `77a6c180bfe4` — ~18t
 - `fixtures/valid/protocol.json` — `7c8560a93883` — ~23t
+- `fixtures/valid/quantity.json` — `53c0c18b3740` — ~19t
+- `fixtures/valid/rebalance-decision.json` — `3e86b5ef9a84` — ~325t
 - `fixtures/valid/registration.json` — `c2616718c516` — ~50t
 - `fixtures/valid/request.json` — `99cd85ba9485` — ~20t
 - `fixtures/valid/requirements.json` — `06a8fa9c5d8b` — ~25t
+- `fixtures/valid/reservation.json` — `31910b6e657f` — ~165t
 - `fixtures/valid/residency.json` — `9cfc726b31ed` — ~23t
 - `fixtures/valid/runtime-instance.json` — `af3c8a6fe8fa` — ~24t
 - `fixtures/valid/seat.json` — `226b3cc299f9` — ~19t
-- `implementation/ACCEPTANCE_TEST_MATRIX.md` — `528ef7cb8824` — ~2,368t
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `1ad4dbb4cf9f` — ~20,806t
-- `implementation/CANONICAL_TASK_INDEX.md` — `ee519d062841` — ~3,247t
+- `implementation/ACCEPTANCE_TEST_MATRIX.md` — `2a198c0d1cfd` — ~2,490t
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `934afdeef3e7` — ~21,594t
+- `implementation/CANONICAL_TASK_INDEX.md` — `246d035f28d3` — ~3,332t
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
 - `implementation/ERROR_SEMANTICS.md` — `353b4a250389` — ~598t
-- `implementation/FEATURE_TASK_COVERAGE.md` — `44de0cdd412f` — ~2,587t
+- `implementation/FEATURE_TASK_COVERAGE.md` — `22da110d4c6e` — ~2,654t
 - `implementation/IMPLEMENTATION_ORDER.md` — `1a48655f5ecc` — ~221t
 - `implementation/MILESTONES.md` — `84f77749cf80` — ~481t
 - `implementation/MONOREPO_BOOTSTRAP.md` — `7d729410dacd` — ~367t
 - `implementation/PHASE_GATES.md` — `b821ccf27648` — ~672t
-- `implementation/SPEC_TASK_COVERAGE.md` — `6e9d4b8a3699` — ~1,259t
+- `implementation/SPEC_TASK_COVERAGE.md` — `636bdca7ccde` — ~1,290t
 - `implementation/TEST_STRATEGY.md` — `5ded1d51fb57` — ~1,301t
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `openapi/README.md` — `fd85aef8a3a6` — ~98t
-- `openapi/inferweave-v1.yaml` — `e49f0f770946` — ~3,489t
+- `openapi/inferweave-v1.yaml` — `40b751815596` — ~4,871t
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
 - `pi/CONTEXT_PACK_CHECKLIST.md` — `8a9c95b7ec3d` — ~200t
 - `pi/FIRST_TASKS.md` — `674dbf07c4f5` — ~462t
@@ -208,16 +239,17 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `pi/QWEN_CONTEXT_GUIDE.md` — `a016ee2cb759` — ~207t
 - `pi/REVIEW_PROMPT.md` — `0fca83a1dc7a` — ~191t
 - `pi/TASK_TEMPLATE.md` — `654c899dbb32` — ~280t
-- `schemas/v1/README.md` — `be2b1ee75a8d` — ~335t
+- `schemas/v1/README.md` — `de92d7c7d191` — ~432t
 - `schemas/v1/artifacts/artifact.json` — `f9522dbcc30d` — ~236t
 - `schemas/v1/artifacts/cache-state.json` — `64df000842d4` — ~238t
 - `schemas/v1/common/extensions.json` — `e3b7e107750f` — ~98t
-- `schemas/v1/common/features.json` — `52c36638ddde` — ~190t
+- `schemas/v1/common/features.json` — `7c0007b292e7` — ~392t
 - `schemas/v1/common/identity.json` — `c57b9159a445` — ~350t
 - `schemas/v1/common/protocol.json` — `23af45807c6e` — ~169t
 - `schemas/v1/common/provenance.json` — `0521d56750ce` — ~233t
 - `schemas/v1/errors/error.json` — `f51bf4cb1ade` — ~419t
 - `schemas/v1/events/event.json` — `b9dceb3eaee4` — ~259t
+- `schemas/v1/events/gpu-memory-event.json` — `03f48498c7c9` — ~3,422t
 - `schemas/v1/events/metric.json` — `f0e7c4912328` — ~321t
 - `schemas/v1/jobs/job.json` — `48c1b63d9190` — ~255t
 - `schemas/v1/jobs/progress.json` — `d35037a65603` — ~112t
@@ -232,7 +264,20 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/requests/registration.json` — `52a9e052a087` — ~250t
 - `schemas/v1/requests/request.json` — `2c893254aae6` — ~426t
 - `schemas/v1/resources/capacity.json` — `d91c06cb5f5f` — ~243t
-- `schemas/v1/resources/memory.json` — `6746e5970ab6` — ~251t
+- `schemas/v1/resources/gpu-memory-allocation.json` — `9e8a90b40098` — ~675t
+- `schemas/v1/resources/gpu-memory-anomaly.json` — `7618dbb67cf4` — ~478t
+- `schemas/v1/resources/gpu-memory-fleet.json` — `ecfa318f9c14` — ~922t
+- `schemas/v1/resources/gpu-memory-gpu.json` — `e79ab5796eee` — ~2,161t
+- `schemas/v1/resources/gpu-memory-postmortem.json` — `fdb261923c85` — ~1,050t
+- `schemas/v1/resources/gpu-memory-report.json` — `2161c7018ab5` — ~1,406t
+- `schemas/v1/resources/gpu-memory-runtime.json` — `a39eaa096cae` — ~3,034t
+- `schemas/v1/resources/memory.json` — `d5ce1c5bbbe1` — ~334t
+- `schemas/v1/resources/placement-simulation-request.json` — `679bed29beff` — ~709t
+- `schemas/v1/resources/placement-simulation-response.json` — `5ecdb13dab70` — ~1,369t
+- `schemas/v1/resources/pressure.json` — `511d7c9cf8f8` — ~614t
+- `schemas/v1/resources/quantity.json` — `334a6292d9e5` — ~730t
+- `schemas/v1/resources/rebalance-decision.json` — `e3bcc66f6e81` — ~3,282t
+- `schemas/v1/resources/reservation.json` — `3f233dcdfd7b` — ~887t
 - `schemas/v1/resources/seat.json` — `127384acdb44` — ~216t
 - `schemas/v1/runtime/runtime-instance.json` — `952e66b549a4` — ~254t
 - `schemas/v1/topology/allocation.json` — `7700e11ba3be` — ~244t
@@ -242,7 +287,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `scripts/bootstrap-repositories.sh` — `914de3443dbc` — ~227t
 - `scripts/generate_bundle_metadata.py` — `8e46c94670e4` — ~608t
 - `scripts/test_validate_specs.py` — `45b7fd4b5ecc` — ~6,695t
-- `scripts/validate_specs.py` — `e161bf8d0e10` — ~9,403t
+- `scripts/validate_specs.py` — `54c8239e7185` — ~11,156t
 - `solana/DEVNET_ONLY.md` — `1a8ea96fcc58` — ~136t
 - `specs/00_INVARIANTS.md` — `e21827e64179` — ~1,478t
 - `specs/01_REPOSITORIES_AND_OWNERSHIP.md` — `e52f5e6e8112` — ~735t
@@ -258,7 +303,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/11_WORKBENCH_AUTOSPEC_PI.md` — `fbd0cf942993` — ~409t
 - `specs/12_MODEL_TUNING_BENCHMARKS.md` — `18e3f43ca576` — ~509t
 - `specs/13_RAG_TOOLS_LSP.md` — `9b08ea55e3c6` — ~330t
-- `specs/14_IMAGE_GENERATION.md` — `2fa6e191798c` — ~1,417t
+- `specs/14_IMAGE_GENERATION.md` — `0dcb3a4c8bff` — ~1,732t
 - `specs/15_ASYNC_JOBS_ARTIFACTS.md` — `8a995543424c` — ~307t
 - `specs/16_SECURITY_PRIVACY_TRUST.md` — `9aa2011d43ec` — ~370t
 - `specs/17_SCALING_HA_REGIONS.md` — `c70cb284139d` — ~384t
@@ -286,10 +331,11 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/39_INFERENCE_RUNTIME_TUNING.md` — `3da89d20da5e` — ~1,485t
 - `specs/40_NETWORK_TOPOLOGY_GRAPH.md` — `c51e495b58a6` — ~6,320t
 - `specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md` — `c2f00ea9bf1d` — ~1,820t
-- `specs/42_SITE_GATEWAY_CONFORMANCE.md` — `a6f2df7c59ed` — ~2,484t
+- `specs/42_SITE_GATEWAY_CONFORMANCE.md` — `81972665368b` — ~2,564t
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `c8c57b73aa55` — ~3,492t
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
-- `specs/45_PROTOCOL_V1.md` — `1da9d11981b1` — ~9,094t
+- `specs/45_PROTOCOL_V1.md` — `b080d4133157` — ~9,372t
+- `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `3d2f5b3fe4a8` — ~10,956t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `6027505392aa` — ~233t
@@ -444,4 +490,8 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-5/P5-T27.md` — `2d45e1d478aa` — ~468t
 - `tasks/phase-5/P5-T28.md` — `ce16fd1691d7` — ~504t
 - `tasks/phase-5/P5-T29.md` — `f10d3cccc726` — ~487t
+- `tasks/phase-5/P5-T30.md` — `f491905a1e01` — ~551t
+- `tasks/phase-5/P5-T31.md` — `1148a218d92a` — ~494t
+- `tasks/phase-5/P5-T32.md` — `e40ac49dd0c8` — ~483t
 - `tools/README.md` — `4ab4454accb3` — ~79t
+- `tools/gen_gpu_memory_fixtures.py` — `8cc9a2cfedd9` — ~8,576t

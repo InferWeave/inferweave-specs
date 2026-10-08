@@ -1,0 +1,225 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/gpu-memory-report.json",
+  "title": "GpuMemoryReport",
+  "type": "object",
+  "description": "A node's GPU memory report (spec 46 §3), sent as gpuMemory on node telemetry and the heartbeat status only while iw.gpu-memory/1 is in force.",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "enum": [
+        "iw.gpu-memory.report/1"
+      ]
+    },
+    "producerEpoch": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "observedAt": {
+      "type": "string",
+      "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+    },
+    "origin": {
+      "type": "object",
+      "properties": {
+        "gatewayId": {
+          "type": "string",
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]*$",
+          "description": "The gateway whose rebalancer is authoritative for this node; empty until one composes the report."
+        },
+        "nodeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]*$",
+          "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+        },
+        "via": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]*$",
+            "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+          },
+          "description": "Reporting path, appended by each relay."
+        }
+      },
+      "required": [
+        "gatewayId",
+        "nodeId"
+      ],
+      "additionalProperties": true
+    },
+    "ownership": {
+      "type": "object",
+      "properties": {
+        "manager": {
+          "type": "string",
+          "enum": [
+            "slurm",
+            "standalone",
+            "remote-gateway",
+            "kubernetes",
+            "unknown"
+          ]
+        },
+        "allocationId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]*$",
+          "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+        },
+        "allocationState": {
+          "type": "string",
+          "enum": [
+            "active",
+            "draining",
+            "preempting",
+            "expiring",
+            "revoked",
+            "ended",
+            "unknown"
+          ]
+        },
+        "allocationEndsAt": {
+          "type": "string",
+          "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+        },
+        "actionAuthority": {
+          "type": "string",
+          "enum": [
+            "origin-gateway",
+            "none"
+          ]
+        }
+      },
+      "required": [
+        "manager"
+      ],
+      "additionalProperties": true
+    },
+    "policy": {
+      "type": "object",
+      "properties": {
+        "safetyMarginPercent": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "accountingTolerancePercent": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "telemetryIntervalSecs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      },
+      "additionalProperties": true
+    },
+    "truncated": {
+      "type": "boolean",
+      "description": "The report was cut to fit its carrier: slots first, then allocations, never gpus[].physical."
+    },
+    "gpus": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "$ref": "gpu-memory-gpu.json"
+      }
+    },
+    "runtimes": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "$ref": "gpu-memory-runtime.json"
+      }
+    },
+    "allocations": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "gpu-memory-allocation.json"
+      }
+    },
+    "anomalies": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "$ref": "gpu-memory-anomaly.json"
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "producerEpoch",
+    "sequence",
+    "observedAt",
+    "origin",
+    "gpus"
+  ],
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "origin": {
+            "properties": {
+              "gatewayId": {
+                "const": ""
+              }
+            },
+            "required": [
+              "gatewayId"
+            ]
+          }
+        },
+        "required": [
+          "origin"
+        ]
+      },
+      "then": {
+        "properties": {
+          "gpus": {
+            "items": {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "safeSchedulable"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "pressure"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "eligibility"
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

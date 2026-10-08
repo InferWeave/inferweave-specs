@@ -96,3 +96,5 @@
 | AC-089 | Protocol v1 state machines and enums | invalid transitions identifiable; error taxonomy, lifecycle reasons, workload classes, device types, provenance sources reconcile by test |
 | AC-090 | Protocol v1 conformance profiles | a lightweight `IW-NODE` passes its declared scenarios without administrative features |
 | AC-091 | Protocol v1 cross-repo CI | protocol-visible drift fails reference-implementation and gateway compatibility builds |
+| AC-092 | GPU memory accounting is explainable and never invents zero | every GPU reports physical total/used/free with a basis; used + free and attributed + unattributed reconcile within tolerance or an anomaly is emitted; an unknown reading carries no bytes |
+| AC-093 | GPU memory logical and physical stay separate | reservations and the placement-class view are never added to a physical total; safe-schedulable never exceeds raw free and is zero on a GPU InferWeave does not own |

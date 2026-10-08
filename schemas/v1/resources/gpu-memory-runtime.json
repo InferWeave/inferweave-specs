@@ -1,0 +1,453 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/gpu-memory-runtime.json",
+  "title": "GpuMemoryRuntime",
+  "type": "object",
+  "description": "One runtime's memory across its GPUs (spec 46 §3.4).",
+  "properties": {
+    "runtimeInstanceId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "deployment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "modelId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]*$",
+      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "adapter": {
+      "type": "string",
+      "enum": [
+        "llama.cpp",
+        "vllm",
+        "comfyui",
+        "diffusion",
+        "whisper",
+        "systemone",
+        "other"
+      ]
+    },
+    "adapterVersion": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "placementClass": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "normal",
+        "opportunistic"
+      ],
+      "description": "Absent means normal. A reader that meets a value it does not know treats it as primary (never evicted, never packed against)."
+    },
+    "evictable": {
+      "type": "boolean"
+    },
+    "migrationSupported": {
+      "type": "boolean"
+    },
+    "pids": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 4294967295
+      },
+      "description": "Node-local; never forwarded past the composing gateway."
+    },
+    "placementGroup": {
+      "type": "object",
+      "description": "The GPUs the rebalancer moves as one unit (spec §7).",
+      "properties": {
+        "gpus": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]*$",
+            "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+          }
+        },
+        "topology": {
+          "type": "string",
+          "enum": [
+            "single",
+            "tensor",
+            "pipeline",
+            "layer-split",
+            "replica",
+            "unknown"
+          ]
+        },
+        "tensorParallel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "pipelineParallel": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "shardMovable": {
+          "type": "boolean",
+          "description": "True only if the adapter supports moving one shard on its own."
+        }
+      },
+      "required": [
+        "gpus",
+        "topology"
+      ],
+      "additionalProperties": true
+    },
+    "perGpu": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "properties": {
+          "resourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]*$",
+            "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+          },
+          "weights": {
+            "$ref": "quantity.json"
+          },
+          "kvCache": {
+            "$ref": "quantity.json"
+          },
+          "prefixCache": {
+            "$ref": "quantity.json"
+          },
+          "runtimeAllocator": {
+            "$ref": "quantity.json"
+          },
+          "runtimeOverhead": {
+            "$ref": "quantity.json"
+          },
+          "executionGraphs": {
+            "$ref": "quantity.json"
+          },
+          "workspace": {
+            "$ref": "quantity.json"
+          },
+          "logicalReserve": {
+            "$ref": "quantity.json"
+          },
+          "physicalTotal": {
+            "$ref": "quantity.json"
+          }
+        },
+        "required": [
+          "resourceId"
+        ],
+        "additionalProperties": true
+      }
+    },
+    "total": {
+      "$ref": "quantity.json"
+    },
+    "kvPool": {
+      "type": "object",
+      "description": "A preallocated KV pool and its occupancy (spec 46 §3.6): KV growth in such a pool raises occupancy, not physical usage.",
+      "properties": {
+        "preallocated": {
+          "type": "boolean"
+        },
+        "capacityTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "usedTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "usageRatio": {
+          "type": "object",
+          "description": "A ratio with provenance; value is present exactly when the basis is a number basis.",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "basis": {
+              "type": "string",
+              "enum": [
+                "measured",
+                "derived",
+                "estimated",
+                "declared",
+                "unknown",
+                "unsupported"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "description": "Open vocabulary (spec 46 §2.1): nvml, nvidia-smi, nvidia-smi-compute-apps, rocm-smi, amd-smi, drm-fdinfo, sysfs, llama.cpp-props, llama.cpp-slots, llama.cpp-metrics, vllm-metrics, comfyui-system-stats, torch-allocator, systemone-metrics, iw-ledger, iw-sizer, iw-registry, iw-resource-profile, config. An unknown source is shown verbatim and graded like estimated."
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            },
+            "note": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "basis"
+          ],
+          "additionalProperties": true,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "basis": {
+                    "enum": [
+                      "measured",
+                      "derived",
+                      "estimated",
+                      "declared"
+                    ]
+                  }
+                },
+                "required": [
+                  "basis"
+                ]
+              },
+              "then": {
+                "required": [
+                  "value"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "basis": {
+                    "enum": [
+                      "unknown",
+                      "unsupported"
+                    ]
+                  }
+                },
+                "required": [
+                  "basis"
+                ]
+              },
+              "then": {
+                "not": {
+                  "required": [
+                    "value"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "slots": {
+      "type": "object",
+      "properties": {
+        "support": {
+          "type": "string",
+          "enum": [
+            "per-slot-measured",
+            "per-slot-estimated",
+            "runtime-total",
+            "unsupported"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "description": "One slot (spec 46 §3.5): no prompts, request ids or caller identity.",
+            "properties": {
+              "slotId": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4294967295
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "active",
+                  "idle",
+                  "reserved",
+                  "unknown"
+                ]
+              },
+              "contextTokens": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "maxContextTokens": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "kvCache": {
+                "$ref": "quantity.json"
+              },
+              "kvGrowth": {
+                "$ref": "quantity.json"
+              },
+              "requestAgeMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "lastActivityAt": {
+                "type": "string",
+                "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+              },
+              "tokensPerSec": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "slotId",
+              "state"
+            ],
+            "additionalProperties": true
+          },
+          "description": "Absent under runtime-total and unsupported: per-slot attribution is never fabricated."
+        }
+      },
+      "required": [
+        "support"
+      ],
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "support": {
+                "enum": [
+                  "runtime-total",
+                  "unsupported"
+                ]
+              }
+            },
+            "required": [
+              "support"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "items"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "adapterResources": {
+      "type": "object",
+      "description": "What the adapter declares about its resource use (spec §9).",
+      "properties": {
+        "accelerators": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "enum": [
+              "cuda",
+              "rocm",
+              "vulkan",
+              "metal",
+              "cpu"
+            ]
+          }
+        },
+        "expectedWeights": {
+          "$ref": "quantity.json"
+        },
+        "workspaceMin": {
+          "$ref": "quantity.json"
+        },
+        "workspacePeak": {
+          "$ref": "quantity.json"
+        },
+        "runtimeOverhead": {
+          "$ref": "quantity.json"
+        },
+        "activationPeak": {
+          "$ref": "quantity.json"
+        },
+        "startupSecs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "eviction": {
+          "type": "string",
+          "enum": [
+            "drain-then-unload",
+            "unload",
+            "unsafe"
+          ]
+        },
+        "dynamicGrowth": {
+          "type": "string",
+          "enum": [
+            "preallocated",
+            "allocator"
+          ]
+        },
+        "maxConcurrency": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        }
+      },
+      "additionalProperties": true
+    },
+    "lastActivityAt": {
+      "type": "string",
+      "description": "UTC ISO-8601 timestamp (producer clock; display only)."
+    },
+    "activeRequests": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    }
+  },
+  "required": [
+    "runtimeInstanceId"
+  ],
+  "additionalProperties": true
+}

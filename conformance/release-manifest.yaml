@@ -10,3 +10,12 @@ releases:
       json_schema_bundle: schemas/v1/
       event_schema_bundle: schemas/v1/events/
       conformance_fixtures: fixtures/
+  v1.1.0:
+    status: owed
+    artifacts:
+      tarball: inferweave-protocol-v1.1.0.tar.gz
+      openapi: openapi/inferweave-v1.yaml
+      json_schema_bundle: schemas/v1/
+      event_schema_bundle: schemas/v1/events/
+      conformance_fixtures: fixtures/
+      contract_fixtures: contracts/gpu-memory/
