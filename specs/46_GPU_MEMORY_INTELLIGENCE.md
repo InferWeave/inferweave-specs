@@ -48,7 +48,8 @@ recomputing it.
 5. **A new major is a new capability string.** Within a major, fields are only added. Readers
    ignore unknown fields **and** keep unknown enum values verbatim, reading them through the
    fallback each enum documents.
-6. **One key, one value.** An object that repeats a key is malformed and is refused as a whole
+6. **One key, one value.** An object that repeats a key — a defined field, an unknown member or a
+   `meta` key alike, at any depth — is malformed and is refused as a whole
    (a decoder that keeps the first or last copy MUST NOT be relied on; Go `encoding/json` keeps
    the last, Rust `serde` refuses).
 7. **Field names and enum values are case-sensitive.** A key that differs only in case
@@ -174,7 +175,9 @@ operator-facing, never prompts, request contents or secrets).
   (it cannot be judged), or one whose `status` is not `fresh`, whose `receivedAgeMs` is absent, or
   whose `receivedAgeMs` exceeds `gpuMemory.staleAfterSecs`; or when the report's **accumulated
   relay age** plus the consumer's own receipt age exceeds `staleAfterSecs`. Each relay adds the
-  time it held a report (receipt to re-emission) to `origin.relayAgeMs` before re-serving it, so
+  time it held a report (receipt to re-emission) to `origin.relayAgeMs` before re-serving it
+  (`relayAgeMs` exists only on a relayed node: a direct node, `via` of one hop, that carries it is
+  refused, and a consumer never adds it to a direct node's age), so
   sixteen hops of 30 s each can never carry eight-minute-old data as fresh. **A relayed node
   (`via` of two or more hops) without `relayAgeMs` is stale**: a relay built on older types drops
   the field when it re-serializes, which would otherwise reset the age to zero at every hop. (A
@@ -235,6 +238,15 @@ Both members are optional and additive. A receiver that cannot decode the member
 absent and **never** refuses the telemetry or the heartbeat carrying it. A report that must fit a
 carrier's size cap sets `truncated: true` and drops slot items first, then allocations, and never
 `gpus[].physical`.
+
+**A truncated report's lists are partial.** When `truncated` is true the producer dropped slot
+items, then allocations, then runtimes and anomalies (and, past the 64-GPU bound, GPUs together
+with every item naming them). Its aggregate figures — `attributed`, `unattributed`, `categories`,
+`byClass`, `physical` — stay authoritative and are never recomputed from the remaining lists, so
+the rule "`attributed` equals the sum of the GPU's allocations" becomes "the allocations that
+remain do not exceed `attributed`". Every other rule holds for what remains: a kept item still
+names a GPU the report lists (truncation never leaves a dangling reference), and every bound,
+basis and capacity rule applies unchanged.
 
 ### 3.2 GPU
 
@@ -418,6 +430,14 @@ present, since the last page has none).
 A consumer defers every cross-check between reservations and nodes (a reservation naming a GPU
 of a node on a later page) until all pages of the `sequence` are assembled.
 
+**Assembly is all or nothing.** The pages of one snapshot must share `gatewayId`,
+`producerEpoch` and `sequence`; every page names the same `nodeCount`; the assembled node count
+equals it; and no node appears on two pages. A page without `nodeCount`, pages disagreeing on it,
+a count that does not match, a duplicate node, or a changed snapshot makes the **whole assembly
+unusable**: the consumer discards every page it holds and refetches from page 1. This is a
+malformed snapshot, not a too-large one, and a partial node set is never used. (The reference
+implementation is `iw_core::gpu_memory::FleetAssembler`.)
+
 **Pinned pages carry their age.** A page served from a pin — or a first page sharing a pin up to
 `pinShareSecs` old — holds numbers as of `generatedAt`, while the consumer stamps receipt when it
 fetches the page, possibly `cursorTtlSecs` later. So every response carries `servedAgeMs`: the
@@ -428,7 +448,9 @@ a node's age is its page's age plus its `relayAgeMs`. A **paginated** response �
 `nextCursor` or `nodeCount`, **or one the consumer fetched with a cursor** (a continuation page,
 whatever it carries) — without `servedAgeMs` cannot be judged and is stale. Only a single,
 unpaginated response, fetched without a cursor, is read as composed when served (`servedAgeMs`
-0) when it lacks the field; producers send it on every response anyway.
+0) when it lacks the field; producers send it on every response anyway, and **MUST** send it on
+any response served from a pin (including a first page sharing one), so that reading an absent
+value as 0 is only ever right.
 
 **Forward-compatibility budget.** The count bounds above apply to the lists and objects this
 version defines. Unknown members, unknown arrays and unknown objects (from a newer minor) are
