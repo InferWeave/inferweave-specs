@@ -235,6 +235,8 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/GpuMemoryFleet" }
+        "503":
+          description: Every pinned snapshot is still live and maxPinnedSnapshots is reached; retry a new first page after Retry-After
         "410":
           description: The cursor is expired (cursorTtlSecs), unknown, or from before a producer restart; start again from the first page
         "501":
