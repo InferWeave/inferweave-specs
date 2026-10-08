@@ -46,6 +46,10 @@ counted physical memory in `reserved` was following ambiguous text and must be c
   a config-free relay-age floor (the sender's own `receivedAgeMs` for the adjacent hop; below it is
   forged and stale); anomalies must name the report's own GPUs; phantom nodes carry no
   allocations or anomalies; a relay re-serves one copy of a node whole.
+- Round-6 follow-ups: every response carries `servedAgeMs` (added to the data's age; a paginated
+  response without it is stale; a paginated snapshot's receipt is that of its first page); pins
+  release at age ≥ `cursorTtlSecs`, the default cap is ⌈TTL/share⌉ + 1 = 13, and one-page
+  responses create no pin; the relay-age floor allows 1 s of rounding.
 - Conformance: new optional profile `IW-GPU-MEMORY` with scenario `gpu_memory_accounting`;
   `IW-FULL` is unchanged.
 - The stale "only common and errors are published" sentence of spec 45
