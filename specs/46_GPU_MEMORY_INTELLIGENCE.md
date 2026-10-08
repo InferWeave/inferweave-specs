@@ -48,7 +48,8 @@ recomputing it.
 5. **A new major is a new capability string.** Within a major, fields are only added. Readers
    ignore unknown fields **and** keep unknown enum values verbatim, reading them through the
    fallback each enum documents.
-6. **One key, one value.** An object that repeats a key is malformed and is refused as a whole
+6. **One key, one value.** An object that repeats a key — a defined field, an unknown member or a
+   `meta` key alike, at any depth — is malformed and is refused as a whole
    (a decoder that keeps the first or last copy MUST NOT be relied on; Go `encoding/json` keeps
    the last, Rust `serde` refuses).
 7. **Field names and enum values are case-sensitive.** A key that differs only in case
@@ -174,7 +175,9 @@ operator-facing, never prompts, request contents or secrets).
   (it cannot be judged), or one whose `status` is not `fresh`, whose `receivedAgeMs` is absent, or
   whose `receivedAgeMs` exceeds `gpuMemory.staleAfterSecs`; or when the report's **accumulated
   relay age** plus the consumer's own receipt age exceeds `staleAfterSecs`. Each relay adds the
-  time it held a report (receipt to re-emission) to `origin.relayAgeMs` before re-serving it, so
+  time it held a report (receipt to re-emission) to `origin.relayAgeMs` before re-serving it
+  (`relayAgeMs` exists only on a relayed node: a direct node, `via` of one hop, that carries it is
+  refused, and a consumer never adds it to a direct node's age), so
   sixteen hops of 30 s each can never carry eight-minute-old data as fresh. **A relayed node
   (`via` of two or more hops) without `relayAgeMs` is stale**: a relay built on older types drops
   the field when it re-serializes, which would otherwise reset the age to zero at every hop. (A

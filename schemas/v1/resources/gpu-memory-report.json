@@ -66,14 +66,32 @@
           "type": "integer",
           "minimum": 0,
           "maximum": 9007199254740991,
-          "description": "Time the report has spent in relays: each relay adds the time it held it before re-serving. Consumers judge this plus their own receipt age against staleAfterSecs."
+          "description": "Time the report has spent in relays: each relay adds the time it held it before re-serving. Consumers judge this plus their own receipt age against staleAfterSecs. Only on a relayed node (via of two or more hops)."
         }
       },
       "required": [
         "gatewayId",
         "nodeId"
       ],
-      "additionalProperties": true
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "via": {
+                "maxItems": 1
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "relayAgeMs"
+              ]
+            }
+          }
+        }
+      ]
     },
     "ownership": {
       "type": "object",

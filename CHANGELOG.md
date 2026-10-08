@@ -56,6 +56,8 @@ counted physical memory in `reserved` was following ambiguous text and must be c
 - Round-8 follow-ups: a truncated report's lists are partial (aggregates stay authoritative; the
   remaining allocations may only fall short of `attributed`); page assembly is all or nothing
   (reference: `FleetAssembler`); a response served from a pin MUST carry `servedAgeMs`.
+  A repeated key refuses the object at any depth (unknown and `meta` keys included);
+  `relayAgeMs` exists only on relayed nodes.
 - Conformance: new optional profile `IW-GPU-MEMORY` with scenario `gpu_memory_accounting`;
   `IW-FULL` is unchanged.
 - The stale "only common and errors are published" sentence of spec 45

@@ -1,0 +1,469 @@
+{
+  "allocations": [
+    {
+      "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_llama.cpp-0",
+      "category": "runtime-total",
+      "evictable": false,
+      "intended": "yes",
+      "meta": {
+        "processName": "llama-server"
+      },
+      "modelId": "qwen3.8-27b-modality-text-quant-q8_k_xl",
+      "observedAt": "2026-10-08T14:31:05Z",
+      "physical": {
+        "basis": "measured",
+        "bytes": 79456894976,
+        "note": "MiB resolution",
+        "source": "nvidia-smi-compute-apps"
+      },
+      "placementClass": "primary",
+      "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
+      "runtimeInstanceId": "node_b200-01-llama.cpp-0"
+    },
+    {
+      "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_whisper-0",
+      "category": "runtime-total",
+      "evictable": true,
+      "intended": "yes",
+      "meta": {
+        "processName": "python3"
+      },
+      "modelId": "whisper-large-v3-turbo",
+      "observedAt": "2026-10-08T14:31:05Z",
+      "physical": {
+        "basis": "measured",
+        "bytes": 4294967296,
+        "note": "MiB resolution",
+        "source": "nvidia-smi-compute-apps"
+      },
+      "placementClass": "opportunistic",
+      "reservation": {
+        "basis": "declared",
+        "bytes": 2147483648,
+        "source": "config"
+      },
+      "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
+      "runtimeInstanceId": "node_b200-01-whisper-0"
+    },
+    {
+      "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_foreign-0",
+      "category": "foreign-process",
+      "evictable": false,
+      "intended": "unknown",
+      "meta": {
+        "processName": "python"
+      },
+      "observedAt": "2026-10-08T14:31:05Z",
+      "physical": {
+        "basis": "measured",
+        "bytes": 2147483648,
+        "note": "MiB resolution",
+        "source": "nvidia-smi-compute-apps"
+      },
+      "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01"
+    }
+  ],
+  "anomalies": [],
+  "gpus": [
+    {
+      "attributed": {
+        "basis": "estimated",
+        "bytes": 85899345920
+      },
+      "authority": "owned",
+      "byClass": {
+        "opportunistic": {
+          "basis": "measured",
+          "bytes": 4294967296,
+          "source": "nvidia-smi-compute-apps"
+        },
+        "primary": {
+          "basis": "measured",
+          "bytes": 79456894976,
+          "source": "nvidia-smi-compute-apps"
+        }
+      },
+      "categories": {
+        "kvCache": {
+          "basis": "derived",
+          "bytes": 10737418240,
+          "confidence": "medium",
+          "note": "nCtx 327680 x kvPerToken 32768",
+          "source": "llama.cpp-props"
+        },
+        "other": {
+          "basis": "measured",
+          "bytes": 2147483648,
+          "confidence": "high",
+          "note": "non-InferWeave process (python)",
+          "source": "nvidia-smi-compute-apps"
+        },
+        "prefixCache": {
+          "basis": "estimated",
+          "bytes": 3221225472,
+          "confidence": "low",
+          "note": "--cache-ram host/device split estimate",
+          "source": "llama.cpp-props"
+        },
+        "weights": {
+          "basis": "estimated",
+          "bytes": 65498251264,
+          "confidence": "medium",
+          "note": "primary GGUF size 58 GiB + whisper declared 3 GiB",
+          "source": "iw-registry"
+        },
+        "workspace": {
+          "basis": "derived",
+          "bytes": 4294967296,
+          "confidence": "medium",
+          "note": "process total minus other categories",
+          "source": "nvidia-smi-compute-apps"
+        }
+      },
+      "deviceId": "GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
+      "deviceKeyStable": true,
+      "driver": {
+        "name": "nvidia",
+        "runtime": "cuda-13.0",
+        "version": "580.65.06"
+      },
+      "eligibility": {
+        "opportunistic": true,
+        "reasons": []
+      },
+      "index": 0,
+      "logical": {
+        "kvGrowthReserve": {
+          "basis": "declared",
+          "bytes": 0,
+          "note": "llama.cpp KV pool preallocated; growth is pool occupancy, see kvPool"
+        },
+        "placementReservations": {
+          "basis": "declared",
+          "bytes": 4294967296,
+          "note": "rv for bge-m3 PACK, pending",
+          "source": "iw-ledger"
+        },
+        "runtimeGrowthReserve": {
+          "basis": "declared",
+          "bytes": 2147483648,
+          "note": "whisper workspacePeak 3 GiB - current 1 GiB",
+          "source": "config"
+        },
+        "safetyHeadroom": {
+          "basis": "declared",
+          "bytes": 4294967296,
+          "note": "spec §5 example value 4 GiB (operator override; 5% default would be 4.8 GiB)",
+          "source": "config"
+        }
+      },
+      "name": "NVIDIA B200 (illustrative 96 GiB per spec §5)",
+      "nodeSafeSchedulable": {
+        "basis": "derived",
+        "bytes": 10737418240,
+        "source": "iw-ledger"
+      },
+      "physical": {
+        "free": {
+          "basis": "measured",
+          "bytes": 17179869184,
+          "source": "nvidia-smi"
+        },
+        "total": {
+          "basis": "measured",
+          "bytes": 103079215104,
+          "source": "nvidia-smi"
+        },
+        "used": {
+          "basis": "measured",
+          "bytes": 85899345920,
+          "source": "nvidia-smi"
+        }
+      },
+      "pressure": {
+        "headroom": {
+          "basis": "derived",
+          "bytes": 6442450944,
+          "source": "iw-ledger"
+        },
+        "kvPoolOccupancy": 0.4,
+        "reasons": [
+          "free-after-growth 14 GiB = 3.5x safety"
+        ],
+        "since": "2026-10-08T14:02:00Z",
+        "state": "comfortable"
+      },
+      "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
+      "safeSchedulable": {
+        "basis": "derived",
+        "bytes": 6442450944,
+        "source": "iw-ledger"
+      },
+      "telemetry": {
+        "ageMs": 1200,
+        "observedAt": "2026-10-08T14:31:05Z",
+        "sources": [
+          "nvidia-smi",
+          "nvidia-smi-compute-apps",
+          "llama.cpp-props",
+          "llama.cpp-slots",
+          "torch-allocator"
+        ],
+        "status": "fresh"
+      },
+      "topologyGpuId": "GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
+      "unattributed": {
+        "basis": "derived",
+        "bytes": 0,
+        "note": "per-process totals sum to card used"
+      },
+      "vendor": "nvidia"
+    }
+  ],
+  "observedAt": "2026-10-08T14:31:05Z",
+  "origin": {
+    "gatewayId": "gw_fry-rust",
+    "nodeId": "node_b200-01",
+    "via": [
+      "gw_fry-rust"
+    ],
+    "relayAgeMs": 1000
+  },
+  "ownership": {
+    "actionAuthority": "origin-gateway",
+    "allocationState": "active",
+    "manager": "standalone"
+  },
+  "policy": {
+    "accountingTolerancePercent": 2,
+    "safetyMarginPercent": 5,
+    "telemetryIntervalSecs": 5
+  },
+  "producerEpoch": "ep_200-01a1",
+  "runtimes": [
+    {
+      "activeRequests": 3,
+      "adapter": "llama.cpp",
+      "adapterResources": {
+        "accelerators": [
+          "cuda",
+          "rocm",
+          "vulkan"
+        ],
+        "dynamicGrowth": "preallocated",
+        "eviction": "drain-then-unload",
+        "maxConcurrency": 4,
+        "startupSecs": 95
+      },
+      "adapterVersion": "b6402",
+      "deployment": "dep_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "evictable": false,
+      "kvPool": {
+        "capacityTokens": 327680,
+        "preallocated": true,
+        "usageRatio": {
+          "basis": "derived",
+          "source": "llama.cpp-slots",
+          "value": 0.4
+        },
+        "usedTokens": 131072
+      },
+      "lastActivityAt": "2026-10-08T14:31:04Z",
+      "migrationSupported": false,
+      "modelId": "qwen3.8-27b-modality-text-quant-q8_k_xl",
+      "perGpu": [
+        {
+          "kvCache": {
+            "basis": "derived",
+            "bytes": 10737418240,
+            "source": "llama.cpp-props"
+          },
+          "physicalTotal": {
+            "basis": "measured",
+            "bytes": 79456894976,
+            "source": "nvidia-smi-compute-apps"
+          },
+          "prefixCache": {
+            "basis": "estimated",
+            "bytes": 3221225472,
+            "source": "llama.cpp-props"
+          },
+          "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
+          "weights": {
+            "basis": "estimated",
+            "bytes": 62277025792,
+            "source": "iw-registry"
+          },
+          "workspace": {
+            "basis": "derived",
+            "bytes": 3221225472,
+            "source": "nvidia-smi-compute-apps"
+          }
+        }
+      ],
+      "placementClass": "primary",
+      "placementGroup": {
+        "gpus": [
+          "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01"
+        ],
+        "pipelineParallel": 1,
+        "shardMovable": false,
+        "tensorParallel": 1,
+        "topology": "single"
+      },
+      "runtimeInstanceId": "node_b200-01-llama.cpp-0",
+      "slots": {
+        "items": [
+          {
+            "contextTokens": 61440,
+            "kvCache": {
+              "basis": "estimated",
+              "bytes": 2013265920,
+              "confidence": "low",
+              "note": "tokens x kvPerToken; llama.cpp has no per-slot byte counter",
+              "source": "llama.cpp-slots"
+            },
+            "lastActivityAt": "2026-10-08T14:31:04Z",
+            "maxContextTokens": 81920,
+            "requestAgeMs": 41000,
+            "slotId": 0,
+            "state": "active",
+            "tokensPerSec": 38.2
+          },
+          {
+            "contextTokens": 40960,
+            "kvCache": {
+              "basis": "estimated",
+              "bytes": 1342177280,
+              "confidence": "low",
+              "note": "tokens x kvPerToken; llama.cpp has no per-slot byte counter",
+              "source": "llama.cpp-slots"
+            },
+            "lastActivityAt": "2026-10-08T14:31:04Z",
+            "maxContextTokens": 81920,
+            "requestAgeMs": 12000,
+            "slotId": 1,
+            "state": "active",
+            "tokensPerSec": 41.0
+          },
+          {
+            "contextTokens": 28672,
+            "kvCache": {
+              "basis": "estimated",
+              "bytes": 939524096,
+              "confidence": "low",
+              "note": "tokens x kvPerToken; llama.cpp has no per-slot byte counter",
+              "source": "llama.cpp-slots"
+            },
+            "lastActivityAt": "2026-10-08T14:31:04Z",
+            "maxContextTokens": 81920,
+            "requestAgeMs": 230000,
+            "slotId": 2,
+            "state": "active",
+            "tokensPerSec": 36.5
+          },
+          {
+            "contextTokens": 0,
+            "kvCache": {
+              "basis": "estimated",
+              "bytes": 0,
+              "confidence": "low",
+              "note": "idle slot: pool reserved, no tokens",
+              "source": "llama.cpp-slots"
+            },
+            "maxContextTokens": 81920,
+            "slotId": 3,
+            "state": "idle"
+          }
+        ],
+        "support": "per-slot-estimated"
+      },
+      "total": {
+        "basis": "measured",
+        "bytes": 79456894976,
+        "source": "nvidia-smi-compute-apps"
+      }
+    },
+    {
+      "activeRequests": 0,
+      "adapter": "whisper",
+      "adapterResources": {
+        "accelerators": [
+          "cuda"
+        ],
+        "dynamicGrowth": "allocator",
+        "eviction": "drain-then-unload",
+        "expectedWeights": {
+          "basis": "declared",
+          "bytes": 3221225472,
+          "source": "config"
+        },
+        "maxConcurrency": 2,
+        "startupSecs": 20,
+        "workspaceMin": {
+          "basis": "declared",
+          "bytes": 536870912,
+          "source": "config"
+        },
+        "workspacePeak": {
+          "basis": "declared",
+          "bytes": 3221225472,
+          "source": "config"
+        }
+      },
+      "adapterVersion": "faster-whisper-1.2",
+      "deployment": "dep_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "evictable": true,
+      "lastActivityAt": "2026-10-08T14:29:40Z",
+      "migrationSupported": true,
+      "modelId": "whisper-large-v3-turbo",
+      "perGpu": [
+        {
+          "logicalReserve": {
+            "basis": "declared",
+            "bytes": 2147483648,
+            "source": "config"
+          },
+          "physicalTotal": {
+            "basis": "measured",
+            "bytes": 4294967296,
+            "source": "nvidia-smi-compute-apps"
+          },
+          "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
+          "weights": {
+            "basis": "declared",
+            "bytes": 3221225472,
+            "source": "config"
+          },
+          "workspace": {
+            "basis": "derived",
+            "bytes": 1073741824,
+            "source": "torch-allocator"
+          }
+        }
+      ],
+      "placementClass": "opportunistic",
+      "placementGroup": {
+        "gpus": [
+          "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01"
+        ],
+        "pipelineParallel": 1,
+        "shardMovable": false,
+        "tensorParallel": 1,
+        "topology": "single"
+      },
+      "runtimeInstanceId": "node_b200-01-whisper-0",
+      "slots": {
+        "support": "unsupported"
+      },
+      "total": {
+        "basis": "measured",
+        "bytes": 4294967296,
+        "source": "nvidia-smi-compute-apps"
+      }
+    }
+  ],
+  "schema": "iw.gpu-memory.report/1",
+  "sequence": 1842,
+  "truncated": false
+}
