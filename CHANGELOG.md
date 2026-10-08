@@ -90,6 +90,13 @@ counted physical memory in `reserved` was following ambiguous text and must be c
 - A credential earned only by tokenless proof may register hardware-only and heartbeat, but a
   non-empty endpoint or any models is `403 forbidden`, and a proof never replaces an
   operator-issued credential (`403`); only operator-issued enrollment makes a node routable.
+- Hardening (spec 47 sections 6.2 to 6.9) from independent security review of both gateways:
+  operator enrollment replaces a proof-only credential and evicts its registration, hardware and
+  links; proof-only and hardware-only nodes hold no link; tokenless challenge and proof are
+  refused (`403`) for known ids, at both steps; unauthenticated state is bounded (`429`); request
+  bodies are size-capped before parsing; hardware is cleared when omitted and dropped with its
+  registration; hardware-only heartbeats add no capacity; proof-only credentials SHOULD persist
+  fail-closed for rollback. This supersedes "first issued wins" for the proof-only case.
 - Schemas `requests/node-hardware.json`, `requests/node-hardware-report.json`; fixtures; vectors
   `conformance/node-join-vectors.json`; reference model `conformance/node_join.py`; manifest
   scenarios `node_enrollment`, `hardware_registration`.

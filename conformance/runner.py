@@ -189,6 +189,16 @@ def check_node_join_vectors():
     if len(trust) < 5:
         print("FAIL  node-join trust cases: the five required cases are missing")
         ok = False
+    for c in doc["enrollmentLifecycleCases"]["cases"]:
+        got = node_join.lifecycle_decisions(c)
+        for i, (step, g) in enumerate(zip(c["steps"], got)):
+            if g != step["expect"]:
+                print(f"FAIL  node-join lifecycle {c['id']} step {i} ({step['op']}): expected {step['expect']}, model gives {g}")
+                ok = False
+    for c in doc["requestSizeCases"]["cases"]:
+        if node_join.size_decision(c) != c["expect"]:
+            print(f"FAIL  node-join size case {c['id']}: reference model disagrees")
+            ok = False
     hw_errors = node_join.check_hardware(doc["hardwareSample"])
     if hw_errors:
         print(f"FAIL  node-join hardwareSample: {hw_errors}")

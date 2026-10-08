@@ -185,6 +185,82 @@ def trust_decision(case):
     return {"status": 200, "hardwareOnly": hw_only, "routable": (not hw_only) and bool(body["models"])}
 
 
+REGISTER_BODY_CAP = 256 * 1024
+ENROLLMENT_BODY_CAP = 16 * 1024
+
+
+def size_decision(case):
+    """spec 47 section 6.6: oversize bodies are refused before parsing (400 or 413)."""
+    cap = REGISTER_BODY_CAP if case["route"] == "/v1/node/register" else ENROLLMENT_BODY_CAP
+    return {"statusIn": [400, 413]} if case["bodyBytes"] > cap else {"statusIn": [200]}
+
+
+class _Gateway:
+    """A minimal state model of spec 47 sections 3.1, 5.2, 6.1 to 6.4 and 6.7."""
+
+    def __init__(self):
+        self.creds = {}      # (node, cred) -> origin
+        self.owner = {}      # node -> {"origin", "cred"}
+        self.known = set()
+        self.reg = {}        # node -> {"cred","conn","hardware"}
+        self.conns = 0
+        self.pending = {}
+
+    def run(self, step):
+        op, node = step["op"], step.get("node")
+        if op == "known":
+            self.known.add(node)
+            return {}
+        if op == "challenge":
+            if step.get("role") != "node":
+                return {"status": 400, "errorCode": "bad_request"}
+            if node in self.known or self.owner.get(node, {}).get("origin") == "operator":
+                return {"status": 403, "errorCode": "forbidden"}
+            self.pending[node] = True
+            return {"status": 200}
+        if op in ("proof", "proof_enroll"):
+            if op == "proof_enroll":
+                r = self.run(dict(step, op="challenge", role="node"))
+                if r["status"] != 200:
+                    return r
+            if node in self.known or self.owner.get(node, {}).get("origin") == "operator":
+                return {"status": 403, "errorCode": "forbidden"}
+            if node in self.owner:
+                return {"status": 401, "errorCode": "control_auth_failed"}
+            self.owner[node] = {"origin": "proof", "cred": step.get("cred", "proof1")}
+            return {"status": 200}
+        if op == "operator_enroll":
+            if step["code"] != "valid":
+                return {"status": 401}
+            self.reg.pop(node, None)  # promotion drops registration, connection, hardware, links
+            self.owner[node] = {"origin": "operator", "cred": step["cred"]}
+            return {"status": 200}
+        if op == "register":
+            own = self.owner.get(node)
+            if not own or own["cred"] != step["cred"]:
+                return {"status": 401}
+            if own["origin"] == "proof" and step.get("endpoint"):
+                return {"status": 403, "errorCode": "forbidden"}
+            self.conns += 1
+            self.reg[node] = {"cred": step["cred"], "conn": f"c{self.conns}",
+                              "hardware": bool(step.get("hardware"))}
+            if step.get("saveConn"):
+                self.saved = getattr(self, "saved", {})
+                self.saved[step["saveConn"]] = self.reg[node]["conn"]
+            return {"status": 200}
+        if op == "heartbeat":
+            r = self.reg.get(node)
+            return {"status": 200 if r and r["conn"] == getattr(self, "saved", {}).get(step["conn"]) else 401}
+        if op == "listing":
+            return {"hardwarePresent": bool(self.reg.get(node, {}).get("hardware"))}
+        raise ValueError(op)
+
+
+def lifecycle_decisions(case):
+    gw = _Gateway()
+    return [gw.run(s) for s in case["steps"]]
+
+
 # --- hardware field and hardware-only registration ------------------------------------------
 class _Float(float):
     """Marks a JSON number written with a fraction or exponent (not an integer)."""
