@@ -8,12 +8,14 @@
     "reservationId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "decisionId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "owner": {
       "type": "object",
@@ -21,7 +23,8 @@
         "gatewayId": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 128
+          "maxLength": 128,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
         },
         "component": {
           "type": "string",
@@ -47,18 +50,21 @@
     "resourceId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "placementGroupId": {
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$",
       "description": "Shared by every GPU of a multi-GPU placement."
     },
     "modelId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "placementClass": {
       "type": "string",

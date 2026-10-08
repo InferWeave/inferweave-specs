@@ -14,12 +14,14 @@
     "gatewayId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "producerEpoch": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "sequence": {
       "type": "integer",
@@ -75,7 +77,8 @@
           "gatewayId": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 128
+            "maxLength": 128,
+            "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
           },
           "status": {
             "type": "string",

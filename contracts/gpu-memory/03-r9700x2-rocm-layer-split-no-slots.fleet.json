@@ -323,8 +323,7 @@
         "gatewayId": "gw_beast",
         "nodeId": "node_beast",
         "via": [
-          "gw_beast",
-          "gw_fry"
+          "gw_beast"
         ]
       },
       "ownership": {

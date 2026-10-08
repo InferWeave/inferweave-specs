@@ -8,7 +8,8 @@
     "decisionId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "action": {
       "type": "string",
@@ -68,17 +69,20 @@
     "nodeId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "runtimeInstanceId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "modelId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "placementClass": {
       "type": "string",
@@ -98,7 +102,8 @@
           "items": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 128
+            "maxLength": 128,
+            "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
           }
         }
       },
@@ -113,7 +118,8 @@
           "items": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 128
+            "maxLength": 128,
+            "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
           }
         }
       },
@@ -159,7 +165,8 @@
             "items": {
               "type": "string",
               "minLength": 1,
-              "maxLength": 128
+              "maxLength": 128,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
             }
           },
           "eligible": {
@@ -184,7 +191,8 @@
             "items": {
               "type": "string",
               "minLength": 1,
-              "maxLength": 128
+              "maxLength": 128,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
             }
           },
           "requiredEvictions": {
@@ -193,7 +201,8 @@
             "items": {
               "type": "string",
               "minLength": 1,
-              "maxLength": 128
+              "maxLength": 128,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
             }
           },
           "restrictions": {
@@ -315,7 +324,49 @@
               "required": [
                 "basis"
               ],
-              "additionalProperties": true
+              "additionalProperties": true,
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "basis": {
+                        "enum": [
+                          "measured",
+                          "derived",
+                          "estimated"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "basis"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "bytes"
+                    ]
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "basis": {
+                        "const": "unknown"
+                      }
+                    },
+                    "required": [
+                      "basis"
+                    ]
+                  },
+                  "then": {
+                    "not": {
+                      "required": [
+                        "bytes"
+                      ]
+                    }
+                  }
+                }
+              ]
             },
             "measuredAt": {
               "type": "string",
@@ -364,7 +415,24 @@
           "then": {
             "required": [
               "measured"
-            ]
+            ],
+            "properties": {
+              "measured": {
+                "properties": {
+                  "physicalDeltaBytes": {
+                    "required": [
+                      "bytes",
+                      "basis"
+                    ],
+                    "properties": {
+                      "basis": {
+                        "const": "measured"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       ]

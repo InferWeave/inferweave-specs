@@ -8,17 +8,20 @@
     "runtimeInstanceId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "deployment": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "modelId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "adapter": {
       "type": "string",
@@ -71,7 +74,8 @@
           "items": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 128
+            "maxLength": 128,
+            "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
           }
         },
         "topology": {
@@ -115,7 +119,8 @@
           "resourceId": {
             "type": "string",
             "minLength": 1,
-            "maxLength": 128
+            "maxLength": 128,
+            "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
           },
           "weights": {
             "$ref": "quantity.json"
@@ -327,7 +332,31 @@
       "required": [
         "support"
       ],
-      "additionalProperties": true
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "support": {
+                "enum": [
+                  "runtime-total",
+                  "unsupported"
+                ]
+              }
+            },
+            "required": [
+              "support"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "items"
+              ]
+            }
+          }
+        }
+      ]
     },
     "adapterResources": {
       "type": "object",

@@ -8,7 +8,9 @@
 validation, accounting reconciliation). It does **not** authorize deployment, any change to
 placement, eviction or scaling, or any action on a Slurm allocation.  
 **Relationship:** Extends `specs/45_PROTOCOL_V1.md` (minor release 1.1.0); supersedes no record.
-Every spec 45 field, enum and endpoint stands unchanged.
+Every spec 45 enum and endpoint stands unchanged. One spec 45 defect is corrected: its memory
+fields gain a unit (bytes) and `reserved` is declared logical (spec 46 §11 states what the old
+text allowed a literal implementer to do).
 
 ## Measured basis
 
@@ -20,9 +22,12 @@ Every spec 45 field, enum and endpoint stands unchanged.
   (`crates/iw-core/src/topology_v2.rs`, `topology_configuration.rs`: `deny_unknown_fields` on the
   graph, vertex, edge and configuration types). The implementation PR that follows this record
   pins it with a test that a GPU-memory member inside a topology v2 vertex is refused.
-- Units: spec 45's memory fields carried no unit; the published `memory.json` fixture and every
-  known producer use bytes; the reference implementation's topology projection uses MiB. No other
-  figure is relied on.
+- Units: spec 45's memory fields carried no unit. Bytes are used by the published `memory.json`
+  fixture, the reference implementation's heartbeat `DeviceReport.vram_bytes`
+  (`crates/iw-core/src/control_connection.rs`, InferWeave/inferweave `b2b63c2`) and the operational
+  gateway's `gpu_memory_*_bytes` series (metabolomics-us/inferweave-gateway
+  `cmd/gateway/gpu_accounting.go`, `9fe254c`); the reference implementation's topology projection
+  uses MiB (`CardMemory`). No other figure is relied on.
 
 ## Context
 
@@ -54,6 +59,8 @@ Option 2:
   maps them onto the snake_case spec 45 objects (`memory.json` fields, the event envelope:
   `event_id` ↔ `eventId`, `event_type` ↔ `type`, `correlation_id` ↔ `correlationId`, `timestamp`
   ↔ `occurredAt`).
+- **Schemas validate producers at exactly 1.1.0 (closed enums); readers never drop a document on
+  schema rejection** and read unknown values through documented fallbacks.
 - **The `iw.<name>/<major>` capability grammar is published** together with the snake_case
   `features` names it pairs with (`contracts/protocol-v1/gpu-memory-capabilities.json`), so the
   two negotiation vocabularies no longer drift.

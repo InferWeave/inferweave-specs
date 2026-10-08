@@ -31,5 +31,7 @@ profiles:
     required_scenarios: [events, snapshot_consistency, topology]
   IW-ADMIN:
     required_scenarios: [protocol_discovery, registration, heartbeat]
+  IW-GPU-MEMORY:
+    required_scenarios: [schema_validation, feature_negotiation, capability_advertisement, gpu_memory_accounting]
   IW-FULL:
-    required_scenarios: [schema_validation, protocol_discovery, feature_negotiation, registration, heartbeat, topology, events, retries, errors, aliases, federation, capability_advertisement, snapshot_consistency, backwards_compatibility, gpu_memory_accounting]
+    required_scenarios: [schema_validation, protocol_discovery, feature_negotiation, registration, heartbeat, topology, events, retries, errors, aliases, federation, capability_advertisement, snapshot_consistency, backwards_compatibility]

@@ -119,11 +119,6 @@
           "confidence": "medium",
           "note": "process total minus other categories",
           "source": "nvidia-smi-compute-apps"
-        },
-        "placementReservations": {
-          "bytes": 4294967296,
-          "basis": "declared",
-          "source": "iw-ledger"
         }
       },
       "deviceId": "GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
@@ -184,6 +179,11 @@
           "basis": "measured",
           "bytes": 85899345920,
           "source": "nvidia-smi"
+        },
+        "safetyHeadroom": {
+          "bytes": 4294967296,
+          "basis": "declared",
+          "source": "config"
         }
       },
       "pressure": {

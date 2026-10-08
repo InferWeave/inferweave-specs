@@ -3,17 +3,19 @@
   "$id": "https://inferweave.dev/schemas/v1/resources/gpu-memory-anomaly.json",
   "title": "GpuMemoryAnomaly",
   "type": "object",
-  "description": "An accounting reconciliation failure (spec 46 §3.8).",
+  "description": "An accounting reconciliation failure (spec 46 §3.6). measuredBytes is a magnitude: for negative-derived it is the size of the negative result..",
   "properties": {
     "anomalyId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "resourceId": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 128
+      "maxLength": 128,
+      "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f\\u00ad\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u206f\\ufeff]*$"
     },
     "kind": {
       "type": "string",

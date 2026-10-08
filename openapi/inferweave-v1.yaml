@@ -227,6 +227,11 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/GpuMemoryFleet" }
+        "501":
+          description: FEATURE_UNSUPPORTED -- the capability is not in force here
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
   /gpu-memory/events:
     get:
       operationId: listGpuMemoryEvents
@@ -243,12 +248,19 @@ paths:
           schema: { type: integer, minimum: 1 }
       responses:
         "200":
-          description: Events after the cursor, oldest first
+          description: >-
+            Events after the cursor, oldest first. A cursor whose producerEpoch differs from the
+            server's current epoch means resynchronize from GET /gpu-memory, then resume.
           content:
             application/json:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/GpuMemoryEvent" }
+        "501":
+          description: FEATURE_UNSUPPORTED -- the capability is not in force here
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
   /gpu-memory/simulate:
     post:
       operationId: simulateGpuMemoryPlacement
@@ -268,6 +280,11 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/PlacementSimulationResponse" }
+        "501":
+          description: FEATURE_UNSUPPORTED -- the capability is not in force here, or this gateway is not a rebalancer authority
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
 components:
   schemas:
     Topology:

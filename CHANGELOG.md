@@ -6,9 +6,12 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
-**Compatibility classification: minor, backwards-compatible.** Adds new capability-gated surfaces
-only; no existing field, enum value, endpoint or schema changes meaning. Older peers keep
-working unchanged (`specs/46_GPU_MEMORY_INTELLIGENCE.md` §10).
+**Compatibility classification: minor, backwards-compatible, with one specification
+correction.** Adds new capability-gated surfaces; no existing enum value or endpoint changes, and
+older peers keep working unchanged (`specs/46_GPU_MEMORY_INTELLIGENCE.md` §10). The correction:
+spec 45's memory fields had no unit and listed `reserved` beside physical categories; they are
+now bytes and `reserved` is logical (spec 46 §11). A 1.0.0 producer that used another unit or
+counted physical memory in `reserved` was following ambiguous text and must be corrected.
 
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` and decision record
   `decisions/2026-10-07-gpu-memory-accounting.md` (feature `IW-GPUMEM-001`, tasks
@@ -25,8 +28,11 @@ working unchanged (`specs/46_GPU_MEMORY_INTELLIGENCE.md` §10).
 - Four canonical contract fixtures under `contracts/gpu-memory/` (shared byte-for-byte with the
   reference implementation), their generator `tools/gen_gpu_memory_fixtures.py`, and valid and
   invalid conformance fixtures.
-- Clarifications: spec 45 memory fields are bytes and `reserved` is logical; spec 46 §11 maps
-  them onto the new model. The stale "only common and errors are published" sentence of spec 45
+- Correction (not a clarification): spec 45 memory fields are bytes and `reserved` is logical;
+  spec 46 §11 records what the old text allowed and maps the fields onto the new model.
+- Conformance: new optional profile `IW-GPU-MEMORY` with scenario `gpu_memory_accounting`;
+  `IW-FULL` is unchanged.
+- The stale "only common and errors are published" sentence of spec 45
   is corrected.
 
 ## 1.0.0 — initial protocol (in progress)

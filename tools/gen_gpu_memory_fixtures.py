@@ -276,7 +276,9 @@ def f2():
 def f3():
     """beast: 2x AMD Radeon AI PRO R9700 (32 GiB), ROCm, llama.cpp layer-split
     across both cards, per-slot unsupported, display compositor on GPU1.
-    Standalone (no Slurm), reported via a workstation gateway, relayed to Fry."""
+    Standalone (no Slurm), as served by the workstation gateway gw_beast, which
+    minted the GPU resource ids. A relay (e.g. Fry) re-serving it appends itself to
+    via and serves it under its own fleet gatewayId (spec 46 §2.2)."""
     gw, node = "gw_beast", "node_beast"
     total = 32 * GiB
     specs = [  # (weights, kv, workspace, other)
@@ -341,8 +343,6 @@ def f3():
                            "observedAt": "2026-10-08T14:31:04Z", "meta": {"processName": "gnome-shell"}})
     n = node_report(node, gw, gpus, [rt], allocs, {"manager": "standalone", "allocationState": "active", "actionAuthority": "origin-gateway"}, seq=5531)
     f = fleet(gw, [n], [], mode="observe", seq=2210)
-    # as relayed through Fry: via path grows; Fry is NOT the authority
-    n["origin"]["via"] = ["gw_beast", "gw_fry"]
     return f
 
 # ---------------------------------------------------------------- fixture 4

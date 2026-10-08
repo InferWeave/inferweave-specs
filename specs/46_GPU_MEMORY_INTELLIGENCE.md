@@ -48,8 +48,21 @@ recomputing it.
 5. **A new major is a new capability string.** Within a major, fields are only added. Readers
    ignore unknown fields **and** keep unknown enum values verbatim, reading them through the
    fallback each enum documents.
-6. **Logical is never physical.** Reservations and the placement-class view are separate
+6. **Field names and enum values are case-sensitive.** A key that differs only in case
+   (`ResourceId`) is not the field: a consumer whose decoder matches keys case-insensitively
+   (Go `encoding/json`) MUST refuse or ignore case variants rather than bind them.
+7. **Logical is never physical.** Reservations and the placement-class view are separate
    dimensions and are never added into a physical total.
+
+## Schemas and forward compatibility
+
+The JSON Schemas of this document validate a **producer at exactly Protocol 1.1.0**: their enums
+are closed, as spec 45 requires ("reject malformed enums"). A **reader** never uses schema
+rejection to drop a document from a newer producer: it ignores unknown fields, keeps an unknown
+enum value verbatim and reads it through the fallback documented for that enum (basis → unknown;
+placement class → primary; authority → grants nothing; pressure and allocation states →
+unknown; anything else → shown verbatim and not acted on). A later minor release adds values to
+the schemas; it never removes or re-purposes one.
 
 ## 1. Capabilities and features
 
@@ -66,6 +79,10 @@ family for peers that discover through it. The pairing is frozen data in
 | `rebalance_decisions` | `1` | `iw.rebalance-decisions/1` | The gateway serves the event feed (§7) with a cursor. |
 | `placement_simulation` | `1` | `iw.placement-simulation/1` | The gateway answers read-only placement simulations from its real rebalancer evaluation (§9). |
 | `card_coresidency` | `1` | `iw.card-coresidency/1` | The node accepts more than one assignment for the same GPU and runs the engines side by side. A gateway MUST NOT send a second assignment for a GPU unless this is in force. This is a precondition for packing an opportunistic runtime beside another. |
+
+The existing spec 45 feature `gpu_memory_breakdown` is independent: it advertises the flat
+spec 45 `memory` object on Protocol v1 surfaces, while `gpu_memory` advertises this family. A peer
+may advertise either or both; neither implies the other.
 
 Plain-string runtime capabilities (`"system_one"`, `"diffusion"`) are a separate family and are
 unchanged.
@@ -104,13 +121,34 @@ operator-facing, never prompts, request contents or secrets).
 - `origin`: `gatewayId` (the gateway whose rebalancer is authoritative for the node; empty until
   one composes the report), `nodeId` (a stable id, never an address), `via` (the reporting path,
   appended by each relay).
-- A GPU's global `resourceId` is `gpu:<originGatewayId|standalone>/<nodeId>/<deviceKey>`.
+- A GPU's global `resourceId` is `gpu:<mintingGatewayId|standalone>/<nodeId>/<deviceKey>`.
   `deviceKey` is the vendor UUID when known (AMD: `unique_id`), else the PCI bus id, else
-  `idx<N>` with `deviceKeyStable: false`. A MIG instance is `<uuid>-mig-<N>`.
+  `idx<N>` with `deviceKeyStable: false`. A MIG instance is `<uuid>-mig-<N>`. Gateway and node
+  ids contain no `/`; the device key is everything after the second `/`. `nodeId` equals the
+  report's `origin.nodeId`.
+- **Who mints it.** A node reports `gpu:standalone/<nodeId>/<deviceKey>`. The **first gateway
+  that attaches the node** (receives its report directly) replaces `standalone` with its own
+  gateway id — in the GPU and in every reference to it (`placementGroup.gpus`, `perGpu`,
+  `allocations`, `anomalies`) — and every gateway downstream preserves the id unchanged. A node
+  attached to no gateway keeps `standalone`.
+- **De-duplication keys.** One physical GPU can still arrive under two minted ids (a node
+  attached directly to a viewer gateway and to its authority). Consumers de-duplicate by
+  `resourceId` first and then by `(nodeId, deviceKey)`; node ids are stable identities (spec 45)
+  and unique in a federation.
 - `deviceId` equals the heartbeat `devices[].id`; `topologyGpuId` equals topology v2
   `configuration.gpus[].gpuId`. Both are carried so a consumer joins without a lookup table.
-- When one resource arrives by several paths, a consumer keeps the copy whose path's first hop is
-  `origin.gatewayId` (the authority), otherwise the shortest `via`. It **never** sums copies.
+- **Path check.** `via` is self-reported, so a consumer checks it against what it knows itself.
+  For a node in a fleet snapshot the consumer pulled from gateway `R`: the snapshot's
+  `gatewayId` MUST equal `R`, `via` MUST be non-empty with `via[0] == origin.gatewayId` and
+  `via[last] == R`, and no hop may repeat. A node failing any rule is unusable (an empty or forged
+  `via` never wins). A node with `via == [R]` and `origin.gatewayId == R` is **authoritative**;
+  any other passing node is **relayed**.
+- When one GPU arrives by several paths, a consumer keeps the authoritative copy, otherwise the
+  relayed copy with the shortest `via`. It **never** sums copies.
+- A relayed node is **stale** — every GPU read as `telemetry.status: stale`, its capacity
+  unknown — when the snapshot that carried it lists, for any hop of its `via`, a peer whose
+  `status` is not `fresh` or whose `receivedAgeMs` exceeds `gpuMemory.staleAfterSecs`, or when the
+  consumer's own receipt of that snapshot is older than `staleAfterSecs`.
 - Freshness is judged by the consumer's receipt time and the producer's `sequence` and
   `producerEpoch`, never by comparing producer clocks.
 
@@ -127,6 +165,12 @@ driver but another job's or user's), `unknown`. An absent or unknown authority g
 **Only `owned` and `shared-policy` GPUs may have `safeSchedulable` above zero**: unused memory on
 a GPU allocated to another Slurm job is not InferWeave's. On a `not-owned` GPU `safeSchedulable`
 is `{basis: declared, bytes: 0}` — an evidence-based zero, which is allowed.
+
+**Eligibility.** `eligibility.opportunistic` may be true only when `actionAuthority` is
+`origin-gateway`, `allocationState` is `active`, the GPU's `authority` is `owned` or
+`shared-policy`, and its telemetry is `fresh`. `actionAuthority: none`, any other or absent
+allocation state (`draining`, `expiring`, `preempting`, `revoked`, `ended`, `unknown`), and any
+other authority force it false.
 
 ### 2.4 Placement class
 
@@ -170,17 +214,21 @@ carrier's size cap sets `truncated: true` and drops slot items first, then alloc
 - `logical`: `kvGrowthReserve`, `slotReserve`, `runtimeGrowthReserve`, `safetyHeadroom`,
   `placementReservations` (unfulfilled reservations only; gateway-composed),
   `measurementUncertainty`. Never part of any physical total.
+- `safetyHeadroom` defaults to `policy.safetyMarginPercent × physical.total`; an operator
+  override is reported as `basis: declared`, `source: config`, with the override named in `note`.
 - `nodeSafeSchedulable`: the node's view, `free − Σ logical` (except placement reservations),
   clamped at zero.
 - `safeSchedulable`, `pressure`, `eligibility`: gateway-composed, absent in a raw node report.
 
-**Accounting invariants** (spec input §3.1), per GPU, over known numbers only:
+**Accounting invariants**, per GPU, over known numbers only:
 
 - (a) `physical.used + physical.free ≈ physical.total`;
 - (b) `attributed + unattributed ≈ physical.used`.
 
-`≈` means within the accounting tolerance: `accountingTolerancePercent` (default 2) of
-`physical.total`. A GPU whose total, used or free is unknown is not reconciled at all: arithmetic
+`≈` means within the accounting tolerance: the **checking gateway's own**
+`gpuMemory.accountingTolerancePercent` (default 2) of `physical.total`. A report's
+`policy.accountingTolerancePercent` only explains the node's own figures; the node being judged
+never sets the tolerance it is judged by. A GPU whose total, used or free is unknown is not reconciled at all: arithmetic
 over an unknown reading would invent a mismatch or hide one. Each failed check is an
 `AccountingAnomaly` (§3.6), and unattributed memory above the tolerance on a GPU that is not
 `not-owned` is one too (`unattributed-over-tolerance`). Unattributed memory on a `not-owned` GPU
@@ -239,15 +287,24 @@ read in MiB convert to bytes with `basis: measured` and are rounded against plac
 ### 3.6 Accounting anomaly
 
 `schemas/v1/resources/gpu-memory-anomaly.json`. `anomalyId`, `resourceId`, `kind`,
-`measuredBytes`, `toleranceBytes`, `firstSeenAt`, `lastSeenAt`, `consecutive`, `detail`. Kinds:
+`measuredBytes` (a magnitude; for `negative-derived` the size of the negative result),
+`toleranceBytes`, `firstSeenAt`, `lastSeenAt`, `consecutive`, `detail`. Kinds:
 `physical-sum-mismatch` (invariant a), `attribution-sum-mismatch` (invariant b),
 `unattributed-over-tolerance`, `negative-derived`, `reservation-stale`, `slot-sum-exceeds-pool`,
 `per-process-exceeds-card`.
 
 ### 3.7 Bounds
 
-At most 64 GPUs, 64 runtimes, 256 allocations, 64 slots per runtime and 32 current anomalies per
-report; ids at most 128 UTF-8 bytes with no control (Cc) or format (Cf) characters.
+Per report: at most 64 GPUs, 64 runtimes, 256 allocations, 64 slots per runtime, 32 current
+anomalies, 16 entries in `origin.via`, `telemetry.sources`, `pressure.reasons` and
+`eligibility.reasons`, 8 `meta` pairs; ids at most 128 UTF-8 bytes with no control (Cc) or format
+(Cf) characters; `note` and `reason` at most 128 characters, anomaly `detail` at most 512;
+percentages at most 100; every integer at most 2^53 − 1. A serialized report is at most 1 MiB
+(and is cut to fit a smaller carrier, `truncated: true`).
+
+Per fleet snapshot: at most 1024 nodes, 1024 reservations and 64 peers, and at most 32 MiB
+serialized. A consumer refuses a body over the byte cap **before** decoding it, so a decoder can
+bound its allocation up front.
 
 ## 4. Fleet snapshot — `iw.gpu-memory.fleet/1`
 
@@ -330,7 +387,8 @@ is in force (`GET /iw/v1/gpu-memory/events?after=<cursor>&limit=`). Envelope: `e
 the idempotency key), `cursor` (`<producerEpoch>:<sequence>`; an epoch change means resynchronize
 from a snapshot), `type`, `occurredAt`, `gatewayId`, `origin`, `correlationId` (the decision id
 where one exists), `resourceIds`, `runtimeInstanceId`, `modelId`, `payload`. Consumers process
-events idempotently by `eventId`.
+events idempotently by `eventId`. `correlationId` is the decision id where one exists, otherwise
+the id of the episode (for an accounting anomaly, its `anomalyId`).
 
 The frozen event vocabulary (`contracts/protocol-v1/gpu-memory-events.json`):
 
@@ -365,9 +423,10 @@ recovered before it is measured: a `succeeded` outcome carries a measured, signe
 
 `schemas/v1/resources/gpu-memory-postmortem.json`, the payload of `gpu.memory.postmortem`: the
 last pre-failure `gpu`, `runtimes` and `allocations` for the GPU, `ownership`, `pressure`,
-`recentGrowth` (the last five minutes), at most ten `recentDecisions`, and `runtimeError` (exit
+`recentGrowth` (the last five minutes), at most ten `recentDecisions` from the last 30 minutes,
+and `runtimeError` (exit
 status, signal, matched OOM signature, and at most 2 KiB of the engine's stderr scrubbed by the
-secret filters). The node keeps a ring of its recent reports, so a postmortem never depends on
+secret filters). The node keeps a ring of its last 12 reports, so a postmortem never depends on
 the failed runtime still answering. OOM sources: an engine exit with a known OOM signature (CUDA
 `out of memory`, `hipErrorOutOfMemory`, a ggml allocation failure) and the spec 36 `GPU_OOM`
 watchdog signal.
@@ -440,18 +499,39 @@ keeps it unknown when every source on the right is unknown or absent.
 | `unaccounted` | `unattributed` | |
 | (none) | `physical.used`, `attributed`, `nodeSafeSchedulable`, `safeSchedulable` | new in 1.1.0 |
 
+The §7 event envelope is camelCase; it maps onto the spec 45 envelope as `event_id` ↔ `eventId`,
+`event_type` ↔ `type`, `timestamp` ↔ `occurredAt`, `correlation_id` ↔ `correlationId`,
+`source_id` ↔ `gatewayId`, and `sequence` ↔ the sequence part of `cursor`.
+
+**This section corrects spec 45.** Spec 45 1.0.0 gave the memory fields no unit and listed
+`reserved` beside physical categories. A literal implementer could report MiB (as the reference
+implementation's topology projection does) or GB (spec 40, spec 44 use other units), and could put
+physically held memory in `reserved` and sum it into a physical total. Protocol 1.1.0 fixes both:
+the fields are bytes — the unit of the published `memory.json` fixture, of the reference
+implementation's heartbeat `devices[].vramBytes`, and of the operational gateway's
+`gpu_memory_*_bytes` series — and `reserved` is logical. A 1.0.0 producer that used another unit
+or put physical memory in `reserved` is non-conforming from 1.1.0 and must be corrected.
+
 ## 12. Contract fixtures
 
 `contracts/gpu-memory/` holds four fleet snapshots, generated with exact byte arithmetic by
 `tools/gen_gpu_memory_fixtures.py`, which checks invariants (a) and (b) on every GPU before
 writing:
 
-1. `01-b200-primary-whisper-pack` — the spec input §5 worked example: a 96 GiB card, a llama.cpp
+1. `01-b200-primary-whisper-pack` — the product requirement's worked example (a 96 GiB card
+   with 80 GiB physically allocated, 16 GiB raw free, 6 GiB safely schedulable): a llama.cpp
    primary, an opportunistic whisper runtime, a foreign process, one pending pack reservation.
+   The example's single "6 GiB KV growth reservation" is split per §3.3: the llama.cpp pool is
+   preallocated (`kvGrowthReserve` 0), whisper's allocator growth is a 2 GiB
+   `runtimeGrowthReserve`, and a 4 GiB pending pack is a `placementReservations` entry. Its
+   safety headroom is a 4 GiB operator override of the 5 % default. Notes in the fixtures that
+   cite "spec §N" refer to sections of that product requirement, not to `specs/N`.
 2. `02-a100x4-vllm-tp4-slurm` — vLLM tensor-parallel 4 across four 80 GiB cards inside a Slurm
    allocation; `constrained` with no growth exposure.
 3. `03-r9700x2-rocm-layer-split-no-slots` — two AMD R9700, ROCm, a llama.cpp layer split, per-slot
-   memory `unsupported`, relayed through a second gateway.
+   memory `unsupported`, as served by the workstation gateway that attached the node and minted
+   its GPU ids (`via: ["gw_beast"]`). A relay re-serving it appends itself to `via` and serves it
+   under its own `gatewayId`.
 4. `04-stale-anomaly-draining-notowned` — a stale GPU (used and free unknown), a GPU with 22 GiB
    unattributed (exactly one `unattributed-over-tolerance` anomaly), a draining Slurm allocation,
    and a GPU owned by another job.
@@ -465,10 +545,14 @@ contract. `scripts/validate_specs.py` rejects a non-canonical copy.
 
 `conformance/runner.py` validates the four contract fixtures as fleet snapshots and the
 `fixtures/valid/` objects of this spec, and requires each `fixtures/invalid/` object to fail:
-a byte count beside `basis: unknown`, a logical reservation inside `categories`, a GPU with known
-usage and no `unattributed`, a measured quantity without bytes, and a decision recorded
-`succeeded` without a measured outcome. The conformance scenario is `gpu_memory_accounting`
-(`conformance/manifest.yaml`, profile `IW-FULL`).
+a byte count beside `basis: unknown`, a logical reservation inside `categories` and inside
+`physical`, a GPU with known usage and no `unattributed`, schedulable capacity on a `not-owned`
+GPU, slot items under `runtime-total` support, a control character in an id, a measured quantity
+without bytes, and a decision recorded `succeeded` without a measured outcome or with an
+estimated one. The conformance scenario is `gpu_memory_accounting`
+(`conformance/manifest.yaml`). It belongs to its own optional profile `IW-GPU-MEMORY`, not to
+`IW-FULL`: the family is capability-gated, and a minor release does not widen an existing
+profile.
 
 ## Open gates and evidence
 
