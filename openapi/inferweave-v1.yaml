@@ -235,6 +235,8 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/GpuMemoryFleet" }
+        "410":
+          description: The cursor's pinned snapshot expired (cursorTtlSecs); start again from the first page
         "501":
           description: FEATURE_UNSUPPORTED -- the capability is not in force here
           content:
@@ -489,6 +491,8 @@ components:
         generatedAt: { type: string }
         authority: { type: object, additionalProperties: true }
         nodes: { type: array, items: { type: object, additionalProperties: true } }
+        nodeCount: { type: integer }
+        nextCursor: { type: string }
         reservations: { type: array, items: { type: object, additionalProperties: true } }
         peers: { type: array, items: { type: object, additionalProperties: true } }
     GpuMemoryEvent:

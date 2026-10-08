@@ -127,7 +127,7 @@ operator-facing, never prompts, request contents or secrets).
 - A GPU's global `resourceId` is `gpu:<mintingGatewayId|standalone>/<nodeId>/<deviceKey>`.
   `deviceKey` is the vendor UUID when known (AMD: `unique_id`), else the PCI bus id, else
   `idx<N>` with `deviceKeyStable: false`. A MIG instance is `<uuid>-mig-<N>`. Gateway and node
-  ids contain no `/`; the device key is everything after the second `/`. `nodeId` equals the
+  ids contain no `/` (the schemas refuse it in every node and gateway id); the device key is everything after the second `/`. `nodeId` equals the
   report's `origin.nodeId`.
 - **Who mints it.** A node reports `gpu:standalone/<nodeId>/<deviceKey>`. The **first gateway
   that attaches the node** (receives its report directly) replaces `standalone` with its own
@@ -155,8 +155,9 @@ operator-facing, never prompts, request contents or secrets).
   dropped — its absence would read as missing hardware — and is read with no action authority:
   it carries no composed fields (`safeSchedulable`, `pressure`, `eligibility` are absent; a report
   that has them is refused), only the node's own `nodeSafeSchedulable`. Its `via` starts at the
-  gateway that attached it, which is the minting gateway of its GPU resource ids; the other path
-  rules apply unchanged.
+  gateway that attached it: `origin.attachedBy` when present, else the minting gateway of its GPU
+  resource ids. An unowned node with neither (no `attachedBy`, no GPUs) has nothing to count or
+  act on and is kept with its first hop unchecked. The other path rules apply unchanged.
 - When one GPU arrives by several paths, a consumer keeps the authoritative copy, otherwise the
   relayed copy with the shortest `via`. It **never** sums copies.
 - **Relay staleness, hop by hop.** The sender `R` never lists itself in `peers`, and only it
@@ -164,8 +165,10 @@ operator-facing, never prompts, request contents or secrets).
   received the node from, `via[len−2]`. The node is **stale** — every GPU read as
   `telemetry.status: stale`, its capacity unknown — when `R`'s `peers` has no entry for that hop
   (it cannot be judged), or one whose `status` is not `fresh`, whose `receivedAgeMs` is absent, or
-  whose `receivedAgeMs` exceeds `gpuMemory.staleAfterSecs`; or when the consumer's own receipt of
-  the snapshot is older than `staleAfterSecs`. Deeper hops are judged transitively: **a relay
+  whose `receivedAgeMs` exceeds `gpuMemory.staleAfterSecs`; or when the report's **accumulated
+  relay age** plus the consumer's own receipt age exceeds `staleAfterSecs`. Each relay adds the
+  time it held a report (receipt to re-emission) to `origin.relayAgeMs` before re-serving it, so
+  sixteen hops of 30 s each can never carry eight-minute-old data as fresh. Deeper hops are judged transitively: **a relay
   MUST mark every GPU of a node stale (and drop its composed capacity) before re-serving it when
   its own upstream for that node was stale**, so a stale hop anywhere reaches the consumer as
   stale data. A direct node (`via == [R]`) is judged by receipt age only. Staleness fails closed.
@@ -316,8 +319,12 @@ instance or a per-node foreign-process ordinal, **never a raw pid** — pids nev
 composing gateway), `resourceId`, `runtimeInstanceId` (absent for a foreign process), `modelId`,
 `category` (`runtime-total`, a split category, or `foreign-process`), `physical`, `reservation`,
 `placementClass` (absent on a foreign-process allocation, which is not classified; otherwise
-absent means `normal`), `evictable`, `intended` (`yes` | `no` | `unknown`: pinned to this GPU;
-absent is not reported — a string, so no decoder confuses absent with `null`), and at most eight
+absent means `normal`). **A foreign-process allocation is always read as `primary` and
+unmovable, whatever its class field says**: it is another job's memory, and no consumer may
+evict, move, pack against or otherwise treat it as reclaimable. An allocation also carries
+`evictable`, `intended` (`yes` | `no` | `unknown`: pinned to this GPU; absent is not reported — a
+string, so no decoder confuses absent with `null`; a reader that meets any other shape, such as an
+older producer's boolean, reads it as absent rather than refusing the report), and at most eight
 `meta` string pairs (never arguments, environment or secrets). Per-process totals
 read in MiB convert to bytes with `basis: measured` and are rounded against placement.
 
@@ -368,6 +375,14 @@ producer returns at most `limit` nodes (and never more than the caps above), the
 using any of them and starts over if the `sequence` changes mid-way. A body over the consumer's
 budget is reported as **too large** (retry with a smaller `limit`), never as malformed.
 
+A cursor **pins its snapshot**: the producer keeps the snapshot of the `sequence` a cursor
+belongs to and serves every page of it from that copy for at least `cursorTtlSecs` (60) after the
+first page, even while it recomposes newer snapshots every few seconds; a slow multi-page fetch
+therefore never stalls on a moving `sequence`. A cursor past its TTL is refused with `410 Gone`
+and the consumer starts again from the first page. `peers`
+is repeated on **every** page (a consumer judges relay staleness per page); `reservations` are
+carried on the **first** page only. `nodeCount` is required whenever `nextCursor` is present.
+
 **Forward-compatibility budget.** The count bounds above apply to the lists and objects this
 version defines. Unknown members, unknown arrays and unknown objects (from a newer minor) are
 not individually bounded and never refuse a document by their count; they count only against
@@ -404,7 +419,9 @@ GPU of a multi-GPU placement), `modelId`, `placementClass`, `requestedBytes`, `e
 `createdAt`, `expiresAt` (default: the load deadline), `state` (`pending` | `loading` |
 `reconciled` | `released` | `expired` | `cancelled`), `reason`.
 
-Lifecycle (race-safe admission):
+Lifecycle (race-safe admission). Planning, composing `safeSchedulable` and reconciling all read
+the **same** report `sequence` for a node within one pass; a newer report is taken up in the next
+pass, never half-way through one.
 
 1. **Plan** against `safeSchedulable`.
 2. **Reserve** in the same pass that dispatches the decision.
@@ -564,7 +581,10 @@ lost to topology) is answered **only** by simulation, in the response's `feasibi
 the shape the request names (`requirements.gpus`, accelerators, bytes). It is not a field of the
 fleet snapshot: "largest feasible placement" has no meaning without a requested shape, and a
 shape-free figure would invite consumers to compute placement themselves. Free memory on
-independent GPUs is never summed into a feasibility figure.
+independent GPUs is never summed into a feasibility figure. Tracking capacity lost to topology
+over time therefore means running a fixed set of simulations periodically and storing their
+`feasibility` blocks; that is history and dashboard work for the consumer side, not a new
+protocol field.
 
 ## 10. Mixed versions
 

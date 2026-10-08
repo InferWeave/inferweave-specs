@@ -55,14 +55,15 @@
       "properties": {
         "gatewayId": {
           "type": "string",
-          "maxLength": 128
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x2e\\x30-\\x7e]*$"
         },
         "nodeId": {
           "type": "string",
           "minLength": 1,
           "maxLength": 128,
-          "pattern": "^[\\x21-\\x7e]*$",
-          "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+          "pattern": "^[\\x21-\\x2e\\x30-\\x7e]*$",
+          "description": "A node or gateway id: printable ASCII without spaces and without '/', the separator of GPU resource ids."
         },
         "via": {
           "type": "array",
@@ -71,8 +72,8 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128,
-            "pattern": "^[\\x21-\\x7e]*$",
-            "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+            "pattern": "^[\\x21-\\x2e\\x30-\\x7e]*$",
+            "description": "A node or gateway id: printable ASCII without spaces and without '/', the separator of GPU resource ids."
           }
         }
       },

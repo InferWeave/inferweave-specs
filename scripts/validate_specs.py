@@ -982,7 +982,9 @@ def self_test():
         for f in failures:
             print(f"- {f}")
         return 1
-    print(f"OK: {len(MUTATIONS)} mutations, every guard rejects its known-bad input")
+    file_mutations = 1 + len(gpu_breaks) + len(semantic)
+    print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "
+          "every guard rejects its known-bad input")
     return 0
 
 
