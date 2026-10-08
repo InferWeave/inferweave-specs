@@ -16,14 +16,14 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~512,454 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~515,287 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
 - `.github/workflows/protocol-ci.yml` — `4e4a8b44a516` — ~194t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `e21c51c656b3` — ~1,477t
+- `CHANGELOG.md` — `d8cff553d163` — ~1,547t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
@@ -203,6 +203,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/gpu-memory-event.json` — `3907cc8bf756` — ~250t
 - `fixtures/valid/gpu-memory-fleet-first-page.json` — `bca8b069f548` — ~4,140t
 - `fixtures/valid/gpu-memory-postmortem.json` — `120c51ecfc6a` — ~1,819t
+- `fixtures/valid/gpu-memory-report-truncated.json` — `d103c6d5412b` — ~2,392t
 - `fixtures/valid/gpu-memory-report-unowned.json` — `3eb38782b4d8` — ~3,267t
 - `fixtures/valid/gpu-memory-report.json` — `1e122e0a1257` — ~3,407t
 - `fixtures/valid/heartbeat.json` — `56c2c0dafcbd` — ~29t
@@ -346,7 +347,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `c8c57b73aa55` — ~3,492t
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
 - `specs/45_PROTOCOL_V1.md` — `b080d4133157` — ~9,372t
-- `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `800cca3e6d38` — ~12,582t
+- `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `aeed98fe40c5` — ~12,953t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `6027505392aa` — ~233t

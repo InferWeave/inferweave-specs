@@ -53,6 +53,9 @@ counted physical memory in `reserved` was following ambiguous text and must be c
 - Round-7 follow-ups: age is computed per page (that page's receipt age plus that page's
   `servedAgeMs`); a continuation page fetched with a cursor and lacking `servedAgeMs` is stale;
   producers put `nodeCount` on every page of a multi-page snapshot.
+- Round-8 follow-ups: a truncated report's lists are partial (aggregates stay authoritative; the
+  remaining allocations may only fall short of `attributed`); page assembly is all or nothing
+  (reference: `FleetAssembler`); a response served from a pin MUST carry `servedAgeMs`.
 - Conformance: new optional profile `IW-GPU-MEMORY` with scenario `gpu_memory_accounting`;
   `IW-FULL` is unchanged.
 - The stale "only common and errors are published" sentence of spec 45
