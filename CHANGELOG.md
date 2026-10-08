@@ -41,6 +41,11 @@ counted physical memory in `reserved` was following ambiguous text and must be c
   minting prefix and `attachedBy` must equal it; an unanchored unowned node carries no runtimes
   or allocations; unknown, foreign and pre-restart cursors get `410`; pinned snapshots are
   bounded (`pinShareSecs`, `maxPinnedSnapshots`); reservation cross-checks wait for all pages.
+- Round-5 follow-ups: pins are never evicted while live (`maxPinnedSnapshots` defaults to
+  ⌈`cursorTtlSecs`/`pinShareSecs`⌉ = 12; a new first page gets `503` + `Retry-After` at the cap);
+  a config-free relay-age floor (the sender's own `receivedAgeMs` for the adjacent hop; below it is
+  forged and stale); anomalies must name the report's own GPUs; phantom nodes carry no
+  allocations or anomalies; a relay re-serves one copy of a node whole.
 - Conformance: new optional profile `IW-GPU-MEMORY` with scenario `gpu_memory_accounting`;
   `IW-FULL` is unchanged.
 - The stale "only common and errors are published" sentence of spec 45

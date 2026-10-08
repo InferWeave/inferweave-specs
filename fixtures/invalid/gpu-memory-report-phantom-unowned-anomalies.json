@@ -1,0 +1,40 @@
+{
+  "allocations": [],
+  "anomalies": [
+    {
+      "anomalyId": "an_c0df_ep_g3glma1_77",
+      "consecutive": 103,
+      "detail": "22 GiB on card not owned by any process nvidia-smi lists; candidates: leaked context of a crashed engine, MPS server, process in another PID namespace",
+      "firstSeenAt": "2026-10-08T14:22:35Z",
+      "kind": "unattributed-over-tolerance",
+      "lastSeenAt": "2026-10-08T14:31:05Z",
+      "measuredBytes": 23622320128,
+      "resourceId": "gpu:gw_hive-rust/node_g3-glm/GPU-11aa22bb-0000-4000-8000-00000000c0df",
+      "toleranceBytes": 1717986918
+    }
+  ],
+  "gpus": [],
+  "observedAt": "2026-10-08T14:31:05Z",
+  "origin": {
+    "gatewayId": "",
+    "nodeId": "node_b200-01",
+    "via": [
+      "gw_fry-rust"
+    ]
+  },
+  "ownership": {
+    "actionAuthority": "origin-gateway",
+    "allocationState": "active",
+    "manager": "standalone"
+  },
+  "policy": {
+    "accountingTolerancePercent": 2,
+    "safetyMarginPercent": 5,
+    "telemetryIntervalSecs": 5
+  },
+  "producerEpoch": "ep_200-01a1",
+  "runtimes": [],
+  "schema": "iw.gpu-memory.report/1",
+  "sequence": 1842,
+  "truncated": false
+}

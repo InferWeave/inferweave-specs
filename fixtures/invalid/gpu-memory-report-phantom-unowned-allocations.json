@@ -1,0 +1,91 @@
+{
+  "allocations": [
+    {
+      "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_llama.cpp-0",
+      "category": "runtime-total",
+      "evictable": false,
+      "intended": "yes",
+      "meta": {
+        "processName": "llama-server"
+      },
+      "modelId": "qwen3.8-27b-modality-text-quant-q8_k_xl",
+      "observedAt": "2026-10-08T14:31:05Z",
+      "physical": {
+        "basis": "measured",
+        "bytes": 79456894976,
+        "note": "MiB resolution",
+        "source": "nvidia-smi-compute-apps"
+      },
+      "placementClass": "primary",
+      "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
+      "runtimeInstanceId": "node_b200-01-llama.cpp-0"
+    },
+    {
+      "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_whisper-0",
+      "category": "runtime-total",
+      "evictable": true,
+      "intended": "yes",
+      "meta": {
+        "processName": "python3"
+      },
+      "modelId": "whisper-large-v3-turbo",
+      "observedAt": "2026-10-08T14:31:05Z",
+      "physical": {
+        "basis": "measured",
+        "bytes": 4294967296,
+        "note": "MiB resolution",
+        "source": "nvidia-smi-compute-apps"
+      },
+      "placementClass": "opportunistic",
+      "reservation": {
+        "basis": "declared",
+        "bytes": 2147483648,
+        "source": "config"
+      },
+      "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
+      "runtimeInstanceId": "node_b200-01-whisper-0"
+    },
+    {
+      "allocationId": "al_node_b200-01_GPU-5f1e0c2a-_foreign-0",
+      "category": "foreign-process",
+      "evictable": false,
+      "intended": "unknown",
+      "meta": {
+        "processName": "python"
+      },
+      "observedAt": "2026-10-08T14:31:05Z",
+      "physical": {
+        "basis": "measured",
+        "bytes": 2147483648,
+        "note": "MiB resolution",
+        "source": "nvidia-smi-compute-apps"
+      },
+      "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01"
+    }
+  ],
+  "anomalies": [],
+  "gpus": [],
+  "observedAt": "2026-10-08T14:31:05Z",
+  "origin": {
+    "gatewayId": "",
+    "nodeId": "node_b200-01",
+    "via": [
+      "gw_fry-rust"
+    ]
+  },
+  "ownership": {
+    "actionAuthority": "origin-gateway",
+    "allocationState": "active",
+    "manager": "standalone"
+  },
+  "policy": {
+    "accountingTolerancePercent": 2,
+    "safetyMarginPercent": 5,
+    "telemetryIntervalSecs": 5
+  },
+  "producerEpoch": "ep_200-01a1",
+  "runtimes": [],
+  "schema": "iw.gpu-memory.report/1",
+  "sequence": 1842,
+  "truncated": false
+}
