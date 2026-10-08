@@ -183,7 +183,10 @@ operator-facing, never prompts, request contents or secrets).
   a **config-free floor** instead: the sender has held the node at least as long as it has held
   its latest copy from the adjacent hop, which its own `peers[via[len−2]].receivedAgeMs` states
   at `generatedAt`. The effective relay age is `max(relayAgeMs, that receivedAgeMs)`, and a
-  `relayAgeMs` below it is **forged**: the node is stale. (Example: `relayAgeMs` 0 with a peer
+  `relayAgeMs` more than **1 s** below it is **forged**: the node is stale. The 1 s slack covers
+  rounding: the two values are measured at different instants (the relay age when the node was
+  re-emitted, the peer age at `generatedAt`) and truncated to milliseconds separately, so a
+  producer is not required to take both from the same instant. (Example: `relayAgeMs` 0 with a peer
   `receivedAgeMs` of 29 s and a 29 s receipt is stale under a 30 s window, never fresh.) Deeper hops are judged transitively: **a relay
   MUST mark every GPU of a node stale (and drop its composed capacity) before re-serving it when
   its own upstream for that node was stale**, so a stale hop anywhere reaches the consumer as
@@ -399,10 +402,12 @@ not recognise (another producer's, a forged one), and a cursor issued before a p
 (a different `producerEpoch`) are all refused with `410 Gone`, and the consumer starts again from
 the first page. Pinned snapshots are bounded **without ever evicting a live cursor**: a
 first-page request within `pinShareSecs` (5) of the newest pinned snapshot shares it instead of
-pinning another; a pin is released only once it is older than `cursorTtlSecs`; and at most
-`maxPinnedSnapshots` pins are held, which defaults to `⌈cursorTtlSecs / pinShareSecs⌉` (12) so
-steady polling never reaches it. The memory bound is therefore `maxPinnedSnapshots ×` the
-32 MiB page-set cap (384 MiB at the defaults; a producer may lower `maxPinnedSnapshots` to fit
+pinning another; a pin is released once its age is **at least** `cursorTtlSecs`; and at most
+`maxPinnedSnapshots` pins are held, which defaults to `⌈cursorTtlSecs / pinShareSecs⌉ + 1`
+(13, one more to cover the pin being released and its replacement at the same instant) so
+steady polling never reaches it. A response that fits on one page carries no `nextCursor` and
+**creates no pin**. The memory bound is therefore `maxPinnedSnapshots ×` the 32 MiB page-set cap
+(416 MiB at the defaults; a producer may lower `maxPinnedSnapshots` to fit
 its memory). When every pin is still live and the cap is reached, a **new first-page** request is
 refused with `503 Service Unavailable` and `Retry-After` (seconds until the oldest pin expires);
 pages of already pinned snapshots are always served. `peers`
@@ -410,6 +415,16 @@ is repeated on **every** page (a consumer judges relay staleness per page); `res
 carried on the **first** page only. `nodeCount` is required whenever `nextCursor` is present.
 A consumer defers every cross-check between reservations and nodes (a reservation naming a GPU
 of a node on a later page) until all pages of the `sequence` are assembled.
+
+**Pinned pages carry their age.** A page served from a pin — or a first page sharing a pin up to
+`pinShareSecs` old — holds numbers as of `generatedAt`, while the consumer stamps receipt when it
+fetches the page, possibly `cursorTtlSecs` later. So every response carries `servedAgeMs`: the
+producer's own `now − generatedAt` when it served that response. A consumer's age of a paginated
+snapshot is measured from the receipt of its **first** page, plus that page's `servedAgeMs`; a
+node's age is that plus its `relayAgeMs`. A **paginated** response (one with `nextCursor` or
+`nodeCount`) without `servedAgeMs` cannot be judged and is stale. A single, unpaginated response
+without it is read as composed when served (`servedAgeMs` 0); producers send it on every
+response anyway.
 
 **Forward-compatibility budget.** The count bounds above apply to the lists and objects this
 version defines. Unknown members, unknown arrays and unknown objects (from a newer minor) are
@@ -571,7 +586,7 @@ per-model placement settings:
 "gpuMemory": {
   "mode": "observe",            // off | observe | shadow | on ; absent = off = today's behaviour
   "telemetryIntervalSecs": 5,   // node report interval
-  "cursorTtlSecs": 60, "pinShareSecs": 5, "maxPinnedSnapshots": 12,  // fleet pagination (§3.7)
+  "cursorTtlSecs": 60, "pinShareSecs": 5, "maxPinnedSnapshots": 13,  // fleet pagination (§3.7)
   "safetyMarginPercent": 5, "accountingTolerancePercent": 2, "staleAfterSecs": 30,
   "pressure": { "comfortableFactor": 2.0, "constrainedFactor": 1.0, "pressureFactor": 0.5,
                 "hysteresisFactor": 0.25, "consecutive": 3, "prediction": false, "minSamples": 24 },
@@ -701,7 +716,7 @@ contract. `scripts/validate_specs.py` rejects a non-canonical copy.
 a byte count beside `basis: unknown`, a logical reservation inside `categories` and inside
 `physical`, a GPU with known usage and no `unattributed`, schedulable capacity on a `not-owned`
 GPU or one with no authority, slot items under `runtime-total` support, a control character or
-a non-ASCII character in an id, a boolean `intended`, composed fields on an unowned node, an unanchored unowned node with runtimes, a `/` in a node, gateway or `attachedBy` id, a negative `relayAgeMs`, a page without `nodeCount`, a phantom node carrying allocations or anomalies, a measured quantity
+a non-ASCII character in an id, a boolean `intended`, composed fields on an unowned node, an unanchored unowned node with runtimes, a `/` in a node, gateway or `attachedBy` id, a negative `relayAgeMs`, a page without `nodeCount`, a phantom node carrying allocations or anomalies, a negative `servedAgeMs`, a measured quantity
 without bytes, and a decision recorded `succeeded` without a measured outcome or with an
 estimated one. The conformance scenario is `gpu_memory_accounting`
 (`conformance/manifest.yaml`). It belongs to its own optional profile `IW-GPU-MEMORY`, not to

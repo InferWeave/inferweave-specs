@@ -494,6 +494,7 @@ components:
         authority: { type: object, additionalProperties: true }
         nodes: { type: array, items: { type: object, additionalProperties: true } }
         nodeCount: { type: integer }
+        servedAgeMs: { type: integer, minimum: 0 }
         nextCursor: { type: string }
         reservations: { type: array, items: { type: object, additionalProperties: true } }
         peers: { type: array, items: { type: object, additionalProperties: true } }
