@@ -1122,6 +1122,18 @@
         "P5-T31",
         "P5-T32"
       ]
+    },
+    {
+      "id": "IW-NODEHW-001",
+      "name": "Hardware-only node registration, the optional versioned hardware report, the always-present assignments array and tokenless proof enrollment as one wire contract for the Rust and Go gateways (Protocol 1.1.0)",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "gateway+node",
+      "canonical_tasks": [
+        "P5-T33",
+        "P5-T34"
+      ]
     }
   ]
 }

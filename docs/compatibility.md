@@ -45,3 +45,11 @@ currently recorded `unknown` until a conforming reference implementation and gat
 Any protocol-visible change requires a specs PR (schemas, docs, examples, fixtures, conformance
 tests), a compatibility classification, changelog update, reference-implementation update, and
 downstream gateway validation. The spec change merges before or with the implementation.
+
+## Hardware-only registration (1.1.0)
+
+`specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` adds an optional `hardware` member to
+`POST /v1/node/register` and an always-present `assignments: []` to its response. An older node
+never sends `hardware` and ignores `assignments`; an older gateway ignores `hardware` and still
+refuses a hardware-only body under its existing checks. A gateway stores `hardware` verbatim and
+never uses it for routing or authentication.

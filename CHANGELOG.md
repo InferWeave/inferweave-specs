@@ -67,6 +67,36 @@ counted physical memory in `reserved` was following ambiguous text and must be c
 - The stale "only common and errors are published" sentence of spec 45
   is corrected.
 
+### Node join: hardware-only registration and tokenless enrollment (added to 1.1.0, unreleased)
+
+**Compatibility classification: minor, backwards-compatible.** `v1.1.0` is still `owed` in
+`conformance/release-manifest.yaml`, so this lands in 1.1.0 rather than a new version.
+
+- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` and decision record
+  `decisions/2026-10-08-open-proof-enrollment-and-hardware-registration.md` (feature
+  `IW-NODEHW-001`, tasks `P5-T33`, `P5-T34`, both `owed`).
+- `POST /v1/node/register` gains one optional member `hardware` (versioned object, stored
+  verbatim, informational only; refused with `400 bad_request` when not an object, without an
+  integer `version`, or over 65536 compact bytes).
+- A registration with empty `models`, `endpoint` and `deployment` is valid: recorded, never
+  routable, never dialled.
+- The register response gains an always-present `assignments: []`.
+- Tokenless enrollment (`/v1/node/key`, `/challenge`, `/proof`) is specified on the wire, with the
+  exact signed transcript and known answers; open registration at the lowest trust tier is
+  permitted and its tension with identity scarcity is recorded.
+- Tokenless proof enrollment grants only the role `node`; other roles are refused with
+  `400 bad_request` at `/v1/node/challenge`. Caps on pending challenges and keys are permitted
+  implementation limits (a `429` is allowed).
+- A credential earned only by tokenless proof may register hardware-only and heartbeat, but a
+  non-empty endpoint or any models is `403 forbidden`, and a proof never replaces an
+  operator-issued credential (`403`); only operator-issued enrollment makes a node routable.
+- Schemas `requests/node-hardware.json`, `requests/node-hardware-report.json`; fixtures; vectors
+  `conformance/node-join-vectors.json`; reference model `conformance/node_join.py`; manifest
+  scenarios `node_enrollment`, `hardware_registration`.
+- Specification gap recorded, not a correction: the repository never defined the `/v1/node/*`
+  bodies, so no earlier text is changed.
+
+
 ## 1.0.0 — initial protocol (in progress)
 
 The first Protocol v1 wire contract. Formalizes the scheduler-neutral vocabulary of

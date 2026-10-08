@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/node-hardware-report.json",
+  "title": "NodeHardwareReport v1 (producer rule)",
+  "description": "The version 1 layout a node SHOULD send as `hardware` in POST /v1/node/register (specs/47 section 3.2). This is the producer contract; gateways enforce only node-hardware.json. Informational: never used for routing or authentication. Unknown members are allowed so the layout can grow without a version bump.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["version"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "hostname": { "type": "string" },
+    "machineId": { "type": "string" },
+    "role": { "type": "string" },
+    "kernel": { "type": "string" },
+    "os": { "type": "string" },
+    "cpu": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "model": { "type": "string" },
+        "threads": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "memBytes": { "type": "integer", "minimum": 0 },
+    "disks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "name": { "type": "string" },
+          "sizeBytes": { "type": "integer", "minimum": 0 },
+          "rotational": { "type": "boolean" }
+        }
+      }
+    },
+    "nics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "name": { "type": "string" },
+          "speedMbps": { "type": ["integer", "null"], "minimum": 0, "description": "null when the link speed is unknown." }
+        }
+      }
+    },
+    "gpus": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "vendor": { "type": "string" },
+          "index": { "type": "integer", "minimum": 0 },
+          "uuid": { "type": "string" },
+          "model": { "type": "string" },
+          "vramBytes": { "type": "integer", "minimum": 0 },
+          "driver": { "type": "string" },
+          "pciId": { "type": "string" }
+        }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  }
+}

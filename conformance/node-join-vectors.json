@@ -1,0 +1,756 @@
+{
+  "$comment": "Spec 47 conformance vectors. HTTP-level cases are replayed by each gateway's own test suite against POST /v1/node/register with a credential it obtained itself (substitute ${CREDENTIAL}); conformance/runner.py checks they are self-consistent and recomputes the known answers.",
+  "spec": "specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md",
+  "version": 1,
+  "baselineRegister": {
+    "nodeId": "node_hw-lab-01",
+    "role": "node",
+    "credential": "${CREDENTIAL}",
+    "endpoint": "",
+    "models": [],
+    "deployment": "",
+    "vramBytes": 0,
+    "kvBytes": 0,
+    "kvBytesPerToken": 0,
+    "gpuIds": []
+  },
+  "registerCases": [
+    {
+      "id": "hw-only-with-hardware",
+      "scenario": "hardware_registration",
+      "description": "(a) endpoint, models and deployment empty, full hardware object: accepted, recorded, not routable",
+      "hardware": {
+        "version": 1,
+        "hostname": "lab-gpu-07",
+        "machineId": "3f1c0a9e5b7d4c2e8a6f1d0b9c8e7a65",
+        "role": "node",
+        "kernel": "6.8.0-138-generic",
+        "os": "Ubuntu 24.04.2 LTS",
+        "cpu": {
+          "model": "AMD EPYC 7413 24-Core Processor",
+          "threads": 48
+        },
+        "memBytes": 270582939648,
+        "disks": [
+          {
+            "name": "nvme0n1",
+            "sizeBytes": 1920383410176,
+            "rotational": false
+          }
+        ],
+        "nics": [
+          {
+            "name": "eno1",
+            "speedMbps": 10000
+          },
+          {
+            "name": "ib0",
+            "speedMbps": null
+          }
+        ],
+        "gpus": [
+          {
+            "vendor": "nvidia",
+            "index": 0,
+            "uuid": "GPU-0f4c2b1a-1111-2222-3333-444455556666",
+            "model": "NVIDIA GeForce RTX 4090",
+            "vramBytes": 25757220864,
+            "driver": "570.133.20",
+            "pciId": "0000:41:00.0"
+          }
+        ],
+        "notes": [
+          "no container runtime found"
+        ]
+      },
+      "expect": {
+        "status": 200,
+        "hardwareOnly": true,
+        "routable": false,
+        "assignments": [],
+        "connectionId": "any-non-empty-string",
+        "hardwareStored": true
+      }
+    },
+    {
+      "id": "hw-only-without-hardware",
+      "scenario": "hardware_registration",
+      "description": "hardware-only registration may omit hardware",
+      "expect": {
+        "status": 200,
+        "hardwareOnly": true,
+        "routable": false,
+        "assignments": [],
+        "connectionId": "any-non-empty-string",
+        "hardwareStored": false
+      }
+    },
+    {
+      "id": "hw-only-null-hardware",
+      "scenario": "hardware_registration",
+      "description": "(f) JSON null is treated as absent",
+      "hardwareJson": "null",
+      "expect": {
+        "status": 200,
+        "hardwareOnly": true,
+        "routable": false,
+        "assignments": [],
+        "connectionId": "any-non-empty-string",
+        "hardwareStored": false
+      }
+    },
+    {
+      "id": "hw-unknown-keys-kept",
+      "scenario": "hardware_registration",
+      "description": "unknown top-level and nested keys are stored verbatim (semantic JSON equality)",
+      "hardware": {
+        "version": 2,
+        "hostname": "lab-gpu-07",
+        "machineId": "3f1c0a9e5b7d4c2e8a6f1d0b9c8e7a65",
+        "role": "node",
+        "kernel": "6.8.0-138-generic",
+        "os": "Ubuntu 24.04.2 LTS",
+        "cpu": {
+          "model": "AMD EPYC 7413 24-Core Processor",
+          "threads": 48,
+          "flags": [
+            "avx2"
+          ]
+        },
+        "memBytes": 270582939648,
+        "disks": [
+          {
+            "name": "nvme0n1",
+            "sizeBytes": 1920383410176,
+            "rotational": false
+          }
+        ],
+        "nics": [
+          {
+            "name": "eno1",
+            "speedMbps": 10000
+          },
+          {
+            "name": "ib0",
+            "speedMbps": null
+          }
+        ],
+        "gpus": [
+          {
+            "vendor": "nvidia",
+            "index": 0,
+            "uuid": "GPU-0f4c2b1a-1111-2222-3333-444455556666",
+            "model": "NVIDIA GeForce RTX 4090",
+            "vramBytes": 25757220864,
+            "driver": "570.133.20",
+            "pciId": "0000:41:00.0"
+          }
+        ],
+        "notes": [
+          "no container runtime found"
+        ],
+        "futureTop": {
+          "a": [
+            1,
+            2,
+            {
+              "b": null
+            }
+          ]
+        }
+      },
+      "expect": {
+        "status": 200,
+        "hardwareOnly": true,
+        "routable": false,
+        "assignments": [],
+        "connectionId": "any-non-empty-string",
+        "hardwareStored": true,
+        "storedEqualsSent": true
+      }
+    },
+    {
+      "id": "hw-at-limit",
+      "scenario": "hardware_registration",
+      "description": "compact serialisation of exactly 65536 bytes is accepted",
+      "hardwareGen": {
+        "base": {
+          "version": 1
+        },
+        "padCompactBytesTo": 65536
+      },
+      "expect": {
+        "status": 200,
+        "hardwareOnly": true,
+        "routable": false,
+        "assignments": [],
+        "connectionId": "any-non-empty-string",
+        "hardwareStored": true
+      }
+    },
+    {
+      "id": "hw-oversize-by-one",
+      "scenario": "hardware_oversize",
+      "description": "(b) compact serialisation of 65537 bytes is refused",
+      "hardwareGen": {
+        "base": {
+          "version": 1
+        },
+        "padCompactBytesTo": 65537
+      },
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-oversize",
+      "scenario": "hardware_oversize",
+      "description": "(b) compact serialisation of 70000 bytes is refused; refusal is transactional, the node is not admitted",
+      "hardwareGen": {
+        "base": {
+          "version": 1,
+          "hostname": "lab-gpu-07",
+          "machineId": "3f1c0a9e5b7d4c2e8a6f1d0b9c8e7a65",
+          "role": "node",
+          "kernel": "6.8.0-138-generic",
+          "os": "Ubuntu 24.04.2 LTS",
+          "cpu": {
+            "model": "AMD EPYC 7413 24-Core Processor",
+            "threads": 48
+          },
+          "memBytes": 270582939648,
+          "disks": [
+            {
+              "name": "nvme0n1",
+              "sizeBytes": 1920383410176,
+              "rotational": false
+            }
+          ],
+          "nics": [
+            {
+              "name": "eno1",
+              "speedMbps": 10000
+            },
+            {
+              "name": "ib0",
+              "speedMbps": null
+            }
+          ],
+          "gpus": [
+            {
+              "vendor": "nvidia",
+              "index": 0,
+              "uuid": "GPU-0f4c2b1a-1111-2222-3333-444455556666",
+              "model": "NVIDIA GeForce RTX 4090",
+              "vramBytes": 25757220864,
+              "driver": "570.133.20",
+              "pciId": "0000:41:00.0"
+            }
+          ],
+          "notes": [
+            "no container runtime found"
+          ]
+        },
+        "padCompactBytesTo": 70000
+      },
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request",
+        "nodeAdmitted": false
+      }
+    },
+    {
+      "id": "hw-not-object-array",
+      "scenario": "hardware_not_object",
+      "description": "(c) hardware that is not a JSON object is refused",
+      "hardwareJson": "[]",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-not-object-array-of-object",
+      "scenario": "hardware_not_object",
+      "description": "(c) hardware that is not a JSON object is refused",
+      "hardwareJson": "[{\"version\":1}]",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-not-object-string",
+      "scenario": "hardware_not_object",
+      "description": "(c) hardware that is not a JSON object is refused",
+      "hardwareJson": "\"x86_64\"",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-not-object-number",
+      "scenario": "hardware_not_object",
+      "description": "(c) hardware that is not a JSON object is refused",
+      "hardwareJson": "7",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-not-object-true",
+      "scenario": "hardware_not_object",
+      "description": "(c) hardware that is not a JSON object is refused",
+      "hardwareJson": "true",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-version-missing",
+      "scenario": "hardware_version",
+      "description": "(d) hardware without an integer version is refused",
+      "hardwareJson": "{\"hostname\":\"lab-gpu-07\"}",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-version-string",
+      "scenario": "hardware_version",
+      "description": "(d) hardware without an integer version is refused",
+      "hardwareJson": "{\"version\":\"1\"}",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-version-fraction",
+      "scenario": "hardware_version",
+      "description": "(d) hardware without an integer version is refused",
+      "hardwareJson": "{\"version\":1.0}",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-version-exponent",
+      "scenario": "hardware_version",
+      "description": "(d) hardware without an integer version is refused",
+      "hardwareJson": "{\"version\":1e0}",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-version-null",
+      "scenario": "hardware_version",
+      "description": "(d) hardware without an integer version is refused",
+      "hardwareJson": "{\"version\":null}",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-version-bool",
+      "scenario": "hardware_version",
+      "description": "(d) hardware without an integer version is refused",
+      "hardwareJson": "{\"version\":true}",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-version-beyond-i64",
+      "scenario": "hardware_version",
+      "description": "(d) hardware without an integer version is refused",
+      "hardwareJson": "{\"version\":9223372036854775808}",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-version-object",
+      "scenario": "hardware_version",
+      "description": "(d) hardware without an integer version is refused",
+      "hardwareJson": "{\"version\":{\"major\":1}}",
+      "expect": {
+        "status": 400,
+        "errorCode": "bad_request"
+      }
+    },
+    {
+      "id": "hw-version-any-integer",
+      "scenario": "hardware_version",
+      "description": "any JSON integer in the signed 64-bit range is accepted, so a future version 2 or a test value 0 still registers",
+      "hardwareJson": "{\"version\":0}",
+      "expect": {
+        "status": 200,
+        "hardwareOnly": true,
+        "routable": false,
+        "assignments": [],
+        "connectionId": "any-non-empty-string",
+        "hardwareStored": true
+      }
+    },
+    {
+      "id": "older-node-no-hardware",
+      "scenario": "backwards_compatibility",
+      "description": "(e) an older node registers with endpoint and models and no hardware; unchanged except the always-present assignments",
+      "request": {
+        "nodeId": "node_old-1",
+        "endpoint": "127.0.0.1:9101",
+        "deployment": "dep_9f8e7d6c",
+        "models": [
+          {
+            "model": "qwen3-8b-modality-text-quant-q4_k_m",
+            "contextSupported": 131072,
+            "maxContextTokens": 32768,
+            "engine": "llama.cpp",
+            "backend": "cuda",
+            "slots": 1,
+            "vramBytes": 100
+          }
+        ],
+        "vramBytes": 100000000,
+        "kvBytes": 10000000,
+        "kvBytesPerToken": 10,
+        "gpuIds": [
+          "iw-gpu-0"
+        ]
+      },
+      "expect": {
+        "status": 200,
+        "hardwareOnly": false,
+        "routable": true,
+        "assignments": [],
+        "connectionId": "any-non-empty-string",
+        "hardwareStored": false
+      }
+    },
+    {
+      "id": "routable-node-with-hardware",
+      "scenario": "hardware_registration",
+      "description": "a routable node may also send hardware; routing is unaffected",
+      "hardware": {
+        "version": 1,
+        "hostname": "lab-gpu-07",
+        "machineId": "3f1c0a9e5b7d4c2e8a6f1d0b9c8e7a65",
+        "role": "node",
+        "kernel": "6.8.0-138-generic",
+        "os": "Ubuntu 24.04.2 LTS",
+        "cpu": {
+          "model": "AMD EPYC 7413 24-Core Processor",
+          "threads": 48
+        },
+        "memBytes": 270582939648,
+        "disks": [
+          {
+            "name": "nvme0n1",
+            "sizeBytes": 1920383410176,
+            "rotational": false
+          }
+        ],
+        "nics": [
+          {
+            "name": "eno1",
+            "speedMbps": 10000
+          },
+          {
+            "name": "ib0",
+            "speedMbps": null
+          }
+        ],
+        "gpus": [
+          {
+            "vendor": "nvidia",
+            "index": 0,
+            "uuid": "GPU-0f4c2b1a-1111-2222-3333-444455556666",
+            "model": "NVIDIA GeForce RTX 4090",
+            "vramBytes": 25757220864,
+            "driver": "570.133.20",
+            "pciId": "0000:41:00.0"
+          }
+        ],
+        "notes": [
+          "no container runtime found"
+        ]
+      },
+      "request": {
+        "nodeId": "node_old-2",
+        "endpoint": "127.0.0.1:9101",
+        "deployment": "dep_9f8e7d6c",
+        "models": [
+          {
+            "model": "qwen3-8b-modality-text-quant-q4_k_m",
+            "contextSupported": 131072,
+            "maxContextTokens": 32768,
+            "engine": "llama.cpp",
+            "backend": "cuda",
+            "slots": 1,
+            "vramBytes": 100
+          }
+        ],
+        "vramBytes": 100000000,
+        "kvBytes": 10000000,
+        "kvBytesPerToken": 10,
+        "gpuIds": [
+          "iw-gpu-0"
+        ]
+      },
+      "expect": {
+        "status": 200,
+        "hardwareOnly": false,
+        "routable": true,
+        "assignments": [],
+        "connectionId": "any-non-empty-string",
+        "hardwareStored": true
+      }
+    }
+  ],
+  "hardwareSample": {
+    "version": 1,
+    "hostname": "lab-gpu-07",
+    "machineId": "3f1c0a9e5b7d4c2e8a6f1d0b9c8e7a65",
+    "role": "node",
+    "kernel": "6.8.0-138-generic",
+    "os": "Ubuntu 24.04.2 LTS",
+    "cpu": {
+      "model": "AMD EPYC 7413 24-Core Processor",
+      "threads": 48
+    },
+    "memBytes": 270582939648,
+    "disks": [
+      {
+        "name": "nvme0n1",
+        "sizeBytes": 1920383410176,
+        "rotational": false
+      }
+    ],
+    "nics": [
+      {
+        "name": "eno1",
+        "speedMbps": 10000
+      },
+      {
+        "name": "ib0",
+        "speedMbps": null
+      }
+    ],
+    "gpus": [
+      {
+        "vendor": "nvidia",
+        "index": 0,
+        "uuid": "GPU-0f4c2b1a-1111-2222-3333-444455556666",
+        "model": "NVIDIA GeForce RTX 4090",
+        "vramBytes": 25757220864,
+        "driver": "570.133.20",
+        "pciId": "0000:41:00.0"
+      }
+    ],
+    "notes": [
+      "no container runtime found"
+    ]
+  },
+  "enrollmentKnownAnswers": {
+    "seedHex": "9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60",
+    "publicKeyHex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+    "seedSource": "RFC 8032 section 7.1, TEST 1 (secret key and public key)",
+    "generation": [
+      "python3 scratchpad mkvec.py: transcript from conformance/node_join.py proof_transcript; signature from the RFC 8032 reference Ed25519 in the same file (deterministic).",
+      "Cross-checked with OpenSSL 3.0.13: prefix the seed with the PKCS#8 header 302e020100300506032b657004220420, `openssl pkey -inform DER -in seed.pk8 -out key.pem`, write the transcript bytes to a file, `openssl pkeyutl -sign -inkey key.pem -rawin -in transcript.bin | xxd -p -c 200`; output equals signatureHex for both cases.",
+      "Cross-checked against the reference implementation (InferWeave/inferweave @2c98035): a throwaway binary calling iw_core::signature::proof_transcript and ed25519_dalek SigningKey::sign printed identical transcript and signature hex for both cases."
+    ],
+    "nonceNote": "nonce is above 2^53 with the high byte set: parse it as an unsigned 64-bit integer, never as a float",
+    "cases": [
+      {
+        "id": "role-claim",
+        "challengeId": "00112233445566778899aabbccddeeff",
+        "nonce": 17375808098319191535,
+        "claim": {
+          "role": "node",
+          "model": null,
+          "contextClass": null,
+          "resourceClaim": null
+        },
+        "transcriptHex": "0000001669772d70726f6f662d656e726f6c6c6d656e742d7631000000203030313132323333343435353636373738383939616162626363646465656666f123456789abcdef000000046e6f6465000000",
+        "signatureHex": "171688ee458955d37f5ae88c19ee007d6ef1e770021e87a3093c5b52bb02283800488d4058ce97a27c2b80be1b39dab0f6e68c873e814caf693dfbb692403a0b"
+      },
+      {
+        "id": "model-claim",
+        "challengeId": "00112233445566778899aabbccddeeff",
+        "nonce": 17375808098319191535,
+        "claim": {
+          "role": "node",
+          "model": "qwen3.8-27b",
+          "contextClass": "c128k",
+          "resourceClaim": "vram=48g"
+        },
+        "transcriptHex": "0000001669772d70726f6f662d656e726f6c6c6d656e742d7631000000203030313132323333343435353636373738383939616162626363646465656666f123456789abcdef000000046e6f6465010000000b7177656e332e382d3237620100000005633132386b01000000087672616d3d343867",
+        "signatureHex": "bbd6272d51de029bfab92c95419f909d0a040ba2204e08ece9eee7840c38a22cf220289aece2c38314c8d8ba0f4dec640e6ac6764d756614b9034620a020db0f"
+      }
+    ]
+  },
+  "enrollmentRoleCases": {
+    "$comment": "After POST /v1/node/key with `key` (unauthenticated), POST /v1/node/challenge with `challenge`. Each case uses a fresh nodeId on a fresh gateway or a gateway under its cap.",
+    "key": {
+      "nodeId": "node_role-1",
+      "publicKey": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+    },
+    "cases": [
+      {
+        "id": "challenge-role-node",
+        "challenge": {
+          "nodeId": "node_role-1",
+          "role": "node"
+        },
+        "expect": {
+          "status": 200,
+          "claimRole": "node"
+        }
+      },
+      {
+        "id": "challenge-role-gateway",
+        "challenge": {
+          "nodeId": "node_role-1",
+          "role": "gateway"
+        },
+        "expect": {
+          "status": 400,
+          "errorCode": "bad_request"
+        }
+      },
+      {
+        "id": "challenge-role-edge",
+        "challenge": {
+          "nodeId": "node_role-1",
+          "role": "edge"
+        },
+        "expect": {
+          "status": 400,
+          "errorCode": "bad_request"
+        }
+      },
+      {
+        "id": "challenge-role-empty",
+        "challenge": {
+          "nodeId": "node_role-1",
+          "role": ""
+        },
+        "expect": {
+          "status": 400,
+          "errorCode": "bad_request"
+        }
+      }
+    ]
+  },
+  "enrollmentTrustCases": {
+    "$comment": "credentialOrigin is how the node earned the credential it registers with: `proof` = tokenless /v1/node/proof only; `code` = operator-issued enrollment code on /v1/node/enroll. `register` overlays the baselineRegister (hardware-only). The proof-over-operator-id case instead POSTs a valid, correctly signed proof for an id whose credential came from a code.",
+    "cases": [
+      {
+        "id": "tokenless-with-endpoint",
+        "credentialOrigin": "proof",
+        "register": {
+          "endpoint": "127.0.0.1:9101",
+          "deployment": "dep_9f8e7d6c"
+        },
+        "expect": {
+          "status": 403,
+          "errorCode": "forbidden",
+          "nodeAdmitted": false
+        }
+      },
+      {
+        "id": "tokenless-with-models",
+        "credentialOrigin": "proof",
+        "register": {
+          "endpoint": "127.0.0.1:9101",
+          "deployment": "dep_9f8e7d6c",
+          "vramBytes": 100000000,
+          "kvBytes": 10000000,
+          "kvBytesPerToken": 10,
+          "gpuIds": [
+            "iw-gpu-0"
+          ],
+          "models": [
+            {
+              "model": "qwen3-8b-modality-text-quant-q4_k_m",
+              "contextSupported": 131072,
+              "maxContextTokens": 32768,
+              "engine": "llama.cpp",
+              "backend": "cuda",
+              "slots": 1,
+              "vramBytes": 100
+            }
+          ]
+        },
+        "expect": {
+          "status": 403,
+          "errorCode": "forbidden",
+          "nodeAdmitted": false
+        }
+      },
+      {
+        "id": "tokenless-hardware-only",
+        "credentialOrigin": "proof",
+        "register": {},
+        "expect": {
+          "status": 200,
+          "hardwareOnly": true,
+          "routable": false
+        }
+      },
+      {
+        "id": "code-enrolled-with-endpoint",
+        "credentialOrigin": "code",
+        "register": {
+          "endpoint": "127.0.0.1:9101",
+          "deployment": "dep_9f8e7d6c",
+          "vramBytes": 100000000,
+          "kvBytes": 10000000,
+          "kvBytesPerToken": 10,
+          "gpuIds": [
+            "iw-gpu-0"
+          ],
+          "models": [
+            {
+              "model": "qwen3-8b-modality-text-quant-q4_k_m",
+              "contextSupported": 131072,
+              "maxContextTokens": 32768,
+              "engine": "llama.cpp",
+              "backend": "cuda",
+              "slots": 1,
+              "vramBytes": 100
+            }
+          ]
+        },
+        "expect": {
+          "status": 200,
+          "hardwareOnly": false,
+          "routable": true
+        }
+      },
+      {
+        "id": "proof-over-operator-enrolled-id",
+        "credentialOrigin": "code",
+        "proofAttempt": true,
+        "expect": {
+          "status": 403,
+          "errorCode": "forbidden",
+          "operatorCredentialStillWorks": true
+        }
+      }
+    ]
+  }
+}

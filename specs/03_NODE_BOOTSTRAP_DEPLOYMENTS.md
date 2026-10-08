@@ -48,6 +48,11 @@ Distributing a shared bootstrap token to every joining node makes the token the 
 every holder is equivalent regardless of what it can actually do. Proof binds the credential
 to measured capability instead.
 
+The wire shapes of `/v1/node/key`, `/v1/node/challenge` and `/v1/node/proof`, the exact signed
+transcript, the error mapping and the open registration policy are defined by
+`specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md`; this section stays the design statement.
+Spec 47 also defines hardware-only registration (a node recorded without being routable).
+
 ### Serviceability gate
 
 `run admission smoke test` means a real request traversing the full authorization and

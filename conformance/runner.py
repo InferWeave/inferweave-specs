@@ -6,6 +6,8 @@ Validates conformance fixtures against the canonical JSON Schemas:
 - every fixture under fixtures/invalid/ must fail its schema
 - every fixture under fixtures/federation/ must validate against its schema
 - every pinned contract under contracts/gpu-memory/ must validate as a fleet snapshot
+- conformance/node-join-vectors.json (spec 47) must agree with the reference model in
+  conformance/node_join.py, and its enrollment known answers must be reproducible from the seed
 
 The runner is intentionally strict: a valid fixture that stops validating, or an invalid
 fixture that starts validating, fails the run.
@@ -17,6 +19,8 @@ import json, sys
 from jsonschema import Draft7Validator, RefResolver
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "conformance"))
+import node_join  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
 # fixture basename -> schema rel path (relative to schemas/v1)
@@ -45,6 +49,8 @@ MAP = {
     "request": "requests/request.json",
     "registration": "requests/registration.json",
     "heartbeat": "requests/heartbeat.json",
+    "node-hardware": "requests/node-hardware.json",
+    "node-hardware-report": "requests/node-hardware-report.json",
     "event": "events/event.json",
     "metric": "events/metric.json",
     "job": "jobs/job.json",
@@ -143,8 +149,59 @@ def check_openapi_refs():
     return True
 
 
+def check_node_join_vectors():
+    """Spec 47: the register vectors agree with the reference model; the known answers recompute."""
+    doc = json.loads((ROOT / "conformance" / "node-join-vectors.json").read_text())
+    ok = True
+    seen = set()
+    for case in doc["registerCases"]:
+        if case["id"] in seen:
+            print(f"FAIL  node-join vector {case['id']}: duplicate id")
+            ok = False
+        seen.add(case["id"])
+        got = node_join.register_decision(doc["baselineRegister"], case)
+        for key, want in case["expect"].items():
+            if key in ("nodeAdmitted", "storedEqualsSent"):
+                continue  # asserted by the gateway's own HTTP-level replay, not modelled here
+            if got.get(key) != want:
+                print(f"FAIL  node-join vector {case['id']}: {key} expected {want!r}, reference model gives {got.get(key)!r}")
+                ok = False
+    required = {
+        "hw-only-with-hardware", "hw-oversize", "hw-not-object-array", "hw-version-missing",
+        "older-node-no-hardware",
+    }
+    for missing in sorted(required - seen):
+        print(f"FAIL  node-join vectors: required case {missing} is missing")
+        ok = False
+    roles = doc["enrollmentRoleCases"]["cases"]
+    if {c["expect"]["status"] for c in roles} != {200, 400}:
+        print("FAIL  node-join role cases must cover both 200 and 400")
+        ok = False
+    for c in roles:
+        if node_join.challenge_decision(c["challenge"]) != c["expect"]:
+            print(f"FAIL  node-join role case {c['id']}: reference model disagrees")
+            ok = False
+    trust = doc["enrollmentTrustCases"]["cases"]
+    for c in trust:
+        if node_join.trust_decision(c) != c["expect"]:
+            print(f"FAIL  node-join trust case {c['id']}: reference model disagrees")
+            ok = False
+    if len(trust) < 5:
+        print("FAIL  node-join trust cases: the five required cases are missing")
+        ok = False
+    hw_errors = node_join.check_hardware(doc["hardwareSample"])
+    if hw_errors:
+        print(f"FAIL  node-join hardwareSample: {hw_errors}")
+        ok = False
+    for error in node_join.check_known_answers(doc["enrollmentKnownAnswers"]):
+        print(f"FAIL  node-join known answer: {error}")
+        ok = False
+    return ok
+
+
 def main():
     failures = 0
+    failures += 0 if check_node_join_vectors() else 1
     for d in ("valid", "federation", "invalid"):
         fixtures = sorted((ROOT / "fixtures" / d).glob("*.json"))
         if not fixtures:
@@ -164,7 +221,7 @@ def main():
     if failures:
         print(f"CONFORMANCE FAILED: {failures} check(s) did not behave as expected")
         sys.exit(1)
-    print("OK: conformance fixtures validate and OpenAPI refs resolve")
+    print("OK: conformance fixtures validate, node-join vectors agree and OpenAPI refs resolve")
 
 
 if __name__ == "__main__":

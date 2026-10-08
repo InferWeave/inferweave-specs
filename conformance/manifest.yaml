@@ -18,13 +18,15 @@ scenarios:
   snapshot_consistency
   backwards_compatibility
   gpu_memory_accounting
+  node_enrollment
+  hardware_registration
 profiles:
   IW-DATA:
     required_scenarios: [schema_validation, protocol_discovery, feature_negotiation]
   IW-NODE:
     required_scenarios: [registration, heartbeat, topology, capability_advertisement]
   IW-GATEWAY:
-    required_scenarios: [registration, heartbeat, topology, capability_advertisement, retries, errors, aliases]
+    required_scenarios: [registration, heartbeat, topology, capability_advertisement, retries, errors, aliases, node_enrollment, hardware_registration]
   IW-FEDERATION:
     required_scenarios: [federation, snapshot_consistency, events]
   IW-OBSERVABILITY:
@@ -34,4 +36,4 @@ profiles:
   IW-GPU-MEMORY:
     required_scenarios: [schema_validation, feature_negotiation, capability_advertisement, gpu_memory_accounting]
   IW-FULL:
-    required_scenarios: [schema_validation, protocol_discovery, feature_negotiation, registration, heartbeat, topology, events, retries, errors, aliases, federation, capability_advertisement, snapshot_consistency, backwards_compatibility]
+    required_scenarios: [schema_validation, protocol_discovery, feature_negotiation, registration, heartbeat, topology, events, retries, errors, aliases, federation, capability_advertisement, snapshot_consistency, backwards_compatibility, node_enrollment, hardware_registration]

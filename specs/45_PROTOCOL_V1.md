@@ -226,6 +226,11 @@ Nodes and gateways SHALL register using a common registration structure:
 Registrations support initial registration, re-registration, reconnect, metadata change,
 capability change, and graceful unregister.
 
+The generic envelope above is not the `POST /v1/node/register` request body. That node-control
+wire, its optional `hardware` report, hardware-only registration, the `assignments` response
+member and tokenless proof enrollment are defined by
+`specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` (additive, Protocol 1.1.0).
+
 ## Heartbeats and liveness
 
 Heartbeat messages SHALL report at minimum `source_id`, `sequence`, `timestamp`, `health`:
@@ -733,7 +738,9 @@ Define conformance profiles: `IW-DATA`, `IW-NODE`, `IW-GATEWAY`, `IW-FEDERATION`
 administrative feature. `conformance/manifest.yaml` declares profiles and their required
 scenarios; `conformance/scenarios/` holds the reusable tests (schema validation, protocol
 discovery, feature negotiation, registration, heartbeat, topology, events, retries, errors,
-aliases, federation, capability advertisement, snapshot consistency, backwards compatibility).
+aliases, federation, capability advertisement, snapshot consistency, backwards compatibility,
+and, from 1.1.0, `gpu_memory_accounting` (spec 46), `node_enrollment` and `hardware_registration`
+(spec 47)).
 
 ## Compatibility matrix
 
