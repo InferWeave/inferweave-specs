@@ -194,6 +194,24 @@
       "items": {
         "$ref": "gpu-memory-anomaly.json"
       }
+    },
+    "allocationsDropped": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Allocations the producer dropped to fit a carrier; only on a truncated report. A gap between attributed and the listed allocations is explainable only by a count above zero."
+    },
+    "runtimesDropped": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Runtimes dropped to fit a carrier; only on a truncated report."
+    },
+    "anomaliesDropped": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Anomalies dropped to fit a carrier; only on a truncated report."
     }
   },
   "required": [
@@ -291,6 +309,37 @@
             "maxItems": 0
           }
         }
+      }
+    },
+    {
+      "if": {
+        "anyOf": [
+          {
+            "required": [
+              "allocationsDropped"
+            ]
+          },
+          {
+            "required": [
+              "runtimesDropped"
+            ]
+          },
+          {
+            "required": [
+              "anomaliesDropped"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "properties": {
+          "truncated": {
+            "const": true
+          }
+        },
+        "required": [
+          "truncated"
+        ]
       }
     }
   ]

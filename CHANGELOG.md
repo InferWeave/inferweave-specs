@@ -58,6 +58,10 @@ counted physical memory in `reserved` was following ambiguous text and must be c
   (reference: `FleetAssembler`); a response served from a pin MUST carry `servedAgeMs`.
   A repeated key refuses the object at any depth (unknown and `meta` keys included);
   `relayAgeMs` exists only on relayed nodes.
+- Round-9 follow-ups: truncated reports count what they dropped (`allocationsDropped`,
+  `runtimesDropped`, `anomaliesDropped`); an unexplained attribution gap is refused and an
+  explained one is shown as unverified; a truncated report under half its carrier cap is suspect;
+  duplicate nodes within one page are malformed; Go needs a token pre-scan for repeated keys.
 - Conformance: new optional profile `IW-GPU-MEMORY` with scenario `gpu_memory_accounting`;
   `IW-FULL` is unchanged.
 - The stale "only common and errors are published" sentence of spec 45

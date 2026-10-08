@@ -51,7 +51,9 @@ recomputing it.
 6. **One key, one value.** An object that repeats a key — a defined field, an unknown member or a
    `meta` key alike, at any depth — is malformed and is refused as a whole
    (a decoder that keeps the first or last copy MUST NOT be relied on; Go `encoding/json` keeps
-   the last, Rust `serde` refuses).
+   the last, Rust `serde` refuses). A decoder that cannot see repeated keys — Go
+   `encoding/json` among them — needs a token-level pre-scan of the body (for example with
+   `json.Decoder.Token`) before decoding.
 7. **Field names and enum values are case-sensitive.** A key that differs only in case
    (`ResourceId`) is not the field: a consumer whose decoder matches keys case-insensitively
    (Go `encoding/json`) MUST refuse or ignore case variants rather than bind them.
@@ -245,8 +247,18 @@ with every item naming them). Its aggregate figures — `attributed`, `unattribu
 `byClass`, `physical` — stay authoritative and are never recomputed from the remaining lists, so
 the rule "`attributed` equals the sum of the GPU's allocations" becomes "the allocations that
 remain do not exceed `attributed`". Every other rule holds for what remains: a kept item still
-names a GPU the report lists (truncation never leaves a dangling reference), and every bound,
-basis and capacity rule applies unchanged.
+names a GPU the report lists (truncation never leaves a dangling reference; an allocation of a
+dropped runtime is dropped with it), and every bound, basis and capacity rule applies unchanged.
+
+A truncated report **counts what it dropped**: `allocationsDropped`, `runtimesDropped`,
+`anomaliesDropped` (present only when `truncated` is true). A gap between `attributed` and the
+listed allocations is explainable only by `allocationsDropped` above zero; a truncated report with
+an unexplained gap is refused. Even when explained, the gap is **unverified**: a consumer presents
+`attributed − Σ listed allocations` as "attributed, not itemised (unverified)", never as
+itemised. `truncated` is legitimate only when the report did not fit its carrier: a consumer MAY
+treat as suspect a truncated report whose serialized size is below half of its carrier's cap
+(the 64 KiB heartbeat, the 1 MiB report cap), since such a report had no reason to drop
+anything.
 
 ### 3.2 GPU
 
@@ -435,8 +447,10 @@ of a node on a later page) until all pages of the `sequence` are assembled.
 equals it; and no node appears on two pages. A page without `nodeCount`, pages disagreeing on it,
 a count that does not match, a duplicate node, or a changed snapshot makes the **whole assembly
 unusable**: the consumer discards every page it holds and refetches from page 1. This is a
-malformed snapshot, not a too-large one, and a partial node set is never used. (The reference
-implementation is `iw_core::gpu_memory::FleetAssembler`.)
+malformed snapshot, not a too-large one, and a partial node set is never used. A node repeated
+**within** one page is the same defect. (The reference implementation is
+`iw_core::gpu_memory::FleetAssembler`; it also hands out each node with its contract violations
+and, for a named consumer, its path verdict, so a caller cannot forget either.)
 
 **Pinned pages carry their age.** A page served from a pin — or a first page sharing a pin up to
 `pinShareSecs` old — holds numbers as of `generatedAt`, while the consumer stamps receipt when it
