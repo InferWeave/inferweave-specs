@@ -33,15 +33,15 @@
         "gatewayId": {
           "type": "string",
           "maxLength": 128,
-          "pattern": "^[\\x21-\\x7e]*$",
-          "description": "The gateway whose rebalancer is authoritative for this node; empty until one composes the report."
+          "pattern": "^[\\x21-\\x2e\\x30-\\x7e]*$",
+          "description": "The gateway whose rebalancer is authoritative for this node; empty for an unowned node."
         },
         "nodeId": {
           "type": "string",
           "minLength": 1,
           "maxLength": 128,
-          "pattern": "^[\\x21-\\x7e]*$",
-          "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+          "pattern": "^[\\x21-\\x2e\\x30-\\x7e]*$",
+          "description": "A node or gateway id: printable ASCII without spaces and without '/', the separator of GPU resource ids."
         },
         "via": {
           "type": "array",
@@ -50,10 +50,23 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128,
-            "pattern": "^[\\x21-\\x7e]*$",
-            "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+            "pattern": "^[\\x21-\\x2e\\x30-\\x7e]*$",
+            "description": "A node or gateway id: printable ASCII without spaces and without '/', the separator of GPU resource ids."
           },
           "description": "Reporting path, appended by each relay."
+        },
+        "attachedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x2e\\x30-\\x7e]*$",
+          "description": "Unowned nodes: the gateway that attached the node (the minting gateway of its GPU ids), where via must start."
+        },
+        "relayAgeMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Time the report has spent in relays: each relay adds the time it held it before re-serving. Consumers judge this plus their own receipt age against staleAfterSecs."
         }
       },
       "required": [

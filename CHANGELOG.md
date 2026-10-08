@@ -32,6 +32,11 @@ counted physical memory in `reserved` was following ambiguous text and must be c
   spec 46 §11 records what the old text allowed and maps the fields onto the new model.
 - Contract fixtures are re-checked by regenerating them (`validate_specs.py`); `intended` is a
   string enum `yes`/`no`/`unknown`; ids are printable ASCII; allocation ids never carry pids.
+- Review follow-ups: cursors pin their snapshot (`cursorTtlSecs`, `410 Gone`), `peers` repeat on
+  every page and `reservations` ride the first, `nodeCount` is required with `nextCursor`;
+  `origin.relayAgeMs` accumulates per hop and counts against `staleAfterSecs`; `origin.attachedBy`
+  names an unowned node's attaching gateway; foreign-process allocations are always primary and
+  unmovable; node and gateway ids refuse `/`.
 - Conformance: new optional profile `IW-GPU-MEMORY` with scenario `gpu_memory_accounting`;
   `IW-FULL` is unchanged.
 - The stale "only common and errors are published" sentence of spec 45

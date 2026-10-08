@@ -15,8 +15,8 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
-      "pattern": "^[\\x21-\\x7e]*$",
-      "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+      "pattern": "^[\\x21-\\x2e\\x30-\\x7e]*$",
+      "description": "A node or gateway id: printable ASCII without spaces and without '/', the separator of GPU resource ids."
     },
     "producerEpoch": {
       "type": "string",
@@ -93,8 +93,8 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128,
-            "pattern": "^[\\x21-\\x7e]*$",
-            "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+            "pattern": "^[\\x21-\\x2e\\x30-\\x7e]*$",
+            "description": "A node or gateway id: printable ASCII without spaces and without '/', the separator of GPU resource ids."
           },
           "status": {
             "type": "string",
@@ -136,5 +136,19 @@
     "authority",
     "nodes"
   ],
-  "additionalProperties": true
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "nextCursor"
+        ]
+      },
+      "then": {
+        "required": [
+          "nodeCount"
+        ]
+      }
+    }
+  ]
 }
