@@ -398,8 +398,10 @@ A gateway MUST refuse a tokenless `/v1/node/challenge` and `/v1/node/proof` with
 for a `nodeId` it already knows or routes to: a static-catalog node, a node in the live fleet, a
 joined node, a link-only node, a controller-managed instance id, and an id that holds an
 operator-issued credential. The check runs at `/challenge` **and again at `/proof`**, because an id
-can become known between the two. `/key` is not refused (it grants nothing), but SHOULD NOT
-overwrite or reveal anything about a known id.
+can become known between the two. `/key` SHOULD also be refused with `403 forbidden` for a known
+id (both reference gateways do), and MUST NOT overwrite or reveal anything about a known id: a key
+bound to an id the gateway already routes to would otherwise sit there waiting for that id to be
+released.
 
 ### 6.5 Bounded state
 
