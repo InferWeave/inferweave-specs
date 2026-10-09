@@ -16,11 +16,13 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~562,294 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~564,835 tokens**.
 
+- `.autospec/executor-closeout.md` — `3e13601b0a0f` — ~601t
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
 - `.github/workflows/protocol-ci.yml` — `4e4a8b44a516` — ~194t
+- `.gitignore` — `c0a23c709708` — ~31t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
 - `CHANGELOG.md` — `7d4df42ec327` — ~2,529t
@@ -255,7 +257,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `implementation/TEST_STRATEGY.md` — `5ded1d51fb57` — ~1,301t
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `openapi/README.md` — `fd85aef8a3a6` — ~98t
-- `openapi/inferweave-v1.yaml` — `0b96fcbe0944` — ~4,978t
+- `openapi/inferweave-v1.yaml` — `ebee3b1420ba` — ~5,277t
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
 - `pi/CONTEXT_PACK_CHECKLIST.md` — `8a9c95b7ec3d` — ~200t
 - `pi/FIRST_TASKS.md` — `674dbf07c4f5` — ~462t
@@ -278,9 +280,9 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/jobs/job.json` — `48c1b63d9190` — ~255t
 - `schemas/v1/jobs/progress.json` — `d35037a65603` — ~112t
 - `schemas/v1/model/alias.json` — `e8d0115e7753` — ~312t
-- `schemas/v1/model/capabilities.json` — `89820bd38ffe` — ~356t
+- `schemas/v1/model/capabilities.json` — `fb5f2198458c` — ~828t
 - `schemas/v1/model/model-variant.json` — `ab8056447dac` — ~269t
-- `schemas/v1/model/model.json` — `784abacab305` — ~255t
+- `schemas/v1/model/model.json` — `28bb7cf58932` — ~325t
 - `schemas/v1/model/placement.json` — `9f5207299445` — ~153t
 - `schemas/v1/model/requirements.json` — `80fe889a891c` — ~280t
 - `schemas/v1/model/residency.json` — `f5a74fcde156` — ~295t
@@ -312,6 +314,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/topology/node.json` — `f677b7b3ec90` — ~291t
 - `scripts/bootstrap-repositories.sh` — `914de3443dbc` — ~227t
 - `scripts/generate_bundle_metadata.py` — `8e46c94670e4` — ~608t
+- `scripts/test_runtime_families.py` — `99e2de5739a8` — ~948t
 - `scripts/test_validate_specs.py` — `45b7fd4b5ecc` — ~6,695t
 - `scripts/validate_specs.py` — `4e9002cc210e` — ~11,220t
 - `solana/DEVNET_ONLY.md` — `1a8ea96fcc58` — ~136t
@@ -363,7 +366,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/45_PROTOCOL_V1.md` — `b3bcfd0e2ff1` — ~9,479t
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `4ef07f017b84` — ~13,331t
 - `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `61773ad22f28` — ~8,528t
-- `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `d18cf6cfae96` — ~1,211t
+- `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `f05dfbadab21` — ~1,331t
 - `specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md` — `5c2f61f49bd0` — ~751t
 - `specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md` — `2b96d6b61ed9` — ~881t
 - `specs/51_PIPELINES_AND_DURABLE_JOBS.md` — `ab9f8df6a816` — ~624t
