@@ -61,8 +61,53 @@
         }
       }
     },
+    "family": {
+      "description": "Canonical runtime family id (spec 48). Closed registry; unknown ids fail admission.",
+      "type": "string",
+      "enum": ["llm", "reasoning", "embeddings", "reranking", "stt", "tts", "audio", "prediction", "image", "video", "multimodal", "scientific", "rag"]
+    },
+    "input_modalities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["text", "image", "audio", "video", "vector", "score", "numeric", "label", "typed"] }
+    },
+    "output_modalities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["text", "image", "audio", "video", "vector", "score", "numeric", "label", "typed"] }
+    },
+    "quality": {
+      "description": "Measured or explicitly self-reported quality figure. Never inferred from a model name.",
+      "type": "object",
+      "required": ["metric", "value", "basis"],
+      "properties": {
+        "metric": { "type": "string", "minLength": 1 },
+        "value": { "type": "number" },
+        "basis": { "type": "string", "enum": ["measured", "self-reported"] },
+        "evidence": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "context": {
+      "description": "Token-addressable families reuse the existing context vocabulary; non-token families use null or a family-specific resource descriptor.",
+      "type": ["object", "null"],
+      "additionalProperties": true
+    },
+    "runtime_preference": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
     "extensions": {
       "$ref": "../common/extensions.json"
+    }
+  },
+  "$defs": {
+    "typed_admission": {
+      "description": "Admission requirement (spec 48): an advertisement must state family and modalities explicitly.",
+      "required": ["family", "input_modalities", "output_modalities"]
     }
   }
 }

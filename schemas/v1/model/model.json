@@ -37,7 +37,12 @@
       "type": "string"
     },
     "family": {
-      "type": "string"
+      "description": "Canonical runtime family id (spec 48).",
+      "type": "string",
+      "enum": ["llm", "reasoning", "embeddings", "reranking", "stt", "tts", "audio", "prediction", "image", "video", "multimodal", "scientific", "rag"]
+    },
+    "capabilities": {
+      "$ref": "capabilities.json"
     },
     "requirements": {
       "$ref": "requirements.json"
