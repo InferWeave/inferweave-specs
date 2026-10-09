@@ -1,7 +1,7 @@
 # InferWeave Specs Repository Index
 
 Version: **12.0**
-Specifications: **48**
+Specifications: **54**
 Tracked features: **94**
 Canonical tasks: **153**
 Deployment: **Docker Compose persistent / Apptainer Slurm**
@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~555,773 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~562,294 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -363,6 +363,12 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/45_PROTOCOL_V1.md` — `b3bcfd0e2ff1` — ~9,479t
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `4ef07f017b84` — ~13,331t
 - `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `61773ad22f28` — ~8,528t
+- `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `d18cf6cfae96` — ~1,211t
+- `specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md` — `5c2f61f49bd0` — ~751t
+- `specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md` — `2b96d6b61ed9` — ~881t
+- `specs/51_PIPELINES_AND_DURABLE_JOBS.md` — `ab9f8df6a816` — ~624t
+- `specs/52_DURABLE_INFERENCE_JOBS.md` — `80fd259be002` — ~644t
+- `specs/53_RUNTIME_FAMILY_CONFORMANCE.md` — `00f77a0027f4` — ~704t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `6027505392aa` — ~233t
@@ -522,5 +528,11 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-5/P5-T32.md` — `e40ac49dd0c8` — ~483t
 - `tasks/phase-5/P5-T33.md` — `3b69e5031fde` — ~635t
 - `tasks/phase-5/P5-T34.md` — `7491e8f30dae` — ~642t
+- `tasks/phase-B/B-T01.md` — `0cc675f0dfa2` — ~290t
+- `tasks/phase-B/B-T02.md` — `a1ca4ba82696` — ~290t
+- `tasks/phase-B/B-T03.md` — `b904690525f4` — ~290t
+- `tasks/phase-B/B-T04.md` — `531bab03f421` — ~252t
+- `tasks/phase-B/B-T05.md` — `871656739793` — ~280t
+- `tasks/phase-B/B-T06.md` — `bd96eef79456` — ~304t
 - `tools/README.md` — `4ab4454accb3` — ~79t
 - `tools/gen_gpu_memory_fixtures.py` — `8cc9a2cfedd9` — ~8,576t
