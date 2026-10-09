@@ -296,6 +296,28 @@ Unsatisfied, and recorded `owed` by `P5-T30`–`P5-T32` (feature `IW-GPUMEM-001`
 No placement, eviction, packing or scaling behaviour may depend on this surface until those
 tests are `proven` and an operator decision approves it.
 
+## CLI mode grammar (spec 28 change request) — 2026-10-08
+
+**BLOCKED. Not accepted.**
+[`docs/specs/cli-unification/spec-28-change-request.md`](docs/specs/cli-unification/spec-28-change-request.md)
+is a DRAFT. It proposes the `inferweave <mode> <command>` grammar as spec 28's addressable
+contract, with every frozen spelling kept as an alias. It also proposes that the relay commands
+join the JSON envelope and exit-code table, and it fixes the standard flags. Spec 28 and the frozen
+command table are unchanged and stay authoritative. Each of the following is **unsatisfied**:
+
+- spec 28 has not been edited, and the change has not been reviewed or accepted;
+- no feature ID has been assigned and none is invented in the draft. There is no task-graph,
+  implementation-sequence, task-card or coverage entry;
+- the envelope and the four-row exit-code table that the draft extends are not in spec 28 at all.
+  They are frozen only in the implementation repository (`docs/specs/cli.md`,
+  `schemas/json-schema/cli_*.json`, task `P0-T03`);
+- every test the change relies on (shim stdout and exit equality, deprecation line on stderr only,
+  command-table drift, unchanged spec-28 conformance, relay-only static build) is `owed`, not
+  `proven`;
+- open questions D10 (gateway mode in the static node release) and D13 (removing the runtime
+  shims) are undecided;
+- independent review is unstaffed (see the independent review gate).
+
 ## Node join: hardware-only registration and tokenless enrollment (specs/47) — 2026-10-08
 
 **BLOCKED for production use.** `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` defines the
