@@ -357,8 +357,170 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
+  /rerank:
+    post:
+      operationId: rerank
+      summary: Rerank documents against a query
+      description: >-
+        Native family-typed inference endpoint (specs/49). Bound to the `reranking` family
+        (specs/48): admitted only when the target runtime advertises `reranking`; a request whose
+        `family` is not `reranking` is rejected with a typed FAMILY_MISMATCH error. Honours the same
+        admission, capacity and fairshare policy as the OpenAI-compatible surface.
+      x-inferweave-family: reranking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RerankRequest" }
+      responses:
+        "200":
+          description: Typed reranking result
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RerankResponse" }
+        "409":
+          description: FAMILY_MISMATCH -- the request or target runtime is not in the `reranking` family
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "422":
+          description: Invalid request for this endpoint
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+  /predictions:
+    post:
+      operationId: predict
+      summary: Numeric or label predictions
+      description: >-
+        Native family-typed inference endpoint (specs/49). Bound to the `prediction` family
+        (specs/48): admitted only when the target runtime advertises `prediction`; a request whose
+        `family` is not `prediction` is rejected with a typed FAMILY_MISMATCH error. Honours the same
+        admission, capacity and fairshare policy as the OpenAI-compatible surface.
+      x-inferweave-family: prediction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PredictionRequest" }
+      responses:
+        "200":
+          description: Typed prediction result (numeric or label outputs)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PredictionResponse" }
+        "409":
+          description: FAMILY_MISMATCH -- the request or target runtime is not in the `prediction` family
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "422":
+          description: Invalid request for this endpoint
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+  /embeddings:
+    post:
+      operationId: embed
+      summary: Typed embedding vectors
+      description: >-
+        Native family-typed inference endpoint (specs/49). Bound to the `embeddings` family
+        (specs/48): admitted only when the target runtime advertises `embeddings`; a request whose
+        `family` is not `embeddings` is rejected with a typed FAMILY_MISMATCH error. Honours the same
+        admission, capacity and fairshare policy as the OpenAI-compatible surface.
+      x-inferweave-family: embeddings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EmbeddingRequest" }
+      responses:
+        "200":
+          description: Typed embeddings result
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EmbeddingResponse" }
+        "409":
+          description: FAMILY_MISMATCH -- the request or target runtime is not in the `embeddings` family
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+        "422":
+          description: Invalid request for this endpoint
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
 components:
   schemas:
+    RerankRequest:
+      type: object
+      required: [family, model, query, documents]
+      properties:
+        family: { type: string, enum: [reranking] }
+        model: { type: string }
+        query: { type: string }
+        documents: { type: array, minItems: 1, items: { type: string } }
+        top_n: { type: integer, minimum: 1 }
+    RerankResponse:
+      type: object
+      required: [family, model, results]
+      properties:
+        family: { type: string, enum: [reranking] }
+        model: { type: string }
+        results:
+          type: array
+          items:
+            type: object
+            required: [index, score]
+            properties:
+              index: { type: integer, minimum: 0 }
+              score: { type: number }
+    PredictionRequest:
+      type: object
+      required: [family, model, inputs]
+      properties:
+        family: { type: string, enum: [prediction] }
+        model: { type: string }
+        inputs:
+          type: array
+          minItems: 1
+          items: { oneOf: [{ type: number }, { type: string }, { type: array, items: { type: number } }] }
+    PredictionResponse:
+      type: object
+      required: [family, model, predictions]
+      properties:
+        family: { type: string, enum: [prediction] }
+        model: { type: string }
+        predictions:
+          type: array
+          items:
+            type: object
+            properties:
+              value: { type: number }
+              label: { type: string }
+              confidence: { type: number, minimum: 0, maximum: 1 }
+    EmbeddingRequest:
+      type: object
+      required: [family, model, input]
+      properties:
+        family: { type: string, enum: [embeddings] }
+        model: { type: string }
+        input: { type: array, minItems: 1, items: { type: string } }
+    EmbeddingResponse:
+      type: object
+      required: [family, model, dimension, data]
+      properties:
+        family: { type: string, enum: [embeddings] }
+        model: { type: string }
+        dimension: { type: integer, minimum: 1 }
+        data:
+          type: array
+          items:
+            type: object
+            required: [index, vector]
+            properties:
+              index: { type: integer, minimum: 0 }
+              vector: { type: array, items: { type: number } }
     Capability:
       type: object
       required: [family, input_modalities, output_modalities]
