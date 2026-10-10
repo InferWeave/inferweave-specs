@@ -62,6 +62,15 @@ canonical registry and must be consistent with the deployment manifest
 fingerprint. Unknown family ids are rejected at admission, never silently
 forwarded.
 
+## Canonical modality enum
+
+`text`, `image`, `audio`, `video`, `vector`, `score`, `numeric`, `label`,
+`typed`. Machine-readable forms: `schemas/v1/model/capabilities.json`
+(`family`, `input_modalities`, `output_modalities`, `quality`, `context`,
+`runtime_preference`; `$defs.typed_admission` lists the fields admission
+requires), `schemas/v1/model/model.json`, and the `TypedCapabilities` schema in
+`openapi/inferweave-v1.yaml`. `quality.basis` is `measured` or `self-reported`.
+
 ## Invariants
 
 1. **No inference from name.** A runtime never derives capabilities, quality,
