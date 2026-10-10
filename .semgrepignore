@@ -1,0 +1,14 @@
+# InferWeave protocol repo Semgrep ignore (replaces semgrep's default ignore set).
+# IMPORTANT: does NOT ignore tests/ — the autospec executor requires tests under
+# tests/smoke/ to be scanned, and treats any .semgrepignore-skipped file as blocking.
+.git/
+.svn/
+.hg/
+.venv/
+venv/
+node_modules/
+__pycache__/
+dist/
+build/
+*.min.js
+*.min.css
