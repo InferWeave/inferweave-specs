@@ -231,7 +231,10 @@ paths:
   /jobs:
     post:
       operationId: createJob
-      summary: Create an async job
+      summary: Create an async job (durable-job submission surface, specs/51, specs/52)
+      description: >-
+        The durable-job submission surface. Pipeline executions that outlive a request are tracked
+        as jobs here; the durable-job contract is filled in by B-T05.
       responses:
         "201":
           description: Created job
@@ -426,8 +429,82 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/FamilyMismatchError" }
+  /pipelines:
+    post:
+      operationId: submitPipeline
+      summary: Submit a pipeline definition (specs/51)
+      description: >-
+        Registers a typed inference pipeline definition. The pipeline DAG contract is referenced,
+        not fully defined here; B-T04 fills it in. Returns a Protocol v1 envelope referencing the
+        stored pipeline.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PipelineDefinitionRequest" }
+      responses:
+        "201":
+          description: Pipeline accepted; envelope references the pipeline result
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PipelineEnvelope" }
+  /pipelines/execute:
+    post:
+      operationId: executePipeline
+      summary: Execute a typed inference pipeline (specs/49, specs/51)
+      description: >-
+        Executes a typed inference pipeline. Returns a Protocol v1 envelope referencing the result;
+        long-running executions reference a durable job created through POST /jobs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PipelineExecuteRequest" }
+      responses:
+        "200":
+          description: Pipeline result; envelope references the result
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PipelineEnvelope" }
+        "202":
+          description: Execution accepted as a durable job; envelope references the job
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PipelineEnvelope" }
 components:
   schemas:
+    PipelineDefinitionRequest:
+      type: object
+      required: [name, definition]
+      properties:
+        name: { type: string }
+        definition:
+          description: Pipeline DAG; contract defined by B-T04.
+          type: object
+          additionalProperties: true
+    PipelineExecuteRequest:
+      type: object
+      properties:
+        pipeline_id: { type: string }
+        definition:
+          description: Inline pipeline DAG; contract defined by B-T04.
+          type: object
+          additionalProperties: true
+        inputs: { type: object, additionalProperties: true }
+        durable: { type: boolean, description: "When true, execute as a durable job (POST /jobs surface)." }
+    PipelineEnvelope:
+      description: Protocol v1 envelope referencing a pipeline result.
+      type: object
+      required: [protocol, result]
+      properties:
+        protocol: { $ref: "#/components/schemas/Protocol" }
+        result:
+          type: object
+          required: [type, id]
+          properties:
+            type: { type: string, enum: [pipeline, pipeline_run, job] }
+            id: { type: string }
+            job: { $ref: "#/components/schemas/Job" }
     FamilyMismatchError:
       description: Typed error (schemas/v1/errors/error.json envelope) for a request routed to the wrong family endpoint.
       allOf:
