@@ -320,11 +320,12 @@ def guard_prompt_recording_contracts(root):
 def guard_bundle_metadata(root):
     """Every bundle file is inventoried and its recorded digest matches bytes on disk."""
     excluded = {"BUNDLE_INDEX.md", "checksums.json"}
+    ignored_parts = {".git", ".superpowers", "__pycache__", ".pi-eng", ".autospec", ".pytest_cache"}
     actual_files = {
         path.relative_to(root).as_posix()
         for path in root.rglob("*")
         if path.is_file()
-        and not ({".git", ".superpowers", "__pycache__", ".pi-eng"} & set(path.parts))
+        and not (ignored_parts & set(path.relative_to(root).parts))
         and path.relative_to(root).as_posix() not in excluded
     }
     checksums = json.loads((root / "checksums.json").read_text())

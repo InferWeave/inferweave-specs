@@ -98,3 +98,9 @@ Features: **92**
 | `IW-PROTO-002` InferWeave Protocol v1: versioned, machine-readable, language-neutral wire contract (planes, identity, objects, events, state machines, enums, errors, aliases, routing, jobs, conformance) formalizing the scheduler-neutral core protocol | P1 | 5 | control-plane+gateway+node+consumer | `P5-T24`, `P5-T25`, `P5-T26`, `P5-T27`, `P5-T28`, `P5-T29` |
 | `IW-GPUMEM-001` GPU memory accounting, reservations, pressure, decision records, OOM postmortem and placement simulation on the capability-gated iw.gpu-memory family (Protocol 1.1.0) | P1 | 5 | control-plane+gateway+node+consumer | `P5-T30`, `P5-T31`, `P5-T32` |
 | `IW-NODEHW-001` Hardware-only node registration, the optional versioned hardware report, the always-present assignments array and tokenless proof enrollment as one wire contract for the Rust and Go gateways (Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T33`, `P5-T34` |
+| `IW-RT-001` Runtime families and typed capabilities | P1 | B | control-plane | `B-T01` |
+| `IW-RT-002` Native `/inferweave/v1` control-plane and inference endpoints | P1 | B | control-plane | `B-T02` |
+| `IW-RT-003` Transactional runtime hot-swap lifecycle | P1 | B | control-plane | `B-T03` |
+| `IW-RT-004` Typed inference pipelines | P1 | B | control-plane | `B-T04` |
+| `IW-RT-005` Durable inference jobs | P1 | B | control-plane | `B-T05` |
+| `IW-RT-006` Runtime-family conformance and traceability | P1 | B | control-plane | `B-T06` |
