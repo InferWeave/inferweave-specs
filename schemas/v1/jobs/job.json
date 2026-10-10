@@ -2,12 +2,13 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/jobs/job.json",
   "title": "Async job",
-  "description": "A long-running async job.",
+  "description": "A durable inference job (specs/52). Durable-first: long-running inference is a job, never a held-open request. Result by reference: the result is an artifact reference (result_ref), not an inline body. Circumvention control: durable jobs observe the same admission, capacity, fairshare, and owner-priority controls as synchronous inference and do not bypass them. Family-typed: every job names its runtime family (specs/48 registry). Resumable: an interrupted job resumes from durable progress after a restart.",
   "type": "object",
   "additionalProperties": true,
   "required": [
     "job_id",
-    "state"
+    "state",
+    "family"
   ],
   "properties": {
     "job_id": {
@@ -21,11 +22,21 @@
         "preparing",
         "running",
         "finalizing",
+        "succeeded",
         "completed",
         "failed",
         "cancelled",
         "expired"
       ]
+    },
+    "family": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Runtime family from the specs/48 registry; the job controller routes the job to an admitted runtime of this family under the same admission, capacity, fairshare, and owner-priority controls as synchronous inference."
+    },
+    "result_ref": {
+      "$ref": "../artifacts/artifact.json",
+      "description": "Result by reference: artifact in the artifact cache model."
     },
     "progress": {
       "$ref": "progress.json"
