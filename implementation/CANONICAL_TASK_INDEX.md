@@ -157,9 +157,3 @@ Total tasks: **148**
 | `P5-T32` | 5 | C85 | P5-T31 | GPU memory: decision records, lifecycle events, OOM postmortem and placement simulation |
 | `P5-T33` | 5 | C80 | P5-T24, P5-T25 | Node join: hardware-only registration, assignments and tokenless enrollment in the Rust gateway |
 | `P5-T34` | 5 | C80 | P5-T24, P5-T25 | Node join: hardware-only registration, assignments and tokenless enrollment in the Go gateway |
-| `B-T01` | B | C75 | — | Runtime families and typed capabilities |
-| `B-T02` | B | C75 | B-T01 | Native `/inferweave/v1` control-plane and inference endpoints |
-| `B-T03` | B | C75 | B-T01 | Transactional runtime hot-swap lifecycle |
-| `B-T04` | B | C75 | B-T01, B-T02 | Typed inference pipelines |
-| `B-T05` | B | C75 | B-T02, B-T04 | Durable inference jobs |
-| `B-T06` | B | C75 | B-T01, B-T02, B-T03, B-T04, B-T05 | Runtime-family conformance and traceability |
