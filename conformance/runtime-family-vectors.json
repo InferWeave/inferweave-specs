@@ -1,0 +1,60 @@
+{
+  "$comment": "Spec 53 runtime-family conformance vectors (B-T06A, feature IW-RT-006). Advertisement/admission cases follow spec 48; native-endpoint smoke vectors follow spec 49 and must name a path in openapi/inferweave-v1.yaml. conformance/runner.py reports per-family pass/fail.",
+  "spec": "specs/53_RUNTIME_FAMILY_CONFORMANCE.md",
+  "version": 1,
+  "featureId": "IW-RT-006",
+  "registry": ["llm", "reasoning", "embeddings", "reranking", "stt", "tts", "audio", "prediction", "image", "video", "multimodal", "scientific", "rag"],
+  "requiredFamilies": ["embeddings", "reranking", "prediction", "stt", "rag"],
+  "families": {
+    "embeddings": {
+      "advertisement": {"family": "embeddings", "input_modalities": ["text"], "output_modalities": ["vector"], "quality": {"source": "self-reported"}},
+      "expect": {"admitted": true, "roundTrip": true},
+      "rejections": [
+        {"id": "embeddings-missing-family", "omit": ["family"], "expect": {"admitted": false}},
+        {"id": "embeddings-missing-modalities", "omit": ["input_modalities", "output_modalities"], "expect": {"admitted": false}},
+        {"id": "embeddings-unknown-family", "override": {"family": "not-a-family"}, "expect": {"admitted": false}}
+      ],
+      "nativeSmoke": {"method": "POST", "path": "/embeddings", "expectStatus": 200}
+    },
+    "reranking": {
+      "advertisement": {"family": "reranking", "input_modalities": ["text"], "output_modalities": ["score"], "quality": {"source": "self-reported"}},
+      "expect": {"admitted": true, "roundTrip": true},
+      "rejections": [
+        {"id": "reranking-missing-family", "omit": ["family"], "expect": {"admitted": false}},
+        {"id": "reranking-missing-modalities", "omit": ["input_modalities", "output_modalities"], "expect": {"admitted": false}},
+        {"id": "reranking-unknown-family", "override": {"family": "not-a-family"}, "expect": {"admitted": false}}
+      ],
+      "nativeSmoke": {"method": "POST", "path": "/rerank", "expectStatus": 200}
+    },
+    "prediction": {
+      "advertisement": {"family": "prediction", "input_modalities": ["numeric"], "output_modalities": ["label"], "quality": {"source": "self-reported"}},
+      "expect": {"admitted": true, "roundTrip": true},
+      "rejections": [
+        {"id": "prediction-missing-family", "omit": ["family"], "expect": {"admitted": false}},
+        {"id": "prediction-missing-modalities", "omit": ["input_modalities", "output_modalities"], "expect": {"admitted": false}},
+        {"id": "prediction-unknown-family", "override": {"family": "not-a-family"}, "expect": {"admitted": false}}
+      ],
+      "nativeSmoke": {"method": "POST", "path": "/predictions", "expectStatus": 200}
+    },
+    "stt": {
+      "advertisement": {"family": "stt", "input_modalities": ["audio"], "output_modalities": ["text"], "quality": {"source": "self-reported"}},
+      "expect": {"admitted": true, "roundTrip": true},
+      "rejections": [
+        {"id": "stt-missing-family", "omit": ["family"], "expect": {"admitted": false}},
+        {"id": "stt-missing-modalities", "omit": ["input_modalities", "output_modalities"], "expect": {"admitted": false}},
+        {"id": "stt-unknown-family", "override": {"family": "not-a-family"}, "expect": {"admitted": false}}
+      ],
+      "nativeSmoke": {"method": "POST", "path": "/pipelines/execute", "expectStatus": 200}
+    },
+    "rag": {
+      "advertisement": {"family": "rag", "input_modalities": ["text"], "output_modalities": ["text"], "quality": {"source": "self-reported"}},
+      "expect": {"admitted": true, "roundTrip": true},
+      "rejections": [
+        {"id": "rag-missing-family", "omit": ["family"], "expect": {"admitted": false}},
+        {"id": "rag-missing-modalities", "omit": ["input_modalities", "output_modalities"], "expect": {"admitted": false}},
+        {"id": "rag-unknown-family", "override": {"family": "not-a-family"}, "expect": {"admitted": false}}
+      ],
+      "nativeSmoke": {"method": "POST", "path": "/pipelines/execute", "expectStatus": 200}
+    }
+  }
+}
