@@ -1,0 +1,5 @@
+# Runtime Python dependencies for the InferWeave protocol tooling
+# (specs/scripts/validate_specs.py, conformance runner, smoke tests).
+# Pinned to versions with no known CVEs (verified via `trivy fs`).
+pyyaml==6.0.1
+jsonschema==4.23.0
