@@ -457,6 +457,18 @@ paths:
       description: >-
         Executes a typed inference pipeline. Returns a Protocol v1 envelope referencing the result;
         long-running executions reference a durable job created through POST /jobs.
+        The request carries a pipeline (by pipeline_id or inline definition) whose DAG follows the
+        pipeline contract in schemas/v1/pipelines/pipeline.json (PipelineDag). Before execution the
+        DAG is validated: it must be acyclic, every dependency must name a stage in the pipeline,
+        every stage family must be present in the canonical registry (specs/48) and resolvable to an
+        admitted runtime, and stage outputs must match downstream inputs (modality + shape). A
+        violation is rejected with 400 and a typed PipelineValidationError. Each stage is admitted
+        through the same per-family admission, capacity, and fairshare accounting as the
+        corresponding family endpoint; the canonical rag pipeline (CanonicalRagPipeline) is executed
+        through this endpoint and has no separate ad-hoc path.
+      x-pipeline-contract: schemas/v1/pipelines/pipeline.json
+      x-canonical-pipelines:
+        rag: { $ref: "#/components/schemas/CanonicalRagPipeline" }
       requestBody:
         required: true
         content:
@@ -473,6 +485,11 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/PipelineEnvelope" }
+        "400":
+          description: Pipeline DAG validation failed (cycle, unknown dependency, unknown or unadmitted family, or I/O mismatch)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PipelineValidationError" }
 components:
   schemas:
     PipelineDefinitionRequest:
@@ -489,11 +506,95 @@ components:
       properties:
         pipeline_id: { type: string }
         definition:
-          description: Inline pipeline DAG; contract defined by B-T04.
-          type: object
-          additionalProperties: true
+          description: Inline pipeline DAG; validated against the pipeline contract before execution.
+          allOf:
+            - $ref: "#/components/schemas/PipelineDag"
         inputs: { type: object, additionalProperties: true }
         durable: { type: boolean, description: "When true, execute as a durable job (POST /jobs surface)." }
+    PipelineDag:
+      description: >-
+        Summary; authoritative schema schemas/v1/pipelines/pipeline.json. An acyclic graph of
+        runtime-family stages; each stage lists its upstream stage_ids in `dependencies` (DAG edges).
+      x-schema: schemas/v1/pipelines/pipeline.json
+      type: object
+      required: [pipeline_id, stages, inputs]
+      properties:
+        pipeline_id: { type: string, minLength: 1 }
+        stages:
+          type: array
+          minItems: 1
+          items: { $ref: "#/components/schemas/PipelineStage" }
+        inputs: { type: object, additionalProperties: { $ref: "#/components/schemas/PipelineTypedIO" } }
+    PipelineStage:
+      type: object
+      required: [stage_id, family, inputs, outputs, dependencies]
+      properties:
+        stage_id: { type: string, minLength: 1 }
+        family:
+          type: string
+          enum: [llm, reasoning, embeddings, reranking, stt, tts, audio, prediction, image, video, multimodal, scientific, rag]
+        runtime_target: { type: string, minLength: 1 }
+        fallback_target: { type: string, minLength: 1 }
+        inputs: { type: object, additionalProperties: { $ref: "#/components/schemas/PipelineTypedIO" } }
+        outputs: { type: object, additionalProperties: { $ref: "#/components/schemas/PipelineTypedIO" } }
+        dependencies:
+          description: stage_ids this stage depends on (DAG edges).
+          type: array
+          uniqueItems: true
+          items: { type: string, minLength: 1 }
+    PipelineTypedIO:
+      type: object
+      required: [modality]
+      additionalProperties: true
+      properties:
+        modality: { type: string, minLength: 1 }
+        shape: { type: array, items: { type: integer } }
+    PipelineValidationError:
+      description: Typed error (schemas/v1/errors/error.json envelope) for a pipeline DAG that fails validation.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+        - type: object
+          properties:
+            code: { type: string, enum: [pipeline_cycle, pipeline_unknown_dependency, pipeline_unknown_family, pipeline_io_mismatch] }
+            category: { type: string, enum: [protocol] }
+            retryable: { type: boolean, enum: [false] }
+    CanonicalRagPipeline:
+      description: >-
+        Canonical rag pipeline (specs/51 "RAG as a pipeline"): an embeddings retrieval stage and a
+        reranking stage feeding an llm generation stage, wired by explicit DAG edges. The pipeline
+        graph is the single definition of rag; each stage is admitted through the same per-family
+        admission, capacity, and fairshare accounting as its family endpoint, and no separate
+        ad-hoc RAG path exists.
+      allOf:
+        - $ref: "#/components/schemas/PipelineDag"
+      x-admission-accounting:
+        mode: per-stage
+        controls: [admission, capacity, fairshare]
+        stage-families:
+          embeddings: /embeddings
+          reranking: /rerank
+          llm: /v1/chat/completions
+        ad-hoc-path: false
+      example:
+        pipeline_id: rag
+        inputs:
+          query: { modality: text }
+        stages:
+          - stage_id: retrieve
+            family: embeddings
+            inputs: { query: { modality: text } }
+            outputs: { candidates: { modality: documents } }
+            dependencies: []
+          - stage_id: rerank
+            family: reranking
+            inputs: { candidates: { modality: documents } }
+            outputs: { context: { modality: documents } }
+            dependencies: [retrieve]
+          - stage_id: generate
+            family: llm
+            inputs: { context: { modality: documents } }
+            outputs: { answer: { modality: text } }
+            dependencies: [rerank]
     PipelineEnvelope:
       description: Protocol v1 envelope referencing a pipeline result.
       type: object
