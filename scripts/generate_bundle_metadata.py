@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED = {"BUNDLE_INDEX.md", "checksums.json"}
-IGNORED_PARTS = {".git", ".superpowers", "__pycache__", ".pi-eng"}
+IGNORED_PARTS = {".git", ".superpowers", "__pycache__", ".pi-eng", ".autospec", ".pytest_cache"}
 
 
 def bundle_files() -> list[Path]:
@@ -18,7 +18,7 @@ def bundle_files() -> list[Path]:
         path
         for path in ROOT.rglob("*")
         if path.is_file()
-        and not (IGNORED_PARTS & set(path.parts))
+        and not (IGNORED_PARTS & set(path.relative_to(ROOT).parts))
         and path.relative_to(ROOT).as_posix() not in EXCLUDED
     )
 
