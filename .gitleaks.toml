@@ -1,14 +1,12 @@
-# InferWeave protocol repo Gitleaks policy (read by the autospec executor).
-# checksums.json and BUNDLE_INDEX.md are the bundle hash manifest; their
-# SHA-256 / hex digests trip gitleaks' generic-api-key heuristic as false
-# positives. Allowlist them from the secret scan.
-
-[extend]
-useDefault = true
+# InferWeave protocol repo Gitleaks policy, consumed by the autospec executor's
+# generated policy.toml via [extend] path. checksums.json and BUNDLE_INDEX.md are
+# the bundle hash manifest; their SHA-256 / hex digests trip gitleaks'
+# generic-api-key heuristic as false positives. The allowlist paths match the
+# absolute scan path (gitleaks scans with --no-git and an absolute --source).
 
 [allowlist]
 description = "Bundle hash manifest false positives"
 paths = [
-  '''^checksums\.json$''',
-  '''^BUNDLE_INDEX\.md$''',
+  '''checksums\.json$''',
+  '''BUNDLE_INDEX\.md$''',
 ]
