@@ -1,6 +1,7 @@
 {
   "job_id": "job-1",
   "state": "running",
+  "family": "embeddings",
   "progress": {
     "fraction": 0.42,
     "stage": "sampling"

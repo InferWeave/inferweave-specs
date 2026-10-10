@@ -8,6 +8,7 @@ Validates conformance fixtures against the canonical JSON Schemas:
 - every pinned contract under contracts/gpu-memory/ must validate as a fleet snapshot
 - conformance/node-join-vectors.json (spec 47) must agree with the reference model in
   conformance/node_join.py, and its enrollment known answers must be reproducible from the seed
+- conformance/runtime-family-vectors.json (spec 53) is run per family; each family reports PASS/FAIL
 
 The runner is intentionally strict: a valid fixture that stops validating, or an invalid
 fixture that starts validating, fails the run.
@@ -217,9 +218,68 @@ def check_node_join_vectors():
     return ok
 
 
+def admit_advertisement(ad, registry):
+    """Reference admission for a typed capability advertisement (spec 48)."""
+    if not isinstance(ad.get("family"), str) or ad["family"] not in registry:
+        return False
+    return all(isinstance(ad.get(k), list) and ad[k] for k in ("input_modalities", "output_modalities"))
+
+
+def check_runtime_family_vectors():
+    """Spec 53: per-family advertisement/admission round-trips and native-endpoint smoke vectors.
+
+    Returns {family: [error, ...]}; an empty list means the family passes.
+    """
+    import yaml
+    doc = json.loads((ROOT / "conformance" / "runtime-family-vectors.json").read_text())
+    paths = yaml.safe_load((ROOT / "openapi" / "inferweave-v1.yaml").read_text())["paths"]
+    registry = set(doc["registry"])
+    results = {}
+    for fam in doc["requiredFamilies"]:
+        errs = results.setdefault(fam, [])
+        vec = doc["families"].get(fam)
+        if vec is None:
+            errs.append("vector missing")
+            continue
+        ad = vec["advertisement"]
+        if ad.get("family") != fam:
+            errs.append("advertisement names a different family")
+        if admit_advertisement(ad, registry) != vec["expect"]["admitted"]:
+            errs.append("advertisement admission disagrees with reference")
+        if json.loads(json.dumps(ad)) != ad:
+            errs.append("advertisement does not round-trip")
+        if not vec.get("rejections"):
+            errs.append("no rejection vectors")
+        for rej in vec.get("rejections", []):
+            bad = {k: v for k, v in ad.items() if k not in rej.get("omit", [])}
+            bad.update(rej.get("override", {}))
+            if admit_advertisement(bad, registry) != rej["expect"]["admitted"]:
+                errs.append(f"rejection {rej['id']}: admission disagrees with reference")
+        smoke = vec.get("nativeSmoke")
+        if not smoke:
+            errs.append("native smoke vector missing")
+        elif smoke["method"].lower() not in paths.get(smoke["path"], {}):
+            errs.append(f"native smoke {smoke['method']} {smoke['path']} not in OpenAPI")
+    return results
+
+
+def report_runtime_family_vectors():
+    ok = True
+    for fam, errs in check_runtime_family_vectors().items():
+        if errs:
+            ok = False
+            print(f"FAIL  runtime-family {fam}")
+            for e in errs:
+                print(f"        {e}")
+        else:
+            print(f"PASS  runtime-family {fam}")
+    return ok
+
+
 def main():
     failures = 0
     failures += 0 if check_node_join_vectors() else 1
+    failures += 0 if report_runtime_family_vectors() else 1
     for d in ("valid", "federation", "invalid"):
         fixtures = sorted((ROOT / "fixtures" / d).glob("*.json"))
         if not fixtures:
