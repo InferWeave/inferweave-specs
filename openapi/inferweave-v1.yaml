@@ -357,8 +357,164 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Error" }
+  /rerank:
+    post:
+      operationId: rerank
+      summary: Rerank documents against a query (family reranking, specs/49)
+      description: >-
+        Admitted only when the target runtime advertises the reranking family. A request whose
+        family is not reranking is rejected with 400 FAMILY_MISMATCH.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RerankRequest" }
+      responses:
+        "200":
+          description: Ranked results
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RerankResponse" }
+        "400":
+          description: FAMILY_MISMATCH -- the request or target runtime is not the reranking family
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FamilyMismatchError" }
+  /predictions:
+    post:
+      operationId: predict
+      summary: Numeric or label predictions (family prediction, specs/49)
+      description: >-
+        Admitted only when the target runtime advertises the prediction family. A request whose
+        family is not prediction is rejected with 400 FAMILY_MISMATCH.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PredictionRequest" }
+      responses:
+        "200":
+          description: Predictions, numeric or label
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PredictionResponse" }
+        "400":
+          description: FAMILY_MISMATCH -- the request or target runtime is not the prediction family
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FamilyMismatchError" }
+  /embeddings:
+    post:
+      operationId: embed
+      summary: Typed embedding vectors (family embeddings, specs/49)
+      description: >-
+        Admitted only when the target runtime advertises the embeddings family. A request whose
+        family is not embeddings is rejected with 400 FAMILY_MISMATCH.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EmbeddingRequest" }
+      responses:
+        "200":
+          description: Embedding vectors
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EmbeddingResponse" }
+        "400":
+          description: FAMILY_MISMATCH -- the request or target runtime is not the embeddings family
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FamilyMismatchError" }
 components:
   schemas:
+    FamilyMismatchError:
+      description: Typed error (schemas/v1/errors/error.json envelope) for a request routed to the wrong family endpoint.
+      allOf:
+        - $ref: "#/components/schemas/Error"
+        - type: object
+          required: [details]
+          properties:
+            code: { type: string, enum: [FAMILY_MISMATCH] }
+            category: { type: string, enum: [routing] }
+            retryable: { type: boolean, enum: [false] }
+            details:
+              type: object
+              required: [expected_family]
+              properties:
+                expected_family:
+                  type: string
+                  enum: [reranking, prediction, embeddings]
+                requested_family: { type: string }
+    RerankRequest:
+      type: object
+      required: [family, model, query, documents]
+      properties:
+        family: { type: string, enum: [reranking] }
+        model: { type: string }
+        query: { type: string }
+        documents: { type: array, minItems: 1, items: { type: string } }
+        top_n: { type: integer, minimum: 1 }
+    RerankResponse:
+      type: object
+      required: [family, model, results]
+      properties:
+        family: { type: string, enum: [reranking] }
+        model: { type: string }
+        results:
+          type: array
+          items:
+            type: object
+            required: [index, relevance_score]
+            properties:
+              index: { type: integer, minimum: 0 }
+              relevance_score: { type: number }
+    PredictionRequest:
+      type: object
+      required: [family, model, inputs]
+      properties:
+        family: { type: string, enum: [prediction] }
+        model: { type: string }
+        inputs: { type: array, minItems: 1, items: { type: object, additionalProperties: true } }
+    PredictionResponse:
+      type: object
+      required: [family, model, predictions]
+      properties:
+        family: { type: string, enum: [prediction] }
+        model: { type: string }
+        predictions:
+          type: array
+          items:
+            type: object
+            required: [output_type, value]
+            properties:
+              output_type: { type: string, enum: [numeric, label] }
+              value:
+                oneOf:
+                  - { type: number }
+                  - { type: string }
+              score: { type: number }
+    EmbeddingRequest:
+      type: object
+      required: [family, model, input]
+      properties:
+        family: { type: string, enum: [embeddings] }
+        model: { type: string }
+        input: { type: array, minItems: 1, items: { type: string } }
+    EmbeddingResponse:
+      type: object
+      required: [family, model, data]
+      properties:
+        family: { type: string, enum: [embeddings] }
+        model: { type: string }
+        data:
+          type: array
+          items:
+            type: object
+            required: [index, embedding]
+            properties:
+              index: { type: integer, minimum: 0 }
+              embedding: { type: array, items: { type: number } }
     Capability:
       type: object
       required: [family, input_modalities, output_modalities]
