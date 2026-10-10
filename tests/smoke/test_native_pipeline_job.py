@@ -22,10 +22,12 @@ class NativePipelineJob(unittest.TestCase):
         return self.doc["paths"][path]["post"]
 
     def test_parses_and_refs_resolve(self):
+        assert self.doc.get("openapi", "").startswith("3.")
         for ref in re.findall(r'\$ref:\s*"#/components/schemas/(\w+)"', self.text):
             self.assertIn(ref, self.schemas, ref)
 
     def test_pipeline_surface(self):
+        assert "/pipelines" in self.doc["paths"]
         submit = self.post("/pipelines")
         self.assertEqual(
             submit["requestBody"]["content"]["application/json"]["schema"]["$ref"],
@@ -38,6 +40,7 @@ class NativePipelineJob(unittest.TestCase):
         )
 
     def test_pipeline_responses_return_protocol_envelope(self):
+        assert "PipelineEnvelope" in self.schemas
         for path, codes in (("/pipelines", ["201"]), ("/pipelines/execute", ["200", "202"])):
             op = self.post(path)
             for code in codes:
@@ -49,6 +52,7 @@ class NativePipelineJob(unittest.TestCase):
         self.assertEqual(env["properties"]["protocol"]["$ref"], "#/components/schemas/Protocol")
 
     def test_jobs_documented_as_durable_job_surface(self):
+        assert "/jobs" in self.doc["paths"]
         op = self.post("/jobs")
         self.assertIn("durable-job", op["summary"])
         self.assertIn("durable-job", op["description"])
