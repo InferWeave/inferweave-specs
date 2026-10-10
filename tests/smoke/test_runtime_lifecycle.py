@@ -95,6 +95,29 @@ class RuntimeLifecycleTest(unittest.TestCase):
         sources = {s for s, ds in self.table.items() if "READY" in ds}
         assert sources == {"VALIDATING", "BUSY", "IDLE", "DRAINING"}
 
+    def _authority_section(self):
+        text = DOC.read_text()
+        assert "## Rebalancer authority" in text
+        return re.sub(r"\s+", " ", text.split("## Rebalancer authority", 1)[1])
+
+    def test_no_second_scheduler(self):
+        section = self._authority_section()
+        assert "no second scheduler" in section
+        assert "events to the existing rebalancer" in section
+        assert "fenced, expiring reservation under the rebalancer's authority" in section
+        assert "never direct placement" in section
+        assert "intent event to the rebalancer, never a second scheduler" in section
+
+    def test_no_direct_placement_control_declared(self):
+        section = self._authority_section().lower()
+        assert not re.search(r"direct placement (is )?(allowed|permitted)", section)
+        leftover = re.sub(r"no second scheduler|never a second scheduler", "", section)
+        assert "scheduler" not in leftover
+
+    def test_availability_preserved(self):
+        section = self._authority_section()
+        assert "outgoing runtime stays routable until the incoming runtime has passed `VALIDATING`" in section
+
 
 if __name__ == "__main__":
     unittest.main()
