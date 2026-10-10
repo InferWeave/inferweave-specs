@@ -45,3 +45,16 @@ Rules:
 - Cancellation before serving goes directly to `STOPPED`; failure goes to `FAILED`.
 
 Terminal states: `STOPPED`, `FAILED`.
+
+## Rebalancer authority
+
+`RESERVING` and `DRAINING` are expressed only as events to the existing rebalancer
+(see [`specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md`](../specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md));
+the lifecycle introduces no second scheduler.
+
+- `RESERVING` is a fenced, expiring reservation under the rebalancer's authority, never direct placement.
+- `DRAINING` is an intent event to the rebalancer, never a second scheduler.
+- Availability preserved: the outgoing runtime stays routable until the incoming runtime has
+  passed `VALIDATING`.
+- Only `READY`/`BUSY`/`IDLE` are targetable by the rebalancer; `VALIDATING` and `WARMING` are not
+  yet schedulable.
