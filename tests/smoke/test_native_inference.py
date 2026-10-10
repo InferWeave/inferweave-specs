@@ -6,7 +6,7 @@ from pathlib import Path
 
 import yaml
 
-SPEC = Path(__file__).resolve().parent.parent / "openapi" / "inferweave-v1.yaml"
+SPEC = Path(__file__).resolve().parents[2] / "openapi" / "inferweave-v1.yaml"
 ENDPOINTS = {
     "/rerank": ("reranking", "RerankRequest", "RerankResponse"),
     "/predictions": ("prediction", "PredictionRequest", "PredictionResponse"),
