@@ -3893,6 +3893,102 @@
       "notes": "",
       "proof_status": "owed",
       "proof_owed_by": "P5-T34"
+    },
+    {
+      "id": "B-T01",
+      "phase": "B",
+      "title": "Runtime families and typed capabilities",
+      "depends_on": [],
+      "specs": ["00_INVARIANTS", "48_RUNTIME_FAMILIES_AND_CAPABILITIES"],
+      "features": ["IW-RT-001"],
+      "context_class": "C75",
+      "outcome": "Define the canonical runtime-family registry and typed capability descriptor in the protocol vocabulary, schemas, and OpenAPI, extending `schemas/v1/model/capabilities.json` and `schemas/v1/model/model.json`. Unknown family ids fail admission; no capability is inferred from a model name.",
+      "required_tests": [
+        "typed-capability round-trip (e.g. `embeddings`)",
+        "name-derived-rejection",
+        "registry-closure (unknown family id fails admission)"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "B-T02",
+      "phase": "B",
+      "title": "Native `/inferweave/v1` control-plane and inference endpoints",
+      "depends_on": ["B-T01"],
+      "specs": ["00_INVARIANTS", "49_NATIVE_CONTROL_PLANE_ENDPOINTS"],
+      "features": ["IW-RT-002"],
+      "context_class": "C75",
+      "outcome": "Extend `openapi/inferweave-v1.yaml` with the native `/inferweave/v1` endpoint set (runtimes, deployments, capabilities, rerank, predictions, embeddings, pipelines/execute, jobs) returning Protocol v1 schemas, with family-aware routing and `selection_reason` on list responses.",
+      "required_tests": [
+        "openapi-validation",
+        "family-routing (e.g. `POST /rerank` only for `reranking`)",
+        "parity (native endpoints honour admission/fairshare like `/v1/chat/completions`)"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "B-T03",
+      "phase": "B",
+      "title": "Transactional runtime hot-swap lifecycle",
+      "depends_on": ["B-T01"],
+      "specs": ["00_INVARIANTS", "50_TRANSACTIONAL_RUNTIME_LIFECYCLE"],
+      "features": ["IW-RT-003"],
+      "context_class": "C75",
+      "outcome": "Refine `state-machines/runtime.md` into the transactional lifecycle (`DISCOVERED → RESOLVING → PREPARING/DOWNLOADING → RESERVING → STARTING → LOADING → WARMING → VALIDATING → READY ↔ BUSY/IDLE → DRAINING → UNLOADING → STOPPED`, with FAILED and cancellation edges) that preserves availability during swap and expresses `RESERVING`/`DRAINING` only as events to the existing rebalancer — never a second scheduler.",
+      "required_tests": [
+        "state-machine-transitions",
+        "availability-preserved",
+        "no-second-scheduler"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "B-T04",
+      "phase": "B",
+      "title": "Typed inference pipelines",
+      "depends_on": ["B-T01", "B-T02"],
+      "specs": ["00_INVARIANTS", "51_PIPELINES_AND_DURABLE_JOBS"],
+      "features": ["IW-RT-004"],
+      "context_class": "C75",
+      "outcome": "Define the typed inference pipeline contract (acyclic DAG of runtime-family stages) and its wire schema, with `POST /pipelines/execute`. Define the canonical `rag` pipeline as a composition of `embeddings`/`reranking` and `llm` stages that respects per-stage admission and capacity — no separate ad-hoc RAG path.",
+      "required_tests": [
+        "dag-acyclicity",
+        "stage-family-resolution",
+        "rag-composition"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "B-T05",
+      "phase": "B",
+      "title": "Durable inference jobs",
+      "depends_on": ["B-T02", "B-T04"],
+      "specs": ["00_INVARIANTS", "52_DURABLE_INFERENCE_JOBS"],
+      "features": ["IW-RT-005"],
+      "context_class": "C75",
+      "outcome": "Extend the durable async-job/artifact model into a general durable inference job contract covering all runtime families and pipelines: submitted via `POST /jobs`, lifecycle `queued → running → succeeded | failed | cancelled`, result-by-artifact-reference, resumable across restart, and family-typed with no bypass of admission/capacity/fairshare/owner-priority.",
+      "required_tests": [
+        "job-lifecycle",
+        "restart-resume",
+        "no-bypass"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "B-T06",
+      "phase": "B",
+      "title": "Runtime-family conformance and traceability",
+      "depends_on": ["B-T01", "B-T02", "B-T03", "B-T04", "B-T05"],
+      "specs": ["00_INVARIANTS", "53_RUNTIME_FAMILY_CONFORMANCE"],
+      "features": ["IW-RT-006"],
+      "context_class": "C75",
+      "outcome": "Add runtime-family conformance vectors (embeddings, reranking, prediction, stt, rag) and native-endpoint smoke vectors to `conformance/`, extend `conformance/runner.py`, register feature ids in `contracts/feature-registry.json`, add `B-T01`…`B-T06` to `contracts/canonical-task-graph.json`, and keep `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` consistent. Ensure `scripts/validate_specs.py --self-test` passes.",
+      "required_tests": [
+        "conformance-runs",
+        "registry-traceable",
+        "self-test-green"
+      ],
+      "notes": ""
     }
   ]
 }
