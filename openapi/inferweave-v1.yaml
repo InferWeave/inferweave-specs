@@ -235,7 +235,7 @@ paths:
       operationId: createJob
       summary: Create an async job (durable-job submission surface, specs/51, specs/52)
       description: >-
-        The durable inference-job submission surface (specs/52). The request carries either a single
+        The durable-job inference submission surface (specs/52). The request carries either a single
         runtime-family inference request (typed by `family`, specs/48) or a pipeline reference
         (specs/51). Long-running inference is a job, never a held-open request. The lifecycle is
         queued -> running -> succeeded | failed | cancelled with durable progress
