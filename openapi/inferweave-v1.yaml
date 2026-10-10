@@ -8,6 +8,8 @@ info:
     deployment agnostic. The OpenAI-compatible data-plane endpoints (e.g. /v1/chat/completions)
     are preserved by implementations per specs/45_PROTOCOL_V1.md but are defined by the OpenAI
     API surface and are not redefined here. See specs/45_PROTOCOL_V1.md.
+    Parity: native endpoints observe the same admission, capacity, and fairshare controls as the
+    OpenAI-compatible data-plane (specs/49); parity is checked by a shared conformance fixture.
 servers:
   - url: /inferweave/v1
 paths:
@@ -72,7 +74,7 @@ paths:
       summary: List runtime instances
       responses:
         "200":
-          description: Runtime list
+          description: Runtime list; each entry carries a selection_reason explaining why the runtime is the family's route
           content:
             application/json:
               schema: { type: array, items: { $ref: "#/components/schemas/RuntimeInstance" } }
@@ -717,6 +719,7 @@ components:
       properties:
         runtime_id: { type: string }
         runtime_type: { type: string }
+        selection_reason: { type: string }
         version: { type: string }
         state: { type: string }
         devices: { type: array, items: { type: string } }
