@@ -235,11 +235,19 @@ paths:
       operationId: createJob
       summary: Create an async job (durable-job submission surface, specs/51, specs/52)
       description: >-
-        The durable-job submission surface. Pipeline executions that outlive a request are tracked
-        as jobs here; the durable-job contract is filled in by B-T05.
+        The durable-job inference submission surface (specs/52). The request carries either a single
+        runtime-family inference request (typed by `family`, specs/48) or a pipeline reference
+        (specs/51). Long-running inference is a job, never a held-open request. The lifecycle is
+        queued -> running -> succeeded | failed | cancelled with durable progress
+        (state-machines/job.md). The response is a job reference; results are returned by reference
+        to an artifact in the artifact cache model (schemas/v1/artifacts/), never as an inline
+        result body. A durable job observes the same admission, capacity, fairshare, and
+        owner-priority controls as synchronous inference and does not bypass them.
+      x-durable-job-submission: true
+      x-job-contract: schemas/v1/jobs/job.json
       responses:
         "201":
-          description: Created job
+          description: Created job; references the job and its result artifact by reference (no inline result body)
           content:
             application/json:
               schema: { $ref: "#/components/schemas/Job" }
