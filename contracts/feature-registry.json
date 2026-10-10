@@ -1134,6 +1134,72 @@
         "P5-T33",
         "P5-T34"
       ]
+    },
+    {
+      "id": "IW-RT-001",
+      "name": "Runtime-family registry and typed capabilities",
+      "phase": "B",
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "protocol",
+      "canonical_tasks": [
+        "B-T01"
+      ]
+    },
+    {
+      "id": "IW-RT-002",
+      "name": "Native /inferweave/v1 control-plane and inference endpoints",
+      "phase": "B",
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "protocol",
+      "canonical_tasks": [
+        "B-T02"
+      ]
+    },
+    {
+      "id": "IW-RT-003",
+      "name": "Transactional runtime hot-swap lifecycle",
+      "phase": "B",
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "protocol",
+      "canonical_tasks": [
+        "B-T03"
+      ]
+    },
+    {
+      "id": "IW-RT-004",
+      "name": "Typed inference pipelines",
+      "phase": "B",
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "protocol",
+      "canonical_tasks": [
+        "B-T04"
+      ]
+    },
+    {
+      "id": "IW-RT-005",
+      "name": "Durable inference jobs",
+      "phase": "B",
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "protocol",
+      "canonical_tasks": [
+        "B-T05"
+      ]
+    },
+    {
+      "id": "IW-RT-006",
+      "name": "Runtime-family conformance and traceability",
+      "phase": "B",
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "protocol",
+      "canonical_tasks": [
+        "B-T06"
+      ]
     }
   ]
 }
