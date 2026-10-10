@@ -842,9 +842,30 @@ components:
           type: string
           enum: [llm, embedding, reranker, vision, speech_to_text, text_to_speech, audio, image_generation, image_editing, video_generation, music_generation, prediction, multimodal, other]
         name: { type: string }
-        family: { type: string }
-        capabilities: { type: object, additionalProperties: true }
+        family:
+          type: string
+          enum: [llm, reasoning, embeddings, reranking, stt, tts, audio, prediction, image, video, multimodal, scientific, rag]
+        capabilities: { $ref: "#/components/schemas/TypedCapabilities" }
         requirements: { type: object, additionalProperties: true }
+    TypedCapabilities:
+      type: object
+      additionalProperties: true
+      properties:
+        family:
+          type: string
+          enum: [llm, reasoning, embeddings, reranking, stt, tts, audio, prediction, image, video, multimodal, scientific, rag]
+        input_modalities: { type: array, minItems: 1, uniqueItems: true, items: { type: string, enum: [text, image, audio, video, vector, score, numeric, label, typed] } }
+        output_modalities: { type: array, minItems: 1, uniqueItems: true, items: { type: string, enum: [text, image, audio, video, vector, score, numeric, label, typed] } }
+        quality:
+          type: object
+          required: [metric, value, basis]
+          properties:
+            metric: { type: string }
+            value: { type: number }
+            basis: { type: string, enum: [measured, self-reported] }
+            evidence: { type: string }
+        context: { type: object, nullable: true, additionalProperties: true }
+        runtime_preference: { type: array, uniqueItems: true, items: { type: string } }
     Residency:
       type: object
       required: [residency_id, state]
