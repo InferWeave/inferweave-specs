@@ -82,7 +82,7 @@ exists but the federated-provisioning behavior is absent. **Missing** = no sourc
 |---|---|---|
 | Versioned `provisioning` capability | **Missing** | `fed_capabilities.rs` has `admission-report`, `demand`, `link-meta`, `scaling-status` — no `iw.provisioning/*`. |
 | Feature flags for approvals/leases/revocation | **Missing** | No such flags. |
-| `provision.*` message family | **Missing** | Zero matches for `provision.request/offer/reserve/revoke` in `crates/`. |
+| `provision.*` message family | **Delivered (wire types)** | `crates/iw-protocol/src/provision.rs` (`7f8cdf0b`): envelope, feature flags, state machine, tagged message family. Wire types only — no transport/controller yet. |
 | Envelope (id, idempotency key, actor, provenance, expiry, trace) | **Partial** | `envelope.rs` + relay frames exist; no provisioning-specific envelope, no idempotency-key dedup for provisioning, no hop/rate/payload limits for provisioning. |
 | Fail closed on unknown versions | **Partial** | `fed_capabilities` drops malformed entries; the provisioning capability itself is absent. |
 
@@ -235,10 +235,22 @@ Delivered and committed (branch `feat/federated-provisioning-phase1`, on
   is exact with a qualifier boundary; context ceiling never widened;
   below-minimum slots is a hard mismatch; a disabled owner is never planned
   onto; a stale signal is refused before any match. 11 tests.
+- `crates/iw-protocol/src/provision.rs` (`7f8cdf0b`) — the `provision.*`
+  protocol message family and wire schemas (WS B, master spec §6):
+  `ProvisionFeature` flags (approvals/leases/revocation), the §7
+  `ProvisionState` state machine with a tested transition table (terminal →
+  `RELEASED`, absorbing; never reactivated — fencing), the `ProvisionEnvelope`
+  (schema version, id, idempotency key, actor, bounded provenance, expiry,
+  trace), and the tagged `ProvisionMessage` family
+  (capabilities/request/offer/reserve/approval/activate/revoke/heartbeat).
+  Fail-closed: incompatible major version refused; unknown kinds/features
+  refused at deserialization; `requires_feature()` gates message use by
+  negotiated flags. Self-contained (no `iw-core` dependency), disabled by
+  default (in force only when `iw.provisioning/1` is negotiated). 16 tests.
 
-Not yet delivered (later workstreams): item 5 (GUI owner-policy controls).
-The `provision.*` request/approval message family and its schemas remain the
-protocol workstream's deliverable.
+Not yet delivered (later workstreams): item 5 (GUI owner-policy controls),
+and the controller (WS E) that drives the `ProvisionState` machine across a
+real transport.
 
 ---
 
