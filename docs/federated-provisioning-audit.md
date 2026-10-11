@@ -209,22 +209,28 @@ hardening) per §15.
 
 ### Status (2026-10-10)
 
-Delivered and committed (branch `feat/federated-provisioning-phase1`, commit
-`af0abef0`, on `inferweave/inferweave`): items **1** and **2**.
+Delivered and committed (branch `feat/federated-provisioning-phase1`, on
+`inferweave/inferweave`): items **1**, **2** and **3**.
 
-- `crates/iw-core/src/provisioning.rs` — `ProvisioningMode` (`Disabled`
-  default) + `OwnerPolicy` + side-effect-free `permits(policy, parent, action)`
-  gate. Enforces: disabled by default (no silent opt-in), remote cannot change
-  policy, observe-only never downloads/loads, fail closed (emergency stop
-  beats all; empty allowlist authorizes nobody). 10 tests.
-- `crates/iw-core/src/fed_capabilities.rs` — `iw.provisioning/1` capability
-  token wired into the existing versioned negotiation (in force only when
-  both sides name it).
+- `crates/iw-core/src/provisioning.rs` (`af0abef0`) — `ProvisioningMode`
+  (`Disabled` default) + `OwnerPolicy` + side-effect-free
+  `permits(policy, parent, action)` gate. Enforces: disabled by default (no
+  silent opt-in), remote cannot change policy, observe-only never
+  downloads/loads, fail closed (emergency stop beats all; empty allowlist
+  authorizes nobody). 10 tests.
+- `crates/iw-core/src/fed_capabilities.rs` (`af0abef0`) — `iw.provisioning/1`
+  capability token wired into the existing versioned negotiation (in force
+  only when both sides name it).
+- `crates/iw-core/src/provision_capacity.rs` (`1698a4d1`) — the
+  privacy-filtered observe-only signal `iw.provisioning.capacity/1`:
+  topology-free (no node/GPU/placement identity), coarse per-model offers, one
+  aggregated `available_vram` `Quantity`, `from_adverts()` aggregator (unknown
+  VRAM never summed as zero), and structural `validate()` (a disabled owner
+  must not advertise). 10 tests.
 
-Not yet delivered (later workstreams): items 3 (privacy-filtered
-`provision.capacity` signal), 4 (federated dry-run planner), 5 (GUI). The
-`provision.*` message family and its schemas remain the protocol workstream's
-deliverable.
+Not yet delivered (later workstreams): items 4 (federated dry-run planner),
+5 (GUI). The `provision.*` request/approval message family and its schemas
+remain the protocol workstream's deliverable.
 
 ---
 
