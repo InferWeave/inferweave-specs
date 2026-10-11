@@ -227,10 +227,18 @@ Delivered and committed (branch `feat/federated-provisioning-phase1`, on
   aggregated `available_vram` `Quantity`, `from_adverts()` aggregator (unknown
   VRAM never summed as zero), and structural `validate()` (a disabled owner
   must not advertise). 10 tests.
+- `crates/iw-core/src/provision_planner.rs` (`9b1d1726`) — the federated
+  dry-run planner: which offering owner could serve a request, reusing
+  `route_preview::ReasonCode`'s closed rejection vocabulary. Pure and
+  eligibility-only (never placement, never reserves), keyed by the opaque
+  `offerer` token (GUI stays a thin client with no solver). Hard rules: model
+  is exact with a qualifier boundary; context ceiling never widened;
+  below-minimum slots is a hard mismatch; a disabled owner is never planned
+  onto; a stale signal is refused before any match. 11 tests.
 
-Not yet delivered (later workstreams): items 4 (federated dry-run planner),
-5 (GUI). The `provision.*` request/approval message family and its schemas
-remain the protocol workstream's deliverable.
+Not yet delivered (later workstreams): item 5 (GUI owner-policy controls).
+The `provision.*` request/approval message family and its schemas remain the
+protocol workstream's deliverable.
 
 ---
 
