@@ -1,0 +1,219 @@
+# InferWeave Federated Model Provisioning — Phase 0 Audit & Gap Matrix
+
+Status: **Audit in progress** (read-only; no code changed).
+Date: 2026-10-10
+Author: pi agent (in-session, mission pipeline unavailable due to orchestration store lock).
+Scope: `inferweave/inferweave`, `inferweave/inferweave-specs`, `metabolomics-us/inferweave-gateway`.
+
+This document is the Phase 0 deliverable of the *InferWeave Federated Model
+Provisioning — Master Specification*: an inventory of existing components,
+a verified gap matrix with source references, and the ownership boundaries for
+the parallel workstreams. Every claim below was verified against the current
+source tree, not assumed.
+
+---
+
+## 0. Method
+
+- Read the master specification (§1–§17).
+- Mapped each spec requirement to existing modules in the three repositories
+  (`grep` + read of the relevant module doc-comments and type surfaces).
+- Recorded **Present / Partial / Missing** with the concrete source reference.
+- A claim of "present" requires the source to actually implement the behavior;
+  a module whose doc-comment promises a later task is marked Partial at best.
+
+---
+
+## 1. What already exists (reusable building blocks)
+
+These are the components the spec §2/§13 says to **reuse, not rebuild**. They
+are real and tested.
+
+| Spec need (§) | Existing implementation | Source |
+|---|---|---|
+| Registry / model & runtime identity | Immutable deployment manifest + fingerprint; aliases resolve to fingerprints | `crates/iw-core/src/deployment.rs` |
+| Content-addressed artifacts | Digest-addressed cache, quarantine on digest mismatch, bounded/evictable | `crates/iw-core/src/artifact_cache.rs` |
+| VRAM / resource accounting | Per-GPU + per-deployment VRAM ledger (weights counted once, KV reserves, free = vram−weights−KV) | `crates/iw-core/src/capacity.rs`, `capacity_frontier.rs`, `resource_profile.rs` |
+| Scheduler-neutral allocation lifecycle | `ResourceRequest`/`Allocation` state machine (`Pending→Active→Released/Failed`) | `crates/iw-core/src/scheduler.rs` |
+| Slurm adapter | Allocation-scoped worker identity, rediscovery (not re-mint), requeue handling, GPU-slot ownership | `crates/iw-core/src/slurm_worker.rs` |
+| Rebalancer / autoscaler | Fleet autoscaler: rebalance-before-request, min hold, suspension, audit lines, demand ranking | `crates/iw-core/src/autoscaler.rs`, `demand.rs` |
+| GPU swap policy + executor | Per-model swap policy, availability floor, GPU claim phases | `crates/iw-core/src/gpu_swap_policy.rs`, `gpu_claim.rs`, `swap_executor.rs` |
+| Multi-parent routing | Federation provenance (`origin`/`reporting`/`path`), loop prevention, reconciliation | `crates/iw-core/src/federation.rs`, `docs/federation.md` |
+| Capability negotiation | Versioned `iw.<name>/<major>` negotiation, exact-match, additive, fail-closed | `crates/iw-core/src/fed_capabilities.rs` |
+| Runtime hot reload | Engine container lifecycle, measured runtime tuning | `crates/iw-core/src/engine_container.rs`, `deployment.rs` (P1-T06C) |
+| Route preview / dry-run analog | Non-committing placement preview: eligibility, hard-constraint reasons, headroom, fallback | `crates/iw-core/src/route_preview.rs` |
+| Admission | Context/modality/license/deny admission; non-admissible outcomes; seat model | `crates/iw-core/src/context_admission.rs`, `docs/scheduling.md` |
+| Node advertisement | Standardized served-model advert (model, ctx ceiling, slots, vram) | `crates/iw-core/src/node_advert.rs` |
+| Protocol types | Versioned schema, strong IDs, error envelope, reason-code vocabulary | `crates/iw-protocol/src/{lib,ids,version,error}.rs` |
+| Gateway (metabolomics-us) | Registry (who serves), catalog (what we advertise), proxy, pool (desired-state), acquire (Slurm borrow), lifecycle | `inferweave-gateway/internal/{registry,catalog,proxy,pool,acquire,lifecycle}` |
+| Gateway placement sizer | Demand→resource-shape (worker-based concurrency) | `inferweave-gateway/internal/placement/placement.go` |
+| State plane | Envelope, journal, reasons, redaction, states | `inferweave-gateway/internal/stateplane/` |
+
+---
+
+## 2. Verified gap matrix
+
+Legend: **Present** = implemented + tested in source. **Partial** = concept/module
+exists but the federated-provisioning behavior is absent. **Missing** = no source.
+
+### 2.1 Opt-in and policy (§4)
+
+| Requirement | Status | Evidence / gap |
+|---|---|---|
+| Disabled by default; no silent opt-in | **Missing** | No `disabled/advertise_only/approval_required/autonomous` mode enum anywhere. |
+| Policy-filtered capacity signals | **Partial** | Advert/capacity exist; no per-provider policy filter, no per-parent allowlist, no local reserve, no quota object. |
+| Approval-required mode | **Partial** | Federation has operator *enrollment* approval (`EnrollmentStatus::PendingApproval`, `Registry::approve`) but that is peer identity, not deployment approval. |
+| Autonomous bounded admission | **Missing** | Autoscaler is owner-side; no remote-request-driven admission under owner policy. |
+| Remote cannot change opt-in/policy | **Missing** | No opt-in concept, hence no such guard (must be added with the feature). |
+| Local clients outrank upstream | **Missing** | No upstream-vs-local priority model exists. |
+
+### 2.2 Desired-state declaration (§5)
+
+| Requirement | Status | Evidence / gap |
+|---|---|---|
+| Declarative `ModelDeployment` CRD | **Partial** | Gateway `pool.Desired` is a per-tier target (`internal/pool/pool.go`), not a federated multi-provider deployment object. No `apiVersion/kind ModelDeployment`. |
+| generations / optimistic concurrency / dry-run | **Missing** | No generation or OCC on a deployment object. |
+| Reconcile + status subresource | **Partial** | `pool.Manager.Reconcile` exists (owner-side only). |
+| Separate owner policy from requester prefs | **Missing** | No policy-vs-preference split. |
+
+### 2.3 Protocol extension (§6)
+
+| Requirement | Status | Evidence / gap |
+|---|---|---|
+| Versioned `provisioning` capability | **Missing** | `fed_capabilities.rs` has `admission-report`, `demand`, `link-meta`, `scaling-status` — no `iw.provisioning/*`. |
+| Feature flags for approvals/leases/revocation | **Missing** | No such flags. |
+| `provision.*` message family | **Missing** | Zero matches for `provision.request/offer/reserve/revoke` in `crates/`. |
+| Envelope (id, idempotency key, actor, provenance, expiry, trace) | **Partial** | `envelope.rs` + relay frames exist; no provisioning-specific envelope, no idempotency-key dedup for provisioning, no hop/rate/payload limits for provisioning. |
+| Fail closed on unknown versions | **Partial** | `fed_capabilities` drops malformed entries; the provisioning capability itself is absent. |
+
+### 2.4 Admission / reservation / state machine (§7)
+
+| Requirement | Status | Evidence / gap |
+|---|---|---|
+| Full provisioning state machine (`DESIRED→…→READY`, `REVOKED/EXPIRED/FAILED→RELEASED`) | **Missing** | No provisioning state machine. `scheduler::Allocation` covers scheduler lifecycle only. |
+| Atomic, scoped, expiring, auditable, idempotent reservation | **Partial** | `gpu_claim.rs` / `capacity_frontier` reserve per-seat; not federated, no single-use token, no fencing epoch, no lease TTL. |
+| Single-use token + fencing epoch | **Missing** | `actuator_lease.rs` (gateway) is a different mechanism. |
+| Approval binds request+digest+budget+policy-rev+lease | **Missing** | No binding object. |
+| Multi-GPU placement-group commit only when all ranks available | **Missing** | Distributed placement is described in specs but no all-ranks commit gate. |
+| Routable only after health/readiness | **Partial** | Node advert + engine health exist; no provisioning-commit gate. |
+| Retry with backoff + jitter | **Partial** | `backpressure.rs`, autoscaler retries; not a provisioning handshake. |
+
+### 2.5 Placement / scheduling (§8)
+
+| Requirement | Status | Evidence / gap |
+|---|---|---|
+| Extend existing scheduler/rebalancer | **Partial** | Strong foundation (`autoscaler`, `scheduler`, `swap_executor`, `capacity_frontier`); no federated placement-group arbitration across parents. |
+| Consider weights/KV/overhead/scratch/fragmentation/margin | **Present** | `capacity_frontier.rs` counts weights/KV/free; resource profile measures runtime overhead. |
+| GPU arch/topology/MIG, CPU/RAM/disk/network | **Partial** | `nvidia_eval.rs`, `gpu_detect.rs`, `resource_profile` cover GPU; network/disk quotas absent. |
+| Per-parent quotas + owner priorities | **Missing** | No per-parent quota ledger. |
+| Advertisements are snapshots, not reservations | **Present** | `node_advert.rs` + freshness TTL; advert is not a reservation. |
+| Stable physical-resource identity, origin-aware dedup, loop prevention | **Present** | `identity.rs`, `slurm_worker.rs` (stable GPU identity), `federation.rs` (loop prevention). |
+| No global lock (serialize per owner) | **Missing** | No owner-side serialized reservation ledger for provisioning. |
+| Demand-driven w/ hysteresis, cooldown, min residency | **Present** | `autoscaler.rs` invariants (min hold, suspension, hysteresis via utilisation sample). |
+
+### 2.6 Slurm lifecycle (§9)
+
+| Requirement | Status | Evidence / gap |
+|---|---|---|
+| Only actual allocations provisionable | **Partial** | `slurm_worker.rs` binds to granted allocations; no provisioning concept. |
+| Observe resize/preempt/termination/device loss/end-time | **Partial** | Slurm drain, requeue, rediscovery exist; no provisioning unready-on-partial-loss wiring. |
+| On losing one GPU from a group: unready, deregister, unload invalid group, release, report | **Missing** | No partial-placement-group invalidation. |
+| Respect partition policy / allocation ownership | **Present** | `slurm_worker.rs`, `slurm_drain.rs`. |
+
+### 2.7 Security & supply chain (§10)
+
+| Requirement | Status | Evidence / gap |
+|---|---|---|
+| Mutual peer auth, scoped identity, least privilege | **Present** | `identity.rs`, `privilege.rs`, `credential.rs`, `enrollment.rs` (scoped delegation). |
+| Approved runtime families + content-addressed artifacts, digest + optional signature | **Present** | `engine_container.rs`, `artifact_cache.rs`, `signature.rs`, deployment manifest. |
+| Prevent unsafe deserialization / remote code load | **Partial** | Unsafe code forbidden (`[workspace.lints.rust] unsafe_code = forbid`); no explicit provisioning sandbox policy. |
+| Sandbox runtimes (device/fs/net/secret/proc) | **Partial** | `fsperm.rs`; not a full provisioning sandbox contract. |
+| Bounded concurrent downloads, checksum, cancel, dedup, cache quotas | **Present** | `artifact_cache.rs`. |
+| Audit actor/policy/decision/artifact/transitions/cleanup | **Partial** | `audit.rs`, autoscaler audit lines; no provisioning audit records. |
+| Disconnection: retain local serving; leases expire w/ grace | **Missing** | No provisioning lease/grace. |
+| Revoked lease not renewable by old controller; fencing on failover | **Missing** | No lease/fencing. |
+| Emergency stop | **Partial** | `context_admission.rs` mentions emergency; not a provisioning emergency-stop policy. |
+| Never rely on remote for safe cleanup | **Missing** | No provisioning cleanup ownership statement. |
+
+### 2.8 GUI (§11)
+
+| Requirement | Status | Evidence / gap |
+|---|---|---|
+| Fleet view | **Present** | gateway web console. |
+| Provision wizard (registry/digest/runtime/profile/replicas/priority/constraints) | **Missing** | No provisioning wizard. |
+| Placement preview (candidates, VRAM est., cold-start, reject reasons, dry-run caveats) | **Partial** | Gateway `placement`/`capacityplan` size; no federated candidate preview. |
+| Owner settings (opt-in, allowlists, caps, reserve, quotas, preemption, emergency stop) | **Missing** | No settings surface. |
+| Approval queue (exact proposal, resource impact, TTL, approve/reject) | **Missing** | No approval queue. |
+| Live deployment lifecycle | **Partial** | Gateway lifecycle/stateplane; not the provisioning states. |
+| Federation topology | **Partial** | Topology exists (`topology.rs`, gateway `link`); no provisioning provenance display. |
+| Audit/history | **Partial** | `audit.rs`; no provisioning audit UI. |
+| No duplicated scheduling logic in GUI | **Present** | `placement/placement.go` explicitly removes dual-brain placement (#174); gateway is client, not scheduler. |
+
+### 2.9 Persistence / reliability / observability (§12)
+
+| Requirement | Status | Evidence / gap |
+|---|---|---|
+| Persist desired state / generations / policy / approvals / reservations / audit | **Partial** | `iw-storage` (SQLite), gateway `stateplane` journal; no provisioning records. |
+| Restart reconciliation, at-least-once w/ idempotent handlers, monotonic fencing | **Partial** | `autoscaler` restart-survives claims; no provisioning at-least-once/fencing. |
+| Metrics (pending, admission, approval latency, contention, VRAM, cold-start, failure, lease expiry, rebalance, placement quality) | **Partial** | Autoscale/capacity/worker metrics exist; no provisioning metrics. |
+| End-to-end tracing without disclosing inventories | **Partial** | `trace`/telemetry exist; no provisioning correlation. |
+
+### 2.10 Specs repo (§13/§17)
+
+| Requirement | Status | Evidence / gap |
+|---|---|---|
+| Canonical wire format / schemas / state machines / authz model / threat model / conformance fixtures / migration notes for provisioning | **Missing** | Specs repo has `federation.md`, `scheduling.md`, `security.md`; no provisioning spec. |
+| SDK update from canonical schemas | **Partial** | `schema-gen` + `schemas/json-schema` exist; would extend for provisioning. |
+| Backward compat for non-provisioning peers | **Present** (by design) | `fed_capabilities` additive negotiation; must be preserved. |
+
+---
+
+## 3. Ownership boundaries (workstream → repos/areas)
+
+Consistent with §13/§14; non-overlapping file areas.
+
+| WS | Deliverable | Primary locations |
+|---|---|---|
+| A | Audit & architecture | This doc; dependency map in `inferweave-specs/docs`. |
+| B | Protocol | `crates/iw-protocol/src/`, `crates/iw-core/src/fed_capabilities.rs`, `inferweave-specs/docs/federation.md`, `schemas/json-schema/`. |
+| C | Security | `crates/iw-core/src/{identity,privilege,credential,enrollment,audit}.rs`, `inferweave-specs/docs/security.md`. |
+| D | Resource ledger | `crates/iw-core/src/{capacity,capacity_frontier,gpu_claim,actuator_lease}.rs`, new `reservation.rs`/`lease.rs`. |
+| E | Controller | `crates/iw-gateway/src/` (new `provisioning.rs`), desired-state API. |
+| F | Placement | `crates/iw-core/src/{autoscaler,scheduler,swap_executor,capacity_frontier}.rs`. |
+| G | Slurm/runtime | `crates/iw-core/src/slurm_worker.rs`, `crates/iw-node/src/`, `engine_container.rs`. |
+| H | GUI | `inferweave-gateway/web/src/`, `internal/` (thin API client only). |
+| I | Testing/ops | `crates/conformance/`, `inferweave-specs/conformance/`, gateway `acceptance/`. |
+
+---
+
+## 4. Phase-1 (observe-only) recommended slice
+
+Smallest disabled-by-default increment that satisfies the invariants and
+acceptance criteria for Phase 1:
+
+1. Add `ProvisioningMode` enum (`disabled` default) + owner policy object
+   (allowlists, quotas, local reserve, preemption, emergency stop) —
+   **WS C**; policy is local and remote-immutable.
+2. Add `iw.provisioning/1` capability negotiation + feature flags —
+   **WS B**; unknown versions fail closed.
+3. Privacy-filtered `provision.capacity` advertisement (advertise-only never
+   downloads/loads) — **WS A/B/D**.
+4. Dry-run planner reusing `route_preview` primitives for federated
+   candidate eligibility/rejection reasons — **WS F**.
+5. GUI inventory + owner-policy controls — **WS H**.
+
+Phase 1 must pass: non-opted-in peers unchanged and non-provisionable;
+advertise-only never downloads/loads; disabled default; no GUI scheduling
+logic. Each later phase gates on the previous (approval → autonomous →
+hardening) per §15.
+
+---
+
+## 5. Open questions for the spec
+
+- Does `provision.capacity` reuse `node_advert`/`capacity_frontier` shapes or
+  define new ones? (Recommend reuse + additive fields.)
+- Where does the provisioning controller live in the current gateway
+  (`crates/iw-gateway/src/`) vs the Go gateway? The Rust `iw-gateway` is the
+  natural home; the Go gateway is a relay/UI per §13.
+- Lease/approval persistence: reuse `iw-storage` (SQLite) patterns.
