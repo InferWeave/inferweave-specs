@@ -90,7 +90,7 @@ exists but the federated-provisioning behavior is absent. **Missing** = no sourc
 
 | Requirement | Status | Evidence / gap |
 |---|---|---|
-| Full provisioning state machine (`DESIRED→…→READY`, `REVOKED/EXPIRED/FAILED→RELEASED`) | **Missing** | No provisioning state machine. `scheduler::Allocation` covers scheduler lifecycle only. |
+| Full provisioning state machine (`DESIRED→…→READY`, `REVOKED/EXPIRED/FAILED→RELEASED`) | **Delivered** | `crates/iw-protocol/src/provision.rs` (`ProvisionState::transition`, tested) + `crates/iw-gateway/src/provision_controller.rs` (owner-side ledger driving it). `scheduler::Allocation` covers scheduler lifecycle only. |
 | Atomic, scoped, expiring, auditable, idempotent reservation | **Partial** | `gpu_claim.rs` / `capacity_frontier` reserve per-seat; not federated, no single-use token, no fencing epoch, no lease TTL. |
 | Single-use token + fencing epoch | **Missing** | `actuator_lease.rs` (gateway) is a different mechanism. |
 | Approval binds request+digest+budget+policy-rev+lease | **Missing** | No binding object. |
@@ -131,7 +131,7 @@ exists but the federated-provisioning behavior is absent. **Missing** = no sourc
 | Bounded concurrent downloads, checksum, cancel, dedup, cache quotas | **Present** | `artifact_cache.rs`. |
 | Audit actor/policy/decision/artifact/transitions/cleanup | **Partial** | `audit.rs`, autoscaler audit lines; no provisioning audit records. |
 | Disconnection: retain local serving; leases expire w/ grace | **Missing** | No provisioning lease/grace. |
-| Revoked lease not renewable by old controller; fencing on failover | **Missing** | No lease/fencing. |
+| Revoked lease not renewable by old controller; fencing on failover | **Delivered (controller)** | `provision_controller.rs`: single-use token consumed once + monotonic fencing epoch; a revoked/released reservation is never reactivated (terminal→`RELEASED`, absorbing). No cross-process failover fencing yet (transport workstream). |
 | Emergency stop | **Partial** | `context_admission.rs` mentions emergency; not a provisioning emergency-stop policy. |
 | Never rely on remote for safe cleanup | **Missing** | No provisioning cleanup ownership statement. |
 
@@ -247,10 +247,27 @@ Delivered and committed (branch `feat/federated-provisioning-phase1`, on
   refused at deserialization; `requires_feature()` gates message use by
   negotiated flags. Self-contained (no `iw-core` dependency), disabled by
   default (in force only when `iw.provisioning/1` is negotiated). 16 tests.
+- `crates/iw-gateway/src/provision_controller.rs` (`5e336b65`) — the
+  owner-side controller core (WS E, master spec §7): an in-memory reservation
+  ledger that drives a provision through `ProvisionState`, and the single
+  place the owner's policy is applied to a remote parent. Disabled by default
+  and gated end to end — a default `OwnerPolicy` is `Disabled` with an empty
+  allowlist; every remote action is checked with `provisioning::permits`; and
+  in Phase 1 the gate refuses `Action::Activate` in every mode, so a
+  reservation can be booked by an allowlisted parent but can never be
+  activated (nothing downloads or loads). Invariants enforced: `on_request`
+  (gate → dry-run planner vs advertised capacity → offer), `on_reserve`
+  (binds to a real offer key, single-use token, fencing epoch, expiring
+  lease), `activate` (token consumed once, fencing epoch checked;
+  `Reserved→Activating→Ready` when a later workstream enables it),
+  `tick(now)` (clock-free lease expiry), `revoke`/`preempt` (terminal →
+  `RELEASED`; preempt lets a local client outrank a non-live upstream
+  reservation). Every state change returns a `ReservationEvent` for the audit
+  log. Pure and clock-free. 10 tests.
 
 Not yet delivered (later workstreams): item 5 (GUI owner-policy controls),
-and the controller (WS E) that drives the `ProvisionState` machine across a
-real transport.
+the wire transport that feeds the controller `provision.*` messages, and
+activation (still refused by the Phase 1 gate in every mode).
 
 ---
 
