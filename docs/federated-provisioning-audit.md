@@ -207,6 +207,25 @@ advertise-only never downloads/loads; disabled default; no GUI scheduling
 logic. Each later phase gates on the previous (approval → autonomous →
 hardening) per §15.
 
+### Status (2026-10-10)
+
+Delivered and committed (branch `feat/federated-provisioning-phase1`, commit
+`af0abef0`, on `inferweave/inferweave`): items **1** and **2**.
+
+- `crates/iw-core/src/provisioning.rs` — `ProvisioningMode` (`Disabled`
+  default) + `OwnerPolicy` + side-effect-free `permits(policy, parent, action)`
+  gate. Enforces: disabled by default (no silent opt-in), remote cannot change
+  policy, observe-only never downloads/loads, fail closed (emergency stop
+  beats all; empty allowlist authorizes nobody). 10 tests.
+- `crates/iw-core/src/fed_capabilities.rs` — `iw.provisioning/1` capability
+  token wired into the existing versioned negotiation (in force only when
+  both sides name it).
+
+Not yet delivered (later workstreams): items 3 (privacy-filtered
+`provision.capacity` signal), 4 (federated dry-run planner), 5 (GUI). The
+`provision.*` message family and its schemas remain the protocol workstream's
+deliverable.
+
 ---
 
 ## 5. Open questions for the spec
