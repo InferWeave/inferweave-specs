@@ -82,7 +82,7 @@ exists but the federated-provisioning behavior is absent. **Missing** = no sourc
 |---|---|---|
 | Versioned `provisioning` capability | **Missing** | `fed_capabilities.rs` has `admission-report`, `demand`, `link-meta`, `scaling-status` — no `iw.provisioning/*`. |
 | Feature flags for approvals/leases/revocation | **Missing** | No such flags. |
-| `provision.*` message family | **Delivered (wire types)** | `crates/iw-protocol/src/provision.rs` (`7f8cdf0b`): envelope, feature flags, state machine, tagged message family. Wire types only — no transport/controller yet. |
+| `provision.*` message family | **Delivered** | `crates/iw-protocol/src/provision.rs` (`7f8cdf0b`): envelope, feature flags, state machine, tagged message family. Transport adapter `crates/iw-gateway/src/provision_transport.rs` (`43cdb0c2`): canonical JSON decode/encode, envelope validation, feature-negotiation gating, idempotency dedup, dispatch (capabilities/request/offer/reserve/activate/revoke/heartbeat) to the controller. No socket/HTTP wiring yet. |
 | Envelope (id, idempotency key, actor, provenance, expiry, trace) | **Partial** | `envelope.rs` + relay frames exist; no provisioning-specific envelope, no idempotency-key dedup for provisioning, no hop/rate/payload limits for provisioning. |
 | Fail closed on unknown versions | **Partial** | `fed_capabilities` drops malformed entries; the provisioning capability itself is absent. |
 
@@ -265,9 +265,24 @@ Delivered and committed (branch `feat/federated-provisioning-phase1`, on
   reservation). Every state change returns a `ReservationEvent` for the audit
   log. Pure and clock-free. 10 tests.
 
+**WS C wire transport adapter delivered** (`43cdb0c2`):
+`crates/iw-gateway/src/provision_transport.rs` bridges raw `provision.*`
+bytes to the controller — canonical JSON decode/encode with envelope
+validation and a 1 MiB body cap; feature-negotiation gating
+(`requires_feature`, a message needing an unnegotiated feature is refused,
+never silently dropped); bounded idempotency dedup by key (replay is a no-op
+ack); and dispatch (capabilities negotiate+reply, request→offer,
+reserve→reserve-confirmation, activate/revoke→controller, heartbeat
+no-op). `Controller::on_reserve` now takes the wire `ProvisionReserve`
+body and binds to an `OfferRecord` store by offer id (`in_reply_to`),
+never taking model/slots/offer_key from the requester; stale offers are
+not bindable. Disabled by default: a default `OwnerPolicy` refuses every
+message via the controller gate. 8 transport tests, 10 controller tests.
+
 Not yet delivered (later workstreams): item 5 (GUI owner-policy controls),
-the wire transport that feeds the controller `provision.*` messages, and
-activation (still refused by the Phase 1 gate in every mode).
+real socket/HTTP transport wiring (the adapter is a pure core awaiting a
+network feed), activation (still refused by the Phase 1 gate in every
+mode), and reservation/lease persistence (WS D).
 
 ---
 
