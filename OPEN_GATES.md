@@ -343,3 +343,38 @@ Unsatisfied, and recorded `owed` by `P5-T33` (Rust gateway) and `P5-T34` (Go gat
 
 No deployment may enable open enrollment, and no placement or routing behaviour may depend on
 `hardware`, until those tests are `proven` and an operator decision approves it.
+
+## Universal runtime families and lifecycle (specs/48–53) — 2026-10-12
+
+**BLOCKED for production use.** The IW-RT-001…006/B-T01…06 protocol artifacts define typed runtime
+families, isolated adapter lifecycle methods, native family requests, immutable-key single-flight
+loading, fenced safe-peak reservations, three transactional cache classes, availability-aware
+swap, pipelines, durable jobs and executable conformance. These are protocol contracts only.
+
+The offline conformance runner validates advertisements and positive/negative request bodies. It
+prints `native HTTP: NOT RUN` unless an operator supplies `--live-base-url`; OpenAPI path existence
+and schema validation are not evidence that a server handles a request. Even a live contract replay
+does not by itself prove resource accounting, cache integrity, rollback or production readiness.
+
+Unsatisfied and recorded `owed` by the amended B-T01…B-T06 tasks and the later runtime/gateway
+implementation work:
+
+- no production adapter implements and exercises all twelve lifecycle methods across the required
+  process/container isolation boundary;
+- no production manager has demonstrated waiter-independent cancellation for one immutable-key
+  single-flight load;
+- no production rebalancer has demonstrated idempotent fenced reservations, the full safe-peak
+  resource envelope, crash reconciliation or progress-based expiry;
+- the current artifact fetch implementation buffers bytes in memory and its legacy custom
+  `digest128` cache identity is not SHA-256 integrity proof; streamed multi-GB acquisition,
+  cryptographic verification, atomic publication, pinning and offline behavior remain unproven;
+- no constrained-memory drain-and-swap or cross-node replacement has demonstrated rollback and
+  the reported availability impact against a real runtime;
+- no mixed-version gateway/node pair has exercised additive family fields, legacy jobs without
+  `family`, or `completed` normalization to canonical `succeeded`;
+- no real end-to-end demonstrations have loaded and served the required runtime families through
+  native endpoints under production admission, owner priority and telemetry controls.
+
+Runtime-family production integration remains owed until those real demonstrations and the
+independent review are recorded as `proven`. The schemas, fixtures and local runner must not be
+cited as operational qualification.

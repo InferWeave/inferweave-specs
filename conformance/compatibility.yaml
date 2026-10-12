@@ -9,3 +9,16 @@ implementations:
     minimum: unknown
   gateway:
     minimum: unknown
+runtimeProtocol:
+  introduced: 1.1.0
+  legacyPeerPolicy: omit-additive-fields
+  features:
+    runtime_families: "1"
+    runtime_lifecycle: "1"
+    runtime_reservations: "1"
+    transactional_caches: "1"
+  rules:
+    - A peer that does not advertise a feature is handled through the pre-feature Protocol v1 shape.
+    - Unknown feature names are ignored and preserved according to specs/45.
+    - New producers emit succeeded; readers accept legacy completed and normalize it before re-emission.
+    - Job family is absent on legacy records and must never be inferred from a model name.

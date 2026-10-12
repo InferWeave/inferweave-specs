@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/runtime/load-request.json",
+  "title": "Runtime load request",
+  "description": "One waiter on a single-flight runtime load. deployment_key is the sha256 digest of the immutable normalized deployment, runtime, effective profile, policy and resource contract. Cancelling this waiter detaches only the waiter; the shared load is cancelled only when no waiter remains or the runtime manager cancels it explicitly.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["deployment_key", "waiter_id", "reservation_id", "fencing_epoch", "cancellation_scope"],
+  "properties": {
+    "deployment_key": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "waiter_id": {"type": "string", "minLength": 1},
+    "reservation_id": {"type": "string", "minLength": 1},
+    "fencing_epoch": {"type": "integer", "minimum": 0},
+    "cancellation_scope": {"type": "string", "enum": ["waiter"]},
+    "extensions": {"$ref": "../common/extensions.json"}
+  }
+}

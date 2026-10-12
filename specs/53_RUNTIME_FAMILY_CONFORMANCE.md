@@ -17,11 +17,15 @@ feature id and a canonical task.
 - **Conformance vectors.** Add runtime-family conformance fixtures to
   `conformance/` covering at least `embeddings`, `reranking`, `prediction`,
   `stt`, and `rag` advertisement/admission round-trips, plus a native-endpoint
-  smoke vector for each family-specific endpoint in
-  [`specs/49`](49_NATIVE_CONTROL_PLANE_ENDPOINTS.md).
+  positive and negative request vectors for each family-specific endpoint in
+  [`specs/49`](49_NATIVE_CONTROL_PLANE_ENDPOINTS.md). Offline execution validates request bodies
+  against the canonical schemas and admission reference; merely finding a path in OpenAPI is not
+  HTTP evidence.
 - **Runner coverage.** Extend `conformance/runner.py` to run the new vectors and
   report per-family pass/fail, wired into the same exit-code and evidence
-  discipline as existing conformance.
+  discipline as existing conformance. `--live-base-url` is the explicit operational mode: it sends
+  every positive and negative case to a running implementation and verifies actual status codes.
+  Without that flag the runner prints `native HTTP: NOT RUN` and makes no operational claim.
 - **Feature registry.** Register one feature id per new capability (e.g.
   `IW-RT-001` runtime-family registry, `IW-RT-002` native endpoints, `IW-RT-003`
   transactional lifecycle, `IW-RT-004` pipelines, `IW-RT-005` durable jobs) in
@@ -43,11 +47,16 @@ feature id and a canonical task.
 3. **No untested surface.** A native endpoint in
    [`specs/49`](49_NATIVE_CONTROL_PLANE_ENDPOINTS.md) without a conformance
    vector is reported, not silently merged.
+4. **No simulated qualification.** Schema validation and OpenAPI discovery are contract evidence;
+   only the opt-in live runner is HTTP evidence, and neither closes the production-integration gate
+   without a real runtime-family demonstration.
 
 ## Required tests
 
 - conformance-runs: `conformance/runner.py` reports the new family vectors and
   exits per the existing evidence discipline.
+- negative-fixtures: malformed/mismatched family requests fail executable schema/admission checks.
+- live-runner: optional HTTP mode sends the cases to a running endpoint and fails on status drift.
 - registry-traceable: every feature id added is present in
   `contracts/feature-registry.json` and referenced by a conformance vector or
   canonical task.

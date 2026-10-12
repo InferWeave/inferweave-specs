@@ -1,0 +1,12 @@
+{
+  "contract_version": 1,
+  "artifact_id": "optimization-engine-plan",
+  "cache_class": "optimization",
+  "content_digest": "sha256:cf4ab791c62b8d2b2109c90275287816f04909942489e6229959af8847db1a41",
+  "state": "cached",
+  "integrity": {"algorithm": "sha256", "verified": true},
+  "publication": {"state": "published", "atomic": true},
+  "pin": {"pinned": false},
+  "offline_ready": false,
+  "acquisition": {"mode": "streamed", "max_buffer_bytes": 8388608, "resumable": true}
+}

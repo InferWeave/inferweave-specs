@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/artifacts/cache-state.json",
   "title": "Artifact cache state",
-  "description": "Node-side artifact cache state for model-on-demand loading.",
+  "description": "Node-side state for the three content-addressed caches: model artifacts, runtime artifacts and optimization artifacts. Legacy records remain valid. contract_version 1 requires digest verification before atomic publication, explicit pin state and offline-readiness disclosure.",
   "type": "object",
   "additionalProperties": true,
   "required": [
@@ -10,9 +10,18 @@
     "state"
   ],
   "properties": {
+    "contract_version": {
+      "type": "integer",
+      "enum": [1]
+    },
     "artifact_id": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "description": "Stable protocol artifact id. It may be a legacy cache id such as digest128 and is not by itself cryptographic integrity proof."
+    },
+    "legacy_cache_id": {
+      "type": "string",
+      "description": "Optional implementation lookup key retained during migration (including custom digest128 ids). Never substitute it for content_digest verification."
     },
     "state": {
       "type": "string",
@@ -23,6 +32,60 @@
         "pinned",
         "evictable"
       ]
+    },
+    "cache_class": {
+      "type": "string",
+      "enum": ["model", "runtime", "optimization"]
+    },
+    "content_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Cryptographic SHA-256 over artifact bytes. This is separate from artifact_id and any legacy digest128 cache key."
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["algorithm", "verified"],
+      "properties": {
+        "algorithm": {"type": "string", "enum": ["sha256"]},
+        "verified": {"type": "boolean"},
+        "verified_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "publication": {
+      "description": "Entries are written to a private staging path, verified, fsync'd where supported and atomically renamed before state=published becomes observable.",
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["state", "atomic"],
+      "properties": {
+        "state": {"type": "string", "enum": ["staging", "verifying", "published", "quarantined"]},
+        "atomic": {"type": "boolean"}
+      }
+    },
+    "pin": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["pinned"],
+      "properties": {
+        "pinned": {"type": "boolean"},
+        "reason": {"type": "string"},
+        "owner": {"type": "string"}
+      }
+    },
+    "offline_ready": {
+      "type": "boolean",
+      "description": "True only when this entry and every declared dependency required for use are locally published and verified; implementations must not silently fetch when offline mode is requested."
+    },
+    "acquisition": {
+      "description": "Multi-GB artifacts are acquired incrementally to a private staging file; implementations must not buffer the whole artifact in memory.",
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["mode", "max_buffer_bytes", "resumable"],
+      "properties": {
+        "mode": {"type": "string", "enum": ["streamed"]},
+        "max_buffer_bytes": {"type": "integer", "minimum": 1, "maximum": 67108864},
+        "resumable": {"type": "boolean"}
+      }
     },
     "last_access": {
       "type": "string",
@@ -41,5 +104,35 @@
     "extensions": {
       "$ref": "../common/extensions.json"
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {"required": ["contract_version"]},
+      "then": {"required": ["cache_class", "content_digest", "integrity", "publication", "pin", "offline_ready", "acquisition"]}
+    },
+    {
+      "if": {
+        "properties": {
+          "publication": {
+            "properties": {"state": {"const": "published"}},
+            "required": ["state"]
+          }
+        },
+        "required": ["publication"]
+      },
+      "then": {
+        "properties": {
+          "integrity": {
+            "properties": {"verified": {"const": true}},
+            "required": ["verified"]
+          },
+          "publication": {
+            "properties": {"atomic": {"const": true}},
+            "required": ["atomic"]
+          }
+        },
+        "required": ["integrity"]
+      }
+    }
+  ]
 }

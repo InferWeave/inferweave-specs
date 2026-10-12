@@ -635,6 +635,7 @@ components:
                   enum: [reranking, prediction, embeddings]
                 requested_family: { type: string }
     RerankRequest:
+      x-json-schema: schemas/v1/requests/rerank.json
       type: object
       required: [family, model, query, documents]
       properties:
@@ -658,6 +659,7 @@ components:
               index: { type: integer, minimum: 0 }
               relevance_score: { type: number }
     PredictionRequest:
+      x-json-schema: schemas/v1/requests/prediction.json
       type: object
       required: [family, model, inputs]
       properties:
@@ -683,6 +685,7 @@ components:
                   - { type: string }
               score: { type: number }
     EmbeddingRequest:
+      x-json-schema: schemas/v1/requests/embeddings.json
       type: object
       required: [family, model, input]
       properties:
@@ -715,11 +718,16 @@ components:
         quality: { type: object, additionalProperties: true }
         context: { type: object, nullable: true, additionalProperties: true }
     Deployment:
+      x-json-schema: schemas/v1/deployments/deployment.json
       type: object
       required: [schema_version, deployment_id, modality, model, runtime]
       properties:
         schema_version: { type: string, enum: [inferweave.deployment/v1] }
         deployment_id: { type: string }
+        deployment_key:
+          type: string
+          pattern: '^sha256:[0-9a-f]{64}$'
+          description: Additive immutable single-flight key; required when runtime_lifecycle/1 is negotiated.
         modality: { type: string }
         model: { type: object, additionalProperties: true }
         tokenizer: { type: object, additionalProperties: true }
@@ -915,7 +923,16 @@ components:
         job_id: { type: string }
         state:
           type: string
-          enum: [queued, preparing, running, finalizing, completed, failed, cancelled, expired]
+          enum: [queued, preparing, running, finalizing, succeeded, completed, failed, cancelled, expired]
+          description: New producers emit succeeded. completed is accepted only from legacy records and normalized before re-emission.
+          x-canonical-emitted-value: succeeded
+          x-legacy-read-values: [completed]
+        family:
+          type: string
+          description: Additive family for runtime_families/1 jobs; absent on legacy jobs and never inferred.
+          enum: [llm, reasoning, embeddings, reranking, stt, tts, audio, prediction, image, video, multimodal, scientific, rag]
+        result_ref:
+          $ref: "#/components/schemas/Artifact"
         progress:
           type: object
           properties:
@@ -923,6 +940,16 @@ components:
             stage: { type: string }
             message: { type: string }
         request_id: { type: string }
+    Artifact:
+      type: object
+      required: [artifact_id]
+      properties:
+        artifact_id: { type: string, minLength: 1 }
+        type: { type: string }
+        mime_type: { type: string }
+        size_bytes: { type: number, minimum: 0 }
+        checksum: { type: string }
+        locations: { type: array, items: { type: string } }
     Error:
       type: object
       required: [code, message, retryable]

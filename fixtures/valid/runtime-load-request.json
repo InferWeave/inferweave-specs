@@ -1,0 +1,7 @@
+{
+  "deployment_key": "sha256:9a79be611e0267e1d943da0737c6c51be67865a0d7aa340375b1c5d1f5ec565a",
+  "waiter_id": "request-17",
+  "reservation_id": "reservation-17",
+  "fencing_epoch": 4,
+  "cancellation_scope": "waiter"
+}

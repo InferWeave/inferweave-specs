@@ -3,8 +3,13 @@
   "$id": "https://inferweave.dev/schemas/v1/resources/reservation.json",
   "title": "GpuMemoryReservation",
   "type": "object",
-  "description": "A logical VRAM reservation in a rebalancer's ledger (spec 46 §5).",
+  "description": "A logical resource reservation in the rebalancer's ledger (specs/46 §5 and specs/50). Legacy GPU-memory reservations remain valid. contractVersion 1 adds the idempotency, fencing, progress-liveness and safe-peak resource envelope required for runtime loading; expiry is based on absence of observable progress, never elapsed wall duration alone.",
   "properties": {
+    "contractVersion": {
+      "type": "integer",
+      "enum": [1],
+      "description": "Presence selects the additive runtime-reservation contract. Absence is the legacy specs/46 reservation shape."
+    },
     "reservationId": {
       "type": "string",
       "minLength": 1,
@@ -18,6 +23,18 @@
       "maxLength": 128,
       "pattern": "^[\\x21-\\x7e]*$",
       "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable across retries of the same logical reservation; the authority returns the same reservation and never double-books it."
+    },
+    "fencingEpoch": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Monotonic authority epoch. Commands carrying an older epoch cannot load, mutate or release the reservation."
     },
     "owner": {
       "type": "object",
@@ -57,6 +74,20 @@
       "pattern": "^[\\x21-\\x7e]*$",
       "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
     },
+    "physicalResourceKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable physical node/device de-duplication key. It excludes the advertising parent so the same GPU learned through multiple parents remains one resource."
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "parentId": {"type": "string", "description": "Advertising path provenance only; never part of physicalResourceKey."},
+        "federationPath": {"type": "array", "items": {"type": "string"}}
+      }
+    },
     "placementGroupId": {
       "type": "string",
       "minLength": 1,
@@ -90,6 +121,42 @@
       "minimum": 0,
       "maximum": 9007199254740991,
       "description": "Shrinks as the runtime's allocation appears, so a reservation that became physical is never subtracted twice."
+    },
+    "resourceEnvelope": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["gpuSafePeakBytes", "cpuRamSafePeakBytes", "diskSafePeakBytes", "gpuCount", "topology"],
+      "properties": {
+        "gpuSafePeakBytes": {
+          "description": "Independently estimated contributors to the safe peak. Admission sums these contributors with headroom; weights alone are never the admission envelope.",
+          "type": "object",
+          "additionalProperties": true,
+          "required": ["weights", "kvCache", "activations", "runtimeWorkspace", "auxiliaryModels", "loadingPeak"],
+          "properties": {
+            "weights": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+            "kvCache": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+            "activations": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+            "runtimeWorkspace": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+            "auxiliaryModels": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+            "loadingPeak": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}
+          }
+        },
+        "cpuRamSafePeakBytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "diskSafePeakBytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+        "gpuCount": {"type": "integer", "minimum": 0},
+        "topology": {"type": "object", "minProperties": 1, "additionalProperties": true}
+      }
+    },
+    "lastProgressAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the latest observable monotonic progress event. A lease may expire only when this fails to advance for the negotiated progress timeout."
+    },
+    "progressSequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Monotonic progress sequence used to distinguish a live long load from an abandoned reservation."
     },
     "createdAt": {
       "type": "string",
@@ -125,5 +192,13 @@
     "createdAt",
     "state"
   ],
-  "additionalProperties": true
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {"required": ["contractVersion"]},
+      "then": {
+        "required": ["idempotencyKey", "fencingEpoch", "physicalResourceKey", "resourceEnvelope", "lastProgressAt", "progressSequence"]
+      }
+    }
+  ]
 }

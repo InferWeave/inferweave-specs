@@ -178,6 +178,12 @@ tolerate unknown features (ignore, preserve, forward) and MUST NOT reject a peer
 advertising an unknown feature. A feature a peer advertises at a higher level than the local
 component supports is negotiated down, never assumed.
 
+Protocol 1.1.0 also defines additive runtime-family features `runtime_families`,
+`runtime_lifecycle`, `runtime_reservations`, and `transactional_caches` at level `"1"`
+(`specs/48`–`specs/53`). Each is negotiated independently. When absent, the sender uses the legacy
+Protocol v1 shape and omits its additive fields; it never infers a runtime family or treats version
+alone as proof that lifecycle, reservation or cache behavior is present.
+
 ## Stable identity model
 
 Every important protocol object has a stable ID. Required identity classes: `gateway_id`,
@@ -669,10 +675,11 @@ interrupted streams as successful responses.
 
 ## Async jobs
 
-Long-running workloads use `POST/GET/DELETE /inferweave/v1/jobs[...]`. Canonical states:
-`queued`, `preparing`, `running`, `finalizing`, `completed`, `failed`, `cancelled`, `expired`.
-Jobs may report progress (`fraction`, `stage`, `message`). State machine in
-`state-machines/job.md`.
+Long-running workloads use `POST/GET/DELETE /inferweave/v1/jobs[...]`. Canonical emitted states:
+`queued`, `preparing`, `running`, `finalizing`, `succeeded`, `failed`, `cancelled`, `expired`.
+Readers accept legacy `completed` as `succeeded`; new producers never emit it. `family` is additive
+for runtime-family submissions so legacy stored jobs remain valid. Jobs may report progress
+(`fraction`, `stage`, `message`). State machine in `state-machines/job.md`.
 
 ## Extension namespace
 

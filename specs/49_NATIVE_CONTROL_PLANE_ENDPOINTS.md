@@ -35,6 +35,10 @@ all under `/inferweave/v1`:
 ## Contract requirements
 
 - Every endpoint accepts and returns Protocol v1 schemas (no ad-hoc fields).
+- Standalone JSON Schemas are authoritative for persisted/generated bindings: deployment is
+  `schemas/v1/deployments/deployment.json`, and the three native family requests are
+  `schemas/v1/requests/{rerank,prediction,embeddings}.json`. Their OpenAPI components must match
+  the standalone required fields and properties; CI rejects drift.
 - Family-specific endpoints reject requests whose family does not match their
   contract (e.g. `POST /rerank` rejects a non-reranking request) with a typed
   error from `schemas/v1/errors/`.
@@ -55,3 +59,4 @@ all under `/inferweave/v1`:
   runtime advertises the `reranking` family.
 - parity: native endpoints observe the same admission and fairshare controls as
   the OpenAI-compatible surface (a shared conformance fixture).
+- schema-parity: standalone deployment and family-request schemas match their OpenAPI components.

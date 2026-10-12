@@ -16,7 +16,11 @@ fixture that starts validating, fails the run.
 Usage: python3 conformance/runner.py
 """
 from pathlib import Path
-import json, sys
+import argparse
+import json
+import sys
+import urllib.error
+import urllib.request
 from jsonschema import Draft7Validator, RefResolver
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,6 +51,7 @@ MAP = {
     "seat": "resources/seat.json",
     "memory": "resources/memory.json",
     "runtime-instance": "runtime/runtime-instance.json",
+    "runtime-load-request": "runtime/load-request.json",
     "request": "requests/request.json",
     "registration": "requests/registration.json",
     "heartbeat": "requests/heartbeat.json",
@@ -225,15 +230,19 @@ def admit_advertisement(ad, registry):
     return all(isinstance(ad.get(k), list) and ad[k] for k in ("input_modalities", "output_modalities"))
 
 
-def check_runtime_family_vectors():
-    """Spec 53: per-family advertisement/admission round-trips and native-endpoint smoke vectors.
+def check_runtime_family_vectors(vector_path=None):
+    """Spec 53: per-family advertisements and executable native request contract cases.
 
     Returns {family: [error, ...]}; an empty list means the family passes.
     """
     import yaml
-    doc = json.loads((ROOT / "conformance" / "runtime-family-vectors.json").read_text())
-    paths = yaml.safe_load((ROOT / "openapi" / "inferweave-v1.yaml").read_text())["paths"]
+    vector_path = vector_path or ROOT / "conformance" / "runtime-family-vectors.json"
+    doc = json.loads(Path(vector_path).read_text())
+    openapi = yaml.safe_load((ROOT / "openapi" / "inferweave-v1.yaml").read_text())
+    paths = openapi["paths"]
     registry = set(doc["registry"])
+    capability_validator = validator("model/capabilities.json")
+    openapi_resolver = RefResolver(base_uri="", referrer=openapi)
     results = {}
     for fam in doc["requiredFamilies"]:
         errs = results.setdefault(fam, [])
@@ -246,6 +255,9 @@ def check_runtime_family_vectors():
             errs.append("advertisement names a different family")
         if admit_advertisement(ad, registry) != vec["expect"]["admitted"]:
             errs.append("advertisement admission disagrees with reference")
+        quality_errors = list(capability_validator.iter_errors(ad))
+        if quality_errors:
+            errs.append(f"quality/capability schema invalid: {quality_errors[0].message}")
         if json.loads(json.dumps(ad)) != ad:
             errs.append("advertisement does not round-trip")
         if not vec.get("rejections"):
@@ -255,17 +267,34 @@ def check_runtime_family_vectors():
             bad.update(rej.get("override", {}))
             if admit_advertisement(bad, registry) != rej["expect"]["admitted"]:
                 errs.append(f"rejection {rej['id']}: admission disagrees with reference")
-        smoke = vec.get("nativeSmoke")
-        if not smoke:
-            errs.append("native smoke vector missing")
-        elif smoke["method"].lower() not in paths.get(smoke["path"], {}):
-            errs.append(f"native smoke {smoke['method']} {smoke['path']} not in OpenAPI")
+        cases = vec.get("nativeCases")
+        if not cases:
+            errs.append("native executable cases missing")
+            continue
+        if not any(case["expectStatus"] < 400 for case in cases):
+            errs.append("native success case missing")
+        if not any(case["expectStatus"] >= 400 for case in cases):
+            errs.append("native negative case missing")
+        for case in cases:
+            operation = paths.get(case["path"], {}).get(case["method"].lower())
+            if operation is None:
+                errs.append(f"native case {case['id']}: {case['method']} {case['path']} not in OpenAPI")
+                continue
+            request_schema = operation.get("requestBody", {}).get("content", {}).get("application/json", {}).get("schema")
+            if request_schema is None:
+                errs.append(f"native case {case['id']}: OpenAPI operation has no JSON request schema")
+                continue
+            request_errors = list(Draft7Validator(request_schema, resolver=openapi_resolver).iter_errors(case["body"]))
+            if case["expectStatus"] < 400 and request_errors:
+                errs.append(f"native case {case['id']}: valid body rejected: {request_errors[0].message}")
+            if case["expectStatus"] >= 400 and not request_errors:
+                errs.append(f"native case {case['id']}: negative body is accepted by the request contract")
     return results
 
 
-def report_runtime_family_vectors():
+def report_runtime_family_vectors(vector_path=None):
     ok = True
-    for fam, errs in check_runtime_family_vectors().items():
+    for fam, errs in check_runtime_family_vectors(vector_path).items():
         if errs:
             ok = False
             print(f"FAIL  runtime-family {fam}")
@@ -276,10 +305,60 @@ def report_runtime_family_vectors():
     return ok
 
 
+def run_live_runtime_family_cases(base_url, vector_path=None):
+    """Execute native cases over HTTP. This is optional and is the only HTTP qualification mode."""
+    vector_path = vector_path or ROOT / "conformance" / "runtime-family-vectors.json"
+    doc = json.loads(Path(vector_path).read_text())
+    ok = True
+    for family in doc["requiredFamilies"]:
+        for case in doc["families"][family]["nativeCases"]:
+            url = base_url.rstrip("/") + case["path"]
+            request = urllib.request.Request(
+                url,
+                data=json.dumps(case["body"]).encode(),
+                headers={
+                    "Content-Type": "application/json",
+                    "X-InferWeave-Conformance-Case": case["id"],
+                },
+                method=case["method"],
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=10) as response:
+                    status = response.status
+            except urllib.error.HTTPError as error:
+                status = error.code
+            except OSError as error:
+                print(f"FAIL  native HTTP {case['id']}: {error}")
+                ok = False
+                continue
+            if status != case["expectStatus"]:
+                print(f"FAIL  native HTTP {case['id']}: expected {case['expectStatus']}, got {status}")
+                ok = False
+            else:
+                print(f"PASS  native HTTP {case['id']} ({status})")
+    return ok
+
+
 def main():
+    parser = argparse.ArgumentParser(description="Validate Protocol v1 fixtures and optional live runtime-family HTTP cases.")
+    parser.add_argument(
+        "--live-base-url",
+        help="Execute native runtime-family cases against this URL (include /inferweave/v1 when the server mounts that prefix).",
+    )
+    parser.add_argument(
+        "--runtime-family-vectors",
+        type=Path,
+        default=ROOT / "conformance" / "runtime-family-vectors.json",
+        help=argparse.SUPPRESS,
+    )
+    args = parser.parse_args()
     failures = 0
     failures += 0 if check_node_join_vectors() else 1
-    failures += 0 if report_runtime_family_vectors() else 1
+    failures += 0 if report_runtime_family_vectors(args.runtime_family_vectors) else 1
+    if args.live_base_url:
+        failures += 0 if run_live_runtime_family_cases(args.live_base_url, args.runtime_family_vectors) else 1
+    else:
+        print("INFO  native HTTP: NOT RUN (contract-only validation; pass --live-base-url for operational qualification)")
     for d in ("valid", "federation", "invalid"):
         fixtures = sorted((ROOT / "fixtures" / d).glob("*.json"))
         if not fixtures:
