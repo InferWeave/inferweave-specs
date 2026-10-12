@@ -3,11 +3,13 @@
   "$id": "https://inferweave.dev/schemas/v1/resources/reservation.json",
   "title": "GpuMemoryReservation",
   "type": "object",
-  "description": "A logical resource reservation in the rebalancer's ledger (specs/46 §5 and specs/50). Legacy GPU-memory reservations remain valid. contractVersion 1 adds the idempotency, fencing, progress-liveness and safe-peak resource envelope required for runtime loading; expiry is based on absence of observable progress, never elapsed wall duration alone.",
+  "description": "A logical resource reservation in the rebalancer ledger. Legacy reservations remain valid. contractVersion 1 adds authority-owned idempotency, fencing, evidenced safe-peak quantities and monotonic progress leases; producer timestamps are display-only.",
   "properties": {
     "contractVersion": {
       "type": "integer",
-      "enum": [1],
+      "enum": [
+        1
+      ],
       "description": "Presence selects the additive runtime-reservation contract. Absence is the legacy specs/46 reservation shape."
     },
     "reservationId": {
@@ -84,8 +86,16 @@
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "parentId": {"type": "string", "description": "Advertising path provenance only; never part of physicalResourceKey."},
-        "federationPath": {"type": "array", "items": {"type": "string"}}
+        "parentId": {
+          "type": "string",
+          "description": "Advertising path provenance only; never part of physicalResourceKey."
+        },
+        "federationPath": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "placementGroupId": {
@@ -124,27 +134,72 @@
     },
     "resourceEnvelope": {
       "type": "object",
-      "additionalProperties": true,
-      "required": ["gpuSafePeakBytes", "cpuRamSafePeakBytes", "diskSafePeakBytes", "gpuCount", "topology"],
+      "additionalProperties": false,
+      "required": [
+        "gpuContributors",
+        "gpuHeadroom",
+        "gpuSafePeak",
+        "cpuRamSafePeak",
+        "diskSafePeak",
+        "gpuCount",
+        "topology"
+      ],
       "properties": {
-        "gpuSafePeakBytes": {
-          "description": "Independently estimated contributors to the safe peak. Admission sums these contributors with headroom; weights alone are never the admission envelope.",
+        "gpuContributors": {
           "type": "object",
-          "additionalProperties": true,
-          "required": ["weights", "kvCache", "activations", "runtimeWorkspace", "auxiliaryModels", "loadingPeak"],
+          "additionalProperties": false,
+          "required": [
+            "weights",
+            "kvCache",
+            "activations",
+            "runtimeWorkspace",
+            "auxiliaryModels",
+            "loadingPeak"
+          ],
           "properties": {
-            "weights": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
-            "kvCache": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
-            "activations": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
-            "runtimeWorkspace": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
-            "auxiliaryModels": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
-            "loadingPeak": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}
-          }
+            "weights": {
+              "$ref": "#/definitions/evidencedQuantity"
+            },
+            "kvCache": {
+              "$ref": "#/definitions/evidencedQuantity"
+            },
+            "activations": {
+              "$ref": "#/definitions/evidencedQuantity"
+            },
+            "runtimeWorkspace": {
+              "$ref": "#/definitions/evidencedQuantity"
+            },
+            "auxiliaryModels": {
+              "$ref": "#/definitions/evidencedQuantity"
+            },
+            "loadingPeak": {
+              "$ref": "#/definitions/evidencedQuantity"
+            }
+          },
+          "description": "Each safe-peak contributor is an evidenced Quantity; unknown and unsupported quantities cannot be admitted."
         },
-        "cpuRamSafePeakBytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
-        "diskSafePeakBytes": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
-        "gpuCount": {"type": "integer", "minimum": 0},
-        "topology": {"type": "object", "minProperties": 1, "additionalProperties": true}
+        "gpuHeadroom": {
+          "$ref": "#/definitions/evidencedQuantity"
+        },
+        "gpuSafePeak": {
+          "$ref": "#/definitions/evidencedQuantity",
+          "description": "Must be at least the exact sum of all six contributor bytes plus gpuHeadroom; admission also requires it not exceed currently available GPU bytes."
+        },
+        "cpuRamSafePeak": {
+          "$ref": "#/definitions/evidencedQuantity"
+        },
+        "diskSafePeak": {
+          "$ref": "#/definitions/evidencedQuantity"
+        },
+        "gpuCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "topology": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": true
+        }
       }
     },
     "lastProgressAt": {
@@ -180,6 +235,29 @@
     "reason": {
       "type": "string",
       "maxLength": 128
+    },
+    "progressTimeoutMs": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400000,
+      "description": "Authority-selected negotiated no-progress interval for this reservation."
+    },
+    "authorityClock": {
+      "type": "string",
+      "const": "monotonic",
+      "description": "Lease evaluation uses only the reservation authority monotonic clock; producer wall timestamps never extend a lease."
+    },
+    "lastProgressAuthorityTick": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Opaque authority-local monotonic millisecond observation tick."
+    },
+    "leaseDeadlineAuthorityTick": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991,
+      "description": "Authority-local deadline equal to the last accepted progress observation plus progressTimeoutMs."
     }
   },
   "required": [
@@ -195,10 +273,40 @@
   "additionalProperties": true,
   "allOf": [
     {
-      "if": {"required": ["contractVersion"]},
+      "if": {
+        "required": [
+          "contractVersion"
+        ]
+      },
       "then": {
-        "required": ["idempotencyKey", "fencingEpoch", "physicalResourceKey", "resourceEnvelope", "lastProgressAt", "progressSequence"]
+        "required": [
+          "idempotencyKey",
+          "fencingEpoch",
+          "physicalResourceKey",
+          "resourceEnvelope",
+          "progressTimeoutMs",
+          "authorityClock",
+          "lastProgressAuthorityTick",
+          "leaseDeadlineAuthorityTick",
+          "progressSequence"
+        ]
       }
     }
-  ]
+  ],
+  "definitions": {
+    "evidencedQuantity": {
+      "allOf": [
+        {
+          "$ref": "quantity.json"
+        },
+        {
+          "type": "object",
+          "required": [
+            "source",
+            "confidence"
+          ]
+        }
+      ]
+    }
+  }
 }

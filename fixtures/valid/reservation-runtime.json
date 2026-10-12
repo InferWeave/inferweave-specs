@@ -10,20 +10,78 @@
   "kind": "placement",
   "resourceId": "gpu:gw_fry-rust/node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
   "physicalResourceKey": "node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
-  "provenance": {"parentId": "gateway-parent-a", "federationPath": ["gateway-parent-a", "gw_fry-rust"]},
+  "provenance": {
+    "parentId": "gateway-parent-a",
+    "federationPath": [
+      "gateway-parent-a",
+      "gw_fry-rust"
+    ]
+  },
   "requestedBytes": 16106127360,
   "effectiveBytes": 16106127360,
   "resourceEnvelope": {
-    "gpuSafePeakBytes": {
-      "weights": 8589934592,
-      "kvCache": 2147483648,
-      "activations": 1073741824,
-      "runtimeWorkspace": 1073741824,
-      "auxiliaryModels": 536870912,
-      "loadingPeak": 2684354560
+    "gpuContributors": {
+      "weights": {
+        "bytes": 8589934592,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      },
+      "kvCache": {
+        "bytes": 2147483648,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      },
+      "activations": {
+        "bytes": 1073741824,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      },
+      "runtimeWorkspace": {
+        "bytes": 1073741824,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      },
+      "auxiliaryModels": {
+        "bytes": 536870912,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      },
+      "loadingPeak": {
+        "bytes": 2684354560,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      }
     },
-    "cpuRamSafePeakBytes": 17179869184,
-    "diskSafePeakBytes": 32212254720,
+    "gpuHeadroom": {
+      "bytes": 536870912,
+      "basis": "estimated",
+      "source": "iw-sizer",
+      "confidence": "low"
+    },
+    "gpuSafePeak": {
+      "bytes": 16642998272,
+      "basis": "derived",
+      "source": "iw-ledger",
+      "confidence": "medium"
+    },
+    "cpuRamSafePeak": {
+      "bytes": 17179869184,
+      "basis": "estimated",
+      "source": "iw-sizer",
+      "confidence": "low"
+    },
+    "diskSafePeak": {
+      "bytes": 32212254720,
+      "basis": "estimated",
+      "source": "iw-sizer",
+      "confidence": "low"
+    },
     "gpuCount": 1,
     "topology": {
       "sameHost": true
@@ -33,5 +91,9 @@
   "progressSequence": 3,
   "createdAt": "2026-10-12T11:59:00Z",
   "expiresAt": "2026-10-12T12:05:00Z",
-  "state": "loading"
+  "state": "loading",
+  "progressTimeoutMs": 300000,
+  "authorityClock": "monotonic",
+  "lastProgressAuthorityTick": 120000,
+  "leaseDeadlineAuthorityTick": 420000
 }

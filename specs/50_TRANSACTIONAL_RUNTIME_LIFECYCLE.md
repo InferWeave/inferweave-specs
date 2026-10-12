@@ -77,9 +77,14 @@ interrupted back to `READY` only if the drain was cancelled before unload.
 
 ## Single-flight loading
 
-Loads are coalesced only by `deployment_key`, the SHA-256 digest of the immutable normalized model,
-artifacts, runtime, effective profile, policy and resource contract. Mutable aliases, model names,
-request IDs and waiter IDs are not keys. Each caller has an independent `waiter_id`; cancelling one
+Loads are coalesced only by `deployment_key`. Its exact digest input is the
+`schemas/v1/deployments/deployment-identity.json` object: `schema_version`, `modality`, `model`,
+`artifacts`, `runtime`, `effective_profile`, `policy`, and `resource_contract`, with no additional
+top-level fields. Encode that object as RFC 8785 JSON Canonicalization Scheme UTF-8, hash the bytes
+with SHA-256, and render `sha256:<lowercase-hex>`. `conformance/deployment-key-vectors.json` is the
+cross-language known answer. Deployment ID, instances, assignment, placement reason, timestamps,
+aliases, request IDs, and waiter IDs are excluded live data. Each caller has an independent
+`waiter_id`; cancelling one
 waiter detaches that waiter and does not cancel the shared load or other waiters. The manager may
 cancel the underlying load only after the final waiter detaches, an authority revokes the fenced
 reservation, or a classified fatal failure occurs. Late results from an older fencing epoch are
@@ -91,14 +96,22 @@ The rebalancer remains the sole reservation authority. The additive `contractVer
 `schemas/v1/resources/reservation.json` carries an idempotency key, monotonic fencing epoch and a
 safe-peak envelope covering weights, KV cache, activations, runtime workspace, auxiliary models,
 temporary loading peak, CPU RAM, disk, GPU count and topology. Admission evaluates the whole safe
-peak with headroom, never weights alone. Retrying the idempotency key returns the same logical
-reservation.
+peak with headroom, never weights alone. Every byte is the `Quantity` from specs/46, including
+explicit `basis`, `source`, and `confidence`; `unknown` and `unsupported` carry no bytes and cannot
+be admitted as zero. `gpuSafePeak.bytes` must be at least the arithmetic sum of all six contributor
+bytes plus `gpuHeadroom.bytes`, and must not exceed currently available bytes. Retrying the same
+idempotency key and request digest returns the same logical reservation; reusing the key for a
+different request is a conflict.
 
-`lastProgressAt` and `progressSequence` advance only on observable work such as verified bytes,
-completed preparation steps or runtime load milestones. Per invariant 37, a reservation expires on
-absence of such progress for its negotiated timeout, never because total elapsed load duration
-crossed a deadline. Reconciliation after crash or partition releases every resource held by an
-expired reservation.
+`progressTimeoutMs` is selected by the sole reservation authority within the negotiated
+`runtime_reservations/1` contract. The authority accepts only increasing `progressSequence` values
+for observable work such as verified bytes, completed preparation steps or runtime load milestones,
+records `lastProgressAuthorityTick`, and sets `leaseDeadlineAuthorityTick` to that monotonic local
+observation plus the timeout. Producer `lastProgressAt` and `expiresAt` wall times are display-only:
+clock skew cannot extend or shorten a lease. Per invariant 37, accepted progress can sustain an
+arbitrarily long load; silence past the authority deadline expires it. Reconciliation after crash
+or partition releases every GPU, CPU RAM, disk, topology, and auxiliary hold of the expired
+reservation.
 
 The physical de-duplication key is the stable resource identity (`resourceId`, falling back to
 stable node/device identity), which excludes the advertising parent. A `parent_id` remains path

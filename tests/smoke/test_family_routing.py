@@ -22,7 +22,7 @@ class FamilyRouting(unittest.TestCase):
     def test_placement_reason_declared(self):
         item = self.doc["paths"]["/deployments"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["items"]
         assert item["$ref"] == "#/components/schemas/Deployment"
-        assert "placement_reason" in self.schemas["Deployment"]["properties"]
+        assert "placement_reason" in self.schemas["Deployment"]["properties"]["live"]["properties"]
 
     def test_parity_note_present(self):
         desc = " ".join(self.doc["info"]["description"].split())

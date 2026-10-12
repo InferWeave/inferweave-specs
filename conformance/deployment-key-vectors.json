@@ -1,0 +1,92 @@
+{
+  "algorithm": "RFC8785-JCS-UTF8+SHA-256",
+  "excludedLiveFields": [
+    "deployment_id",
+    "instances",
+    "assignment",
+    "placement_reason",
+    "timestamps",
+    "aliases"
+  ],
+  "cases": [
+    {
+      "id": "base",
+      "identity": {
+        "schema_version": "inferweave.deployment-identity/v1",
+        "modality": "text",
+        "model": {
+          "id": "acme/model"
+        },
+        "artifacts": [
+          {
+            "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "runtime": {
+          "adapter": "vllm",
+          "version": "1"
+        },
+        "effective_profile": {
+          "precision": "bf16"
+        },
+        "policy": {},
+        "resource_contract": {
+          "gpu_count": 1
+        }
+      },
+      "expectedDeploymentKey": "sha256:7e877ef34ed26b1531c888a02b1e81562ad2d50fcdf9428ac1c7d1d3dad4b70e"
+    },
+    {
+      "id": "reordered-equal",
+      "identity": {
+        "resource_contract": {
+          "gpu_count": 1
+        },
+        "policy": {},
+        "effective_profile": {
+          "precision": "bf16"
+        },
+        "runtime": {
+          "version": "1",
+          "adapter": "vllm"
+        },
+        "artifacts": [
+          {
+            "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "model": {
+          "id": "acme/model"
+        },
+        "modality": "text",
+        "schema_version": "inferweave.deployment-identity/v1"
+      }
+    },
+    {
+      "id": "runtime-change-unequal",
+      "identity": {
+        "schema_version": "inferweave.deployment-identity/v1",
+        "modality": "text",
+        "model": {
+          "id": "acme/model"
+        },
+        "artifacts": [
+          {
+            "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        ],
+        "runtime": {
+          "adapter": "llamacpp",
+          "version": "1"
+        },
+        "effective_profile": {
+          "precision": "bf16"
+        },
+        "policy": {},
+        "resource_contract": {
+          "gpu_count": 1
+        }
+      }
+    }
+  ]
+}

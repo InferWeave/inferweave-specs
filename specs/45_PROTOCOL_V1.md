@@ -179,10 +179,18 @@ advertising an unknown feature. A feature a peer advertises at a higher level th
 component supports is negotiated down, never assumed.
 
 Protocol 1.1.0 also defines additive runtime-family features `runtime_families`,
-`runtime_lifecycle`, `runtime_reservations`, and `transactional_caches` at level `"1"`
+`runtime_lifecycle`, `runtime_reservations`, `transactional_caches`, and
+`native_link_requests` at level `"1"`
 (`specs/48`–`specs/53`). Each is negotiated independently. When absent, the sender uses the legacy
 Protocol v1 shape and omits its additive fields; it never infers a runtime family or treats version
-alone as proof that lifecycle, reservation or cache behavior is present.
+alone as proof that lifecycle, reservation, cache, or native link-dispatch behavior is present.
+`native_link_requests: "1"` names `iw.link-native-request/1`. A sender may then attach the
+bounded `LinkRequestMeta.native` shape in `schemas/v1/requests/link-request-meta.json`: a typed
+family, its fixed relative endpoint, `POST`, `application/json`, declared payload bytes, and
+artifact references. It cannot carry an arbitrary URI, method, content type, or proxy target.
+Large media travels through content-addressed artifact references rather than inline link frames.
+The sender omits `native` for an older peer; receiving an unnegotiated `native` field returns
+`FEATURE_UNSUPPORTED` and does not dispatch it.
 
 ## Stable identity model
 

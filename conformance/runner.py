@@ -26,6 +26,7 @@ from jsonschema import Draft7Validator, RefResolver
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "conformance"))
 import node_join  # noqa: E402
+import runtime_protocol  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
 # fixture basename -> schema rel path (relative to schemas/v1)
@@ -52,6 +53,8 @@ MAP = {
     "memory": "resources/memory.json",
     "runtime-instance": "runtime/runtime-instance.json",
     "runtime-load-request": "runtime/load-request.json",
+    "link-request-meta": "requests/link-request-meta.json",
+    "deployment": "deployments/deployment.json",
     "request": "requests/request.json",
     "registration": "requests/registration.json",
     "heartbeat": "requests/heartbeat.json",
@@ -153,6 +156,19 @@ def check_openapi_refs():
         print(f"FAIL  openapi: unresolvable $refs {sorted(set(bad))}")
         return False
     return True
+
+
+def check_deployment_key_vectors():
+    """Recompute immutable deployment-key known answers and equality relations."""
+    doc = json.loads((ROOT / "conformance" / "deployment-key-vectors.json").read_text())
+    cases = doc["cases"]
+    base = runtime_protocol.canonical_deployment_key(cases[0]["identity"])
+    ok = base == cases[0]["expectedDeploymentKey"]
+    ok = ok and runtime_protocol.canonical_deployment_key(cases[1]["identity"]) == base
+    ok = ok and runtime_protocol.canonical_deployment_key(cases[2]["identity"]) != base
+    if not ok:
+        print("FAIL  deployment-key vectors disagree with canonical JCS/SHA-256 reference")
+    return ok
 
 
 def check_node_join_vectors():
@@ -354,6 +370,7 @@ def main():
     args = parser.parse_args()
     failures = 0
     failures += 0 if check_node_join_vectors() else 1
+    failures += 0 if check_deployment_key_vectors() else 1
     failures += 0 if report_runtime_family_vectors(args.runtime_family_vectors) else 1
     if args.live_base_url:
         failures += 0 if run_live_runtime_family_cases(args.live_base_url, args.runtime_family_vectors) else 1

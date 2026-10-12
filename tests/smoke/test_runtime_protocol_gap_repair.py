@@ -29,6 +29,25 @@ def schema_validator(relative):
     )
 
 
+def normalized_schema(value):
+    """Normalize presentation metadata and external/component ref spelling only."""
+    ignored = {"$schema", "$id", "title", "description", "x-json-schema"}
+    refs = {
+        "deployment-identity.json": "#/components/schemas/DeploymentIdentity",
+        "../runtime/runtime-instance.json": "#/components/schemas/RuntimeInstance",
+        "../topology/allocation.json": "#/components/schemas/Allocation",
+    }
+    if isinstance(value, dict):
+        return {
+            key: refs.get(item, item) if key == "$ref" else normalized_schema(item)
+            for key, item in value.items()
+            if key not in ignored
+        }
+    if isinstance(value, list):
+        return [normalized_schema(item) for item in value]
+    return value
+
+
 class RuntimeProtocolGapRepair(unittest.TestCase):
     def test_adapter_contract_requires_every_lifecycle_method_and_process_isolation(self):
         schema = load_json("schemas/v1/runtime/adapter.json")
@@ -71,10 +90,10 @@ class RuntimeProtocolGapRepair(unittest.TestCase):
         self.assertEqual(current["physicalResourceKey"], "node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01")
         self.assertNotIn(current["provenance"]["parentId"], current["physicalResourceKey"])
         self.assertEqual(
-            set(envelope["gpuSafePeakBytes"]),
+            set(envelope["gpuContributors"]),
             {"weights", "kvCache", "activations", "runtimeWorkspace", "auxiliaryModels", "loadingPeak"},
         )
-        for key in ("idempotencyKey", "fencingEpoch", "lastProgressAt", "progressSequence"):
+        for key in ("idempotencyKey", "fencingEpoch", "progressTimeoutMs", "authorityClock", "lastProgressAuthorityTick", "leaseDeadlineAuthorityTick", "progressSequence"):
             broken = dict(current)
             broken.pop(key)
             self.assertTrue(list(validator.iter_errors(broken)), key)
@@ -103,8 +122,7 @@ class RuntimeProtocolGapRepair(unittest.TestCase):
         for component, relative in pairs.items():
             standalone = load_json(f"schemas/v1/{relative}")
             self.assertEqual(schemas[component]["x-json-schema"], f"schemas/v1/{relative}")
-            self.assertEqual(set(schemas[component]["required"]), set(standalone["required"]))
-            self.assertEqual(set(schemas[component]["properties"]), set(standalone["properties"]))
+            self.assertEqual(normalized_schema(schemas[component]), normalized_schema(standalone))
 
     def test_job_family_is_additive_and_succeeded_is_canonical(self):
         validator = schema_validator("jobs/job.json")
@@ -118,7 +136,7 @@ class RuntimeProtocolGapRepair(unittest.TestCase):
 
     def test_runtime_features_are_explicitly_negotiated_for_mixed_versions(self):
         features = load_json("schemas/v1/common/features.json")["properties"]
-        for name in ("runtime_families", "runtime_lifecycle", "runtime_reservations", "transactional_caches"):
+        for name in ("runtime_families", "runtime_lifecycle", "runtime_reservations", "transactional_caches", "native_link_requests"):
             self.assertIn(name, features)
         compatibility = yaml.safe_load((ROOT / "conformance/compatibility.yaml").read_text())
         self.assertEqual(compatibility["runtimeProtocol"]["legacyPeerPolicy"], "omit-additive-fields")

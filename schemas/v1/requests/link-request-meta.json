@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-request-meta.json",
+  "title": "LinkRequestMeta",
+  "description": "Additive link request metadata. native is sent only after native_link_requests=1 negotiation and selects a typed, relative endpoint; it cannot express an arbitrary URI or proxy request.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "timeout_ms": {"type": "integer", "minimum": 1, "maximum": 86400000},
+    "via": {"type": "array", "maxItems": 64, "items": {"type": "string", "minLength": 1, "maxLength": 128}},
+    "queue": {"type": "boolean"},
+    "probe": {"type": "boolean"},
+    "native": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["family", "endpoint", "method", "content_type", "payload_bytes", "artifact_refs"],
+      "properties": {
+        "family": {"type": "string", "enum": ["llm", "reasoning", "embeddings", "reranking", "stt", "tts", "audio", "prediction", "image", "video", "multimodal", "scientific", "rag"]},
+        "endpoint": {"type": "string", "enum": ["/embeddings", "/rerank", "/predictions", "/jobs"]},
+        "method": {"type": "string", "const": "POST"},
+        "content_type": {"type": "string", "const": "application/json"},
+        "payload_bytes": {"type": "integer", "minimum": 0, "maximum": 16777216},
+        "artifact_refs": {"type": "array", "maxItems": 64, "items": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[A-Za-z0-9._:-]+$"}}
+      },
+      "oneOf": [
+        {"properties": {"family": {"const": "embeddings"}, "endpoint": {"const": "/embeddings"}}},
+        {"properties": {"family": {"const": "reranking"}, "endpoint": {"const": "/rerank"}}},
+        {"properties": {"family": {"const": "prediction"}, "endpoint": {"const": "/predictions"}}},
+        {"properties": {"family": {"enum": ["llm", "reasoning", "stt", "tts", "audio", "image", "video", "multimodal", "scientific", "rag"]}, "endpoint": {"const": "/jobs"}}}
+      ]
+    }
+  }
+}

@@ -372,6 +372,8 @@ implementation work:
   the reported availability impact against a real runtime;
 - no mixed-version gateway/node pair has exercised additive family fields, legacy jobs without
   `family`, or `completed` normalization to canonical `succeeded`;
+- no mixed-version link has exercised negotiated `iw.link-native-request/1` dispatch, rejection on
+  an older peer, or the family/endpoint and artifact-reference bounds against a production node;
 - no real end-to-end demonstrations have loaded and served the required runtime families through
   native endpoints under production admission, owner priority and telemetry controls.
 
