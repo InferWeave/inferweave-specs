@@ -34,7 +34,7 @@
   "conformance/release-manifest.yaml": "06b831d5d0cc21e790f27673c323cb26098bf9520ff29c7c74047b264bc3ef9e",
   "conformance/runner.py": "7a42123c8bb4466fb39a71fde3ff6cbd62f90fbbc88232d47f64ea2dc6d146de",
   "conformance/runtime-family-vectors.json": "e9182c76245d0289ddc30ed052fe4b70b323517796a13b3796a099ff0fcccc19",
-  "conformance/runtime_protocol.py": "bda7013f38c2d1d71aaf33351cc47e8c75163eade00c1173e641c1cfbcbe6e81",
+  "conformance/runtime_protocol.py": "0b2913562f3ee83b84f43eb15132fd4760c794abddad177365e09de6e584c812",
   "contracts/README.md": "82ce0097eabebfc3c4ccd513db2ccffad1f587de660a3d2ac9c615e07b787611",
   "contracts/backends.registry.example.json": "262e45fa8fe39ac73829e3c3769b867fa167254873c2adb635186b4a475012bc",
   "contracts/backpressure-action-codes.json": "827d0e1d577d44681c58fb7ac88e56b14c0bd6bb5771441318a0fe056b9bf0ee",
@@ -387,7 +387,7 @@
   "specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md": "61773ad22f2881d7912262016122974cff3ec3e4dcc52ec41c3d9f6c3eb3d81a",
   "specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md": "5c95652f58bb5d319665a1842791ce069677e5969ed566dba85e3e28327d4849",
   "specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md": "8dcb830f6e2b0a2cd6597781f9681278f8d3f688c838320a5def32852b2cd908",
-  "specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md": "a4bf093337c62f631d077a2302960015f5d97580eb1dac68d90e2489a7f9960f",
+  "specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md": "24d9f61452a195ffbfee4b51c852d46bde1f4e1faa5715211f6786c0aabdb4eb",
   "specs/51_PIPELINES_AND_DURABLE_JOBS.md": "ab9f8df6a816734810b1199fafa308b84154dbb340c9d274ec8a7c108447315f",
   "specs/52_DURABLE_INFERENCE_JOBS.md": "ed268f3478d815862a5f4070113a388af308a36ba6eaadd99708dee4cbb00fba",
   "specs/53_RUNTIME_FAMILY_CONFORMANCE.md": "d1c8172161f8aae09ebbac05c0acd7c435737d5a292a0f3161bd3fa070f22e91",
@@ -569,7 +569,7 @@
   "tests/smoke/test_runtime_families.py": "f297f5195d5e104480be958cda42883795952b0094c62f38a1f2ce0406abf076",
   "tests/smoke/test_runtime_lifecycle.py": "ce9f6eaf0c02edbf0155ceba8f75a9403ba2e08929bfc51d2bbe6be76d9be90e",
   "tests/smoke/test_runtime_protocol_gap_repair.py": "02d1a6dd79554c13e6ecaaa01a667e74b84b86d2efe21f2ff46dbd86c6953431",
-  "tests/smoke/test_runtime_protocol_semantics.py": "b764d4e4b6316d4f01a36e59c509e8c94d2827dd16fbe358464ceebedecfbacc",
+  "tests/smoke/test_runtime_protocol_semantics.py": "ca999dd15941e45ca50eade55a991f13f22fa8518fb539c4b74b0d57e9519eea",
   "tools/README.md": "4ab4454accb3cf516a79c490d5d3ddbb00089ad5e575bd47201b44ff27f620ed",
   "tools/gen_gpu_memory_fixtures.py": "8cc9a2cfedd9242e91c0a8a674db5bc64e7904b333f9738be6a611de229fd8e8"
 }

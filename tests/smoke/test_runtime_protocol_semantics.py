@@ -68,13 +68,14 @@ class ReservationSemantics(unittest.TestCase):
         owner_component = kwargs.pop("owner_component", "runtime-manager")
         owner_gateway_id = kwargs.pop("owner_gateway_id", "gw-test")
         placement_group_id = kwargs.pop("placement_group_id", "placement-a")
+        kind = kwargs.pop("kind", self.payload["kind"])
         requested_bytes = kwargs.pop("requested_bytes", self.payload["requestedBytes"])
         request_identity = {
             "schema_version": "inferweave.reservation-request/v1",
             "deployment_key": "sha256:" + hashlib.sha256(payload.encode()).hexdigest(),
             "owner_component": owner_component,
             "owner_gateway_id": owner_gateway_id,
-            "kind": self.payload["kind"],
+            "kind": kind,
             "physical_resource_key": physical_key,
             "resource_domain_key": resource_domain_key,
             "placement_group_id": placement_group_id,
@@ -93,7 +94,7 @@ class ReservationSemantics(unittest.TestCase):
             owner_component=owner_component,
             owner_gateway_id=owner_gateway_id,
             placement_group_id=placement_group_id,
-            kind=self.payload["kind"],
+            kind=kind,
             **kwargs,
         )
 
@@ -227,6 +228,13 @@ class ReservationSemantics(unittest.TestCase):
                          gpu_capacity_bytes=20_000_000_000,
                          cpu_ram_capacity_bytes=60_000_000_000,
                          owner_component="different-owner", owner_gateway_id="gw-forged", placement_group_id="placement-a")
+        with self.assertRaises(PhysicalResourceConflict):
+            self.reserve(authority, "forged-group-kind", "payload-a", 7, 535,
+                         physical_key="node/" + self.envelope["deviceIds"][0] + "-kind",
+                         envelope={**self.envelope, "deviceIds": [self.envelope["deviceIds"][0] + "-kind"]},
+                         gpu_capacity_bytes=20_000_000_000,
+                         cpu_ram_capacity_bytes=60_000_000_000,
+                         placement_group_id="placement-a", kind="restore")
 
         other_gpu = self.reserve(authority, "other-gpu", "payload-d", 10, 550,
                                  physical_key="node/" + self.envelope["deviceIds"][0] + "-2",

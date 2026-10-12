@@ -215,17 +215,17 @@ class ReservationAuthority:
                     _evidenced_bytes(existing["resourceEnvelope"]["cpuRamSafePeak"]),
                     _evidenced_bytes(existing["resourceEnvelope"]["diskSafePeak"]),
                 )
-                group_claim = (existing["deploymentKey"], existing["ownerComponent"], existing["ownerGatewayId"], existing["fencingEpoch"], values)
+                group_claim = (existing["deploymentKey"], existing["ownerComponent"], existing["ownerGatewayId"], existing["kind"], existing["fencingEpoch"], values)
                 prior = groups.setdefault(existing["placementGroupId"], group_claim)
                 if prior != group_claim:
                     raise PhysicalResourceConflict(resource_domain_key)
             incoming = (_evidenced_bytes(envelope["cpuRamSafePeak"]), _evidenced_bytes(envelope["diskSafePeak"]))
-            incoming_claim = (request_identity["deployment_key"], owner_component, owner_gateway_id, fencing_epoch, incoming)
+            incoming_claim = (request_identity["deployment_key"], owner_component, owner_gateway_id, kind, fencing_epoch, incoming)
             if placement_group_id in groups and groups[placement_group_id] != incoming_claim:
                 raise PhysicalResourceConflict(resource_domain_key)
             groups.setdefault(placement_group_id, incoming_claim)
-            aggregate_cpu = sum(group_claim[4][0] for group_claim in groups.values())
-            aggregate_disk = sum(group_claim[4][1] for group_claim in groups.values())
+            aggregate_cpu = sum(group_claim[5][0] for group_claim in groups.values())
+            aggregate_disk = sum(group_claim[5][1] for group_claim in groups.values())
             if aggregate_gpu > gpu_capacity_bytes or aggregate_cpu > cpu_ram_capacity_bytes or aggregate_disk > disk_capacity_bytes:
                 raise PhysicalResourceConflict(physical_key)
             reservation_id = f"reservation-{self._next}"
@@ -238,6 +238,7 @@ class ReservationAuthority:
                 "ownerComponent": owner_component,
                 "ownerGatewayId": owner_gateway_id,
                 "placementGroupId": placement_group_id,
+                "kind": kind,
                 "claim": claim,
                 "physicalResourceKey": physical_key,
                 "resourceDomainKey": resource_domain_key,

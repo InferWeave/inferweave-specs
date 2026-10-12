@@ -158,7 +158,8 @@ per device joined by the required nonempty `placementGroupId`. Shared host CPU R
 are charged once for each `(resourceDomainKey, placementGroupId)` pair, so per-device rows in one
 atomic placement do not multiply the same host peak while unrelated placements still aggregate.
 The reservation authority issues the group ID and binds it to one domain, immutable deployment key,
-owner, exact fence, and shared host peak contract; reuse with a different claim is rejected.
+owner, reservation kind, exact fence, and shared host peak contract; reuse with a different claim
+is rejected.
 Thus overlapping device sets cannot evade accounting through a caller-chosen aggregate key.
 The same
 logical demand learned through multiple parents coalesces to one grant; a different demand is never
