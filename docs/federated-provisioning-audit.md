@@ -279,10 +279,31 @@ never taking model/slots/offer_key from the requester; stale offers are
 not bindable. Disabled by default: a default `OwnerPolicy` refuses every
 message via the controller gate. 8 transport tests, 10 controller tests.
 
-Not yet delivered (later workstreams): item 5 (GUI owner-policy controls),
-real socket/HTTP transport wiring (the adapter is a pure core awaiting a
-network feed), activation (still refused by the Phase 1 gate in every
-mode), and reservation/lease persistence (WS D).
+**WS D durable reservation/lease persistence delivered** (`35feffa5`):
+`crates/iw-gateway/src/provision_store.rs` persists the controller's
+ledger as a whole [`ControllerSnapshot`] (reservations, offers, capacity,
+`next_fencing_epoch`) atomically — write-temp + `fsync` + rename, the same
+`actuator_lease` discipline. `Controller::snapshot()/restore()` rebuild the
+ledger without ever overriding the owner policy (local config,
+remote-immutable); restore refuses incompatible format markers (fail
+closed). The fencing epoch is now a durable monotonic counter, so a
+restored controller never reissues a revoked epoch. 7 store tests.
+
+**Parent-side provisioning client core delivered** (`1d048168`):
+`crates/iw-gateway/src/provision_client.rs` drives the parent's half of
+`provision.*` — request (correlating on the immutable `request_digest`),
+on_offer (refuses mismatch/stale offers), reserve, on_reserve_confirmation
+(records the owner-minted single-use token + fencing epoch), and
+activate()/revoke() (formulate the messages; activation still subject to
+the owner's Phase 1 observe-only gate). Pure and clock-free. 7 client
+tests.
+
+Not yet delivered (later workstreams): item 5 (GUI owner-policy controls,
+gated on a persisted owner-policy store + gateway API), and real
+socket/HTTP transport wiring (both the owner transport adapter and the
+parent client are pure cores awaiting a network feed). Activation remains
+refused by the Phase 1 gate in every mode by design (observe-only is a hard
+Phase 1 invariant); enabling it is a later phase.
 
 ---
 
