@@ -80,7 +80,7 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 256,
-      "description": "Stable physical node/device de-duplication key. It excludes the advertising parent so the same GPU learned through multiple parents remains one resource."
+      "description": "Stable physical de-duplication key excluding advertising parent. GPU grants name the stable node/device; CPU-only grants name the stable host capacity domain."
     },
     "provenance": {
       "type": "object",
@@ -103,7 +103,7 @@
       "minLength": 1,
       "maxLength": 128,
       "pattern": "^[\\x21-\\x7e]*$",
-      "description": "Shared by every GPU of a multi-GPU placement."
+      "description": "Required by contractVersion 1. All per-GPU rows of one atomic multi-GPU placement share it; host CPU RAM and disk safe peaks are charged once per placement group and resourceDomainKey."
     },
     "modelId": {
       "type": "string",
@@ -124,18 +124,21 @@
     "requestedBytes": {
       "type": "integer",
       "minimum": 0,
-      "maximum": 9007199254740991
+      "maximum": 9007199254740991,
+      "description": "Initial contractVersion 1 grants require this GPU byte hold to be at least resourceEnvelope.gpuSafePeak.bytes; normally equal. CPU-only grants use zero."
     },
     "effectiveBytes": {
       "type": "integer",
       "minimum": 0,
       "maximum": 9007199254740991,
-      "description": "Shrinks as the runtime's allocation appears, so a reservation that became physical is never subtracted twice."
+      "description": "Initial contractVersion 1 grants require this to cover gpuSafePeak.bytes. It may shrink only as the runtime allocation becomes physical, preventing double subtraction."
     },
     "resourceEnvelope": {
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "accelerator",
+        "deviceIds",
         "gpuContributors",
         "gpuHeadroom",
         "gpuSafePeak",
@@ -183,7 +186,7 @@
         },
         "gpuSafePeak": {
           "$ref": "#/definitions/evidencedQuantity",
-          "description": "Must be at least the exact sum of all six contributor bytes plus gpuHeadroom; admission also requires it not exceed currently available GPU bytes."
+          "description": "At least the sum of all six contributors plus gpuHeadroom and no more than available GPU bytes. Basis is estimated/low if any input is estimated; otherwise derived/medium."
         },
         "cpuRamSafePeak": {
           "$ref": "#/definitions/evidencedQuantity"
@@ -193,14 +196,79 @@
         },
         "gpuCount": {
           "type": "integer",
-          "minimum": 1
+          "minimum": 0,
+          "description": "contractVersion 1 uses one grant per GPU; multi-GPU placements share placementGroupId across per-device grants. CPU-only grants use zero."
         },
         "topology": {
           "type": "object",
           "minProperties": 1,
           "additionalProperties": true
+        },
+        "accelerator": {
+          "type": "string",
+          "enum": [
+            "cpu",
+            "gpu"
+          ],
+          "description": "CPU-only universal-family deployments use cpu, gpuCount 0 and an empty deviceIds array; no fake GPU worker is created."
+        },
+        "deviceIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Exactly one stable device id for a GPU grant and empty for CPU. Multi-GPU placements use one fenced reservation per device."
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "accelerator": {
+                "const": "cpu"
+              }
+            },
+            "required": [
+              "accelerator"
+            ]
+          },
+          "then": {
+            "properties": {
+              "gpuCount": {
+                "const": 0
+              },
+              "deviceIds": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "accelerator": {
+                "const": "gpu"
+              }
+            },
+            "required": [
+              "accelerator"
+            ]
+          },
+          "then": {
+            "properties": {
+              "gpuCount": {
+                "const": 1
+              },
+              "deviceIds": {
+                "minItems": 1,
+                "maxItems": 1
+              }
+            }
+          }
+        }
+      ]
     },
     "lastProgressAt": {
       "type": "string",
@@ -258,6 +326,12 @@
       "minimum": 1,
       "maximum": 9007199254740991,
       "description": "Authority-local deadline equal to the last accepted progress observation plus progressTimeoutMs."
+    },
+    "resourceDomainKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable host capacity domain used to aggregate CPU RAM and disk safe peaks across reservations on distinct accelerators."
     }
   },
   "required": [
@@ -283,6 +357,8 @@
           "idempotencyKey",
           "fencingEpoch",
           "physicalResourceKey",
+          "resourceDomainKey",
+          "placementGroupId",
           "resourceEnvelope",
           "progressTimeoutMs",
           "authorityClock",

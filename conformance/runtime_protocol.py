@@ -1,31 +1,59 @@
-"""Implementation-neutral reference semantics for runtime protocol contracts."""
+"""Fixture/conformance semantics for runtime contracts; never a production allocator."""
 
 from copy import deepcopy
 import hashlib
 import json
+import re
 
 
 class IdempotencyConflict(ValueError):
     pass
 
 
+class PhysicalResourceConflict(ValueError):
+    pass
+
+
 def _canonical_json(value):
-    """RFC 8785-compatible encoding for the integer/string deployment identity domain."""
-    def reject_float(item):
-        if isinstance(item, float):
-            raise ValueError("deployment identities must not contain floating-point values")
+    """RFC 8785 encoding for the deployment identity's string/digest-only domain."""
+    def reject_number(item):
+        if isinstance(item, (int, float)) and not isinstance(item, bool):
+            raise ValueError("deployment identity numbers must be represented by a versioned digest")
         if isinstance(item, dict):
             for child in item.values():
-                reject_float(child)
+                reject_number(child)
         elif isinstance(item, list):
             for child in item:
-                reject_float(child)
+                reject_number(child)
 
-    reject_float(value)
+    reject_number(value)
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
 def canonical_deployment_key(identity):
+    digest = re.compile(r"^sha256:[0-9a-f]{64}$")
+    required = {
+        "schema_version", "modality", "model_id", "artifact_bindings", "runtime_identity",
+        "effective_profile_digest", "policy_digest", "resource_contract_digest",
+    }
+    runtime_required = {"adapter", "version", "config_digest"}
+    runtime = identity.get("runtime_identity") if isinstance(identity, dict) else None
+    valid = (
+        isinstance(identity, dict) and set(identity) == required
+        and identity.get("schema_version") == "inferweave.deployment-identity/v1"
+        and all(isinstance(identity.get(name), str) and identity[name] for name in ("modality", "model_id"))
+        and isinstance(identity.get("artifact_bindings"), dict) and identity["artifact_bindings"]
+        and all(re.fullmatch(r"[a-z][a-z0-9_.-]{0,63}", role)
+                and isinstance(item, str) and digest.fullmatch(item)
+                for role, item in identity["artifact_bindings"].items())
+        and isinstance(runtime, dict) and set(runtime) == runtime_required
+        and all(isinstance(runtime.get(name), str) and runtime[name] for name in ("adapter", "version"))
+        and isinstance(runtime.get("config_digest"), str) and digest.fullmatch(runtime["config_digest"])
+        and all(isinstance(identity.get(name), str) and digest.fullmatch(identity[name]) for name in
+                ("effective_profile_digest", "policy_digest", "resource_contract_digest"))
+    )
+    if not valid:
+        raise ValueError("deployment identity is outside the canonical string/digest-only schema")
     encoded = _canonical_json(identity).encode("utf-8")
     return "sha256:" + hashlib.sha256(encoded).hexdigest()
 
@@ -63,7 +91,7 @@ def _evidenced_bytes(quantity):
     return quantity["bytes"]
 
 
-def safe_peak_admissible(envelope, available_bytes):
+def safe_peak_admissible(envelope, available_bytes, available_cpu_ram_bytes=None, available_disk_bytes=None):
     contributors = envelope.get("gpuContributors", {})
     names = {"weights", "kvCache", "activations", "runtimeWorkspace", "auxiliaryModels", "loadingPeak"}
     if set(contributors) != names:
@@ -72,6 +100,22 @@ def safe_peak_admissible(envelope, available_bytes):
     headroom = _evidenced_bytes(envelope.get("gpuHeadroom"))
     peak = _evidenced_bytes(envelope.get("gpuSafePeak"))
     if any(value is None for value in values) or headroom is None or peak is None:
+        return False
+    inputs = [contributors[name] for name in names] + [envelope["gpuHeadroom"]]
+    any_estimated = any(quantity["basis"] == "estimated" for quantity in inputs)
+    expected_basis = "estimated" if any_estimated else "derived"
+    expected_confidence = "low" if any_estimated else "medium"
+    if envelope["gpuSafePeak"].get("basis") != expected_basis:
+        return False
+    if envelope["gpuSafePeak"].get("confidence") != expected_confidence:
+        return False
+    cpu_peak = _evidenced_bytes(envelope.get("cpuRamSafePeak"))
+    disk_peak = _evidenced_bytes(envelope.get("diskSafePeak"))
+    if cpu_peak is None or disk_peak is None:
+        return False
+    if available_cpu_ram_bytes is not None and cpu_peak > available_cpu_ram_bytes:
+        return False
+    if available_disk_bytes is not None and disk_peak > available_disk_bytes:
         return False
     return peak >= sum(values) + headroom and peak <= available_bytes
 
@@ -82,40 +126,97 @@ class ReservationAuthority:
         self.authority_id = authority_id
         self._by_idempotency = {}
         self._by_physical = {}
+        self._by_domain = {}
         self._reservations = {}
         self._next = 1
 
-    def reserve(self, idempotency_key, payload_digest, fencing_epoch, physical_key, envelope, authority_tick_ms, caller="rebalancer"):
+    def reserve(self, idempotency_key, payload_digest, fencing_epoch, physical_key, resource_domain_key,
+                envelope, authority_tick_ms, requested_bytes, effective_bytes, gpu_capacity_bytes,
+                cpu_ram_capacity_bytes, disk_capacity_bytes, owner_id, placement_group_id,
+                caller="rebalancer"):
         if caller != self.authority_id:
             raise PermissionError("only the configured reservation authority may reserve")
+        accelerator = envelope.get("accelerator")
+        device_ids = envelope.get("deviceIds", [])
+        if accelerator == "gpu":
+            if envelope.get("gpuCount") != 1 or len(device_ids) != 1:
+                raise ValueError("each GPU grant must identify exactly one physical device")
+            if physical_key != f"{resource_domain_key}/{device_ids[0]}":
+                raise ValueError("physical resource key must derive from host domain and device id")
+        elif accelerator == "cpu" and not physical_key.startswith(resource_domain_key + "/"):
+            raise ValueError("CPU physical resource key must belong to its host domain")
+        peak = _evidenced_bytes(envelope.get("gpuSafePeak"))
+        if (not safe_peak_admissible(envelope, gpu_capacity_bytes, cpu_ram_capacity_bytes, disk_capacity_bytes)
+                or requested_bytes < peak or effective_bytes < peak):
+            raise ValueError("reservation does not cover the evidenced safe peak")
+        claim = (
+            payload_digest, fencing_epoch, physical_key, resource_domain_key, owner_id, placement_group_id,
+            requested_bytes, effective_bytes,
+            json.dumps(envelope, sort_keys=True, separators=(",", ":")),
+        )
         previous = self._by_idempotency.get(idempotency_key)
         if previous:
-            if previous[0] != payload_digest:
+            if previous[0] != claim:
                 raise IdempotencyConflict(idempotency_key)
             return deepcopy(self._reservations[previous[1]])
-        if physical_key in self._by_physical:
-            reservation_id = self._by_physical[physical_key]
-        else:
+        reservation_id = None
+        active_ids = self._by_physical.get(physical_key, set())
+        for existing_id in active_ids:
+            existing = self._reservations[existing_id]
+            if existing["claim"] == claim:
+                reservation_id = existing_id
+                break
+        if reservation_id is None:
+            domain_ids = self._by_domain.get(resource_domain_key, set())
+            # The fixture model covers initial grants, where effective == requested. Production
+            # authorities shrink effective holds as allocations become physically observed.
+            aggregate_gpu = sum(self._reservations[item]["effectiveBytes"] for item in active_ids) + effective_bytes
+            groups = {}
+            for item in domain_ids:
+                existing = self._reservations[item]
+                values = (
+                    _evidenced_bytes(existing["resourceEnvelope"]["cpuRamSafePeak"]),
+                    _evidenced_bytes(existing["resourceEnvelope"]["diskSafePeak"]),
+                )
+                prior = groups.setdefault(existing["placementGroupId"], values)
+                if prior != values:
+                    raise PhysicalResourceConflict(resource_domain_key)
+            incoming = (_evidenced_bytes(envelope["cpuRamSafePeak"]), _evidenced_bytes(envelope["diskSafePeak"]))
+            if placement_group_id in groups and groups[placement_group_id] != incoming:
+                raise PhysicalResourceConflict(resource_domain_key)
+            groups.setdefault(placement_group_id, incoming)
+            aggregate_cpu = sum(values[0] for values in groups.values())
+            aggregate_disk = sum(values[1] for values in groups.values())
+            if aggregate_gpu > gpu_capacity_bytes or aggregate_cpu > cpu_ram_capacity_bytes or aggregate_disk > disk_capacity_bytes:
+                raise PhysicalResourceConflict(physical_key)
             reservation_id = f"reservation-{self._next}"
             self._next += 1
             self._reservations[reservation_id] = {
                 "reservationId": reservation_id,
                 "fencingEpoch": fencing_epoch,
+                "payloadDigest": payload_digest,
+                "ownerId": owner_id,
+                "placementGroupId": placement_group_id,
+                "claim": claim,
                 "physicalResourceKey": physical_key,
+                "resourceDomainKey": resource_domain_key,
                 "resourceEnvelope": deepcopy(envelope),
+                "requestedBytes": requested_bytes,
+                "effectiveBytes": effective_bytes,
                 "progressSequence": 0,
                 "lastProgressAuthorityTick": authority_tick_ms,
                 "leaseDeadlineAuthorityTick": authority_tick_ms + self.progress_timeout_ms,
                 "state": "loading",
                 "released": False,
             }
-            self._by_physical[physical_key] = reservation_id
-        self._by_idempotency[idempotency_key] = (payload_digest, reservation_id)
+            self._by_physical.setdefault(physical_key, set()).add(reservation_id)
+            self._by_domain.setdefault(resource_domain_key, set()).add(reservation_id)
+        self._by_idempotency[idempotency_key] = (claim, reservation_id)
         return deepcopy(self._reservations[reservation_id])
 
     def authorize(self, reservation_id, fencing_epoch):
         current = self._reservations[reservation_id]
-        return not current["released"] and fencing_epoch >= current["fencingEpoch"]
+        return not current["released"] and fencing_epoch == current["fencingEpoch"]
 
     def observe_progress(self, reservation_id, sequence, authority_tick_ms):
         current = self._reservations[reservation_id]
@@ -132,13 +233,22 @@ class ReservationAuthority:
             if not current["released"] and authority_tick_ms > current["leaseDeadlineAuthorityTick"]:
                 current["released"] = True
                 current["state"] = "expired"
-                self._by_physical.pop(current["physicalResourceKey"], None)
+                physical = self._by_physical.get(current["physicalResourceKey"], set())
+                physical.discard(reservation_id)
+                if not physical:
+                    self._by_physical.pop(current["physicalResourceKey"], None)
+                domain = self._by_domain.get(current["resourceDomainKey"], set())
+                domain.discard(reservation_id)
+                if not domain:
+                    self._by_domain.pop(current["resourceDomainKey"], None)
                 expired.append(reservation_id)
         return expired
 
     def released_all_resources(self, reservation_id):
         current = self._reservations[reservation_id]
-        return current["released"] and current["physicalResourceKey"] not in self._by_physical
+        return (current["released"]
+                and reservation_id not in self._by_physical.get(current["physicalResourceKey"], set())
+                and reservation_id not in self._by_domain.get(current["resourceDomainKey"], set()))
 
 
 _NATIVE_ENDPOINTS = {

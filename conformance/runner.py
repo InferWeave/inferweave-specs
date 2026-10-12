@@ -163,9 +163,12 @@ def check_deployment_key_vectors():
     doc = json.loads((ROOT / "conformance" / "deployment-key-vectors.json").read_text())
     cases = doc["cases"]
     base = runtime_protocol.canonical_deployment_key(cases[0]["identity"])
-    ok = base == cases[0]["expectedDeploymentKey"]
-    ok = ok and runtime_protocol.canonical_deployment_key(cases[1]["identity"]) == base
-    ok = ok and runtime_protocol.canonical_deployment_key(cases[2]["identity"]) != base
+    ok = all(
+        runtime_protocol.canonical_deployment_key(case["identity"]) == case["expectedDeploymentKey"]
+        for case in cases
+    )
+    ok = ok and cases[1]["expectedDeploymentKey"] == base
+    ok = ok and cases[2]["expectedDeploymentKey"] != base
     if not ok:
         print("FAIL  deployment-key vectors disagree with canonical JCS/SHA-256 reference")
     return ok

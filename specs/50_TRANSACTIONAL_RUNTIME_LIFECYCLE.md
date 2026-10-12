@@ -78,13 +78,18 @@ interrupted back to `READY` only if the drain was cancelled before unload.
 ## Single-flight loading
 
 Loads are coalesced only by `deployment_key`. Its exact digest input is the
-`schemas/v1/deployments/deployment-identity.json` object: `schema_version`, `modality`, `model`,
-`artifacts`, `runtime`, `effective_profile`, `policy`, and `resource_contract`, with no additional
-top-level fields. Encode that object as RFC 8785 JSON Canonicalization Scheme UTF-8, hash the bytes
+`schemas/v1/deployments/deployment-identity.json` object: `schema_version`, `modality`, `model_id`,
+`artifact_bindings`, `runtime_identity`, `effective_profile_digest`, `policy_digest`, and
+`resource_contract_digest`, with no additional top-level fields. Rich profile, policy, runtime
+configuration, and resource documents—including documents containing floating-point values—are
+bound by their versioned SHA-256 digest fields. The identity therefore has a closed
+string/digest-only value domain and no JSON-number canonicalization ambiguity. Encode it as RFC
+8785 JSON Canonicalization Scheme UTF-8, hash the bytes
 with SHA-256, and render `sha256:<lowercase-hex>`. `conformance/deployment-key-vectors.json` is the
 cross-language known answer. Deployment ID, instances, assignment, placement reason, timestamps,
-aliases, request IDs, and waiter IDs are excluded live data. Each caller has an independent
-`waiter_id`; cancelling one
+aliases, request IDs, and waiter IDs are excluded live data. `artifact_bindings` maps canonical semantic roles such as `weights` and `tokenizer` to digests;
+JCS object-key ordering makes enumeration order irrelevant while a role change remains meaningful.
+Each caller has an independent `waiter_id`; cancelling one
 waiter detaches that waiter and does not cancel the shared load or other waiters. The manager may
 cancel the underlying load only after the final waiter detaches, an authority revokes the fenced
 reservation, or a classified fatal failure occurs. Late results from an older fencing epoch are
@@ -99,9 +104,23 @@ temporary loading peak, CPU RAM, disk, GPU count and topology. Admission evaluat
 peak with headroom, never weights alone. Every byte is the `Quantity` from specs/46, including
 explicit `basis`, `source`, and `confidence`; `unknown` and `unsupported` carry no bytes and cannot
 be admitted as zero. `gpuSafePeak.bytes` must be at least the arithmetic sum of all six contributor
-bytes plus `gpuHeadroom.bytes`, and must not exceed currently available bytes. Retrying the same
-idempotency key and request digest returns the same logical reservation; reusing the key for a
-different request is a conflict.
+bytes plus `gpuHeadroom.bytes`. Admission may compare a new peak with current free bytes, or sum all
+active holds plus the new peak against total allocatable capacity; it must not mix those two
+conventions. The executable reference uses the latter convention. The result basis is
+`estimated` with low confidence if any input is estimated; only arithmetic over non-estimated
+evidenced inputs is `derived` with medium confidence. Initial `requestedBytes` and `effectiveBytes`
+must cover `gpuSafePeak.bytes`. Retrying an idempotency key returns a prior grant only when the
+immutable request identity—including payload digest, exact fencing epoch, owner, physical resource,
+resource envelope and byte request—matches; otherwise it is a conflict. A fence matches the current
+grant exactly: both older and unissued future epochs are rejected.
+
+The canonical ledger formula is `observed physical allocation + effective unobserved holds + new
+safe peak <= total allocatable budget`, evaluated per device for GPU bytes and per
+`resourceDomainKey` for CPU RAM and disk. When an allocation becomes physically observable, the
+authority shrinks its effective hold by the same amount before the next decision, so it is never
+counted once as physical and again as reserved. The Python reference is fixture/conformance code
+for initial grants (`effective == requested`), not a production allocator or a second scheduler;
+production retains the existing controller/outbox reservation authority and reconciliation path.
 
 `progressTimeoutMs` is selected by the sole reservation authority within the negotiated
 `runtime_reservations/1` contract. The authority accepts only increasing `progressSequence` values
@@ -115,8 +134,26 @@ reservation.
 
 The physical de-duplication key is the stable resource identity (`resourceId`, falling back to
 stable node/device identity), which excludes the advertising parent. A `parent_id` remains path
-provenance. Capacity for the same physical GPU arriving through two parents is one resource and one
-reservation, never two schedulable copies.
+provenance. Capacity for the same physical GPU arriving through two parents is one physical
+resource, never two schedulable copies. The existing rebalancer may issue distinct fenced
+reservations for co-resident deployments only when their aggregate active GPU safe peaks fit the
+device's total capacity. `resourceDomainKey` names the stable host capacity domain, so CPU RAM and
+disk safe peaks are aggregated across reservations on distinct GPU keys as well as CPU-only work.
+Each GPU grant has `gpuCount: 1`, exactly one `deviceIds` entry, and a
+`physicalResourceKey = resourceDomainKey + "/" + deviceId`; a multi-GPU placement uses one grant
+per device joined by the required nonempty `placementGroupId`. Shared host CPU RAM and disk peaks
+are charged once for each `(resourceDomainKey, placementGroupId)` pair, so per-device rows in one
+atomic placement do not multiply the same host peak while unrelated placements still aggregate.
+Thus overlapping device sets cannot evade accounting through a caller-chosen aggregate key.
+The same
+logical demand learned through multiple parents coalesces to one grant; a different demand is never
+aliased to it.
+
+CPU-only embeddings, STT, and prediction use this same authority with `accelerator: cpu`,
+`gpuCount: 0`, empty `deviceIds`, a stable host-capacity `physicalResourceKey`, and zero evidenced
+GPU quantities. Their CPU RAM and disk safe peaks remain admitted and aggregated; no fake GPU
+worker or GPU reservation is created. Legacy reservations without `contractVersion` retain the
+specs/46 GPU-ledger shape.
 
 ## Transactional caches
 

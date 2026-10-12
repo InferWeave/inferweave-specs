@@ -17,8 +17,8 @@
       "gw_fry-rust"
     ]
   },
-  "requestedBytes": 16106127360,
-  "effectiveBytes": 16106127360,
+  "requestedBytes": 16642998272,
+  "effectiveBytes": 16642998272,
   "resourceEnvelope": {
     "gpuContributors": {
       "weights": {
@@ -66,9 +66,9 @@
     },
     "gpuSafePeak": {
       "bytes": 16642998272,
-      "basis": "derived",
+      "basis": "estimated",
       "source": "iw-ledger",
-      "confidence": "medium"
+      "confidence": "low"
     },
     "cpuRamSafePeak": {
       "bytes": 17179869184,
@@ -85,7 +85,11 @@
     "gpuCount": 1,
     "topology": {
       "sameHost": true
-    }
+    },
+    "accelerator": "gpu",
+    "deviceIds": [
+      "GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01"
+    ]
   },
   "lastProgressAt": "2026-10-12T12:00:00Z",
   "progressSequence": 3,
@@ -95,5 +99,7 @@
   "progressTimeoutMs": 300000,
   "authorityClock": "monotonic",
   "lastProgressAuthorityTick": 120000,
-  "leaseDeadlineAuthorityTick": 420000
+  "leaseDeadlineAuthorityTick": 420000,
+  "resourceDomainKey": "node_b200-01",
+  "placementGroupId": "placement-runtime-example"
 }

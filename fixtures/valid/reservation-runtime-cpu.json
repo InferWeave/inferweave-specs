@@ -1,0 +1,103 @@
+{
+  "contractVersion": 1,
+  "reservationId": "rv_cpu_embeddings",
+  "idempotencyKey": "load:cpu-embeddings",
+  "fencingEpoch": 5,
+  "owner": {
+    "component": "runtime-manager",
+    "gatewayId": "gw_fry-rust"
+  },
+  "kind": "placement",
+  "resourceId": "host:node_cpu-01",
+  "physicalResourceKey": "node_cpu-01/host-capacity",
+  "provenance": {
+    "parentId": "gateway-parent-a",
+    "federationPath": [
+      "gateway-parent-a",
+      "gw_fry-rust"
+    ]
+  },
+  "requestedBytes": 0,
+  "effectiveBytes": 0,
+  "resourceEnvelope": {
+    "gpuContributors": {
+      "weights": {
+        "bytes": 0,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      },
+      "kvCache": {
+        "bytes": 0,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      },
+      "activations": {
+        "bytes": 0,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      },
+      "runtimeWorkspace": {
+        "bytes": 0,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      },
+      "auxiliaryModels": {
+        "bytes": 0,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      },
+      "loadingPeak": {
+        "bytes": 0,
+        "basis": "estimated",
+        "source": "iw-sizer",
+        "confidence": "low"
+      }
+    },
+    "gpuHeadroom": {
+      "bytes": 0,
+      "basis": "estimated",
+      "source": "iw-sizer",
+      "confidence": "low"
+    },
+    "gpuSafePeak": {
+      "bytes": 0,
+      "basis": "estimated",
+      "source": "iw-sizer",
+      "confidence": "low"
+    },
+    "cpuRamSafePeak": {
+      "bytes": 8589934592,
+      "basis": "estimated",
+      "source": "iw-sizer",
+      "confidence": "low"
+    },
+    "diskSafePeak": {
+      "bytes": 17179869184,
+      "basis": "estimated",
+      "source": "iw-sizer",
+      "confidence": "low"
+    },
+    "gpuCount": 0,
+    "topology": {
+      "sameHost": true
+    },
+    "accelerator": "cpu",
+    "deviceIds": []
+  },
+  "lastProgressAt": "2026-10-12T12:00:00Z",
+  "progressSequence": 3,
+  "createdAt": "2026-10-12T11:59:00Z",
+  "expiresAt": "2026-10-12T12:05:00Z",
+  "state": "loading",
+  "progressTimeoutMs": 300000,
+  "authorityClock": "monotonic",
+  "lastProgressAuthorityTick": 120000,
+  "leaseDeadlineAuthorityTick": 420000,
+  "resourceDomainKey": "node_cpu-01",
+  "placementGroupId": "placement-cpu-example"
+}

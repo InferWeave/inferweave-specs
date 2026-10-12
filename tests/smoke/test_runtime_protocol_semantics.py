@@ -10,6 +10,7 @@ from jsonschema import Draft7Validator, RefResolver
 
 from conformance.runtime_protocol import (
     IdempotencyConflict,
+    PhysicalResourceConflict,
     ReservationAuthority,
     SingleFlightLoads,
     canonical_deployment_key,
@@ -58,6 +59,22 @@ class ReservationSemantics(unittest.TestCase):
         self.payload = load_json("fixtures/valid/reservation-runtime.json")
         self.envelope = self.payload["resourceEnvelope"]
 
+    def reserve(self, authority, key, payload, epoch, tick, **kwargs):
+        envelope = kwargs.pop("envelope", self.envelope)
+        resource_domain_key = kwargs.pop("resource_domain_key", "node")
+        physical_key = kwargs.pop("physical_key", resource_domain_key + "/" + envelope["deviceIds"][0])
+        return authority.reserve(
+            key, payload, epoch, physical_key, resource_domain_key, envelope, tick,
+            requested_bytes=self.payload["requestedBytes"],
+            effective_bytes=self.payload["effectiveBytes"],
+            gpu_capacity_bytes=kwargs.pop("gpu_capacity_bytes", 20_000_000_000),
+            cpu_ram_capacity_bytes=kwargs.pop("cpu_ram_capacity_bytes", 100_000_000_000),
+            disk_capacity_bytes=kwargs.pop("disk_capacity_bytes", 100_000_000_000),
+            owner_id=kwargs.pop("owner_id", "runtime-manager/deployment-a"),
+            placement_group_id=kwargs.pop("placement_group_id", "placement-a"),
+            **kwargs,
+        )
+
     def test_every_byte_value_is_an_evidenced_quantity(self):
         quantity_validator = validator("resources/quantity.json")
         quantities = [
@@ -81,24 +98,100 @@ class ReservationSemantics(unittest.TestCase):
         understated["gpuSafePeak"]["bytes"] = 1
         self.assertFalse(safe_peak_admissible(understated, available_bytes=20_000_000_000))
         self.assertFalse(safe_peak_admissible(self.envelope, available_bytes=1))
+        wrong_provenance = json.loads(json.dumps(self.envelope))
+        wrong_provenance["gpuSafePeak"]["basis"] = "derived"
+        wrong_provenance["gpuSafePeak"]["confidence"] = "medium"
+        self.assertFalse(safe_peak_admissible(wrong_provenance, available_bytes=20_000_000_000))
+
+    def test_cpu_only_grant_uses_host_capacity_without_fake_gpu(self):
+        cpu = load_json("fixtures/valid/reservation-runtime-cpu.json")
+        self.assertEqual([], list(validator("resources/reservation.json").iter_errors(cpu)))
+        envelope = cpu["resourceEnvelope"]
+        self.assertEqual(envelope["accelerator"], "cpu")
+        self.assertEqual(envelope["gpuCount"], 0)
+        self.assertEqual(envelope["deviceIds"], [])
+        self.assertEqual(cpu["resourceDomainKey"], "node_cpu-01")
+        self.assertTrue(cpu["physicalResourceKey"].startswith(cpu["resourceDomainKey"] + "/"))
+        self.assertTrue(safe_peak_admissible(envelope, 0, 10_000_000_000, 20_000_000_000))
+        self.assertFalse(safe_peak_admissible(envelope, 0, 1, 20_000_000_000))
+
+    def test_gpu_grants_are_per_device_and_multi_gpu_uses_placement_group(self):
+        broken = json.loads(json.dumps(self.payload))
+        broken["resourceEnvelope"]["gpuCount"] = 2
+        broken["resourceEnvelope"]["deviceIds"].append("GPU-second")
+        self.assertTrue(list(validator("resources/reservation.json").iter_errors(broken)))
+        authority = ReservationAuthority(progress_timeout_ms=1_000)
+        with self.assertRaises(ValueError):
+            authority.reserve("multi", "payload", 1, "node/group", "node",
+                              broken["resourceEnvelope"], 0,
+                              requested_bytes=broken["requestedBytes"],
+                              effective_bytes=broken["effectiveBytes"],
+                              gpu_capacity_bytes=100_000_000_000,
+                              cpu_ram_capacity_bytes=100_000_000_000,
+                              disk_capacity_bytes=100_000_000_000,
+                              owner_id="runtime-manager/group", placement_group_id="placement-group")
 
     def test_authority_enforces_idempotency_fence_and_physical_dedupe(self):
         authority = ReservationAuthority(progress_timeout_ms=30_000)
         with self.assertRaises(PermissionError):
-            authority.reserve("rogue", "payload", 7, "node/gpu", self.envelope, 0, caller="adapter")
-        first = authority.reserve("same", "payload-a", 7, "node/gpu", self.envelope, authority_tick_ms=100)
-        retry = authority.reserve("same", "payload-a", 7, "node/gpu", self.envelope, authority_tick_ms=200)
+            self.reserve(authority, "rogue", "payload", 7, 0, caller="adapter")
+        with self.assertRaises(ValueError):
+            authority.reserve("under", "payload", 7, "node/" + self.envelope["deviceIds"][0], "node", self.envelope, 0,
+                              requested_bytes=1, effective_bytes=1, gpu_capacity_bytes=20_000_000_000,
+                              cpu_ram_capacity_bytes=100_000_000_000,
+                              disk_capacity_bytes=100_000_000_000, owner_id="runtime-manager/deployment-a",
+                              placement_group_id="placement-a")
+        first = self.reserve(authority, "same", "payload-a", 7, 100, gpu_capacity_bytes=40_000_000_000)
+        retry = self.reserve(authority, "same", "payload-a", 7, 200, gpu_capacity_bytes=40_000_000_000)
         self.assertEqual(first["reservationId"], retry["reservationId"])
         with self.assertRaises(IdempotencyConflict):
-            authority.reserve("same", "payload-b", 7, "node/gpu", self.envelope, authority_tick_ms=300)
+            self.reserve(authority, "same", "payload-b", 7, 300, gpu_capacity_bytes=40_000_000_000)
+        with self.assertRaises(IdempotencyConflict):
+            self.reserve(authority, "same", "payload-a", 8, 300, gpu_capacity_bytes=40_000_000_000)
+        changed_contract = json.loads(json.dumps(self.envelope))
+        changed_contract["topology"]["sameHost"] = False
+        with self.assertRaises(IdempotencyConflict):
+            self.reserve(authority, "same", "payload-a", 7, 300, gpu_capacity_bytes=40_000_000_000,
+                         envelope=changed_contract)
         self.assertFalse(authority.authorize(first["reservationId"], fencing_epoch=6))
         self.assertTrue(authority.authorize(first["reservationId"], fencing_epoch=7))
-        duplicate_path = authority.reserve("other", "payload-c", 8, "node/gpu", self.envelope, authority_tick_ms=400)
+        self.assertFalse(authority.authorize(first["reservationId"], fencing_epoch=8))
+        duplicate_path = self.reserve(authority, "other", "payload-a", 7, 400, gpu_capacity_bytes=40_000_000_000)
         self.assertEqual(duplicate_path["reservationId"], first["reservationId"])
+        coresident = self.reserve(authority, "coresident", "payload-b", 8, 450,
+                                  gpu_capacity_bytes=40_000_000_000, owner_id="runtime-manager/deployment-b",
+                                  placement_group_id="placement-b")
+        self.assertNotEqual(coresident["reservationId"], first["reservationId"])
+        with self.assertRaises(PhysicalResourceConflict):
+            self.reserve(authority, "incompatible", "payload-c", 9, 500,
+                         gpu_capacity_bytes=40_000_000_000, owner_id="runtime-manager/deployment-c")
+
+        grouped_gpu = self.reserve(authority, "grouped-gpu", "payload-a", 7, 525,
+                                   physical_key="node/" + self.envelope["deviceIds"][0] + "-group",
+                                   envelope={**self.envelope, "deviceIds": [self.envelope["deviceIds"][0] + "-group"]},
+                                   gpu_capacity_bytes=20_000_000_000,
+                                   cpu_ram_capacity_bytes=60_000_000_000,
+                                   placement_group_id="placement-a")
+        self.assertNotEqual(grouped_gpu["reservationId"], first["reservationId"])
+
+        other_gpu = self.reserve(authority, "other-gpu", "payload-d", 10, 550,
+                                 physical_key="node/" + self.envelope["deviceIds"][0] + "-2",
+                                 envelope={**self.envelope, "deviceIds": [self.envelope["deviceIds"][0] + "-2"]},
+                                 gpu_capacity_bytes=20_000_000_000,
+                                 cpu_ram_capacity_bytes=60_000_000_000,
+                                 owner_id="runtime-manager/deployment-d", placement_group_id="placement-d")
+        self.assertNotEqual(other_gpu["reservationId"], first["reservationId"])
+        with self.assertRaises(PhysicalResourceConflict):
+            self.reserve(authority, "host-ram-overcommit", "payload-e", 11, 600,
+                         physical_key="node/" + self.envelope["deviceIds"][0] + "-3",
+                         envelope={**self.envelope, "deviceIds": [self.envelope["deviceIds"][0] + "-3"]},
+                         gpu_capacity_bytes=20_000_000_000,
+                         cpu_ram_capacity_bytes=60_000_000_000,
+                         owner_id="runtime-manager/deployment-e", placement_group_id="placement-e")
 
     def test_progress_extends_authority_lease_and_silence_releases_every_resource(self):
         authority = ReservationAuthority(progress_timeout_ms=1_000)
-        reservation = authority.reserve("load", "payload", 2, "node/gpu", self.envelope, authority_tick_ms=0)
+        reservation = self.reserve(authority, "load", "payload", 2, 0)
         self.assertEqual([], authority.reconcile(authority_tick_ms=900))
         self.assertTrue(authority.observe_progress(reservation["reservationId"], 1, authority_tick_ms=900))
         self.assertEqual([], authority.reconcile(authority_tick_ms=1_800))
@@ -112,10 +205,19 @@ class DeploymentAndLoadSemantics(unittest.TestCase):
         base = vectors["cases"][0]
         self.assertEqual(canonical_deployment_key(base["identity"]), base["expectedDeploymentKey"])
         reordered = vectors["cases"][1]
+        self.assertEqual(len(base["identity"]["artifact_bindings"]), 2)
         self.assertEqual(canonical_deployment_key(reordered["identity"]), base["expectedDeploymentKey"])
         changed = vectors["cases"][2]
         self.assertNotEqual(canonical_deployment_key(changed["identity"]), base["expectedDeploymentKey"])
+        unicode_case = vectors["cases"][3]
+        self.assertEqual(canonical_deployment_key(unicode_case["identity"]), unicode_case["expectedDeploymentKey"])
         self.assertFalse(set(vectors["excludedLiveFields"]) & set(base["identity"]))
+        invalid_numeric = json.loads(json.dumps(base["identity"]))
+        invalid_numeric["quality_floor"] = 0.95
+        identity_validator = validator("deployments/deployment-identity.json")
+        self.assertTrue(list(identity_validator.iter_errors(invalid_numeric)))
+        with self.assertRaises(ValueError):
+            canonical_deployment_key(invalid_numeric)
 
     def test_two_waiters_cancel_independently_and_final_waiter_cancels_load(self):
         loads = SingleFlightLoads()
