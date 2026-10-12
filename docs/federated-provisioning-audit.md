@@ -308,12 +308,21 @@ the parent side (request → offer → reserve → confirmation → `Reserved`).
 The full parent↔owner round-trip is exercised in one test. Disabled by
 default: a handler on a default `OwnerPolicy` refuses every request.
 
+**Live-server registration delivered** (`70f16215`): `POST /iw/v1/provision`
+is registered on the live `Gateway` (a `provision: Mutex<Option<
+ProvisionTransport>>` field, `None` by default so the endpoint is absent and
+nothing is served — disabled by default; `with_provision_transport` builder
+mirrors the `peer_deny` convention). The handler reads the sender's origin
+token from the query (like `/iw/v1/admission`) and feeds the body to
+`handle_provision_request`. E2E tests against a real HTTP client and live
+gateway prove: endpoint absent (404) without a transport; negotiate→
+request→offer over the wire (200); a parent outside the allowlist refused
+(403) on request, fail closed.
+
 Remaining (later workstreams): item 5 (GUI owner-policy controls, gated on
-a persisted owner-policy store + gateway API), and the last-mile
-registration of the provisioning handler into the live `Gateway` dispatch
-table (needs the live server's auth + dispatch context). Activation remains
-refused by the Phase 1 gate in every mode by design (observe-only is a hard
-Phase 1 invariant); enabling it is a later phase.
+a persisted owner-policy store + gateway API). Activation remains refused
+by the Phase 1 gate in every mode by design (observe-only is a hard Phase
+1 invariant); enabling it is a later phase.
 
 ---
 
