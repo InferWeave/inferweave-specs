@@ -65,19 +65,22 @@ class ReservationSemantics(unittest.TestCase):
         envelope = kwargs.pop("envelope", self.envelope)
         resource_domain_key = kwargs.pop("resource_domain_key", "node")
         physical_key = kwargs.pop("physical_key", resource_domain_key + "/" + envelope["deviceIds"][0])
-        owner_id = kwargs.pop("owner_id", "runtime-manager/deployment-a")
+        owner_component = kwargs.pop("owner_component", "runtime-manager")
+        owner_gateway_id = kwargs.pop("owner_gateway_id", "gw-test")
         placement_group_id = kwargs.pop("placement_group_id", "placement-a")
         requested_bytes = kwargs.pop("requested_bytes", self.payload["requestedBytes"])
         request_identity = {
             "schema_version": "inferweave.reservation-request/v1",
             "deployment_key": "sha256:" + hashlib.sha256(payload.encode()).hexdigest(),
-            "owner_id": owner_id,
+            "owner_component": owner_component,
+            "owner_gateway_id": owner_gateway_id,
             "kind": self.payload["kind"],
             "physical_resource_key": physical_key,
             "resource_domain_key": resource_domain_key,
             "placement_group_id": placement_group_id,
             "requested_bytes_decimal": str(requested_bytes),
         }
+        request_identity.update(kwargs.pop("request_identity_override", {}))
         payload_digest = canonical_reservation_request_digest(request_identity)
         return authority.reserve(
             key, payload_digest, request_identity, epoch,
@@ -87,8 +90,10 @@ class ReservationSemantics(unittest.TestCase):
             gpu_capacity_bytes=kwargs.pop("gpu_capacity_bytes", 20_000_000_000),
             cpu_ram_capacity_bytes=kwargs.pop("cpu_ram_capacity_bytes", 100_000_000_000),
             disk_capacity_bytes=kwargs.pop("disk_capacity_bytes", 100_000_000_000),
-            owner_id=owner_id,
+            owner_component=owner_component,
+            owner_gateway_id=owner_gateway_id,
             placement_group_id=placement_group_id,
+            kind=self.payload["kind"],
             **kwargs,
         )
 
@@ -114,6 +119,13 @@ class ReservationSemantics(unittest.TestCase):
         self.assertNotEqual(self.payload["payloadDigest"], canonical_reservation_request_digest(mutated))
         mismatch = load_json("fixtures/invalid/reservation-runtime-payload-digest-mismatch.json")
         self.assertNotEqual(mismatch["payloadDigest"], canonical_reservation_request_digest(mismatch["requestIdentity"]))
+        cross_field = load_json("fixtures/invalid/reservation-runtime-request-identity-mismatch.json")
+        self.assertEqual(cross_field["payloadDigest"], canonical_reservation_request_digest(cross_field["requestIdentity"]))
+        self.assertNotEqual(cross_field["requestIdentity"]["physical_resource_key"], cross_field["physicalResourceKey"])
+        too_large = json.loads(json.dumps(identity))
+        too_large["requested_bytes_decimal"] = "9007199254740992"
+        with self.assertRaises(ValueError):
+            canonical_reservation_request_digest(too_large)
 
     def test_safe_peak_arithmetic_rejects_unknown_understated_and_over_capacity(self):
         self.assertTrue(safe_peak_admissible(self.envelope, available_bytes=20_000_000_000))
@@ -164,7 +176,7 @@ class ReservationSemantics(unittest.TestCase):
                          physical_key="node/group", envelope=broken["resourceEnvelope"],
                          requested_bytes=broken["requestedBytes"], effective_bytes=broken["effectiveBytes"],
                          gpu_capacity_bytes=100_000_000_000, cpu_ram_capacity_bytes=100_000_000_000,
-                         disk_capacity_bytes=100_000_000_000, owner_id="runtime-manager/group",
+                         disk_capacity_bytes=100_000_000_000, owner_component="runtime-manager", owner_gateway_id="gw-group",
                          placement_group_id="placement-group")
 
     def test_authority_enforces_idempotency_fence_and_physical_dedupe(self):
@@ -173,6 +185,9 @@ class ReservationSemantics(unittest.TestCase):
             self.reserve(authority, "rogue", "payload", 7, 0, caller="adapter")
         with self.assertRaises(ValueError):
             self.reserve(authority, "under", "payload", 7, 0, requested_bytes=1, effective_bytes=1)
+        with self.assertRaises(ValueError):
+            self.reserve(authority, "cross-field", "payload", 7, 0,
+                         request_identity_override={"physical_resource_key": "node/GPU-forged"})
         first = self.reserve(authority, "same", "payload-a", 7, 100, gpu_capacity_bytes=40_000_000_000)
         retry = self.reserve(authority, "same", "payload-a", 7, 200, gpu_capacity_bytes=40_000_000_000)
         self.assertEqual(first["reservationId"], retry["reservationId"])
@@ -191,12 +206,12 @@ class ReservationSemantics(unittest.TestCase):
         duplicate_path = self.reserve(authority, "other", "payload-a", 7, 400, gpu_capacity_bytes=40_000_000_000)
         self.assertEqual(duplicate_path["reservationId"], first["reservationId"])
         coresident = self.reserve(authority, "coresident", "payload-b", 8, 450,
-                                  gpu_capacity_bytes=40_000_000_000, owner_id="runtime-manager/deployment-b",
+                                  gpu_capacity_bytes=40_000_000_000, owner_component="runtime-manager", owner_gateway_id="gw-b",
                                   placement_group_id="placement-b")
         self.assertNotEqual(coresident["reservationId"], first["reservationId"])
         with self.assertRaises(PhysicalResourceConflict):
             self.reserve(authority, "incompatible", "payload-c", 9, 500,
-                         gpu_capacity_bytes=40_000_000_000, owner_id="runtime-manager/deployment-c")
+                         gpu_capacity_bytes=40_000_000_000, owner_component="runtime-manager", owner_gateway_id="gw-c")
 
         grouped_gpu = self.reserve(authority, "grouped-gpu", "payload-a", 7, 525,
                                    physical_key="node/" + self.envelope["deviceIds"][0] + "-group",
@@ -211,14 +226,14 @@ class ReservationSemantics(unittest.TestCase):
                          envelope={**self.envelope, "deviceIds": [self.envelope["deviceIds"][0] + "-forged"]},
                          gpu_capacity_bytes=20_000_000_000,
                          cpu_ram_capacity_bytes=60_000_000_000,
-                         owner_id="different-owner", placement_group_id="placement-a")
+                         owner_component="different-owner", owner_gateway_id="gw-forged", placement_group_id="placement-a")
 
         other_gpu = self.reserve(authority, "other-gpu", "payload-d", 10, 550,
                                  physical_key="node/" + self.envelope["deviceIds"][0] + "-2",
                                  envelope={**self.envelope, "deviceIds": [self.envelope["deviceIds"][0] + "-2"]},
                                  gpu_capacity_bytes=20_000_000_000,
                                  cpu_ram_capacity_bytes=60_000_000_000,
-                                 owner_id="runtime-manager/deployment-d", placement_group_id="placement-d")
+                                 owner_component="runtime-manager", owner_gateway_id="gw-d", placement_group_id="placement-d")
         self.assertNotEqual(other_gpu["reservationId"], first["reservationId"])
         with self.assertRaises(PhysicalResourceConflict):
             self.reserve(authority, "host-ram-overcommit", "payload-e", 11, 600,
@@ -226,7 +241,7 @@ class ReservationSemantics(unittest.TestCase):
                          envelope={**self.envelope, "deviceIds": [self.envelope["deviceIds"][0] + "-3"]},
                          gpu_capacity_bytes=20_000_000_000,
                          cpu_ram_capacity_bytes=60_000_000_000,
-                         owner_id="runtime-manager/deployment-e", placement_group_id="placement-e")
+                         owner_component="runtime-manager", owner_gateway_id="gw-e", placement_group_id="placement-e")
 
     def test_progress_extends_authority_lease_and_silence_releases_every_resource(self):
         authority = ReservationAuthority(progress_timeout_ms=1_000)

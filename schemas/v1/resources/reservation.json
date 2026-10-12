@@ -344,7 +344,8 @@
       "required": [
         "schema_version",
         "deployment_key",
-        "owner_id",
+        "owner_component",
+        "owner_gateway_id",
         "kind",
         "physical_resource_key",
         "resource_domain_key",
@@ -359,10 +360,6 @@
         "deployment_key": {
           "type": "string",
           "pattern": "^sha256:[0-9a-f]{64}$"
-        },
-        "owner_id": {
-          "type": "string",
-          "minLength": 1
         },
         "kind": {
           "type": "string",
@@ -389,9 +386,19 @@
         "requested_bytes_decimal": {
           "type": "string",
           "pattern": "^(0|[1-9][0-9]{0,15})$"
+        },
+        "owner_component": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "owner_gateway_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
         }
       },
-      "description": "Exact non-self-referential payloadDigest input. Contains only strings; authority outputs, payloadDigest, idempotencyKey, fencingEpoch, progress, lease and timestamps are excluded."
+      "description": "Exact non-self-referential payloadDigest input. Owner component and gateway are separate to avoid delimiter collisions. Contains only strings; authority outputs, payloadDigest, idempotencyKey, fencingEpoch, progress, lease and timestamps are excluded."
     }
   },
   "required": [

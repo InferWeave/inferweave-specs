@@ -103,15 +103,16 @@
   "leaseDeadlineAuthorityTick": 420000,
   "resourceDomainKey": "node_b200-01",
   "placementGroupId": "placement-runtime-example",
-  "payloadDigest": "sha256:935d741ff798b511f4c6f1f7985270e941b1fbb02f733d81d8eb3b96ee20350d",
+  "payloadDigest": "sha256:76e61f81b6f91bebd035c0733ea918ab4b326cb2ba19cb24ae1ecc8badaae0be",
   "requestIdentity": {
     "schema_version": "inferweave.reservation-request/v1",
     "deployment_key": "sha256:0e720f7f7a8451fa981d5d8a037be32e537e8ac2a6c1b1a090e2c65572126e3e",
-    "owner_id": "runtime-manager/gw_fry-rust",
     "kind": "placement",
     "physical_resource_key": "node_b200-01/GPU-5f1e0c2a-7b7d-4c55-9d0e-3b3e2a1c9f01",
     "resource_domain_key": "node_b200-01",
     "placement_group_id": "placement-runtime-example",
-    "requested_bytes_decimal": "16642998272"
+    "requested_bytes_decimal": "16642998272",
+    "owner_component": "runtime-manager",
+    "owner_gateway_id": "gw_fry-rust"
   }
 }

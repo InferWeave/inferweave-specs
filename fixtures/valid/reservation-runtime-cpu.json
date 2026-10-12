@@ -100,15 +100,16 @@
   "leaseDeadlineAuthorityTick": 420000,
   "resourceDomainKey": "node_cpu-01",
   "placementGroupId": "placement-cpu-example",
-  "payloadDigest": "sha256:eb1a0470b8a73ca761a33b1d81dd3a5b253d70213b552cbfd67d7f799bcafbbe",
+  "payloadDigest": "sha256:d85feb4bd4339da3c9bfdbe39bb0dc988e1e332b303da85ba32ae08a64d7524e",
   "requestIdentity": {
     "schema_version": "inferweave.reservation-request/v1",
     "deployment_key": "sha256:0e720f7f7a8451fa981d5d8a037be32e537e8ac2a6c1b1a090e2c65572126e3e",
-    "owner_id": "runtime-manager/gw_fry-rust",
     "kind": "placement",
     "physical_resource_key": "node_cpu-01/host-capacity",
     "resource_domain_key": "node_cpu-01",
     "placement_group_id": "placement-cpu-example",
-    "requested_bytes_decimal": "0"
+    "requested_bytes_decimal": "0",
+    "owner_component": "runtime-manager",
+    "owner_gateway_id": "gw_fry-rust"
   }
 }

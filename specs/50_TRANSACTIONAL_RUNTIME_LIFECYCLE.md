@@ -117,12 +117,12 @@ immutable request identity—including payload digest, exact fencing epoch, owne
 resource envelope and byte request—matches; otherwise it is a conflict. A fence matches the current
 grant exactly: both older and unissued future epochs are rejected.
 `requestIdentity` is the exact non-self-referential digest input: `schema_version`, `deployment_key`,
-`owner_id`, `kind`, `physical_resource_key`, `resource_domain_key`, `placement_group_id`, and the
-base-10 string `requested_bytes_decimal`, with no additional fields. It contains only strings.
+`owner_component`, `owner_gateway_id`, `kind`, `physical_resource_key`, `resource_domain_key`, `placement_group_id`, and the
+base-10 string `requested_bytes_decimal` (bounded to 9007199254740991), with no additional fields. It contains only strings.
 Encode it as RFC 8785 JCS UTF-8 and set `payloadDigest` to lowercase
 `sha256:<hex>` over those bytes. `payloadDigest`, idempotency key, fence, authority outputs,
 progress, lease, and timestamps are excluded. Receivers recompute the digest; group and retry
-checks never trust an out-of-band caller assertion.
+checks never trust an out-of-band caller assertion. Before admission, every duplicated identity field must equal its top-level reservation/admission value. Separate owner fields avoid delimiter collisions.
 
 The canonical ledger formula is `observed physical allocation + effective unobserved holds + new
 safe peak <= total allocatable budget`, evaluated per device for GPU bytes and per

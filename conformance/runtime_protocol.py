@@ -60,8 +60,8 @@ def canonical_deployment_key(identity):
 
 def canonical_reservation_request_digest(identity):
     required = {
-        "schema_version", "deployment_key", "owner_id", "kind", "physical_resource_key",
-        "resource_domain_key", "placement_group_id", "requested_bytes_decimal",
+        "schema_version", "deployment_key", "owner_component", "owner_gateway_id", "kind",
+        "physical_resource_key", "resource_domain_key", "placement_group_id", "requested_bytes_decimal",
     }
     digest = re.compile(r"^sha256:[0-9a-f]{64}$")
     valid = (
@@ -70,9 +70,10 @@ def canonical_reservation_request_digest(identity):
         and isinstance(identity.get("deployment_key"), str) and digest.fullmatch(identity["deployment_key"])
         and identity.get("kind") in {"placement", "primary-restart", "kv-growth", "runtime-growth", "restore"}
         and all(isinstance(identity.get(name), str) and identity[name] for name in
-                ("owner_id", "physical_resource_key", "resource_domain_key", "placement_group_id"))
+                ("owner_component", "owner_gateway_id", "physical_resource_key", "resource_domain_key", "placement_group_id"))
         and isinstance(identity.get("requested_bytes_decimal"), str)
         and re.fullmatch(r"0|[1-9][0-9]{0,15}", identity["requested_bytes_decimal"])
+        and int(identity["requested_bytes_decimal"]) <= 9007199254740991
     )
     if not valid:
         raise ValueError("reservation request identity is outside its canonical string-only schema")
@@ -155,12 +156,23 @@ class ReservationAuthority:
 
     def reserve(self, idempotency_key, payload_digest, request_identity, fencing_epoch, physical_key, resource_domain_key,
                 envelope, authority_tick_ms, requested_bytes, effective_bytes, gpu_capacity_bytes,
-                cpu_ram_capacity_bytes, disk_capacity_bytes, owner_id, placement_group_id,
-                caller="rebalancer"):
+                cpu_ram_capacity_bytes, disk_capacity_bytes, owner_component, owner_gateway_id,
+                placement_group_id, kind, caller="rebalancer"):
         if caller != self.authority_id:
             raise PermissionError("only the configured reservation authority may reserve")
         if payload_digest != canonical_reservation_request_digest(request_identity):
             raise ValueError("payload digest does not match canonical reservation request identity")
+        duplicated = {
+            "owner_component": owner_component,
+            "owner_gateway_id": owner_gateway_id,
+            "kind": kind,
+            "physical_resource_key": physical_key,
+            "resource_domain_key": resource_domain_key,
+            "placement_group_id": placement_group_id,
+            "requested_bytes_decimal": str(requested_bytes),
+        }
+        if any(request_identity.get(name) != value for name, value in duplicated.items()):
+            raise ValueError("reservation request identity disagrees with admission fields")
         accelerator = envelope.get("accelerator")
         device_ids = envelope.get("deviceIds", [])
         if accelerator == "gpu":
@@ -175,7 +187,7 @@ class ReservationAuthority:
                 or requested_bytes < peak or effective_bytes < peak):
             raise ValueError("reservation does not cover the evidenced safe peak")
         claim = (
-            payload_digest, fencing_epoch, physical_key, resource_domain_key, owner_id, placement_group_id,
+            payload_digest, fencing_epoch, physical_key, resource_domain_key, owner_component, owner_gateway_id, placement_group_id,
             requested_bytes, effective_bytes,
             json.dumps(envelope, sort_keys=True, separators=(",", ":")),
         )
@@ -203,17 +215,17 @@ class ReservationAuthority:
                     _evidenced_bytes(existing["resourceEnvelope"]["cpuRamSafePeak"]),
                     _evidenced_bytes(existing["resourceEnvelope"]["diskSafePeak"]),
                 )
-                group_claim = (existing["deploymentKey"], existing["ownerId"], existing["fencingEpoch"], values)
+                group_claim = (existing["deploymentKey"], existing["ownerComponent"], existing["ownerGatewayId"], existing["fencingEpoch"], values)
                 prior = groups.setdefault(existing["placementGroupId"], group_claim)
                 if prior != group_claim:
                     raise PhysicalResourceConflict(resource_domain_key)
             incoming = (_evidenced_bytes(envelope["cpuRamSafePeak"]), _evidenced_bytes(envelope["diskSafePeak"]))
-            incoming_claim = (request_identity["deployment_key"], owner_id, fencing_epoch, incoming)
+            incoming_claim = (request_identity["deployment_key"], owner_component, owner_gateway_id, fencing_epoch, incoming)
             if placement_group_id in groups and groups[placement_group_id] != incoming_claim:
                 raise PhysicalResourceConflict(resource_domain_key)
             groups.setdefault(placement_group_id, incoming_claim)
-            aggregate_cpu = sum(group_claim[3][0] for group_claim in groups.values())
-            aggregate_disk = sum(group_claim[3][1] for group_claim in groups.values())
+            aggregate_cpu = sum(group_claim[4][0] for group_claim in groups.values())
+            aggregate_disk = sum(group_claim[4][1] for group_claim in groups.values())
             if aggregate_gpu > gpu_capacity_bytes or aggregate_cpu > cpu_ram_capacity_bytes or aggregate_disk > disk_capacity_bytes:
                 raise PhysicalResourceConflict(physical_key)
             reservation_id = f"reservation-{self._next}"
@@ -223,7 +235,8 @@ class ReservationAuthority:
                 "fencingEpoch": fencing_epoch,
                 "payloadDigest": payload_digest,
                 "deploymentKey": request_identity["deployment_key"],
-                "ownerId": owner_id,
+                "ownerComponent": owner_component,
+                "ownerGatewayId": owner_gateway_id,
                 "placementGroupId": placement_group_id,
                 "claim": claim,
                 "physicalResourceKey": physical_key,

@@ -130,6 +130,18 @@ def validate_fixture(path, must_pass, schema_rel=None):
             expected = runtime_protocol.canonical_reservation_request_digest(fixture["requestIdentity"])
             if fixture["payloadDigest"] != expected:
                 semantic_errors.append("payloadDigest does not match canonical requestIdentity digest")
+            identity = fixture["requestIdentity"]
+            duplicated = {
+                "owner_component": fixture["owner"]["component"],
+                "owner_gateway_id": fixture["owner"]["gatewayId"],
+                "kind": fixture["kind"],
+                "physical_resource_key": fixture["physicalResourceKey"],
+                "resource_domain_key": fixture["resourceDomainKey"],
+                "placement_group_id": fixture["placementGroupId"],
+                "requested_bytes_decimal": str(fixture["requestedBytes"]),
+            }
+            if any(identity.get(name) != value for name, value in duplicated.items()):
+                semantic_errors.append("requestIdentity disagrees with duplicated reservation fields")
         except (KeyError, TypeError, ValueError) as error:
             semantic_errors.append(f"reservation request identity binding failed: {error}")
     ok = not errors and not semantic_errors
