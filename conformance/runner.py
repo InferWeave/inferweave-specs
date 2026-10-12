@@ -125,6 +125,13 @@ def validate_fixture(path, must_pass, schema_rel=None):
                 semantic_errors.append("deployment_key does not match canonical manifest digest")
         except (KeyError, TypeError, ValueError) as error:
             semantic_errors.append(f"deployment identity binding failed: {error}")
+    if schema_rel == "resources/reservation.json" and fixture.get("contractVersion") == 1 and not errors:
+        try:
+            expected = runtime_protocol.canonical_reservation_request_digest(fixture["requestIdentity"])
+            if fixture["payloadDigest"] != expected:
+                semantic_errors.append("payloadDigest does not match canonical requestIdentity digest")
+        except (KeyError, TypeError, ValueError) as error:
+            semantic_errors.append(f"reservation request identity binding failed: {error}")
     ok = not errors and not semantic_errors
     if ok == must_pass:
         return True

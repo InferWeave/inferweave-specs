@@ -58,6 +58,27 @@ def canonical_deployment_key(identity):
     return "sha256:" + hashlib.sha256(encoded).hexdigest()
 
 
+def canonical_reservation_request_digest(identity):
+    required = {
+        "schema_version", "deployment_key", "owner_id", "kind", "physical_resource_key",
+        "resource_domain_key", "placement_group_id", "requested_bytes_decimal",
+    }
+    digest = re.compile(r"^sha256:[0-9a-f]{64}$")
+    valid = (
+        isinstance(identity, dict) and set(identity) == required
+        and identity.get("schema_version") == "inferweave.reservation-request/v1"
+        and isinstance(identity.get("deployment_key"), str) and digest.fullmatch(identity["deployment_key"])
+        and identity.get("kind") in {"placement", "primary-restart", "kv-growth", "runtime-growth", "restore"}
+        and all(isinstance(identity.get(name), str) and identity[name] for name in
+                ("owner_id", "physical_resource_key", "resource_domain_key", "placement_group_id"))
+        and isinstance(identity.get("requested_bytes_decimal"), str)
+        and re.fullmatch(r"0|[1-9][0-9]{0,15}", identity["requested_bytes_decimal"])
+    )
+    if not valid:
+        raise ValueError("reservation request identity is outside its canonical string-only schema")
+    return "sha256:" + hashlib.sha256(_canonical_json(identity).encode("utf-8")).hexdigest()
+
+
 class SingleFlightLoads:
     def __init__(self):
         self._waiters = {}
@@ -132,14 +153,14 @@ class ReservationAuthority:
         self._reservations = {}
         self._next = 1
 
-    def reserve(self, idempotency_key, payload_digest, fencing_epoch, physical_key, resource_domain_key,
+    def reserve(self, idempotency_key, payload_digest, request_identity, fencing_epoch, physical_key, resource_domain_key,
                 envelope, authority_tick_ms, requested_bytes, effective_bytes, gpu_capacity_bytes,
                 cpu_ram_capacity_bytes, disk_capacity_bytes, owner_id, placement_group_id,
                 caller="rebalancer"):
         if caller != self.authority_id:
             raise PermissionError("only the configured reservation authority may reserve")
-        if not isinstance(payload_digest, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", payload_digest):
-            raise ValueError("payload digest must be canonical lowercase SHA-256")
+        if payload_digest != canonical_reservation_request_digest(request_identity):
+            raise ValueError("payload digest does not match canonical reservation request identity")
         accelerator = envelope.get("accelerator")
         device_ids = envelope.get("deviceIds", [])
         if accelerator == "gpu":
@@ -182,12 +203,12 @@ class ReservationAuthority:
                     _evidenced_bytes(existing["resourceEnvelope"]["cpuRamSafePeak"]),
                     _evidenced_bytes(existing["resourceEnvelope"]["diskSafePeak"]),
                 )
-                group_claim = (existing["payloadDigest"], existing["ownerId"], existing["fencingEpoch"], values)
+                group_claim = (existing["deploymentKey"], existing["ownerId"], existing["fencingEpoch"], values)
                 prior = groups.setdefault(existing["placementGroupId"], group_claim)
                 if prior != group_claim:
                     raise PhysicalResourceConflict(resource_domain_key)
             incoming = (_evidenced_bytes(envelope["cpuRamSafePeak"]), _evidenced_bytes(envelope["diskSafePeak"]))
-            incoming_claim = (payload_digest, owner_id, fencing_epoch, incoming)
+            incoming_claim = (request_identity["deployment_key"], owner_id, fencing_epoch, incoming)
             if placement_group_id in groups and groups[placement_group_id] != incoming_claim:
                 raise PhysicalResourceConflict(resource_domain_key)
             groups.setdefault(placement_group_id, incoming_claim)
@@ -201,6 +222,7 @@ class ReservationAuthority:
                 "reservationId": reservation_id,
                 "fencingEpoch": fencing_epoch,
                 "payloadDigest": payload_digest,
+                "deploymentKey": request_identity["deployment_key"],
                 "ownerId": owner_id,
                 "placementGroupId": placement_group_id,
                 "claim": claim,

@@ -116,9 +116,13 @@ must cover `gpuSafePeak.bytes`. Retrying an idempotency key returns a prior gran
 immutable request identity—including payload digest, exact fencing epoch, owner, physical resource,
 resource envelope and byte request—matches; otherwise it is a conflict. A fence matches the current
 grant exactly: both older and unissued future epochs are rejected.
-`payloadDigest` is the lowercase `sha256:<hex>` digest of that canonical immutable reservation
-request and is required on every `contractVersion: 1` wire record; group and retry checks use the
-wire value rather than an out-of-band caller assertion.
+`requestIdentity` is the exact non-self-referential digest input: `schema_version`, `deployment_key`,
+`owner_id`, `kind`, `physical_resource_key`, `resource_domain_key`, `placement_group_id`, and the
+base-10 string `requested_bytes_decimal`, with no additional fields. It contains only strings.
+Encode it as RFC 8785 JCS UTF-8 and set `payloadDigest` to lowercase
+`sha256:<hex>` over those bytes. `payloadDigest`, idempotency key, fence, authority outputs,
+progress, lease, and timestamps are excluded. Receivers recompute the digest; group and retry
+checks never trust an out-of-band caller assertion.
 
 The canonical ledger formula is `observed physical allocation + effective unobserved holds + new
 safe peak <= total allocatable budget`, evaluated per device for GPU bytes and per
@@ -153,7 +157,7 @@ Each GPU grant has `gpuCount: 1`, exactly one `deviceIds` entry, and a
 per device joined by the required nonempty `placementGroupId`. Shared host CPU RAM and disk peaks
 are charged once for each `(resourceDomainKey, placementGroupId)` pair, so per-device rows in one
 atomic placement do not multiply the same host peak while unrelated placements still aggregate.
-The reservation authority issues the group ID and binds it to one domain, logical payload digest,
+The reservation authority issues the group ID and binds it to one domain, immutable deployment key,
 owner, exact fence, and shared host peak contract; reuse with a different claim is rejected.
 Thus overlapping device sets cannot evade accounting through a caller-chosen aggregate key.
 The same

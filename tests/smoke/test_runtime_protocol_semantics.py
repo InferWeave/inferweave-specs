@@ -15,6 +15,7 @@ from conformance.runtime_protocol import (
     ReservationAuthority,
     SingleFlightLoads,
     canonical_deployment_key,
+    canonical_reservation_request_digest,
     link_dispatch_decision,
     safe_peak_admissible,
 )
@@ -64,16 +65,30 @@ class ReservationSemantics(unittest.TestCase):
         envelope = kwargs.pop("envelope", self.envelope)
         resource_domain_key = kwargs.pop("resource_domain_key", "node")
         physical_key = kwargs.pop("physical_key", resource_domain_key + "/" + envelope["deviceIds"][0])
+        owner_id = kwargs.pop("owner_id", "runtime-manager/deployment-a")
+        placement_group_id = kwargs.pop("placement_group_id", "placement-a")
+        requested_bytes = kwargs.pop("requested_bytes", self.payload["requestedBytes"])
+        request_identity = {
+            "schema_version": "inferweave.reservation-request/v1",
+            "deployment_key": "sha256:" + hashlib.sha256(payload.encode()).hexdigest(),
+            "owner_id": owner_id,
+            "kind": self.payload["kind"],
+            "physical_resource_key": physical_key,
+            "resource_domain_key": resource_domain_key,
+            "placement_group_id": placement_group_id,
+            "requested_bytes_decimal": str(requested_bytes),
+        }
+        payload_digest = canonical_reservation_request_digest(request_identity)
         return authority.reserve(
-            key, "sha256:" + hashlib.sha256(payload.encode()).hexdigest(), epoch,
+            key, payload_digest, request_identity, epoch,
             physical_key, resource_domain_key, envelope, tick,
-            requested_bytes=self.payload["requestedBytes"],
-            effective_bytes=self.payload["effectiveBytes"],
+            requested_bytes=requested_bytes,
+            effective_bytes=kwargs.pop("effective_bytes", self.payload["effectiveBytes"]),
             gpu_capacity_bytes=kwargs.pop("gpu_capacity_bytes", 20_000_000_000),
             cpu_ram_capacity_bytes=kwargs.pop("cpu_ram_capacity_bytes", 100_000_000_000),
             disk_capacity_bytes=kwargs.pop("disk_capacity_bytes", 100_000_000_000),
-            owner_id=kwargs.pop("owner_id", "runtime-manager/deployment-a"),
-            placement_group_id=kwargs.pop("placement_group_id", "placement-a"),
+            owner_id=owner_id,
+            placement_group_id=placement_group_id,
             **kwargs,
         )
 
@@ -90,6 +105,15 @@ class ReservationSemantics(unittest.TestCase):
             self.assertEqual([], list(quantity_validator.iter_errors(quantity)))
             self.assertIn("source", quantity)
             self.assertIn("confidence", quantity)
+
+    def test_reservation_payload_digest_is_bound_to_exact_request_identity(self):
+        identity = self.payload["requestIdentity"]
+        self.assertEqual(self.payload["payloadDigest"], canonical_reservation_request_digest(identity))
+        mutated = json.loads(json.dumps(identity))
+        mutated["requested_bytes_decimal"] = str(int(mutated["requested_bytes_decimal"]) + 1)
+        self.assertNotEqual(self.payload["payloadDigest"], canonical_reservation_request_digest(mutated))
+        mismatch = load_json("fixtures/invalid/reservation-runtime-payload-digest-mismatch.json")
+        self.assertNotEqual(mismatch["payloadDigest"], canonical_reservation_request_digest(mismatch["requestIdentity"]))
 
     def test_safe_peak_arithmetic_rejects_unknown_understated_and_over_capacity(self):
         self.assertTrue(safe_peak_admissible(self.envelope, available_bytes=20_000_000_000))
@@ -136,26 +160,19 @@ class ReservationSemantics(unittest.TestCase):
         self.assertTrue(list(validator("resources/reservation.json").iter_errors(broken)))
         authority = ReservationAuthority(progress_timeout_ms=1_000)
         with self.assertRaises(ValueError):
-            authority.reserve("multi", "sha256:" + hashlib.sha256(b"payload").hexdigest(), 1, "node/group", "node",
-                              broken["resourceEnvelope"], 0,
-                              requested_bytes=broken["requestedBytes"],
-                              effective_bytes=broken["effectiveBytes"],
-                              gpu_capacity_bytes=100_000_000_000,
-                              cpu_ram_capacity_bytes=100_000_000_000,
-                              disk_capacity_bytes=100_000_000_000,
-                              owner_id="runtime-manager/group", placement_group_id="placement-group")
+            self.reserve(authority, "multi", "payload", 1, 0,
+                         physical_key="node/group", envelope=broken["resourceEnvelope"],
+                         requested_bytes=broken["requestedBytes"], effective_bytes=broken["effectiveBytes"],
+                         gpu_capacity_bytes=100_000_000_000, cpu_ram_capacity_bytes=100_000_000_000,
+                         disk_capacity_bytes=100_000_000_000, owner_id="runtime-manager/group",
+                         placement_group_id="placement-group")
 
     def test_authority_enforces_idempotency_fence_and_physical_dedupe(self):
         authority = ReservationAuthority(progress_timeout_ms=30_000)
         with self.assertRaises(PermissionError):
             self.reserve(authority, "rogue", "payload", 7, 0, caller="adapter")
         with self.assertRaises(ValueError):
-            authority.reserve("under", "sha256:" + hashlib.sha256(b"payload").hexdigest(), 7,
-                              "node/" + self.envelope["deviceIds"][0], "node", self.envelope, 0,
-                              requested_bytes=1, effective_bytes=1, gpu_capacity_bytes=20_000_000_000,
-                              cpu_ram_capacity_bytes=100_000_000_000,
-                              disk_capacity_bytes=100_000_000_000, owner_id="runtime-manager/deployment-a",
-                              placement_group_id="placement-a")
+            self.reserve(authority, "under", "payload", 7, 0, requested_bytes=1, effective_bytes=1)
         first = self.reserve(authority, "same", "payload-a", 7, 100, gpu_capacity_bytes=40_000_000_000)
         retry = self.reserve(authority, "same", "payload-a", 7, 200, gpu_capacity_bytes=40_000_000_000)
         self.assertEqual(first["reservationId"], retry["reservationId"])

@@ -336,7 +336,62 @@
     "payloadDigest": {
       "type": "string",
       "pattern": "^sha256:[0-9a-f]{64}$",
-      "description": "SHA-256 over the canonical immutable reservation request. It participates in idempotent retry and placement-group identity."
+      "description": "SHA-256 over RFC 8785 JCS UTF-8 of requestIdentity only, rendered sha256:<lowercase hex>. payloadDigest itself and all authority outputs are excluded."
+    },
+    "requestIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "deployment_key",
+        "owner_id",
+        "kind",
+        "physical_resource_key",
+        "resource_domain_key",
+        "placement_group_id",
+        "requested_bytes_decimal"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "inferweave.reservation-request/v1"
+        },
+        "deployment_key": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "owner_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "placement",
+            "primary-restart",
+            "kv-growth",
+            "runtime-growth",
+            "restore"
+          ]
+        },
+        "physical_resource_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resource_domain_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "placement_group_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requested_bytes_decimal": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,15})$"
+        }
+      },
+      "description": "Exact non-self-referential payloadDigest input. Contains only strings; authority outputs, payloadDigest, idempotencyKey, fencingEpoch, progress, lease and timestamps are excluded."
     }
   },
   "required": [
@@ -360,6 +415,7 @@
       "then": {
         "required": [
           "idempotencyKey",
+          "requestIdentity",
           "payloadDigest",
           "fencingEpoch",
           "physicalResourceKey",
