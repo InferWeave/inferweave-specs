@@ -190,6 +190,31 @@ gateway relay only last resort
 
 No public inbound compute-node port is required.
 
+## Gateway replacement liveness
+
+When an allocated worker follows a replacement gateway, its supervisor may
+keep the old session alive until the new session is ready. Liveness supervision
+belongs to the worker across that handoff, not to either gateway session:
+
+- A healthy successor's heartbeat or rejoin attempt must keep the worker's
+  liveness clock current. An old session waiting for that successor must not
+  release the allocation because its own heartbeat stopped.
+- The successor inherits the fact that the worker has already registered. If
+  it blocks before registering with the replacement, the worker must still
+  release the allocation after the bounded stall window.
+- A withdrawn or completed successor must not leave a watchdog that can later
+  terminate a healthy original session.
+
+**Incident basis (Hive, 2026-10-12).** During a gateway replacement, two
+workers followed the new address and their old sessions ended. Each worker
+then logged `no heartbeat or rejoin progress for 300s` and exited, even though
+the successor had registered with the new gateway. The old supervisor had
+stopped updating its own clock while waiting for the successor, and its
+watchdog terminated the whole process. Replacement Slurm jobs remained queued
+for priority, turning that false liveness failure into missing model capacity.
+Conformance must cover both a healthy successor beyond the old watchdog window
+and a successor blocked before registration after the old session ends.
+
 ## Benchmark Synergy
 
 Ephemeral Slurm capacity is valuable for global benchmark exploration.
