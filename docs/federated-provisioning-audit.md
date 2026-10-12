@@ -298,10 +298,20 @@ activate()/revoke() (formulate the messages; activation still subject to
 the owner's Phase 1 observe-only gate). Pure and clock-free. 7 client
 tests.
 
-Not yet delivered (later workstreams): item 5 (GUI owner-policy controls,
-gated on a persisted owner-policy store + gateway API), and real
-socket/HTTP transport wiring (both the owner transport adapter and the
-parent client are pure cores awaiting a network feed). Activation remains
+**Provisioning HTTP transport wiring delivered** (`9d89e1ab`):
+`crates/iw-gateway/src/provision_http.rs` turns a `provision.*` request
+body into a `provision.*` response body over the gateway's HTTP surface —
+`handle_provision_request` bridges one body to the controller via the
+transport (decode/feature-gate/dedup/dispatch, mapping outcomes to HTTP
+statuses incl. idempotent-ack on replay), and `ProvisionHttpClient` drives
+the parent side (request → offer → reserve → confirmation → `Reserved`).
+The full parent↔owner round-trip is exercised in one test. Disabled by
+default: a handler on a default `OwnerPolicy` refuses every request.
+
+Remaining (later workstreams): item 5 (GUI owner-policy controls, gated on
+a persisted owner-policy store + gateway API), and the last-mile
+registration of the provisioning handler into the live `Gateway` dispatch
+table (needs the live server's auth + dispatch context). Activation remains
 refused by the Phase 1 gate in every mode by design (observe-only is a hard
 Phase 1 invariant); enabling it is a later phase.
 
