@@ -1,7 +1,7 @@
 # InferWeave Federated Model Provisioning — Phase 0 Audit & Gap Matrix
 
-Status: **Audit in progress** (read-only; no code changed).
-Date: 2026-10-10
+Status: **Phase 1 delivered & merged** (`inferweave/inferweave` PR #863, merge commit `75a6ee94`, squash of 11 commits on `feat/federated-provisioning-phase1`). The observe-only slice (gate, capacity signal, dry-run planner, `provision.*` message family, controller core, wire transport, durable persistence, parent client, HTTP wiring, live-server registration) is on `main`. Items 1–4 and workstreams B, C, D, E are done; item 5 (GUI) and activation remain later-phase.
+Date: 2026-10-12
 Author: pi agent (in-session, mission pipeline unavailable due to orchestration store lock).
 Scope: `inferweave/inferweave`, `inferweave/inferweave-specs`, `metabolomics-us/inferweave-gateway`.
 
