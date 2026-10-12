@@ -93,7 +93,7 @@ class RuntimeProtocolGapRepair(unittest.TestCase):
             set(envelope["gpuContributors"]),
             {"weights", "kvCache", "activations", "runtimeWorkspace", "auxiliaryModels", "loadingPeak"},
         )
-        for key in ("idempotencyKey", "fencingEpoch", "progressTimeoutMs", "authorityClock", "lastProgressAuthorityTick", "leaseDeadlineAuthorityTick", "progressSequence"):
+        for key in ("idempotencyKey", "payloadDigest", "fencingEpoch", "placementGroupId", "resourceDomainKey", "progressTimeoutMs", "authorityClock", "lastProgressAuthorityTick", "leaseDeadlineAuthorityTick", "progressSequence"):
             broken = dict(current)
             broken.pop(key)
             self.assertTrue(list(validator.iter_errors(broken)), key)

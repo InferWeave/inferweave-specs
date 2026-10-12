@@ -2,6 +2,7 @@
 """Executable semantics for the amended IW-RT runtime contracts."""
 
 import json
+import hashlib
 import unittest
 from pathlib import Path
 
@@ -64,7 +65,8 @@ class ReservationSemantics(unittest.TestCase):
         resource_domain_key = kwargs.pop("resource_domain_key", "node")
         physical_key = kwargs.pop("physical_key", resource_domain_key + "/" + envelope["deviceIds"][0])
         return authority.reserve(
-            key, payload, epoch, physical_key, resource_domain_key, envelope, tick,
+            key, "sha256:" + hashlib.sha256(payload.encode()).hexdigest(), epoch,
+            physical_key, resource_domain_key, envelope, tick,
             requested_bytes=self.payload["requestedBytes"],
             effective_bytes=self.payload["effectiveBytes"],
             gpu_capacity_bytes=kwargs.pop("gpu_capacity_bytes", 20_000_000_000),
@@ -102,6 +104,18 @@ class ReservationSemantics(unittest.TestCase):
         wrong_provenance["gpuSafePeak"]["basis"] = "derived"
         wrong_provenance["gpuSafePeak"]["confidence"] = "medium"
         self.assertFalse(safe_peak_admissible(wrong_provenance, available_bytes=20_000_000_000))
+        declared = json.loads(json.dumps(self.envelope))
+        declared["gpuContributors"]["weights"].update(basis="declared", confidence="low")
+        declared["gpuSafePeak"].update(basis="derived", confidence="medium")
+        self.assertFalse(safe_peak_admissible(declared, available_bytes=20_000_000_000))
+        declared["gpuSafePeak"].update(basis="estimated", confidence="low")
+        self.assertTrue(safe_peak_admissible(declared, available_bytes=20_000_000_000))
+        derived_low = json.loads(json.dumps(self.envelope))
+        for quantity in [*derived_low["gpuContributors"].values(), derived_low["gpuHeadroom"]]:
+            quantity.update(basis="derived", confidence="medium")
+        derived_low["gpuContributors"]["weights"]["confidence"] = "low"
+        derived_low["gpuSafePeak"].update(basis="derived", confidence="low")
+        self.assertTrue(safe_peak_admissible(derived_low, available_bytes=20_000_000_000))
 
     def test_cpu_only_grant_uses_host_capacity_without_fake_gpu(self):
         cpu = load_json("fixtures/valid/reservation-runtime-cpu.json")
@@ -122,7 +136,7 @@ class ReservationSemantics(unittest.TestCase):
         self.assertTrue(list(validator("resources/reservation.json").iter_errors(broken)))
         authority = ReservationAuthority(progress_timeout_ms=1_000)
         with self.assertRaises(ValueError):
-            authority.reserve("multi", "payload", 1, "node/group", "node",
+            authority.reserve("multi", "sha256:" + hashlib.sha256(b"payload").hexdigest(), 1, "node/group", "node",
                               broken["resourceEnvelope"], 0,
                               requested_bytes=broken["requestedBytes"],
                               effective_bytes=broken["effectiveBytes"],
@@ -136,7 +150,8 @@ class ReservationSemantics(unittest.TestCase):
         with self.assertRaises(PermissionError):
             self.reserve(authority, "rogue", "payload", 7, 0, caller="adapter")
         with self.assertRaises(ValueError):
-            authority.reserve("under", "payload", 7, "node/" + self.envelope["deviceIds"][0], "node", self.envelope, 0,
+            authority.reserve("under", "sha256:" + hashlib.sha256(b"payload").hexdigest(), 7,
+                              "node/" + self.envelope["deviceIds"][0], "node", self.envelope, 0,
                               requested_bytes=1, effective_bytes=1, gpu_capacity_bytes=20_000_000_000,
                               cpu_ram_capacity_bytes=100_000_000_000,
                               disk_capacity_bytes=100_000_000_000, owner_id="runtime-manager/deployment-a",
@@ -173,6 +188,13 @@ class ReservationSemantics(unittest.TestCase):
                                    cpu_ram_capacity_bytes=60_000_000_000,
                                    placement_group_id="placement-a")
         self.assertNotEqual(grouped_gpu["reservationId"], first["reservationId"])
+        with self.assertRaises(PhysicalResourceConflict):
+            self.reserve(authority, "forged-group", "different-payload", 7, 530,
+                         physical_key="node/" + self.envelope["deviceIds"][0] + "-forged",
+                         envelope={**self.envelope, "deviceIds": [self.envelope["deviceIds"][0] + "-forged"]},
+                         gpu_capacity_bytes=20_000_000_000,
+                         cpu_ram_capacity_bytes=60_000_000_000,
+                         owner_id="different-owner", placement_group_id="placement-a")
 
         other_gpu = self.reserve(authority, "other-gpu", "payload-d", 10, 550,
                                  physical_key="node/" + self.envelope["deviceIds"][0] + "-2",
@@ -193,9 +215,13 @@ class ReservationSemantics(unittest.TestCase):
         authority = ReservationAuthority(progress_timeout_ms=1_000)
         reservation = self.reserve(authority, "load", "payload", 2, 0)
         self.assertEqual([], authority.reconcile(authority_tick_ms=900))
-        self.assertTrue(authority.observe_progress(reservation["reservationId"], 1, authority_tick_ms=900))
+        self.assertFalse(authority.observe_progress(reservation["reservationId"], 1, 500, fencing_epoch=1))
+        self.assertFalse(authority.observe_progress(reservation["reservationId"], 1, 500, fencing_epoch=3))
+        self.assertFalse(authority.observe_progress(reservation["reservationId"], 1, 0, fencing_epoch=2))
+        self.assertTrue(authority.observe_progress(reservation["reservationId"], 1, 900, fencing_epoch=2))
         self.assertEqual([], authority.reconcile(authority_tick_ms=1_800))
-        self.assertEqual([reservation["reservationId"]], authority.reconcile(authority_tick_ms=1_901))
+        self.assertFalse(authority.observe_progress(reservation["reservationId"], 2, 1_900, fencing_epoch=2))
+        self.assertEqual([reservation["reservationId"]], authority.reconcile(authority_tick_ms=1_900))
         self.assertTrue(authority.released_all_resources(reservation["reservationId"]))
 
 
@@ -218,6 +244,12 @@ class DeploymentAndLoadSemantics(unittest.TestCase):
         self.assertTrue(list(identity_validator.iter_errors(invalid_numeric)))
         with self.assertRaises(ValueError):
             canonical_deployment_key(invalid_numeric)
+
+    def test_deployment_fixture_key_is_bound_to_manifest(self):
+        deployment = load_json("fixtures/valid/deployment.json")
+        self.assertEqual(deployment["deployment_key"], canonical_deployment_key(deployment["manifest"]))
+        mismatch = load_json("fixtures/invalid/deployment-key-mismatch.json")
+        self.assertNotEqual(mismatch["deployment_key"], canonical_deployment_key(mismatch["manifest"]))
 
     def test_two_waiters_cancel_independently_and_final_waiter_cancels_load(self):
         loads = SingleFlightLoads()

@@ -99,5 +99,6 @@
   "lastProgressAuthorityTick": 120000,
   "leaseDeadlineAuthorityTick": 420000,
   "resourceDomainKey": "node_cpu-01",
-  "placementGroupId": "placement-cpu-example"
+  "placementGroupId": "placement-cpu-example",
+  "payloadDigest": "sha256:d78bacb90e59202ca5b2ed2a79262fd43542be7b9367dfb6d5c901d6f777795b"
 }

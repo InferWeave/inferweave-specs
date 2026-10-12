@@ -101,5 +101,6 @@
   "lastProgressAuthorityTick": 120000,
   "leaseDeadlineAuthorityTick": 420000,
   "resourceDomainKey": "node_b200-01",
-  "placementGroupId": "placement-runtime-example"
+  "placementGroupId": "placement-runtime-example",
+  "payloadDigest": "sha256:94b00f9cc7558ebaec43d8cf95d025f80b80aaee205e9a54a41574eb128c4f95"
 }

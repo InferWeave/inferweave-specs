@@ -89,6 +89,8 @@ with SHA-256, and render `sha256:<lowercase-hex>`. `conformance/deployment-key-v
 cross-language known answer. Deployment ID, instances, assignment, placement reason, timestamps,
 aliases, request IDs, and waiter IDs are excluded live data. `artifact_bindings` maps canonical semantic roles such as `weights` and `tokenizer` to digests;
 JCS object-key ordering makes enumeration order irrelevant while a role change remains meaningful.
+Receivers recompute `deployment_key` from `manifest` and reject a mismatch before lookup,
+single-flight coalescing, reservation, or load; a caller-supplied key is never trusted as identity.
 Each caller has an independent `waiter_id`; cancelling one
 waiter detaches that waiter and does not cancel the shared load or other waiters. The manager may
 cancel the underlying load only after the final waiter detaches, an authority revokes the fenced
@@ -107,12 +109,16 @@ be admitted as zero. `gpuSafePeak.bytes` must be at least the arithmetic sum of 
 bytes plus `gpuHeadroom.bytes`. Admission may compare a new peak with current free bytes, or sum all
 active holds plus the new peak against total allocatable capacity; it must not mix those two
 conventions. The executable reference uses the latter convention. The result basis is
-`estimated` with low confidence if any input is estimated; only arithmetic over non-estimated
-evidenced inputs is `derived` with medium confidence. Initial `requestedBytes` and `effectiveBytes`
+`estimated` with low confidence if any input is estimated or declared; only arithmetic over
+measured/derived inputs is `derived`, and its confidence cannot exceed the weakest input or medium.
+Initial `requestedBytes` and `effectiveBytes`
 must cover `gpuSafePeak.bytes`. Retrying an idempotency key returns a prior grant only when the
 immutable request identity—including payload digest, exact fencing epoch, owner, physical resource,
 resource envelope and byte request—matches; otherwise it is a conflict. A fence matches the current
 grant exactly: both older and unissued future epochs are rejected.
+`payloadDigest` is the lowercase `sha256:<hex>` digest of that canonical immutable reservation
+request and is required on every `contractVersion: 1` wire record; group and retry checks use the
+wire value rather than an out-of-band caller assertion.
 
 The canonical ledger formula is `observed physical allocation + effective unobserved holds + new
 safe peak <= total allocatable budget`, evaluated per device for GPU bytes and per
@@ -127,6 +133,9 @@ production retains the existing controller/outbox reservation authority and reco
 for observable work such as verified bytes, completed preparation steps or runtime load milestones,
 records `lastProgressAuthorityTick`, and sets `leaseDeadlineAuthorityTick` to that monotonic local
 observation plus the timeout. Producer `lastProgressAt` and `expiresAt` wall times are display-only:
+progress also carries the grant's exact fencing epoch. An older or unissued future epoch, a
+non-increasing authority observation tick, or progress observed at/after the current lease deadline
+is rejected and cannot revive or extend the grant, even when reconciliation has not run yet.
 clock skew cannot extend or shorten a lease. Per invariant 37, accepted progress can sustain an
 arbitrarily long load; silence past the authority deadline expires it. Reconciliation after crash
 or partition releases every GPU, CPU RAM, disk, topology, and auxiliary hold of the expired
@@ -144,6 +153,8 @@ Each GPU grant has `gpuCount: 1`, exactly one `deviceIds` entry, and a
 per device joined by the required nonempty `placementGroupId`. Shared host CPU RAM and disk peaks
 are charged once for each `(resourceDomainKey, placementGroupId)` pair, so per-device rows in one
 atomic placement do not multiply the same host peak while unrelated placements still aggregate.
+The reservation authority issues the group ID and binds it to one domain, logical payload digest,
+owner, exact fence, and shared host peak contract; reuse with a different claim is rejected.
 Thus overlapping device sets cannot evade accounting through a caller-chosen aggregate key.
 The same
 logical demand learned through multiple parents coalesces to one grant; a different demand is never

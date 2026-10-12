@@ -332,6 +332,11 @@
       "minLength": 1,
       "maxLength": 256,
       "description": "Stable host capacity domain used to aggregate CPU RAM and disk safe peaks across reservations on distinct accelerators."
+    },
+    "payloadDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "SHA-256 over the canonical immutable reservation request. It participates in idempotent retry and placement-group identity."
     }
   },
   "required": [
@@ -355,6 +360,7 @@
       "then": {
         "required": [
           "idempotencyKey",
+          "payloadDigest",
           "fencingEpoch",
           "physicalResourceKey",
           "resourceDomainKey",

@@ -117,12 +117,22 @@ def validate_fixture(path, must_pass, schema_rel=None):
         return False
     fixture = json.loads(path.read_text())
     errors = list(validator(schema_rel).iter_errors(fixture))
-    ok = not errors
+    semantic_errors = []
+    if schema_rel == "deployments/deployment.json" and not errors:
+        try:
+            expected = runtime_protocol.canonical_deployment_key(fixture["manifest"])
+            if fixture["deployment_key"] != expected:
+                semantic_errors.append("deployment_key does not match canonical manifest digest")
+        except (KeyError, TypeError, ValueError) as error:
+            semantic_errors.append(f"deployment identity binding failed: {error}")
+    ok = not errors and not semantic_errors
     if ok == must_pass:
         return True
     print(f"FAIL  {rel}: expected {'valid' if must_pass else 'invalid'} against {schema_rel}")
     for e in errors[:5]:
         print(f"        {list(e.path)}: {e.message}")
+    for error in semantic_errors[:5]:
+        print(f"        semantic: {error}")
     return False
 
 

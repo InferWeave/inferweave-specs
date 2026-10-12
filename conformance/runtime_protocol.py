@@ -102,9 +102,11 @@ def safe_peak_admissible(envelope, available_bytes, available_cpu_ram_bytes=None
     if any(value is None for value in values) or headroom is None or peak is None:
         return False
     inputs = [contributors[name] for name in names] + [envelope["gpuHeadroom"]]
-    any_estimated = any(quantity["basis"] == "estimated" for quantity in inputs)
-    expected_basis = "estimated" if any_estimated else "derived"
-    expected_confidence = "low" if any_estimated else "medium"
+    any_non_derived_input = any(quantity["basis"] in {"estimated", "declared"} for quantity in inputs)
+    expected_basis = "estimated" if any_non_derived_input else "derived"
+    confidence_rank = {"low": 0, "medium": 1, "high": 2}
+    weakest = min((quantity["confidence"] for quantity in inputs), key=confidence_rank.get)
+    expected_confidence = "low" if any_non_derived_input else ("low" if weakest == "low" else "medium")
     if envelope["gpuSafePeak"].get("basis") != expected_basis:
         return False
     if envelope["gpuSafePeak"].get("confidence") != expected_confidence:
@@ -136,6 +138,8 @@ class ReservationAuthority:
                 caller="rebalancer"):
         if caller != self.authority_id:
             raise PermissionError("only the configured reservation authority may reserve")
+        if not isinstance(payload_digest, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", payload_digest):
+            raise ValueError("payload digest must be canonical lowercase SHA-256")
         accelerator = envelope.get("accelerator")
         device_ids = envelope.get("deviceIds", [])
         if accelerator == "gpu":
@@ -178,15 +182,17 @@ class ReservationAuthority:
                     _evidenced_bytes(existing["resourceEnvelope"]["cpuRamSafePeak"]),
                     _evidenced_bytes(existing["resourceEnvelope"]["diskSafePeak"]),
                 )
-                prior = groups.setdefault(existing["placementGroupId"], values)
-                if prior != values:
+                group_claim = (existing["payloadDigest"], existing["ownerId"], existing["fencingEpoch"], values)
+                prior = groups.setdefault(existing["placementGroupId"], group_claim)
+                if prior != group_claim:
                     raise PhysicalResourceConflict(resource_domain_key)
             incoming = (_evidenced_bytes(envelope["cpuRamSafePeak"]), _evidenced_bytes(envelope["diskSafePeak"]))
-            if placement_group_id in groups and groups[placement_group_id] != incoming:
+            incoming_claim = (payload_digest, owner_id, fencing_epoch, incoming)
+            if placement_group_id in groups and groups[placement_group_id] != incoming_claim:
                 raise PhysicalResourceConflict(resource_domain_key)
-            groups.setdefault(placement_group_id, incoming)
-            aggregate_cpu = sum(values[0] for values in groups.values())
-            aggregate_disk = sum(values[1] for values in groups.values())
+            groups.setdefault(placement_group_id, incoming_claim)
+            aggregate_cpu = sum(group_claim[3][0] for group_claim in groups.values())
+            aggregate_disk = sum(group_claim[3][1] for group_claim in groups.values())
             if aggregate_gpu > gpu_capacity_bytes or aggregate_cpu > cpu_ram_capacity_bytes or aggregate_disk > disk_capacity_bytes:
                 raise PhysicalResourceConflict(physical_key)
             reservation_id = f"reservation-{self._next}"
@@ -218,9 +224,12 @@ class ReservationAuthority:
         current = self._reservations[reservation_id]
         return not current["released"] and fencing_epoch == current["fencingEpoch"]
 
-    def observe_progress(self, reservation_id, sequence, authority_tick_ms):
+    def observe_progress(self, reservation_id, sequence, authority_tick_ms, fencing_epoch):
         current = self._reservations[reservation_id]
-        if current["released"] or sequence <= current["progressSequence"]:
+        if (current["released"] or fencing_epoch != current["fencingEpoch"]
+                or sequence <= current["progressSequence"]
+                or authority_tick_ms <= current["lastProgressAuthorityTick"]
+                or authority_tick_ms >= current["leaseDeadlineAuthorityTick"]):
             return False
         current["progressSequence"] = sequence
         current["lastProgressAuthorityTick"] = authority_tick_ms
@@ -230,7 +239,7 @@ class ReservationAuthority:
     def reconcile(self, authority_tick_ms):
         expired = []
         for reservation_id, current in self._reservations.items():
-            if not current["released"] and authority_tick_ms > current["leaseDeadlineAuthorityTick"]:
+            if not current["released"] and authority_tick_ms >= current["leaseDeadlineAuthorityTick"]:
                 current["released"] = True
                 current["state"] = "expired"
                 physical = self._by_physical.get(current["physicalResourceKey"], set())

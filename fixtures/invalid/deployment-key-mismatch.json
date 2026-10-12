@@ -1,0 +1,25 @@
+{
+  "deployment_id": "deployment-example",
+  "deployment_key": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "manifest": {
+    "schema_version": "inferweave.deployment-identity/v1",
+    "modality": "text",
+    "model_id": "acme/model",
+    "runtime_identity": {
+      "adapter": "vllm",
+      "version": "1",
+      "config_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "effective_profile_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "policy_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "resource_contract_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "artifact_bindings": {
+      "weights": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "tokenizer": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    }
+  },
+  "live": {
+    "instances": [],
+    "placement_reason": "capacity-fit"
+  }
+}
