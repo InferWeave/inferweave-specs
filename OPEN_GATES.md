@@ -372,8 +372,11 @@ implementation work:
   the reported availability impact against a real runtime;
 - no mixed-version gateway/node pair has exercised additive family fields, legacy jobs without
   `family`, or `completed` normalization to canonical `succeeded`;
-- no mixed-version link has exercised negotiated `iw.link-native-request/1` dispatch, rejection on
-  an older peer, or the family/endpoint and artifact-reference bounds against a production node;
+- no mixed-version link has exercised the `/v1/node/register` capability-array intersection,
+  negotiated `iw.link-native-request/1` dispatch, rejection on an older peer, exact `connectionId`
+  plus Link-incarnation Hello/ack binding, or atomic dispatch across re-registration, replacement,
+  credential expiry, or socket close; the family/endpoint and artifact-reference bounds have also
+  not been exercised against a production node;
 - no real end-to-end demonstrations have loaded and served the required runtime families through
   native endpoints under production admission, owner priority and telemetry controls.
 

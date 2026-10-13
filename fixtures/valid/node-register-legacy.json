@@ -1,0 +1,7 @@
+{
+  "nodeId": "node-legacy-01",
+  "role": "node",
+  "credential": "credential-example",
+  "endpoint": "",
+  "models": []
+}

@@ -8,6 +8,7 @@ Validates conformance fixtures against the canonical JSON Schemas:
 - every pinned contract under contracts/gpu-memory/ must validate as a fleet snapshot
 - conformance/node-join-vectors.json (spec 47) must agree with the reference model in
   conformance/node_join.py, and its enrollment known answers must be reproducible from the seed
+- conformance/native-link-binding-vectors.json (specs 45/49) must reject registration/Link races
 - conformance/runtime-family-vectors.json (spec 53) is run per family; each family reports PASS/FAIL
 
 The runner is intentionally strict: a valid fixture that stops validating, or an invalid
@@ -53,6 +54,10 @@ MAP = {
     "memory": "resources/memory.json",
     "runtime-instance": "runtime/runtime-instance.json",
     "runtime-load-request": "runtime/load-request.json",
+    "node-register-response": "requests/node-register-response.json",
+    "node-register": "requests/node-register.json",
+    "link-hello-ack": "requests/link-hello-ack.json",
+    "link-hello": "requests/link-hello.json",
     "link-request-meta": "requests/link-request-meta.json",
     "deployment": "deployments/deployment.json",
     "request": "requests/request.json",
@@ -201,6 +206,82 @@ def check_deployment_key_vectors():
     if not ok:
         print("FAIL  deployment-key vectors disagree with canonical JCS/SHA-256 reference")
     return ok
+
+
+def check_native_link_binding_vectors():
+    """Exercise negotiation and revocation against hostile registration/Link races."""
+    doc = json.loads((ROOT / "conformance" / "native-link-binding-vectors.json").read_text())
+    capability = doc["capability"]
+    failures = []
+    for case in doc["registrationCases"]:
+        got = runtime_protocol.negotiate_registration_capabilities(case.get("offered"), case["supported"])
+        if got != case["expect"]:
+            failures.append(case["id"])
+    for case in doc["negotiationCases"]:
+        registration = dict(doc["registration"])
+        hello = dict(doc["hello"])
+        local = {capability}
+        if case["mutation"] == "registration_connection_id":
+            registration["connection_id"] = "c-fedcba9876543210"
+        elif case["mutation"] == "registration_fresh":
+            registration["fresh"] = False
+        elif case["mutation"] == "credential_valid":
+            registration["credential_valid"] = False
+        elif case["mutation"] == "registration_capability":
+            registration["capabilities"] = []
+        elif case["mutation"] == "local_feature":
+            local.clear()
+        ack = runtime_protocol.negotiate_native_link(registration, hello, local)
+        if ack["binding_status"] != case["expectStatus"] or ack.get("reason") != case.get("expectReason"):
+            failures.append(case["id"])
+
+    hello = dict(doc["hello"])
+    exact_ack = runtime_protocol.negotiate_native_link(doc["registration"], hello, {capability})
+    for case in doc["acknowledgementCases"]:
+        ack = dict(exact_ack)
+        if case["mutation"] == "registration_connection_id":
+            ack["registration_connection_id"] = "c-fedcba9876543210"
+        elif case["mutation"] == "link_incarnation_id":
+            ack["link_incarnation_id"] = "link-incarnation-second-0002"
+        if runtime_protocol.accept_native_link_ack(hello, ack) != case["expectAccepted"]:
+            failures.append(case["id"])
+
+    native = json.loads((ROOT / "fixtures" / "valid" / "link-request-meta-native.json").read_text())
+    for case in doc["stateCases"]:
+        state = runtime_protocol.NativeLinkState({capability})
+        state.register("node-a", doc["registration"]["connection_id"], {capability})
+        first = dict(doc["hello"])
+        state.accept("node-a", first)
+        if case["transition"] == "reregister":
+            state.register("node-a", "c-fedcba9876543210", {capability})
+        elif case["transition"] == "replace_link":
+            state.accept("node-a", dict(first, link_incarnation_id="link-incarnation-second-0002"))
+        elif case["transition"] == "withdraw":
+            state.withdraw("node-a")
+        elif case["transition"] == "expire":
+            state.expire("node-a")
+        elif case["transition"] == "expire_credential":
+            state.expire_credential("node-a")
+        elif case["transition"] == "close":
+            state.close("node-a")
+        allowed = state.dispatch("node-a", first["link_incarnation_id"], native)["allowed"]
+        if allowed != case["expectNative"]:
+            failures.append(case["id"])
+    register_request = json.loads((ROOT / "fixtures" / "valid" / "node-register-native.json").read_text())
+    register_response = json.loads((ROOT / "fixtures" / "valid" / "node-register-response-native.json").read_text())
+    negotiated = runtime_protocol.negotiate_registration_capabilities(
+        register_request.get("capabilities"), [capability]
+    )
+    if negotiated != register_response["capabilities"]:
+        failures.append("node-register-negotiated-response")
+    legacy = json.loads((ROOT / "fixtures" / "valid" / "node-register-legacy.json").read_text())
+    if runtime_protocol.negotiate_registration_capabilities(legacy.get("capabilities"), [capability]):
+        failures.append("legacy-register-negotiates-none")
+    if failures:
+        print("FAIL  native-link binding vectors: " + ", ".join(failures))
+        return False
+    print("PASS  native-link binding vectors (exact registration and Link incarnation)")
+    return True
 
 
 def check_node_join_vectors():
@@ -403,6 +484,7 @@ def main():
     failures = 0
     failures += 0 if check_node_join_vectors() else 1
     failures += 0 if check_deployment_key_vectors() else 1
+    failures += 0 if check_native_link_binding_vectors() else 1
     failures += 0 if report_runtime_family_vectors(args.runtime_family_vectors) else 1
     if args.live_base_url:
         failures += 0 if run_live_runtime_family_cases(args.live_base_url, args.runtime_family_vectors) else 1

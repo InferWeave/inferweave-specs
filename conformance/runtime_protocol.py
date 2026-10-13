@@ -312,6 +312,153 @@ _NATIVE_ENDPOINTS = {
     "rag": "/jobs",
 }
 
+_NATIVE_LINK_CAPABILITY = "iw.link-native-request/1"
+
+
+def negotiate_registration_capabilities(offered, supported):
+    """Exact, bounded intersection for POST /v1/node/register capabilities arrays."""
+    if not isinstance(offered, list):
+        return []
+    grammar = re.compile(r"^iw\.[a-z0-9-]+/(0|[1-9][0-9]*)$")
+    offered = {
+        item for item in offered[:32]
+        if isinstance(item, str) and len(item) <= 128 and grammar.fullmatch(item)
+    }
+    negotiated = []
+    seen = set()
+    for item in supported:
+        if item in offered and item not in seen:
+            negotiated.append(item)
+            seen.add(item)
+    return negotiated
+
+
+def _native_link_ack(hello, status, reason=None):
+    ack = {
+        "kind": "hello_ack",
+        "native_link_version": 1,
+        "registration_connection_id": hello.get("registration_connection_id", ""),
+        "link_incarnation_id": hello.get("link_incarnation_id", ""),
+        "binding_status": status,
+        "negotiated_features": [_NATIVE_LINK_CAPABILITY] if status == "bound" else [],
+    }
+    if reason is not None:
+        ack["reason"] = reason
+    return ack
+
+
+def negotiate_native_link(registration, hello, local_features):
+    """Return the v1 acknowledgement bound to one current registration and Link socket."""
+    if hello.get("native_link_version") != 1:
+        return None
+    if not registration or not registration.get("fresh"):
+        return _native_link_ack(hello, "unbound", "registration_not_current")
+    if not registration.get("credential_valid"):
+        return _native_link_ack(hello, "unbound", "credential_invalid")
+    if hello.get("registration_connection_id") != registration.get("connection_id"):
+        return _native_link_ack(hello, "unbound", "registration_mismatch")
+    if _NATIVE_LINK_CAPABILITY not in registration.get("capabilities", set()):
+        return _native_link_ack(hello, "unbound", "feature_not_registered")
+    if _NATIVE_LINK_CAPABILITY not in hello.get("native_link_features", []):
+        return _native_link_ack(hello, "unbound", "feature_not_offered")
+    if _NATIVE_LINK_CAPABILITY not in local_features:
+        return _native_link_ack(hello, "unbound", "feature_not_supported")
+    return _native_link_ack(hello, "bound")
+
+
+def accept_native_link_ack(hello, ack):
+    """A node enables native dispatch only for the acknowledgement of its exact Hello."""
+    return bool(
+        ack
+        and ack.get("kind") == "hello_ack"
+        and ack.get("native_link_version") == 1
+        and ack.get("binding_status") == "bound"
+        and ack.get("registration_connection_id") == hello.get("registration_connection_id")
+        and ack.get("link_incarnation_id") == hello.get("link_incarnation_id")
+        and _NATIVE_LINK_CAPABILITY in hello.get("native_link_features", [])
+        and _NATIVE_LINK_CAPABILITY in ack.get("negotiated_features", [])
+    )
+
+
+class NativeLinkState:
+    """Implementation-neutral fixture model; production must provide equivalent atomicity."""
+
+    def __init__(self, local_features):
+        self.local_features = set(local_features)
+        self.registrations = {}
+        self.links = {}
+
+    def register(self, node_id, connection_id, capabilities):
+        self.registrations[node_id] = {
+            "connection_id": connection_id,
+            "capabilities": set(capabilities),
+            "fresh": True,
+            "credential_valid": True,
+        }
+
+    def accept(self, node_id, hello):
+        previous = self.links.get(node_id)
+        if previous:
+            previous["current"] = False
+        ack = negotiate_native_link(self.registrations.get(node_id), hello, self.local_features)
+        self.links[node_id] = {
+            "incarnation_id": hello.get("link_incarnation_id"),
+            "registration_connection_id": hello.get("registration_connection_id"),
+            "ack": deepcopy(ack),
+            "current": True,
+            "live": True,
+        }
+        return deepcopy(ack)
+
+    def withdraw(self, node_id):
+        registration = self.registrations.get(node_id)
+        if registration:
+            registration["fresh"] = False
+
+    def expire(self, node_id):
+        self.withdraw(node_id)
+
+    def expire_credential(self, node_id):
+        registration = self.registrations.get(node_id)
+        if registration:
+            registration["credential_valid"] = False
+
+    def close(self, node_id):
+        link = self.links.get(node_id)
+        if link:
+            link["live"] = False
+            link["current"] = False
+
+    def dispatch(self, node_id, link_incarnation_id, meta):
+        # This lookup-and-check is one transition in the reference model. Production performs
+        # selection, binding validation, and frame enqueue under one manager synchronization scope.
+        link = self.links.get(node_id)
+        if meta.get("native") is None:
+            return {"allowed": bool(link and link["live"] and link["incarnation_id"] == link_incarnation_id)}
+        registration = self.registrations.get(node_id)
+        binding_valid = bool(
+            link
+            and link["live"]
+            and link["current"]
+            and link["incarnation_id"] == link_incarnation_id
+            and accept_native_link_ack(
+                {
+                    "registration_connection_id": link["registration_connection_id"],
+                    "link_incarnation_id": link["incarnation_id"],
+                    "native_link_features": [_NATIVE_LINK_CAPABILITY],
+                },
+                link["ack"],
+            )
+            and registration
+            and registration["fresh"]
+            and registration["credential_valid"]
+            and registration["connection_id"] == link["registration_connection_id"]
+            and _NATIVE_LINK_CAPABILITY in registration["capabilities"]
+        )
+        if not binding_valid:
+            return {"allowed": False, "code": "FEATURE_UNSUPPORTED"}
+        return link_dispatch_decision(meta, {"native_link_requests": "1"})
+
 
 def link_dispatch_decision(meta, features):
     native = meta.get("native")

@@ -1,0 +1,10 @@
+{
+  "nodeId": "node-a",
+  "connectionId": "c-0123456789abcdef",
+  "freshnessTtlSecs": 30,
+  "capabilities": [
+    "iw.link-native-request/1",
+    "iw.link-native-request/1"
+  ],
+  "assignments": []
+}

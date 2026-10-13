@@ -99,7 +99,7 @@ Features: **92**
 | `IW-GPUMEM-001` GPU memory accounting, reservations, pressure, decision records, OOM postmortem and placement simulation on the capability-gated iw.gpu-memory family (Protocol 1.1.0) | P1 | 5 | control-plane+gateway+node+consumer | `P5-T30`, `P5-T31`, `P5-T32` |
 | `IW-NODEHW-001` Hardware-only node registration, the optional versioned hardware report, the always-present assignments array and tokenless proof enrollment as one wire contract for the Rust and Go gateways (Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T33`, `P5-T34` |
 | `IW-RT-001` Runtime families, typed capabilities, isolated adapters and feature negotiation | P1 | B | control-plane | `B-T01` |
-| `IW-RT-002` Native `/inferweave/v1` endpoints, standalone schema parity and bounded negotiated link dispatch | P1 | B | control-plane | `B-T02` |
+| `IW-RT-002` Native `/inferweave/v1` endpoints, standalone schema parity and exact-incarnation bounded negotiated link dispatch | P1 | B | control-plane | `B-T02` |
 | `IW-RT-003` Transactional lifecycle, single-flight loads, reservations, caches and rollback | P1 | B | control-plane | `B-T03` |
 | `IW-RT-004` Typed inference pipelines | P1 | B | control-plane | `B-T04` |
 | `IW-RT-005` Durable inference jobs with additive legacy compatibility | P1 | B | control-plane | `B-T05` |
