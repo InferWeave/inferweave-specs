@@ -102,7 +102,7 @@ Bind actual `Content-Type`, `InferWeave-Alias-Level`, `x-inferweave-session`,
 `InferWeave-Operation-Id`, `Idempotency-Key` and `InferWeave-Request-Deadline-Unix-Ms`.
 These map respectively to content_type, alias_level, session_id, timeout_ms, capabilities,
 min_context, prefer_family, queue, tenant_selector, operation_id, idempotency_key and
-deadline_unix_ms. Absent optional values bind empty strings; alias level is exactly `2`.
+deadline_unix_ms. Absent or present-empty optional values bind the same empty strings; alias level is exactly `2`.
 Headers are singular, bounded, control-free with no surrounding whitespace; reject ambiguous
 or noncanonical forms. Existing semantic parsing still validates every accepted value and
 rejects unknown capabilities. The tenant selector must match a current Rust grant; signing a
@@ -125,6 +125,57 @@ SHA-256 hex of exact entity bytes. Nonce, signature, parent/edge, attempt correl
 are excluded so attempts converge. Deadline is separately signed: retries may shorten the stored
 deadline, never extend it. Content-identical intentional new requests are **not** deduplicated by
 fingerprint; fingerprint detects changed work under an existing operation/key.
+
+### Supported transport subset and correlation metadata
+
+Spec57 originally left MIME parsing and present-empty headers underspecified. Independent Rust/Go
+interoperability work found that strict literal MIME matching could reject equivalent media types,
+while unrestricted MIME libraries could disagree on duplicate or RFC2231 parameters. Following
+that underspecified text would reintroduce a signer/verifier disagreement. This bounded common
+subset fixes the contract; it does not normalize the signed request or enable an endpoint.
+
+`Content-Type` is required, ASCII, at most 1024 bytes, without controls (including tabs), or leading
+or trailing whitespace. Accept `application/json` on supported targets and `multipart/form-data`
+only on `/v1/audio/transcriptions`. Type and parameter names compare case-insensitively; parameter
+order is irrelevant to classification. ASCII spaces around `;` and `=` are allowed. Parameter
+names and unquoted values use MIME token characters (ASCII letters/digits and
+`!#$%&'*+-.^_` plus backtick, `|~`); unquoted values are nonempty. Quoted values may be empty and
+contain printable ASCII; only quote and backslash may be backslash-escaped. A single final
+semicolon is allowed; empty intermediate parameters, missing equals/value, unterminated quotes,
+characters after a closing quote, duplicate names (even with identical values) and any parameter
+name containing `*` are rejected. In particular, RFC2231 extended and continued parameters are
+unsupported. Unknown well-formed ordinary parameters may be parsed but confer no capabilities.
+
+Multipart requires exactly one `boundary` parameter. Its decoded value is 1–70 ASCII bytes,
+using only letters/digits, apostrophe, parentheses, plus, underscore, comma, hyphen, period,
+slash, colon, equals, question mark and space, with no trailing space. Quoting permits spaces
+or colons; escaped quotes/backslashes remain invalid boundary characters after decoding.
+Classification never rewrites `Content-Type`: its exact received bytes, including case,
+parameter order, spaces and quotes, remain in the signature and request fingerprint. Two MIME
+spellings with equivalent classification can therefore have different fingerprints. Endpoint
+body validation and semantic validation remain required after transport classification.
+
+The optional signed controls are `session_id`, `timeout_ms`, `capabilities`, `min_context`,
+`prefer_family`, `queue`, `tenant_selector` and `idempotency_key`, mapped to the headers above.
+Present-empty is equivalent to absent only for these controls. Required headers, including
+Content-Type, alias level, operation ID and absolute deadline, must be nonempty and otherwise
+valid. Reject duplicate names case-insensitively before a header map can collapse them.
+
+`x-inferweave-request-id` is allowed as non-authoritative correlation metadata: if present it
+must be singular, nonempty valid UTF-8, at most 8192 UTF-8 bytes, control-free and without surrounding
+whitespace. It is excluded from the signed semantic transcript and request fingerprint. It
+never supplies a principal, tenant, operation ID, canonical claim request ID, idempotency key,
+capability or admission authority. Changing correlation metadata cannot create another execution
+or alter claim lookup. Unknown InferWeave controls remain rejected.
+
+`conformance/alias-inference-transport-vectors.json` is the shared transport fixture imported
+from Rust commit `ebc195f3d584c190121b6716711e2173212589ac` and Go PR #474's
+interoperability work, preserving their 36 MIME and 10 header cases and adding an 8193-byte
+multibyte correlation rejection case. Those implementations initially counted Unicode scalar
+values for this metadata; that could admit substantially more than 8192 bytes. Both must enforce
+the byte limit and replay the added vector before claiming parity. `conformance/alias_inference_transport.py` replays its MIME/header cases
+as an offline classification oracle. It supplies neither cryptographic verification nor proof
+of running HTTP interoperability; those implementation and activation gates remain owed.
 
 ## 4. Canonical identity, idempotency and durable authority
 

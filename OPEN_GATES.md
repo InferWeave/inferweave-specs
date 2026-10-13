@@ -468,3 +468,13 @@ already permits this response. These requirements do not establish runtime enfor
 empty-page continuation, scan-budget exhaustion, repeated-cursor handling and authorization
 revision invalidation at the Rust/Go boundary remain **unsatisfied/owed** under
 A-T02/A-T06/A-T07/A-T08 and acceptance 20/27. No rollout gate is opened by this correction.
+
+### Alias inference transport interoperability remains owed
+
+Spec57's shared MIME/header vectors and offline classifier prove the bounded contract only.
+A-T02/A-T06/A-T08 still owe running Go-to-Rust signature/byte preservation, endpoint semantic
+validation, correlation non-authority and malformed transport rejection across the actual HTTP
+boundary. Rust `ebc195f3` and the inspected Go PR #474 implementation count Unicode scalar
+values for correlation metadata; the 8192 UTF-8 byte bound and new multibyte rejection vector
+require implementation alignment before parity can be claimed. Canonical fixture import does
+not establish deployed interoperability or open an alias traffic gate.

@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~877,071 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~887,260 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `55c937c0c49f` — ~7,873t
+- `OPEN_GATES.md` — `2123eb5ce9cd` — ~8,058t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -45,11 +45,13 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `agents/spec-author.md` — `31ca2354413f` — ~113t
 - `agents/spec-reviewer.md` — `b428d8e915af` — ~134t
 - `bundle-manifest.json` — `d70a5b0d6742` — ~553t
-- `conformance/README.md` — `9dc9b4f27dcd` — ~688t
+- `conformance/README.md` — `4cf07cfa79d8` — ~782t
 - `conformance/alias-edge-delegation-vectors.json` — `6a38e2d28078` — ~4,446t
 - `conformance/alias-execution-vectors.json` — `0c44f8f36712` — ~16,485t
+- `conformance/alias-inference-transport-vectors.json` — `327727df8e1c` — ~6,217t
 - `conformance/alias_edge_delegation.py` — `1876a720e671` — ~950t
-- `conformance/alias_execution.py` — `14d3c6115778` — ~4,531t
+- `conformance/alias_execution.py` — `7c0c99ecc2ba` — ~4,550t
+- `conformance/alias_inference_transport.py` — `27381277284a` — ~866t
 - `conformance/compatibility.yaml` — `bc14705e6e9e` — ~726t
 - `conformance/deployment-key-vectors.json` — `f817862b8b8d` — ~1,149t
 - `conformance/dynamic_aliases.py` — `2cc37c4b51d4` — ~1,898t
@@ -112,7 +114,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
 - `docs/AI_INSTALL_INFERWEAVE.md` — `64b97a39d222` — ~509t
 - `docs/README.md` — `514ce6279d55` — ~100t
-- `docs/alias-implementation-gap-matrix.md` — `a97a75f0128e` — ~4,050t
+- `docs/alias-implementation-gap-matrix.md` — `a97a75f0128e` — ~4,053t
 - `docs/architecture.md` — `3d2cc8e44219` — ~377t
 - `docs/compatibility.md` — `8ceb21cb1933` — ~713t
 - `docs/events.md` — `a957e821624f` — ~481t
@@ -558,10 +560,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/51_PIPELINES_AND_DURABLE_JOBS.md` — `ab9f8df6a816` — ~624t
 - `specs/52_DURABLE_INFERENCE_JOBS.md` — `ed268f3478d8` — ~785t
 - `specs/53_RUNTIME_FAMILY_CONFORMANCE.md` — `d1c8172161f8` — ~923t
-- `specs/54_DYNAMIC_MODEL_ALIASES.md` — `f9fe400ea3ea` — ~7,870t
+- `specs/54_DYNAMIC_MODEL_ALIASES.md` — `f9fe400ea3ea` — ~7,875t
 - `specs/55_ALIAS_EDGE_DELEGATION.md` — `38b0da721b74` — ~2,316t
 - `specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md` — `386f8e1ac659` — ~3,888t
-- `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` — `56804c3fa5ee` — ~6,153t
+- `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` — `1bed3d1e09d5` — ~7,184t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `99f922c820cb` — ~544t
@@ -736,7 +738,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-B/B-T05.md` — `696859878460` — ~251t
 - `tasks/phase-B/B-T06.md` — `f156bf0d5ea7` — ~257t
 - `tests/smoke/test_alias_edge_delegation.py` — `e8f8df50ee53` — ~869t
-- `tests/smoke/test_alias_execution_contract.py` — `ce000e0a51ab` — ~2,045t
+- `tests/smoke/test_alias_execution_contract.py` — `223e0087702a` — ~2,544t
 - `tests/smoke/test_bundle_self_test.py` — `f0115f5e0f1a` — ~281t
 - `tests/smoke/test_conformance.py` — `40dd0543b1e5` — ~1,230t
 - `tests/smoke/test_dynamic_alias_contract.py` — `bc7c6423c81d` — ~2,474t
