@@ -1,0 +1,1 @@
+{"timeout_ms":30000,"native":{"family":"embeddings","endpoint":"/embeddings","method":"POST","content_type":"application/json","payload_bytes":128,"artifact_refs":[]}}

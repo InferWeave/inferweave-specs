@@ -1,60 +1,536 @@
 {
-  "$comment": "Spec 53 runtime-family conformance vectors (B-T06A, feature IW-RT-006). Advertisement/admission cases follow spec 48; native-endpoint smoke vectors follow spec 49 and must name a path in openapi/inferweave-v1.yaml. conformance/runner.py reports per-family pass/fail.",
+  "$comment": "Spec 53 runtime-family conformance vectors (B-T06A, feature IW-RT-006). Advertisement/admission cases follow spec 48. Each family has executable positive and negative native request cases. Offline runs validate the request contract; only --live-base-url executes HTTP.",
   "spec": "specs/53_RUNTIME_FAMILY_CONFORMANCE.md",
   "version": 1,
   "featureId": "IW-RT-006",
-  "registry": ["llm", "reasoning", "embeddings", "reranking", "stt", "tts", "audio", "prediction", "image", "video", "multimodal", "scientific", "rag"],
-  "requiredFamilies": ["embeddings", "reranking", "prediction", "stt", "rag"],
+  "registry": [
+    "llm",
+    "reasoning",
+    "embeddings",
+    "reranking",
+    "stt",
+    "tts",
+    "audio",
+    "prediction",
+    "image",
+    "video",
+    "multimodal",
+    "scientific",
+    "rag"
+  ],
+  "requiredFamilies": [
+    "embeddings",
+    "reranking",
+    "prediction",
+    "stt",
+    "rag"
+  ],
   "families": {
     "embeddings": {
-      "advertisement": {"family": "embeddings", "input_modalities": ["text"], "output_modalities": ["vector"], "quality": {"source": "self-reported"}},
-      "expect": {"admitted": true, "roundTrip": true},
+      "advertisement": {
+        "family": "embeddings",
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "vector"
+        ],
+        "quality": {
+          "metric": "dimension",
+          "value": 1024,
+          "basis": "self-reported"
+        }
+      },
+      "expect": {
+        "admitted": true,
+        "roundTrip": true
+      },
       "rejections": [
-        {"id": "embeddings-missing-family", "omit": ["family"], "expect": {"admitted": false}},
-        {"id": "embeddings-missing-modalities", "omit": ["input_modalities", "output_modalities"], "expect": {"admitted": false}},
-        {"id": "embeddings-unknown-family", "override": {"family": "not-a-family"}, "expect": {"admitted": false}}
+        {
+          "id": "embeddings-missing-family",
+          "omit": [
+            "family"
+          ],
+          "expect": {
+            "admitted": false
+          }
+        },
+        {
+          "id": "embeddings-missing-modalities",
+          "omit": [
+            "input_modalities",
+            "output_modalities"
+          ],
+          "expect": {
+            "admitted": false
+          }
+        },
+        {
+          "id": "embeddings-unknown-family",
+          "override": {
+            "family": "not-a-family"
+          },
+          "expect": {
+            "admitted": false
+          }
+        }
       ],
-      "nativeSmoke": {"method": "POST", "path": "/embeddings", "expectStatus": 200}
+      "nativeCases": [
+        {
+          "id": "embeddings-success",
+          "method": "POST",
+          "path": "/embeddings",
+          "body": {
+            "family": "embeddings",
+            "model": "embed-test",
+            "input": [
+              "hello"
+            ]
+          },
+          "expectStatus": 200
+        },
+        {
+          "id": "embeddings-family-mismatch",
+          "method": "POST",
+          "path": "/embeddings",
+          "body": {
+            "family": "reranking",
+            "model": "embed-test",
+            "input": [
+              "hello"
+            ]
+          },
+          "expectStatus": 400
+        }
+      ]
     },
     "reranking": {
-      "advertisement": {"family": "reranking", "input_modalities": ["text"], "output_modalities": ["score"], "quality": {"source": "self-reported"}},
-      "expect": {"admitted": true, "roundTrip": true},
+      "advertisement": {
+        "family": "reranking",
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "score"
+        ],
+        "quality": {
+          "metric": "ndcg_at_10",
+          "value": 0.5,
+          "basis": "self-reported"
+        }
+      },
+      "expect": {
+        "admitted": true,
+        "roundTrip": true
+      },
       "rejections": [
-        {"id": "reranking-missing-family", "omit": ["family"], "expect": {"admitted": false}},
-        {"id": "reranking-missing-modalities", "omit": ["input_modalities", "output_modalities"], "expect": {"admitted": false}},
-        {"id": "reranking-unknown-family", "override": {"family": "not-a-family"}, "expect": {"admitted": false}}
+        {
+          "id": "reranking-missing-family",
+          "omit": [
+            "family"
+          ],
+          "expect": {
+            "admitted": false
+          }
+        },
+        {
+          "id": "reranking-missing-modalities",
+          "omit": [
+            "input_modalities",
+            "output_modalities"
+          ],
+          "expect": {
+            "admitted": false
+          }
+        },
+        {
+          "id": "reranking-unknown-family",
+          "override": {
+            "family": "not-a-family"
+          },
+          "expect": {
+            "admitted": false
+          }
+        }
       ],
-      "nativeSmoke": {"method": "POST", "path": "/rerank", "expectStatus": 200}
+      "nativeCases": [
+        {
+          "id": "reranking-success",
+          "method": "POST",
+          "path": "/rerank",
+          "body": {
+            "family": "reranking",
+            "model": "rerank-test",
+            "query": "q",
+            "documents": [
+              "d"
+            ]
+          },
+          "expectStatus": 200
+        },
+        {
+          "id": "reranking-family-mismatch",
+          "method": "POST",
+          "path": "/rerank",
+          "body": {
+            "family": "embeddings",
+            "model": "rerank-test",
+            "query": "q",
+            "documents": [
+              "d"
+            ]
+          },
+          "expectStatus": 400
+        }
+      ]
     },
     "prediction": {
-      "advertisement": {"family": "prediction", "input_modalities": ["numeric"], "output_modalities": ["label"], "quality": {"source": "self-reported"}},
-      "expect": {"admitted": true, "roundTrip": true},
+      "advertisement": {
+        "family": "prediction",
+        "input_modalities": [
+          "numeric"
+        ],
+        "output_modalities": [
+          "label"
+        ],
+        "quality": {
+          "metric": "auc",
+          "value": 0.5,
+          "basis": "self-reported"
+        }
+      },
+      "expect": {
+        "admitted": true,
+        "roundTrip": true
+      },
       "rejections": [
-        {"id": "prediction-missing-family", "omit": ["family"], "expect": {"admitted": false}},
-        {"id": "prediction-missing-modalities", "omit": ["input_modalities", "output_modalities"], "expect": {"admitted": false}},
-        {"id": "prediction-unknown-family", "override": {"family": "not-a-family"}, "expect": {"admitted": false}}
+        {
+          "id": "prediction-missing-family",
+          "omit": [
+            "family"
+          ],
+          "expect": {
+            "admitted": false
+          }
+        },
+        {
+          "id": "prediction-missing-modalities",
+          "omit": [
+            "input_modalities",
+            "output_modalities"
+          ],
+          "expect": {
+            "admitted": false
+          }
+        },
+        {
+          "id": "prediction-unknown-family",
+          "override": {
+            "family": "not-a-family"
+          },
+          "expect": {
+            "admitted": false
+          }
+        }
       ],
-      "nativeSmoke": {"method": "POST", "path": "/predictions", "expectStatus": 200}
+      "nativeCases": [
+        {
+          "id": "prediction-success",
+          "method": "POST",
+          "path": "/predictions",
+          "body": {
+            "family": "prediction",
+            "model": "prediction-test",
+            "inputs": [
+              {
+                "x": 1
+              }
+            ]
+          },
+          "expectStatus": 200
+        },
+        {
+          "id": "prediction-family-mismatch",
+          "method": "POST",
+          "path": "/predictions",
+          "body": {
+            "family": "embeddings",
+            "model": "prediction-test",
+            "inputs": [
+              {
+                "x": 1
+              }
+            ]
+          },
+          "expectStatus": 400
+        }
+      ]
     },
     "stt": {
-      "advertisement": {"family": "stt", "input_modalities": ["audio"], "output_modalities": ["text"], "quality": {"source": "self-reported"}},
-      "expect": {"admitted": true, "roundTrip": true},
+      "advertisement": {
+        "family": "stt",
+        "input_modalities": [
+          "audio"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "quality": {
+          "metric": "wer",
+          "value": 1,
+          "basis": "self-reported"
+        }
+      },
+      "expect": {
+        "admitted": true,
+        "roundTrip": true
+      },
       "rejections": [
-        {"id": "stt-missing-family", "omit": ["family"], "expect": {"admitted": false}},
-        {"id": "stt-missing-modalities", "omit": ["input_modalities", "output_modalities"], "expect": {"admitted": false}},
-        {"id": "stt-unknown-family", "override": {"family": "not-a-family"}, "expect": {"admitted": false}}
+        {
+          "id": "stt-missing-family",
+          "omit": [
+            "family"
+          ],
+          "expect": {
+            "admitted": false
+          }
+        },
+        {
+          "id": "stt-missing-modalities",
+          "omit": [
+            "input_modalities",
+            "output_modalities"
+          ],
+          "expect": {
+            "admitted": false
+          }
+        },
+        {
+          "id": "stt-unknown-family",
+          "override": {
+            "family": "not-a-family"
+          },
+          "expect": {
+            "admitted": false
+          }
+        }
       ],
-      "nativeSmoke": {"method": "POST", "path": "/pipelines/execute", "expectStatus": 200}
+      "nativeCases": [
+        {
+          "id": "stt-pipeline-success",
+          "method": "POST",
+          "path": "/pipelines/execute",
+          "body": {
+            "definition": {
+              "pipeline_id": "stt-smoke",
+              "inputs": {
+                "audio": {
+                  "modality": "audio"
+                }
+              },
+              "stages": [
+                {
+                  "stage_id": "transcribe",
+                  "family": "stt",
+                  "runtime_target": "runtime-stt",
+                  "inputs": {
+                    "audio": {
+                      "modality": "audio"
+                    }
+                  },
+                  "outputs": {
+                    "text": {
+                      "modality": "text"
+                    }
+                  },
+                  "dependencies": []
+                }
+              ]
+            },
+            "inputs": {
+              "audio": "artifact:audio"
+            }
+          },
+          "expectStatus": 200
+        },
+        {
+          "id": "stt-pipeline-unknown-family",
+          "method": "POST",
+          "path": "/pipelines/execute",
+          "body": {
+            "definition": {
+              "pipeline_id": "stt-invalid",
+              "inputs": {
+                "audio": {
+                  "modality": "audio"
+                }
+              },
+              "stages": [
+                {
+                  "stage_id": "transcribe",
+                  "family": "unknown-stt",
+                  "inputs": {
+                    "audio": {
+                      "modality": "audio"
+                    }
+                  },
+                  "outputs": {
+                    "text": {
+                      "modality": "text"
+                    }
+                  },
+                  "dependencies": []
+                }
+              ]
+            },
+            "inputs": {
+              "audio": "artifact:audio"
+            }
+          },
+          "expectStatus": 400
+        }
+      ]
     },
     "rag": {
-      "advertisement": {"family": "rag", "input_modalities": ["text"], "output_modalities": ["text"], "quality": {"source": "self-reported"}},
-      "expect": {"admitted": true, "roundTrip": true},
+      "advertisement": {
+        "family": "rag",
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "quality": {
+          "metric": "answer_relevance",
+          "value": 0.5,
+          "basis": "self-reported"
+        }
+      },
+      "expect": {
+        "admitted": true,
+        "roundTrip": true
+      },
       "rejections": [
-        {"id": "rag-missing-family", "omit": ["family"], "expect": {"admitted": false}},
-        {"id": "rag-missing-modalities", "omit": ["input_modalities", "output_modalities"], "expect": {"admitted": false}},
-        {"id": "rag-unknown-family", "override": {"family": "not-a-family"}, "expect": {"admitted": false}}
+        {
+          "id": "rag-missing-family",
+          "omit": [
+            "family"
+          ],
+          "expect": {
+            "admitted": false
+          }
+        },
+        {
+          "id": "rag-missing-modalities",
+          "omit": [
+            "input_modalities",
+            "output_modalities"
+          ],
+          "expect": {
+            "admitted": false
+          }
+        },
+        {
+          "id": "rag-unknown-family",
+          "override": {
+            "family": "not-a-family"
+          },
+          "expect": {
+            "admitted": false
+          }
+        }
       ],
-      "nativeSmoke": {"method": "POST", "path": "/pipelines/execute", "expectStatus": 200}
+      "nativeCases": [
+        {
+          "id": "rag-pipeline-success",
+          "method": "POST",
+          "path": "/pipelines/execute",
+          "body": {
+            "definition": {
+              "pipeline_id": "rag-smoke",
+              "inputs": {
+                "query": {
+                  "modality": "text"
+                }
+              },
+              "stages": [
+                {
+                  "stage_id": "embed",
+                  "family": "embeddings",
+                  "inputs": {
+                    "query": {
+                      "modality": "text"
+                    }
+                  },
+                  "outputs": {
+                    "vector": {
+                      "modality": "vector"
+                    }
+                  },
+                  "dependencies": []
+                },
+                {
+                  "stage_id": "generate",
+                  "family": "llm",
+                  "inputs": {
+                    "vector": {
+                      "modality": "vector"
+                    }
+                  },
+                  "outputs": {
+                    "answer": {
+                      "modality": "text"
+                    }
+                  },
+                  "dependencies": [
+                    "embed"
+                  ]
+                }
+              ]
+            },
+            "inputs": {
+              "query": "hello"
+            }
+          },
+          "expectStatus": 200
+        },
+        {
+          "id": "rag-pipeline-unknown-family",
+          "method": "POST",
+          "path": "/pipelines/execute",
+          "body": {
+            "definition": {
+              "pipeline_id": "rag-invalid",
+              "inputs": {
+                "query": {
+                  "modality": "text"
+                }
+              },
+              "stages": [
+                {
+                  "stage_id": "retrieve",
+                  "family": "unknown-rag",
+                  "inputs": {
+                    "query": {
+                      "modality": "text"
+                    }
+                  },
+                  "outputs": {
+                    "answer": {
+                      "modality": "text"
+                    }
+                  },
+                  "dependencies": []
+                }
+              ]
+            },
+            "inputs": {
+              "query": "hello"
+            }
+          },
+          "expectStatus": 400
+        }
+      ]
     }
   }
 }

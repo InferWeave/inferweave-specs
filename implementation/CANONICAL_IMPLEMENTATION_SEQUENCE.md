@@ -2174,12 +2174,14 @@ Rules:
 **Features:** IW-RT-001
 **Read:** specs/00_INVARIANTS.md, specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md
 
-**Outcome:** Define the canonical runtime-family registry and typed capability descriptor in the protocol vocabulary, schemas, and OpenAPI, extending `schemas/v1/model/capabilities.json` and `schemas/v1/model/model.json`. Unknown family ids fail admission; no capability is inferred from a model name.
+**Outcome:** Define the canonical runtime-family registry, typed capability descriptor, isolated twelve-method adapter contract and additive feature negotiation. Unknown family ids fail admission; no capability is inferred from a model name.
 
 **Required tests:**
 - typed-capability round-trip (e.g. `embeddings`)
 - name-derived-rejection
 - registry-closure (unknown family id fails admission)
+- adapter lifecycle completeness and process/container isolation
+- mixed-version peer compatibility without family inference
 
 ### B-T02 — Native `/inferweave/v1` control-plane and inference endpoints
 **Context:** `C75`
@@ -2187,12 +2189,14 @@ Rules:
 **Features:** IW-RT-002
 **Read:** specs/00_INVARIANTS.md, specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md
 
-**Outcome:** Extend `openapi/inferweave-v1.yaml` with the native `/inferweave/v1` endpoint set (runtimes, deployments, capabilities, rerank, predictions, embeddings, pipelines/execute, jobs) returning Protocol v1 schemas, with family-aware routing and `selection_reason` on list responses.
+**Outcome:** Extend `openapi/inferweave-v1.yaml` with native runtime-family endpoints, publish standalone deployment and family-request JSON Schemas reconciled against the full inline constraints, and define negotiated bounded native link dispatch without arbitrary URI or proxy behavior.
 
 **Required tests:**
 - openapi-validation
 - family-routing (e.g. `POST /rerank` only for `reranking`)
 - parity (native endpoints honour admission/fairshare like `/v1/chat/completions`)
+- standalone/OpenAPI schema parity
+- negotiated native link family/endpoint whitelist and hostile URI/content/size fixtures
 
 ### B-T03 — Transactional runtime hot-swap lifecycle
 **Context:** `C75`
@@ -2200,12 +2204,16 @@ Rules:
 **Features:** IW-RT-003
 **Read:** specs/00_INVARIANTS.md, specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md
 
-**Outcome:** Refine `state-machines/runtime.md` into the transactional lifecycle (`DISCOVERED → RESOLVING → PREPARING/DOWNLOADING → RESERVING → STARTING → LOADING → WARMING → VALIDATING → READY ↔ BUSY/IDLE → DRAINING → UNLOADING → STOPPED`, with FAILED and cancellation edges) that preserves availability during swap and expresses `RESERVING`/`DRAINING` only as events to the existing rebalancer — never a second scheduler.
+**Outcome:** Define the transactional lifecycle, immutable-key single-flight loading, waiter-independent cancellation, full safe-peak fenced reservations, three transactional cache classes and constrained-memory rollback under the existing rebalancer authority.
 
 **Required tests:**
 - state-machine-transitions
 - availability-preserved
 - no-second-scheduler
+- single-flight waiter independence
+- safe-peak reservation, fencing, physical de-duplication and progress-based expiry
+- cache integrity, atomic publication, pins, offline behavior and streamed acquisition
+- constrained-memory swap impact and rollback
 
 ### B-T04 — Typed inference pipelines
 **Context:** `C75`
@@ -2226,12 +2234,13 @@ Rules:
 **Features:** IW-RT-005
 **Read:** specs/00_INVARIANTS.md, specs/52_DURABLE_INFERENCE_JOBS.md
 
-**Outcome:** Extend the durable async-job/artifact model into a general durable inference job contract covering all runtime families and pipelines: submitted via `POST /jobs`, lifecycle `queued → running → succeeded | failed | cancelled`, result-by-artifact-reference, resumable across restart, and family-typed with no bypass of admission/capacity/fairshare/owner-priority.
+**Outcome:** Extend the durable inference job contract with result-by-reference, resume, family-aware no-bypass controls and additive compatibility for legacy jobs without family or with completed.
 
 **Required tests:**
 - job-lifecycle
 - restart-resume
 - no-bypass
+- legacy job read compatibility and canonical succeeded emission
 
 ### B-T06 — Runtime-family conformance and traceability
 **Context:** `C75`
@@ -2239,9 +2248,10 @@ Rules:
 **Features:** IW-RT-006
 **Read:** specs/00_INVARIANTS.md, specs/53_RUNTIME_FAMILY_CONFORMANCE.md
 
-**Outcome:** Add runtime-family conformance vectors (embeddings, reranking, prediction, stt, rag) and native-endpoint smoke vectors to `conformance/`, extend `conformance/runner.py`, register feature ids in `contracts/feature-registry.json`, add `B-T01`…`B-T06` to `contracts/canonical-task-graph.json`, and keep `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` consistent. Ensure `scripts/validate_specs.py --self-test` passes.
+**Outcome:** Add executable runtime-family advertisement and positive/negative request vectors, honest offline labeling, optional live HTTP replay and complete feature/task traceability.
 
 **Required tests:**
 - conformance-runs
+- executable negative fixtures and optional live HTTP replay
 - registry-traceable
 - self-test-green

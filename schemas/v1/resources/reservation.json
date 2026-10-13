@@ -3,8 +3,15 @@
   "$id": "https://inferweave.dev/schemas/v1/resources/reservation.json",
   "title": "GpuMemoryReservation",
   "type": "object",
-  "description": "A logical VRAM reservation in a rebalancer's ledger (spec 46 §5).",
+  "description": "A logical resource reservation in the rebalancer ledger. Legacy reservations remain valid. contractVersion 1 adds authority-owned idempotency, fencing, evidenced safe-peak quantities and monotonic progress leases; producer timestamps are display-only.",
   "properties": {
+    "contractVersion": {
+      "type": "integer",
+      "enum": [
+        1
+      ],
+      "description": "Presence selects the additive runtime-reservation contract. Absence is the legacy specs/46 reservation shape."
+    },
     "reservationId": {
       "type": "string",
       "minLength": 1,
@@ -18,6 +25,18 @@
       "maxLength": 128,
       "pattern": "^[\\x21-\\x7e]*$",
       "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable across retries of the same logical reservation; the authority returns the same reservation and never double-books it."
+    },
+    "fencingEpoch": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Monotonic authority epoch. Commands carrying an older epoch cannot load, mutate or release the reservation."
     },
     "owner": {
       "type": "object",
@@ -57,12 +76,34 @@
       "pattern": "^[\\x21-\\x7e]*$",
       "description": "Printable ASCII without spaces, so 128 characters is 128 UTF-8 bytes on every reader."
     },
+    "physicalResourceKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable physical de-duplication key excluding advertising parent. GPU grants name the stable node/device; CPU-only grants name the stable host capacity domain."
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "parentId": {
+          "type": "string",
+          "description": "Advertising path provenance only; never part of physicalResourceKey."
+        },
+        "federationPath": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "placementGroupId": {
       "type": "string",
       "minLength": 1,
       "maxLength": 128,
       "pattern": "^[\\x21-\\x7e]*$",
-      "description": "Shared by every GPU of a multi-GPU placement."
+      "description": "Required by contractVersion 1. All per-GPU rows of one atomic multi-GPU placement share it; host CPU RAM and disk safe peaks are charged once per placement group and resourceDomainKey."
     },
     "modelId": {
       "type": "string",
@@ -83,13 +124,162 @@
     "requestedBytes": {
       "type": "integer",
       "minimum": 0,
-      "maximum": 9007199254740991
+      "maximum": 9007199254740991,
+      "description": "Initial contractVersion 1 grants require this GPU byte hold to be at least resourceEnvelope.gpuSafePeak.bytes; normally equal. CPU-only grants use zero."
     },
     "effectiveBytes": {
       "type": "integer",
       "minimum": 0,
       "maximum": 9007199254740991,
-      "description": "Shrinks as the runtime's allocation appears, so a reservation that became physical is never subtracted twice."
+      "description": "Initial contractVersion 1 grants require this to cover gpuSafePeak.bytes. It may shrink only as the runtime allocation becomes physical, preventing double subtraction."
+    },
+    "resourceEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accelerator",
+        "deviceIds",
+        "gpuContributors",
+        "gpuHeadroom",
+        "gpuSafePeak",
+        "cpuRamSafePeak",
+        "diskSafePeak",
+        "gpuCount",
+        "topology"
+      ],
+      "properties": {
+        "gpuContributors": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "weights",
+            "kvCache",
+            "activations",
+            "runtimeWorkspace",
+            "auxiliaryModels",
+            "loadingPeak"
+          ],
+          "properties": {
+            "weights": {
+              "$ref": "#/definitions/evidencedQuantity"
+            },
+            "kvCache": {
+              "$ref": "#/definitions/evidencedQuantity"
+            },
+            "activations": {
+              "$ref": "#/definitions/evidencedQuantity"
+            },
+            "runtimeWorkspace": {
+              "$ref": "#/definitions/evidencedQuantity"
+            },
+            "auxiliaryModels": {
+              "$ref": "#/definitions/evidencedQuantity"
+            },
+            "loadingPeak": {
+              "$ref": "#/definitions/evidencedQuantity"
+            }
+          },
+          "description": "Each safe-peak contributor is an evidenced Quantity; unknown and unsupported quantities cannot be admitted."
+        },
+        "gpuHeadroom": {
+          "$ref": "#/definitions/evidencedQuantity"
+        },
+        "gpuSafePeak": {
+          "$ref": "#/definitions/evidencedQuantity",
+          "description": "At least the sum of all six contributors plus gpuHeadroom and no more than available GPU bytes. Basis is estimated/low if any input is estimated; otherwise derived/medium."
+        },
+        "cpuRamSafePeak": {
+          "$ref": "#/definitions/evidencedQuantity"
+        },
+        "diskSafePeak": {
+          "$ref": "#/definitions/evidencedQuantity"
+        },
+        "gpuCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "contractVersion 1 uses one grant per GPU; multi-GPU placements share placementGroupId across per-device grants. CPU-only grants use zero."
+        },
+        "topology": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": true
+        },
+        "accelerator": {
+          "type": "string",
+          "enum": [
+            "cpu",
+            "gpu"
+          ],
+          "description": "CPU-only universal-family deployments use cpu, gpuCount 0 and an empty deviceIds array; no fake GPU worker is created."
+        },
+        "deviceIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Exactly one stable device id for a GPU grant and empty for CPU. Multi-GPU placements use one fenced reservation per device."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "accelerator": {
+                "const": "cpu"
+              }
+            },
+            "required": [
+              "accelerator"
+            ]
+          },
+          "then": {
+            "properties": {
+              "gpuCount": {
+                "const": 0
+              },
+              "deviceIds": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "accelerator": {
+                "const": "gpu"
+              }
+            },
+            "required": [
+              "accelerator"
+            ]
+          },
+          "then": {
+            "properties": {
+              "gpuCount": {
+                "const": 1
+              },
+              "deviceIds": {
+                "minItems": 1,
+                "maxItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "lastProgressAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the latest observable monotonic progress event. A lease may expire only when this fails to advance for the negotiated progress timeout."
+    },
+    "progressSequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Monotonic progress sequence used to distinguish a live long load from an abandoned reservation."
     },
     "createdAt": {
       "type": "string",
@@ -113,6 +303,102 @@
     "reason": {
       "type": "string",
       "maxLength": 128
+    },
+    "progressTimeoutMs": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 86400000,
+      "description": "Authority-selected negotiated no-progress interval for this reservation."
+    },
+    "authorityClock": {
+      "type": "string",
+      "const": "monotonic",
+      "description": "Lease evaluation uses only the reservation authority monotonic clock; producer wall timestamps never extend a lease."
+    },
+    "lastProgressAuthorityTick": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "Opaque authority-local monotonic millisecond observation tick."
+    },
+    "leaseDeadlineAuthorityTick": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991,
+      "description": "Authority-local deadline equal to the last accepted progress observation plus progressTimeoutMs."
+    },
+    "resourceDomainKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Stable host capacity domain used to aggregate CPU RAM and disk safe peaks across reservations on distinct accelerators."
+    },
+    "payloadDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "SHA-256 over RFC 8785 JCS UTF-8 of requestIdentity only, rendered sha256:<lowercase hex>. payloadDigest itself and all authority outputs are excluded."
+    },
+    "requestIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "deployment_key",
+        "owner_component",
+        "owner_gateway_id",
+        "kind",
+        "physical_resource_key",
+        "resource_domain_key",
+        "placement_group_id",
+        "requested_bytes_decimal"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "inferweave.reservation-request/v1"
+        },
+        "deployment_key": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "placement",
+            "primary-restart",
+            "kv-growth",
+            "runtime-growth",
+            "restore"
+          ]
+        },
+        "physical_resource_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resource_domain_key": {
+          "type": "string",
+          "minLength": 1
+        },
+        "placement_group_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requested_bytes_decimal": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,15})$"
+        },
+        "owner_component": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "owner_gateway_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "description": "Exact non-self-referential payloadDigest input. Owner component and gateway are separate to avoid delimiter collisions. Contains only strings; authority outputs, payloadDigest, idempotencyKey, fencingEpoch, progress, lease and timestamps are excluded."
     }
   },
   "required": [
@@ -125,5 +411,47 @@
     "createdAt",
     "state"
   ],
-  "additionalProperties": true
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "contractVersion"
+        ]
+      },
+      "then": {
+        "required": [
+          "idempotencyKey",
+          "requestIdentity",
+          "payloadDigest",
+          "fencingEpoch",
+          "physicalResourceKey",
+          "resourceDomainKey",
+          "placementGroupId",
+          "resourceEnvelope",
+          "progressTimeoutMs",
+          "authorityClock",
+          "lastProgressAuthorityTick",
+          "leaseDeadlineAuthorityTick",
+          "progressSequence"
+        ]
+      }
+    }
+  ],
+  "definitions": {
+    "evidencedQuantity": {
+      "allOf": [
+        {
+          "$ref": "quantity.json"
+        },
+        {
+          "type": "object",
+          "required": [
+            "source",
+            "confidence"
+          ]
+        }
+      ]
+    }
+  }
 }

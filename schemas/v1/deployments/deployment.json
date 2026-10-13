@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/deployments/deployment.json",
+  "title": "Deployment",
+  "description": "A deployment binds the immutable manifest and its canonical key to mutable live state. deployment_key is SHA-256 over RFC 8785 JCS UTF-8 of manifest only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["deployment_id", "deployment_key", "manifest"],
+  "properties": {
+    "deployment_id": {"type": "string", "minLength": 1},
+    "deployment_key": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "manifest": {"$ref": "deployment-identity.json"},
+    "live": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "instances": {"type": "array", "items": {"$ref": "../runtime/runtime-instance.json"}},
+        "assignment": {"$ref": "../topology/allocation.json"},
+        "placement_reason": {"type": "string"}
+      }
+    }
+  }
+}

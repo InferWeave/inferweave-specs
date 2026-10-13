@@ -28,6 +28,13 @@ All browser-facing surfaces use **Next.js + TypeScript**:
 - Workbench;
 - operator/admin UI.
 
+**Narrow existing-system exception, amended 2026-10-12.** The existing
+`metabolomics-us/inferweave-gateway` Go site gateway may extend its current light-theme embedded
+operator UI for the runtime-family views required by the universal-runtime migration. This is an
+operator surface of the D-001 conformant production site gateway, not authority to create another
+general browser application or to use Go templates for new InferWeave web products. New dashboard,
+portal, explorer, Workbench and standalone administration surfaces remain Next.js + TypeScript.
+
 ## D-003 Owner priority — RESOLVED
 The physical owner/provider of a GPU always has priority over shared/network workloads on that GPU.
 

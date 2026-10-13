@@ -28,9 +28,12 @@ Extend the job schema and state machine so a durable inference job:
 - observes the same admission, capacity, fairshare, and owner-priority controls
   as synchronous inference; a durable job does not bypass them.
 
-A job carries a typed `family` (from the
-[`specs/48`](48_RUNTIME_FAMILIES_AND_CAPABILITIES.md) registry) so the job
-controller can route it to an admitted runtime of that family.
+A new family-aware job carries a typed `family` (from the
+[`specs/48`](48_RUNTIME_FAMILIES_AND_CAPABILITIES.md) registry) so the job controller can route it
+to an admitted runtime of that family. The member is additive: persisted legacy jobs without it
+remain valid and readable, and a missing value is never inferred from a model name. New producers
+emit `succeeded` as the successful terminal state. Readers accept legacy `completed`, normalize it
+to `succeeded`, and never re-emit `completed`.
 
 ## Invariants
 
@@ -40,8 +43,8 @@ controller can route it to an admitted runtime of that family.
    cache model.
 3. **No bypass.** Durable jobs observe admission, capacity, fairshare, and
    owner-priority identically to synchronous inference.
-4. **Family-typed.** Every job names its runtime family; routing and admission
-   are family-aware.
+4. **Family-typed submission.** Every new runtime-family submission names its family; legacy jobs
+   without the additive member remain readable and are not silently family-routed.
 
 ## Required tests
 
@@ -51,3 +54,5 @@ controller can route it to an admitted runtime of that family.
   progress, not from scratch.
 - no-bypass: a durable job is rejected when capacity/admission for its family is
   unavailable, identical to a synchronous request.
+- legacy-read: a job without `family` and with terminal state `completed` remains readable, is
+  normalized to `succeeded`, and new output always emits `succeeded`.

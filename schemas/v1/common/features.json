@@ -31,19 +31,39 @@
     },
     "gpu_memory": {
       "type": "string",
-      "description": "Level \"1\" names capability iw.gpu-memory/1 (specs/46 §1)."
+      "description": "Level \"1\" names capability iw.gpu-memory/1 (specs/46 \u00a71)."
     },
     "rebalance_decisions": {
       "type": "string",
-      "description": "Level \"1\" names capability iw.rebalance-decisions/1 (specs/46 §1)."
+      "description": "Level \"1\" names capability iw.rebalance-decisions/1 (specs/46 \u00a71)."
     },
     "placement_simulation": {
       "type": "string",
-      "description": "Level \"1\" names capability iw.placement-simulation/1 (specs/46 §1)."
+      "description": "Level \"1\" names capability iw.placement-simulation/1 (specs/46 \u00a71)."
     },
     "card_coresidency": {
       "type": "string",
-      "description": "Level \"1\" names capability iw.card-coresidency/1 (specs/46 §1)."
+      "description": "Level \"1\" names capability iw.card-coresidency/1 (specs/46 \u00a71)."
+    },
+    "runtime_families": {
+      "type": "string",
+      "description": "Level \"1\" negotiates typed runtime families and family-bound native requests (specs/48-49)."
+    },
+    "runtime_lifecycle": {
+      "type": "string",
+      "description": "Level \"1\" negotiates isolated lifecycle adapters, immutable-key single-flight loading and transactional swap (specs/50)."
+    },
+    "runtime_reservations": {
+      "type": "string",
+      "description": "Level \"1\" negotiates contractVersion 1 runtime resource reservations with fencing and progress-based expiry (specs/50)."
+    },
+    "transactional_caches": {
+      "type": "string",
+      "description": "Level \"1\" negotiates the three verified, atomically published cache classes (specs/50)."
+    },
+    "native_link_requests": {
+      "type": "string",
+      "description": "Level \"1\" names capability iw.link-native-request/1 and permits bounded typed native dispatch metadata on a link (specs/45 and specs/49)."
     }
   }
 }

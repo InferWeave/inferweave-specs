@@ -16,7 +16,7 @@ class DurableJobContract(unittest.TestCase):
 
     def test_family_and_result_ref_declared(self):
         assert self.props["family"]["type"] == "string"
-        assert "family" in self.schema["required"]
+        assert "family" not in self.schema["required"]  # additive for persisted legacy jobs
         assert self.props["result_ref"]["$ref"].endswith("artifacts/artifact.json")
 
     def test_job_lifecycle(self):

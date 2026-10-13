@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/embeddings.json",
+  "title": "Embeddings request",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["family", "model", "input"],
+  "properties": {
+    "family": {"type": "string", "enum": ["embeddings"]},
+    "model": {"type": "string"},
+    "input": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}

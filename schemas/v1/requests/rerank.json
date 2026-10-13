@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/rerank.json",
+  "title": "Rerank request",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["family", "model", "query", "documents"],
+  "properties": {
+    "family": {"type": "string", "enum": ["reranking"]},
+    "model": {"type": "string"},
+    "query": {"type": "string"},
+    "documents": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "top_n": {"type": "integer", "minimum": 1}
+  }
+}

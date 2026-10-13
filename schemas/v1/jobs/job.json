@@ -2,13 +2,12 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/jobs/job.json",
   "title": "Async job",
-  "description": "A durable inference job (specs/52). Durable-first: long-running inference is a job, never a held-open request. Result by reference: the result is an artifact reference (result_ref), not an inline body. Circumvention control: durable jobs observe the same admission, capacity, fairshare, and owner-priority controls as synchronous inference and do not bypass them. Family-typed: every job names its runtime family (specs/48 registry). Resumable: an interrupted job resumes from durable progress after a restart.",
+  "description": "A durable inference job (specs/52). Durable-first: long-running inference is a job, never a held-open request. Result by reference: the result is an artifact reference (result_ref), not an inline body. Circumvention control: durable jobs observe the same admission, capacity, fairshare, and owner-priority controls as synchronous inference and do not bypass them. `family` is additive: new family-aware submissions carry it, while persisted legacy jobs without it remain readable. Resumable: an interrupted job resumes from durable progress after a restart.",
   "type": "object",
   "additionalProperties": true,
   "required": [
     "job_id",
-    "state",
-    "family"
+    "state"
   ],
   "properties": {
     "job_id": {
@@ -27,12 +26,15 @@
         "failed",
         "cancelled",
         "expired"
-      ]
+      ],
+      "description": "New producers emit succeeded for successful completion. completed is accepted only when reading legacy Protocol v1 job records and is normalized to succeeded before re-emission.",
+      "x-canonical-emitted-value": "succeeded",
+      "x-legacy-read-values": ["completed"]
     },
     "family": {
       "type": "string",
       "minLength": 1,
-      "description": "Runtime family from the specs/48 registry; the job controller routes the job to an admitted runtime of this family under the same admission, capacity, fairshare, and owner-priority controls as synchronous inference."
+      "description": "Additive runtime family from the specs/48 registry. Required for new family-aware inference submissions when runtime_families/1 is negotiated; absent means a legacy job and is never inferred from model names."
     },
     "result_ref": {
       "$ref": "../artifacts/artifact.json",

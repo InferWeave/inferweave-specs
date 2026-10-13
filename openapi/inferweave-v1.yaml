@@ -635,7 +635,9 @@ components:
                   enum: [reranking, prediction, embeddings]
                 requested_family: { type: string }
     RerankRequest:
+      x-json-schema: schemas/v1/requests/rerank.json
       type: object
+      additionalProperties: true
       required: [family, model, query, documents]
       properties:
         family: { type: string, enum: [reranking] }
@@ -658,7 +660,9 @@ components:
               index: { type: integer, minimum: 0 }
               relevance_score: { type: number }
     PredictionRequest:
+      x-json-schema: schemas/v1/requests/prediction.json
       type: object
+      additionalProperties: true
       required: [family, model, inputs]
       properties:
         family: { type: string, enum: [prediction] }
@@ -683,7 +687,9 @@ components:
                   - { type: string }
               score: { type: number }
     EmbeddingRequest:
+      x-json-schema: schemas/v1/requests/embeddings.json
       type: object
+      additionalProperties: true
       required: [family, model, input]
       properties:
         family: { type: string, enum: [embeddings] }
@@ -714,26 +720,48 @@ components:
         output_modalities: { type: array, minItems: 1, items: { type: string } }
         quality: { type: object, additionalProperties: true }
         context: { type: object, nullable: true, additionalProperties: true }
-    Deployment:
+    DeploymentIdentity:
+      x-json-schema: schemas/v1/deployments/deployment-identity.json
       type: object
-      required: [schema_version, deployment_id, modality, model, runtime]
+      additionalProperties: false
+      required: [schema_version, modality, model_id, artifact_bindings, runtime_identity, effective_profile_digest, policy_digest, resource_contract_digest]
       properties:
-        schema_version: { type: string, enum: [inferweave.deployment/v1] }
-        deployment_id: { type: string }
-        modality: { type: string }
-        model: { type: object, additionalProperties: true }
-        tokenizer: { type: object, additionalProperties: true }
-        runtime: { type: object, additionalProperties: true }
-        precision: { type: object, additionalProperties: true }
-        context: { type: object, additionalProperties: true }
-        execution: { type: object, additionalProperties: true }
-        resource_envelope: { type: object, additionalProperties: true }
-        policy: { type: object, additionalProperties: true }
-        license: { type: object, additionalProperties: true }
-        validation: { type: object, additionalProperties: true }
-        instances: { type: array, items: { $ref: "#/components/schemas/RuntimeInstance" } }
-        assignment: { $ref: "#/components/schemas/Allocation" }
-        placement_reason: { type: string }
+        schema_version: { type: string, const: inferweave.deployment-identity/v1 }
+        modality: { type: string, minLength: 1 }
+        model_id: { type: string, minLength: 1 }
+        artifact_bindings:
+          type: object
+          minProperties: 1
+          additionalProperties: false
+          patternProperties:
+            '^[a-z][a-z0-9_.-]{0,63}$': { type: string, pattern: '^sha256:[0-9a-f]{64}$' }
+        runtime_identity:
+          type: object
+          additionalProperties: false
+          required: [adapter, version, config_digest]
+          properties:
+            adapter: { type: string, minLength: 1 }
+            version: { type: string, minLength: 1 }
+            config_digest: { type: string, pattern: '^sha256:[0-9a-f]{64}$' }
+        effective_profile_digest: { type: string, pattern: '^sha256:[0-9a-f]{64}$' }
+        policy_digest: { type: string, pattern: '^sha256:[0-9a-f]{64}$' }
+        resource_contract_digest: { type: string, pattern: '^sha256:[0-9a-f]{64}$' }
+    Deployment:
+      x-json-schema: schemas/v1/deployments/deployment.json
+      type: object
+      additionalProperties: false
+      required: [deployment_id, deployment_key, manifest]
+      properties:
+        deployment_id: { type: string, minLength: 1 }
+        deployment_key: { type: string, pattern: '^sha256:[0-9a-f]{64}$' }
+        manifest: { $ref: "#/components/schemas/DeploymentIdentity" }
+        live:
+          type: object
+          additionalProperties: false
+          properties:
+            instances: { type: array, items: { $ref: "#/components/schemas/RuntimeInstance" } }
+            assignment: { $ref: "#/components/schemas/Allocation" }
+            placement_reason: { type: string }
     Topology:
       type: object
       required: [generation]
@@ -915,7 +943,16 @@ components:
         job_id: { type: string }
         state:
           type: string
-          enum: [queued, preparing, running, finalizing, completed, failed, cancelled, expired]
+          enum: [queued, preparing, running, finalizing, succeeded, completed, failed, cancelled, expired]
+          description: New producers emit succeeded. completed is accepted only from legacy records and normalized before re-emission.
+          x-canonical-emitted-value: succeeded
+          x-legacy-read-values: [completed]
+        family:
+          type: string
+          description: Additive family for runtime_families/1 jobs; absent on legacy jobs and never inferred.
+          enum: [llm, reasoning, embeddings, reranking, stt, tts, audio, prediction, image, video, multimodal, scientific, rag]
+        result_ref:
+          $ref: "#/components/schemas/Artifact"
         progress:
           type: object
           properties:
@@ -923,6 +960,16 @@ components:
             stage: { type: string }
             message: { type: string }
         request_id: { type: string }
+    Artifact:
+      type: object
+      required: [artifact_id]
+      properties:
+        artifact_id: { type: string, minLength: 1 }
+        type: { type: string }
+        mime_type: { type: string }
+        size_bytes: { type: number, minimum: 0 }
+        checksum: { type: string }
+        locations: { type: array, items: { type: string } }
     Error:
       type: object
       required: [code, message, retryable]

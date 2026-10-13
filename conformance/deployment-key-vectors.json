@@ -1,0 +1,98 @@
+{
+  "algorithm": "RFC8785-JCS-UTF8+SHA-256",
+  "valueDomain": "Strings and fixed/role-keyed objects whose values are strings; richer numeric documents are bound by versioned SHA-256 digest fields.",
+  "excludedLiveFields": [
+    "deployment_id",
+    "instances",
+    "assignment",
+    "placement_reason",
+    "timestamps",
+    "aliases"
+  ],
+  "cases": [
+    {
+      "id": "base",
+      "identity": {
+        "schema_version": "inferweave.deployment-identity/v1",
+        "modality": "text",
+        "model_id": "acme/model",
+        "runtime_identity": {
+          "adapter": "vllm",
+          "version": "1",
+          "config_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "effective_profile_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "policy_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "resource_contract_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "artifact_bindings": {
+          "weights": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "tokenizer": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      },
+      "expectedDeploymentKey": "sha256:0e720f7f7a8451fa981d5d8a037be32e537e8ac2a6c1b1a090e2c65572126e3e"
+    },
+    {
+      "id": "reordered-equal",
+      "identity": {
+        "resource_contract_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "policy_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "effective_profile_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "runtime_identity": {
+          "version": "1",
+          "config_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "adapter": "vllm"
+        },
+        "model_id": "acme/model",
+        "modality": "text",
+        "schema_version": "inferweave.deployment-identity/v1",
+        "artifact_bindings": {
+          "tokenizer": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "weights": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expectedDeploymentKey": "sha256:0e720f7f7a8451fa981d5d8a037be32e537e8ac2a6c1b1a090e2c65572126e3e"
+    },
+    {
+      "id": "runtime-change-unequal",
+      "identity": {
+        "schema_version": "inferweave.deployment-identity/v1",
+        "modality": "text",
+        "model_id": "acme/model",
+        "runtime_identity": {
+          "adapter": "llamacpp",
+          "version": "1",
+          "config_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "effective_profile_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "policy_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "resource_contract_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "artifact_bindings": {
+          "weights": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "tokenizer": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      },
+      "expectedDeploymentKey": "sha256:99e64b2f406cc6e4f0ac62c0a54d00f67c7a1e7ef215144caaa65317cda90675"
+    },
+    {
+      "id": "unicode-values",
+      "identity": {
+        "schema_version": "inferweave.deployment-identity/v1",
+        "modality": "text",
+        "model_id": "Ångström/模型😀",
+        "runtime_identity": {
+          "adapter": "vllm",
+          "version": "1",
+          "config_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "effective_profile_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "policy_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "resource_contract_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "artifact_bindings": {
+          "weights": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "tokenizer": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        }
+      },
+      "expectedDeploymentKey": "sha256:0f778d65e4c9313bf223db92a4e1fdf6de43c3d50442cb8fcfe1426083e17252"
+    }
+  ]
+}

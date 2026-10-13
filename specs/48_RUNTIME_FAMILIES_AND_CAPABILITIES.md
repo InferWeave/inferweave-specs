@@ -62,6 +62,21 @@ canonical registry and must be consistent with the deployment manifest
 fingerprint. Unknown family ids are rejected at admission, never silently
 forwarded.
 
+## Runtime adapter boundary
+
+Every adapter implements one versioned lifecycle surface: `identity`, `capabilities`,
+`hardware_requirements`, `validate`, `prepare`, `load`, `unload`, `health`, `metrics`, `cancel`,
+`drain`, and `shutdown`. The descriptor is
+`schemas/v1/runtime/adapter.json`; `schemas/v1/runtime/load-request.json` defines the load call.
+Family execution methods remain separately typed so a lifecycle implementation cannot turn into an
+untyped inference escape hatch.
+
+Adapters execute in an isolated process or container and communicate with the node agent over a
+versioned protocol. Persistent production roles still run under Docker Engine + Compose and Slurm
+allocation workers under Apptainer. A child adapter process may execute inside one of those
+containers. The isolation boundary does not authorize an unmanaged persistent bare-host service or
+arbitrary adapter code in the Rust node process.
+
 ## Canonical modality enum
 
 `text`, `image`, `audio`, `video`, `vector`, `score`, `numeric`, `label`,
@@ -70,6 +85,15 @@ forwarded.
 `runtime_preference`; `$defs.typed_admission` lists the fields admission
 requires), `schemas/v1/model/model.json`, and the `TypedCapabilities` schema in
 `openapi/inferweave-v1.yaml`. `quality.basis` is `measured` or `self-reported`.
+
+## Mixed-version behavior
+
+The runtime-family surface is additive and negotiated as `runtime_families: "1"`. A peer that does
+not advertise it continues to exchange the pre-family Protocol v1 objects. New fields are omitted
+on that link; the gateway never invents a family from a model name. Unknown feature names remain
+forward-compatible under specs/45. Lifecycle, resource-reservation and cache extensions are
+separately negotiated as `runtime_lifecycle`, `runtime_reservations`, and
+`transactional_caches` level `"1"` so support for one cannot be mistaken for support for all.
 
 ## Invariants
 
@@ -88,3 +112,7 @@ requires), `schemas/v1/model/model.json`, and the `TypedCapabilities` schema in
 - name-derived-rejection: a model whose advertisement omits `family` and
   `input_modalities` is rejected at admission.
 - registry-closure: an unknown family id fails admission, not forwarding.
+- adapter-contract: every lifecycle method is present and the adapter declares process/container
+  isolation.
+- mixed-version: a legacy peer omits additive fields and continues to validate without family
+  inference.

@@ -1137,7 +1137,7 @@
     },
     {
       "id": "IW-RT-001",
-      "name": "Runtime-family registry and typed capabilities",
+      "name": "Runtime-family registry, typed capabilities, isolated adapter lifecycle and mixed-version negotiation",
       "phase": "B",
       "priority": "P1",
       "status": "required",
@@ -1148,7 +1148,7 @@
     },
     {
       "id": "IW-RT-002",
-      "name": "Native /inferweave/v1 control-plane and inference endpoints",
+      "name": "Native /inferweave/v1 endpoints, standalone parity and bounded negotiated link dispatch",
       "phase": "B",
       "priority": "P1",
       "status": "required",
@@ -1159,7 +1159,7 @@
     },
     {
       "id": "IW-RT-003",
-      "name": "Transactional runtime hot-swap lifecycle",
+      "name": "Transactional runtime lifecycle, single-flight loads, safe-peak reservations and three caches",
       "phase": "B",
       "priority": "P1",
       "status": "required",
@@ -1181,7 +1181,7 @@
     },
     {
       "id": "IW-RT-005",
-      "name": "Durable inference jobs",
+      "name": "Durable inference jobs with additive family and canonical succeeded semantics",
       "phase": "B",
       "priority": "P1",
       "status": "required",
@@ -1192,7 +1192,7 @@
     },
     {
       "id": "IW-RT-006",
-      "name": "Runtime-family conformance and traceability",
+      "name": "Runtime-family executable contract conformance, optional live HTTP replay and traceability",
       "phase": "B",
       "priority": "P1",
       "status": "required",

@@ -1,0 +1,1 @@
+{"native":{"family":"embeddings","endpoint":"http://169.254.169.254/latest/meta-data","method":"POST","content_type":"application/json","payload_bytes":128,"artifact_refs":[]}}

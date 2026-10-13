@@ -13,8 +13,9 @@ topology/    gateway, node, device, allocation, residency hierarchy
 model/       model, model variant, capabilities, requirements, placement, residency,
              alias
 resources/   capacity, seats, memory
-runtime/     runtime instance
-requests/    request metadata, deadlines, estimates, locality, workload class
+runtime/     runtime instance, isolated adapter contract, single-flight load request
+deployments/ standalone deployment manifest/live projection
+requests/    request metadata, deadlines, estimates, locality, workload class, family requests
 events/      event envelope, metric samples
 errors/      error taxonomy and codes
 jobs/        async job states and progress
@@ -30,6 +31,11 @@ older reader.
 Protocol 1.1.0 also adds `requests/node-hardware.json` (what a gateway accepts in the optional
 `hardware` member of `POST /v1/node/register`) and `requests/node-hardware-report.json` (the
 version 1 layout a node should send) of `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md`.
+
+The specs/48–53 additive runtime protocol adds `runtime/adapter.json`,
+`runtime/load-request.json`, `deployments/deployment.json`, and the standalone family request
+schemas. Legacy job and reservation documents remain valid; new runtime behavior is selected only
+through feature negotiation and versioned additive members.
 
 Every object category is populated in this repository (common, errors, topology, model,
 resources, runtime, requests, events, jobs, artifacts). All schemas are validated by the

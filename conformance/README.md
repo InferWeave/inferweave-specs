@@ -11,6 +11,12 @@ language-neutral conformance harness: it validates every `fixtures/valid/` and
 unexpectedly. `compatibility.yaml` is the machine-readable compatibility matrix;
 `release-manifest.yaml` records the immutable artifacts published per protocol version.
 
+Runtime-family vectors are contract-tested offline by default, including executable positive and
+negative request bodies. The offline runner prints `native HTTP: NOT RUN`; it does not treat an
+OpenAPI path as proof of a running endpoint. To replay those cases against a real implementation,
+run `python3 conformance/runner.py --live-base-url http://host/inferweave/v1`. Only that mode sends
+HTTP and checks the returned status codes.
+
 The conformance suite and fixtures are delivered (feature `IW-PROTO-002`, task `P5-T28`);
 production conformance by a running component remains `owed` until the reference implementation
 ships.

@@ -55,6 +55,18 @@ the lifecycle introduces no second scheduler.
 - `RESERVING` is a fenced, expiring reservation under the rebalancer's authority, never direct placement.
 - `DRAINING` is an intent event to the rebalancer, never a second scheduler.
 - Availability preserved: the outgoing runtime stays routable until the incoming runtime has
-  passed `VALIDATING`.
+  passed `VALIDATING` when simultaneous or cross-node capacity exists. If it does not, the
+  controller records and performs a constrained drain-and-swap; it does not claim zero downtime.
 - Only `READY`/`BUSY`/`IDLE` are targetable by the rebalancer; `VALIDATING` and `WARMING` are not
   yet schedulable.
+
+## Load identity, waiters and rollback
+
+One in-progress load exists per immutable `deployment_key`, never per alias or request. Waiters
+attach with independent ids. Cancelling a waiter cannot cancel another waiter; the underlying load
+ends only when the final waiter leaves, the fenced reservation is revoked, or a fatal failure is
+classified. A stale fencing epoch cannot publish readiness.
+
+If the old and new deployments cannot coexist on a node, the transaction chooses either an
+explicit drain-and-swap or a cross-node replacement. Load, warm, validation or cutover failure
+restores the preserved known-good deployment and route. Failed rollback quarantines the device.

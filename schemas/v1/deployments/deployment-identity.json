@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/deployments/deployment-identity.json",
+  "title": "DeploymentIdentity",
+  "description": "Exact immutable deployment_key input. Its deliberately narrow string/digest-only value domain excludes JSON numbers; versioned SHA-256 digests bind richer model, runtime profile, policy and resource documents (including legacy floating-point values) without ambiguous number serialization. Encode this object as RFC 8785 JCS UTF-8, SHA-256 hash it, and prefix lowercase hex with sha256:.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "modality", "model_id", "artifact_bindings", "runtime_identity", "effective_profile_digest", "policy_digest", "resource_contract_digest"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "inferweave.deployment-identity/v1"},
+    "modality": {"type": "string", "minLength": 1},
+    "model_id": {"type": "string", "minLength": 1},
+    "artifact_bindings": {"type": "object", "minProperties": 1, "additionalProperties": false, "patternProperties": {"^[a-z][a-z0-9_.-]{0,63}$": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}}, "description": "Artifact role to digest. Roles are semantic; JCS object-key ordering makes enumeration order irrelevant."},
+    "runtime_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter", "version", "config_digest"],
+      "properties": {
+        "adapter": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "config_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "effective_profile_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "policy_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "resource_contract_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}

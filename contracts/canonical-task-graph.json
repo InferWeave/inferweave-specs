@@ -1062,7 +1062,7 @@
         "IW-DP-002"
       ],
       "context_class": "C75",
-      "outcome": "Fallback order is direct → site/regional relay → gateway relay last resort with byte accounting/circuit breakers.",
+      "outcome": "Fallback order is direct \u2192 site/regional relay \u2192 gateway relay last resort with byte accounting/circuit breakers.",
       "required_tests": [
         "forced NAT failure",
         "fallback ordering",
@@ -1118,7 +1118,7 @@
         "IW-TEL-001"
       ],
       "context_class": "C75",
-      "outcome": "Persist request attempt facts linked prompt→route→deployment→GPU with TTFT/prefill/decode/cache/resource/power outcome.",
+      "outcome": "Persist request attempt facts linked prompt\u2192route\u2192deployment\u2192GPU with TTFT/prefill/decode/cache/resource/power outcome.",
       "required_tests": [
         "correlation completeness",
         "cancel/preemption facts",
@@ -1242,7 +1242,7 @@
         "IW-UI-003"
       ],
       "context_class": "C65",
-      "outcome": "A policy maps every route to required rendering variants — narrow, forced-colors, reduced-motion, wired or fixture, unsupported — names the single token source, and denies superseded components, enforced by the build.",
+      "outcome": "A policy maps every route to required rendering variants \u2014 narrow, forced-colors, reduced-motion, wired or fixture, unsupported \u2014 names the single token source, and denies superseded components, enforced by the build.",
       "required_tests": [
         "route absent from the policy fails the check",
         "each declared variant is exercised per route",
@@ -2204,7 +2204,7 @@
       "context_class": "C75",
       "outcome": "Large encrypted prompt payloads can live in object storage while PostgreSQL retains authoritative metadata/locator/hash/audit.",
       "required_tests": [
-        "inline→object threshold",
+        "inline\u2192object threshold",
         "object unavailable submission semantics",
         "authorized short-lived read"
       ],
@@ -2248,7 +2248,7 @@
         "IW-HEALTH-001"
       ],
       "context_class": "C75",
-      "outcome": "Implement HEALTHY→SUSPECT→DEGRADED→DIAGNOSTIC→QUARANTINED→RECOVERING state and bounded recovery qualification.",
+      "outcome": "Implement HEALTHY\u2192SUSPECT\u2192DEGRADED\u2192DIAGNOSTIC\u2192QUARANTINED\u2192RECOVERING state and bounded recovery qualification.",
       "required_tests": [
         "quarantine no shared traffic",
         "canary recovery",
@@ -2856,7 +2856,7 @@
         "IW-IMG-002"
       ],
       "context_class": "C85",
-      "outcome": "Two-stage generation→grounding/segmentation→deterministic annotation with exact labels/arrows and QA failure on low confidence.",
+      "outcome": "Two-stage generation\u2192grounding/segmentation\u2192deterministic annotation with exact labels/arrows and QA failure on low confidence.",
       "required_tests": [
         "label spelling",
         "no clipping/overlap",
@@ -3899,14 +3899,21 @@
       "phase": "B",
       "title": "Runtime families and typed capabilities",
       "depends_on": [],
-      "specs": ["00_INVARIANTS", "48_RUNTIME_FAMILIES_AND_CAPABILITIES"],
-      "features": ["IW-RT-001"],
+      "specs": [
+        "00_INVARIANTS",
+        "48_RUNTIME_FAMILIES_AND_CAPABILITIES"
+      ],
+      "features": [
+        "IW-RT-001"
+      ],
       "context_class": "C75",
-      "outcome": "Define the canonical runtime-family registry and typed capability descriptor in the protocol vocabulary, schemas, and OpenAPI, extending `schemas/v1/model/capabilities.json` and `schemas/v1/model/model.json`. Unknown family ids fail admission; no capability is inferred from a model name.",
+      "outcome": "Define the canonical runtime-family registry, typed capability descriptor, isolated twelve-method adapter contract and additive feature negotiation. Unknown family ids fail admission; no capability is inferred from a model name.",
       "required_tests": [
         "typed-capability round-trip (e.g. `embeddings`)",
         "name-derived-rejection",
-        "registry-closure (unknown family id fails admission)"
+        "registry-closure (unknown family id fails admission)",
+        "adapter lifecycle completeness and process/container isolation",
+        "mixed-version peer compatibility without family inference"
       ],
       "notes": ""
     },
@@ -3914,15 +3921,24 @@
       "id": "B-T02",
       "phase": "B",
       "title": "Native `/inferweave/v1` control-plane and inference endpoints",
-      "depends_on": ["B-T01"],
-      "specs": ["00_INVARIANTS", "49_NATIVE_CONTROL_PLANE_ENDPOINTS"],
-      "features": ["IW-RT-002"],
+      "depends_on": [
+        "B-T01"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "49_NATIVE_CONTROL_PLANE_ENDPOINTS"
+      ],
+      "features": [
+        "IW-RT-002"
+      ],
       "context_class": "C75",
-      "outcome": "Extend `openapi/inferweave-v1.yaml` with the native `/inferweave/v1` endpoint set (runtimes, deployments, capabilities, rerank, predictions, embeddings, pipelines/execute, jobs) returning Protocol v1 schemas, with family-aware routing and `selection_reason` on list responses.",
+      "outcome": "Extend `openapi/inferweave-v1.yaml` with native runtime-family endpoints, publish standalone deployment and family-request JSON Schemas reconciled against the full inline constraints, and define negotiated bounded native link dispatch without arbitrary URI or proxy behavior.",
       "required_tests": [
         "openapi-validation",
         "family-routing (e.g. `POST /rerank` only for `reranking`)",
-        "parity (native endpoints honour admission/fairshare like `/v1/chat/completions`)"
+        "parity (native endpoints honour admission/fairshare like `/v1/chat/completions`)",
+        "standalone/OpenAPI schema parity",
+        "negotiated native link family/endpoint whitelist and hostile URI/content/size fixtures"
       ],
       "notes": ""
     },
@@ -3930,15 +3946,26 @@
       "id": "B-T03",
       "phase": "B",
       "title": "Transactional runtime hot-swap lifecycle",
-      "depends_on": ["B-T01"],
-      "specs": ["00_INVARIANTS", "50_TRANSACTIONAL_RUNTIME_LIFECYCLE"],
-      "features": ["IW-RT-003"],
+      "depends_on": [
+        "B-T01"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "50_TRANSACTIONAL_RUNTIME_LIFECYCLE"
+      ],
+      "features": [
+        "IW-RT-003"
+      ],
       "context_class": "C75",
-      "outcome": "Refine `state-machines/runtime.md` into the transactional lifecycle (`DISCOVERED → RESOLVING → PREPARING/DOWNLOADING → RESERVING → STARTING → LOADING → WARMING → VALIDATING → READY ↔ BUSY/IDLE → DRAINING → UNLOADING → STOPPED`, with FAILED and cancellation edges) that preserves availability during swap and expresses `RESERVING`/`DRAINING` only as events to the existing rebalancer — never a second scheduler.",
+      "outcome": "Define the transactional lifecycle, immutable-key single-flight loading, waiter-independent cancellation, full safe-peak fenced reservations, three transactional cache classes and constrained-memory rollback under the existing rebalancer authority.",
       "required_tests": [
         "state-machine-transitions",
         "availability-preserved",
-        "no-second-scheduler"
+        "no-second-scheduler",
+        "single-flight waiter independence",
+        "safe-peak reservation, fencing, physical de-duplication and progress-based expiry",
+        "cache integrity, atomic publication, pins, offline behavior and streamed acquisition",
+        "constrained-memory swap impact and rollback"
       ],
       "notes": ""
     },
@@ -3946,11 +3973,19 @@
       "id": "B-T04",
       "phase": "B",
       "title": "Typed inference pipelines",
-      "depends_on": ["B-T01", "B-T02"],
-      "specs": ["00_INVARIANTS", "51_PIPELINES_AND_DURABLE_JOBS"],
-      "features": ["IW-RT-004"],
+      "depends_on": [
+        "B-T01",
+        "B-T02"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "51_PIPELINES_AND_DURABLE_JOBS"
+      ],
+      "features": [
+        "IW-RT-004"
+      ],
       "context_class": "C75",
-      "outcome": "Define the typed inference pipeline contract (acyclic DAG of runtime-family stages) and its wire schema, with `POST /pipelines/execute`. Define the canonical `rag` pipeline as a composition of `embeddings`/`reranking` and `llm` stages that respects per-stage admission and capacity — no separate ad-hoc RAG path.",
+      "outcome": "Define the typed inference pipeline contract (acyclic DAG of runtime-family stages) and its wire schema, with `POST /pipelines/execute`. Define the canonical `rag` pipeline as a composition of `embeddings`/`reranking` and `llm` stages that respects per-stage admission and capacity \u2014 no separate ad-hoc RAG path.",
       "required_tests": [
         "dag-acyclicity",
         "stage-family-resolution",
@@ -3962,15 +3997,24 @@
       "id": "B-T05",
       "phase": "B",
       "title": "Durable inference jobs",
-      "depends_on": ["B-T02", "B-T04"],
-      "specs": ["00_INVARIANTS", "52_DURABLE_INFERENCE_JOBS"],
-      "features": ["IW-RT-005"],
+      "depends_on": [
+        "B-T02",
+        "B-T04"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "52_DURABLE_INFERENCE_JOBS"
+      ],
+      "features": [
+        "IW-RT-005"
+      ],
       "context_class": "C75",
-      "outcome": "Extend the durable async-job/artifact model into a general durable inference job contract covering all runtime families and pipelines: submitted via `POST /jobs`, lifecycle `queued → running → succeeded | failed | cancelled`, result-by-artifact-reference, resumable across restart, and family-typed with no bypass of admission/capacity/fairshare/owner-priority.",
+      "outcome": "Extend the durable inference job contract with result-by-reference, resume, family-aware no-bypass controls and additive compatibility for legacy jobs without family or with completed.",
       "required_tests": [
         "job-lifecycle",
         "restart-resume",
-        "no-bypass"
+        "no-bypass",
+        "legacy job read compatibility and canonical succeeded emission"
       ],
       "notes": ""
     },
@@ -3978,13 +4022,25 @@
       "id": "B-T06",
       "phase": "B",
       "title": "Runtime-family conformance and traceability",
-      "depends_on": ["B-T01", "B-T02", "B-T03", "B-T04", "B-T05"],
-      "specs": ["00_INVARIANTS", "53_RUNTIME_FAMILY_CONFORMANCE"],
-      "features": ["IW-RT-006"],
+      "depends_on": [
+        "B-T01",
+        "B-T02",
+        "B-T03",
+        "B-T04",
+        "B-T05"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "53_RUNTIME_FAMILY_CONFORMANCE"
+      ],
+      "features": [
+        "IW-RT-006"
+      ],
       "context_class": "C75",
-      "outcome": "Add runtime-family conformance vectors (embeddings, reranking, prediction, stt, rag) and native-endpoint smoke vectors to `conformance/`, extend `conformance/runner.py`, register feature ids in `contracts/feature-registry.json`, add `B-T01`…`B-T06` to `contracts/canonical-task-graph.json`, and keep `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` consistent. Ensure `scripts/validate_specs.py --self-test` passes.",
+      "outcome": "Add executable runtime-family advertisement and positive/negative request vectors, honest offline labeling, optional live HTTP replay and complete feature/task traceability.",
       "required_tests": [
         "conformance-runs",
+        "executable negative fixtures and optional live HTTP replay",
         "registry-traceable",
         "self-test-green"
       ],

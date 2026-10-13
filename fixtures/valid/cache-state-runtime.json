@@ -1,0 +1,12 @@
+{
+  "contract_version": 1,
+  "artifact_id": "runtime-vllm",
+  "cache_class": "runtime",
+  "content_digest": "sha256:0f9f1ff70af8b508d8efdd82d3f8b15d8cb40d48f2e3c5f1ee123acdb5d73e57",
+  "state": "cached",
+  "integrity": {"algorithm": "sha256", "verified": true},
+  "publication": {"state": "published", "atomic": true},
+  "pin": {"pinned": false},
+  "offline_ready": true,
+  "acquisition": {"mode": "streamed", "max_buffer_bytes": 8388608, "resumable": true}
+}

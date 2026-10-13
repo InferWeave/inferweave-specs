@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/runtime/adapter.json",
+  "title": "Runtime adapter contract",
+  "description": "Descriptor for an isolated runtime adapter. The methods are the complete lifecycle control surface; execution-family methods remain separately typed. Adapter code executes across a process or container boundary and never as arbitrary code inside the node agent.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["adapter_id", "identity", "capabilities", "hardware_requirements", "lifecycle_methods", "isolation"],
+  "properties": {
+    "adapter_id": {"type": "string", "minLength": 1},
+    "identity": {"type": "object", "minProperties": 1, "additionalProperties": true},
+    "capabilities": {"$ref": "../model/capabilities.json"},
+    "hardware_requirements": {"$ref": "../model/requirements.json"},
+    "lifecycle_methods": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity", "capabilities", "hardware_requirements", "validate", "prepare", "load", "unload", "health", "metrics", "cancel", "drain", "shutdown"],
+      "properties": {
+        "identity": {"$ref": "#/definitions/method"},
+        "capabilities": {"$ref": "#/definitions/method"},
+        "hardware_requirements": {"$ref": "#/definitions/method"},
+        "validate": {"$ref": "#/definitions/method"},
+        "prepare": {"$ref": "#/definitions/method"},
+        "load": {"$ref": "#/definitions/method"},
+        "unload": {"$ref": "#/definitions/method"},
+        "health": {"$ref": "#/definitions/method"},
+        "metrics": {"$ref": "#/definitions/method"},
+        "cancel": {"$ref": "#/definitions/method"},
+        "drain": {"$ref": "#/definitions/method"},
+        "shutdown": {"$ref": "#/definitions/method"}
+      }
+    },
+    "isolation": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["mode", "protocol"],
+      "properties": {
+        "mode": {"type": "string", "enum": ["process", "container"]},
+        "protocol": {"type": "string", "minLength": 1},
+        "endpoint": {"type": "string"},
+        "image_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "extensions": {"$ref": "../common/extensions.json"}
+  },
+  "definitions": {
+    "method": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["version"],
+      "properties": {
+        "version": {"type": "integer", "minimum": 1},
+        "timeout_ms": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}
