@@ -76,11 +76,16 @@ zero. This array is the capability offer used by both the Rust and Go gateways. 
 generic Protocol registration `features` level map in `schemas/v1/requests/registration.json`.
 
 The schema always requires the authentication/routing discriminator members `nodeId`, `role`,
-`credential`, `endpoint`, and `models`. A routable registration (non-empty endpoint and models)
+`credential`, `endpoint`, and `models`. A routable worker registration (non-empty endpoint and models)
 also requires `deployment`, `vramBytes`, `kvBytes`, `kvBytesPerToken`, and `gpuIds`. A hardware-only
 registration has empty endpoint and models; it may omit those deployment/capacity members because
-the gateway supplies their existing empty/zero defaults and must not route from them. Mixed shapes
-(for example a non-empty endpoint with no models) are invalid.
+the gateway supplies their existing empty/zero defaults and must not route from them. An
+**operator-enrolled gateway-role** registration may have a non-empty endpoint and deployment with
+`models: []`; the registration response supplies the `connectionId` needed to bind its held link
+afterward. It conveys control-plane presence only,
+not serving capacity. Any supplied pool or GPU inventory fields are reported facts and cannot
+create routeable seats without model advertisements. Other mixed shapes remain invalid. A proof-only credential cannot use the
+gateway-role exception (section 6.1).
 
 The response always carries `connectionId` as lowercase `c-` followed by 16 hexadecimal digits,
 the volatile format minted by both current gateway implementations, and carries `capabilities` as
@@ -174,10 +179,11 @@ never enforces it (section 3.1 rule 5).
 ## 4. Hardware-only registration
 
 1. A registration whose `models` is `[]`, `endpoint` is `""` **and** `deployment` is `""` is a
-   **hardware-only registration** and is VALID. Any other combination (including an empty `models`
-   with a non-empty `endpoint`, or a non-empty `models` with an empty `endpoint`) is not
-   hardware-only and keeps every existing check unchanged, so a gateway that previously refused
-   such a body still refuses it.
+   **hardware-only registration** and is VALID. A separate operator-enrolled `role: gateway`
+   registration may carry a non-empty endpoint and deployment with `models: []` and an
+   authenticated held link; it is a control-plane registration and grants zero model capacity
+   (specs 40 and 42). Every other mixed shape, including a normal node with endpoint and no
+   models, remains invalid. Neither empty shape is routable as a model worker.
 2. A hardware-only body MAY omit `deployment`, `vramBytes`, `kvBytes`, `kvBytesPerToken`, and
    `gpuIds`; the existing gateway defaults are respectively empty, zero, zero, zero, and empty. If
    sent, they SHOULD carry those values. A gateway MUST NOT derive routability or capacity from
@@ -393,7 +399,7 @@ so open registration must not let a stranger choose where traffic goes.
 
 1. A node holding a proved credential MAY register **hardware-only** (section 4) and MAY heartbeat.
 2. Such a node MUST NOT register a non-empty `endpoint` or any `models`. Every registration that
-   is not hardware-only (including an endpoint with no models, or models with no endpoint) is
+   is not hardware-only (including a gateway-role endpoint with no models, or models with no endpoint) is
    refused `403 forbidden`, after authentication succeeds, and admits nothing. This is a different
    outcome from 401 (credential not accepted) and 400 (malformed).
 3. A proof MUST NOT replace or take over an operator-issued credential (section 5.2: `403`). The
@@ -555,6 +561,7 @@ apply to the older-node vector).
 | `requestSizeCases` | oversize bodies are refused before parsing (SHOULD) |
 | `enrollmentTrustCases` | tokenless + endpoint is 403; tokenless + models is 403; tokenless hardware-only is 200; code-enrolled with an endpoint is 200; a proof over an operator-enrolled id is 403 |
 | `enrollmentRoleCases` | tokenless challenge for role `node` is 200; for `gateway` (and other roles) is `400 bad_request` |
+| `gatewayEmptyCapacityCases` | an operator-enrolled gateway with endpoint, deployment and `models: []` registers with zero model capacity and receives a connectionId; Link Hello then binds that registration, and link reachability is reported separately. Ordinary node and proof-only credentials cannot use this shape; READY publication and successful empty withdrawal change model capacity without deleting gateway identity. The schema fixtures cover only the request shape; running Rust and Go parent conformance remains owed. |
 | `enrollmentKnownAnswers` | (f) transcript and signature for fixed seed, challenge, nonce and claim |
 
 The reference gateway replays the vectors in addition to its own `conformance/MANIFEST.json`; that

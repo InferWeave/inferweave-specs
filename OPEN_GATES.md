@@ -36,6 +36,14 @@ admission while model capacity remained available. See
 The exception covers only the recorder/admission boundary and its observability;
 it opens no new deployment target or fleet capability.
 
+**APPROVED, bounded existing Farm gateway visibility correction only.** The
+operator's 2026-10-12 request authorized fixing and redeploying the missing
+Farm gateway on Fry. The scoped decision and release conditions are in
+[`decisions/2026-10-12-farm-gateway-zero-capacity-registration.md`](decisions/2026-10-12-farm-gateway-zero-capacity-registration.md).
+This approval does not assert that PR #867 has merged, that Farm is visible
+yet, or that any Farm GPU/model capacity is READY. New deployment targets and
+unrelated alias traffic remain blocked by their own gates.
+
 The archived `InferWeave/inferweave-*` implementation repositories were read-only as of
 2026-09-03 and are not a deployed system.
 

@@ -1,0 +1,11 @@
+{
+  "nodeId": "node_farm-gateway",
+  "role": "gateway",
+  "credential": "example-operator-issued-credential",
+  "endpoint": "127.0.0.1:24080",
+  "models": [],
+  "vramBytes": 0,
+  "kvBytes": 0,
+  "kvBytesPerToken": 0,
+  "gpuIds": []
+}
