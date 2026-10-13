@@ -113,6 +113,9 @@
       "canonical_tasks": [
         "P1-T05",
         "P1-T20"
+      ],
+      "contracts": [
+        "contracts/model-intelligence-acceptance.json"
       ]
     },
     {
@@ -125,6 +128,9 @@
       "canonical_tasks": [
         "P0-T09",
         "P1-T21"
+      ],
+      "contracts": [
+        "contracts/model-intelligence-acceptance.json"
       ]
     },
     {
@@ -304,6 +310,9 @@
       "owner_component": "control-plane",
       "canonical_tasks": [
         "P2-T16"
+      ],
+      "contracts": [
+        "contracts/model-intelligence-acceptance.json"
       ]
     },
     {
@@ -418,6 +427,9 @@
         "P1-T04",
         "P1-T05",
         "P1-T20"
+      ],
+      "contracts": [
+        "contracts/model-intelligence-acceptance.json"
       ]
     },
     {
@@ -430,6 +442,9 @@
       "canonical_tasks": [
         "P2-T01",
         "P2-T03"
+      ],
+      "contracts": [
+        "contracts/model-intelligence-acceptance.json"
       ]
     },
     {
@@ -455,6 +470,9 @@
         "P2-T05",
         "P2-T07",
         "P2-T14"
+      ],
+      "contracts": [
+        "contracts/model-intelligence-acceptance.json"
       ]
     },
     {
@@ -468,6 +486,9 @@
         "P2-T07",
         "P2-T08",
         "P2-T09"
+      ],
+      "contracts": [
+        "contracts/model-intelligence-acceptance.json"
       ]
     },
     {
@@ -681,6 +702,9 @@
       "owner_component": "telemetry",
       "canonical_tasks": [
         "P2-T10"
+      ],
+      "contracts": [
+        "contracts/model-intelligence-acceptance.json"
       ]
     },
     {

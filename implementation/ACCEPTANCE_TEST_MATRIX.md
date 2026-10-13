@@ -100,3 +100,15 @@
 | AC-093 | GPU memory logical and physical stay separate | reservations and the placement-class view are never added to a physical total; safe-schedulable never exceeds raw free and is zero on a GPU InferWeave does not own |
 | AC-094 | A node can be recorded without being routable | a registration with no models, endpoint or deployment is accepted, listed with its hardware, absent from model lists, never dialled; an oversize, non-object or versionless hardware report is refused with bad_request and an older node without it is unchanged |
 | AC-095 | Tokenless enrollment is byte-identical across gateways | the proof transcript and Ed25519 signature for a fixed seed, challenge, nonce and claim match the known answers; the proof credential is accepted by register; every proof failure is control_auth_failed |
+
+## Model intelligence (spec 58) — proof owed
+
+| ID | Scenario | Expected |
+|---|---|---|
+| AC-MI-01 | Retries, cancellations and partial cohorts | Separate transport/attempt/logical/task success with explicit denominators, coverage, source, units and null reasons; **owed** |
+| AC-MI-02 | Nested cache/reasoning, missing rates, retries and shared GPU allocations | Exclusive normalized buckets; logical/billed/physical separation; exact fixed-point cost and conserved unique allocation attribution; **owed** |
+| AC-MI-03 | Sparse, mixed-workload and unobserved concurrency bins | Measured SLO bins only; no load extrapolation or invented active users; confidence and units retained; **owed** |
+| AC-MI-04 | Versioned evaluations, unavailable hardware, skipped qualification and failed canary | Fair eligible Pareto evidence; no silent promotion; opt-in and known-good rollback required; **owed** |
+| AC-MI-05 | No demand, unknown state intervals and scheduler reclaim | Unknown is not available; explicit time denominator; linked GPU/worker/logical-request interruption and recovery; **owed** |
+| AC-MI-06 | Unauthenticated reads, forged tenant headers, private scope, shared exports and old facts | Explicit operator grants; unsupported private scopes fail closed; bounded redacted responses and additive unknown history; **owed** |
+| AC-MI-07 | Every existing route/action at desktop/tablet/mobile, light/dark and accessible states | Retained workflows/roles/preferences; coherent shared UI, real-data provenance, no fixture fallback and source/dist parity; **owed** |

@@ -1,6 +1,9 @@
 # 10 — Next.js Dashboard, Portal and Public Proxy
 
-All web surfaces use **Next.js + TypeScript** and shared generated InferWeave API types.
+All web surfaces use **Next.js + TypeScript** and shared generated InferWeave API types,
+subject to the narrow existing embedded site-gateway exceptions in D-002. Spec 58
+defines model-intelligence integration into that existing UI; it does not create a
+second frontend.
 
 ## Public/read-only dashboard
 

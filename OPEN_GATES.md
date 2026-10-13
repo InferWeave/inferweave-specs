@@ -458,3 +458,39 @@ Spec57 independent review additionally requires actual owner attempt-retirement 
 lost-response reconciliation across same-owner fallback, immutable operation/key choice, full
 original/executable request materialization binding, and one claim consumption across distinct
 permit IDs plus direct/relay delivery. Offline hostile vectors cannot close these runtime gates.
+
+## Model intelligence and existing UI cohesion — implementation versus qualification
+
+**Implementation and merge authorized; all new qualification proof owed.** The
+2026-10-12 operator kit authorizes spec 58 analytics in Rust and the current
+embedded site UI, including optional theme parity. The scoped
+[`decision`](decisions/2026-10-12-model-intelligence-ui-cohesion.md) amends D-002.
+It opens no production rollout or automatic model-promotion gate. Passing this
+repository's validator proves specification consistency only.
+
+- **Owed — implementation:** token overlap/retry accounting, fixed-point rates,
+  unique GPU allocation conservation, outcome/availability denominators, bounded
+  observed SLO capacity, versioned evaluations, eligible Pareto recommendations,
+  stage-gated opt-in/rollback, API authorization and existing-UI regression tests.
+  Tasks P1-T20/P1-T21/P2-T03/P2-T05/P2-T07/P2-T08/P2-T10/P2-T16 own these tests;
+  `contracts/model-intelligence-acceptance.json` records AC-MI-01 through AC-MI-07.
+- **BLOCKED — private tenant/user analytics:** existing tenant headers are not
+  grants. Verified principal-to-scope grants and cross-tenant denial tests are
+  unsatisfied. Only explicitly authorized operator reports and separately
+  allowlisted shared operational aggregates may be implemented; shared output
+  must omit private identities/content/addresses.
+- **BLOCKED — measured live capability claims:** normalized runtime usage, full
+  timing/availability intervals, preemption causality, sustained hardware/workload
+  SLO bins, task feedback, versioned configured prices and current owned-hardware
+  eligibility require actual source evidence. Historical absence stays unknown;
+  a merged endpoint or fixture does not satisfy these controls.
+- **BLOCKED — activation:** per-fingerprint runtime qualification, privacy-safe
+  shadow/canary evidence, explicit promotion policy, bounded rollback proof and
+  production release authorization remain unsatisfied by this specification.
+- **Owed — independent integration review:** verify all retained routes/actions,
+  scopes, accessible responsive/theme screenshots, source/dist parity, bounded
+  query performance and migration/rollback evidence against the actual UI.
+
+Record implementation tests separately from live-source and hardware evidence.
+Any later closure must name exact artifacts, commits, cohort/time window and
+remaining unsupported sources; never mark the whole kit proven from unit tests.

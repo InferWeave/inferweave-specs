@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "spec": "specs/58_MODEL_INTELLIGENCE_UI_COHESION.md",
+  "source": {
+    "path": "docs/specs/model-intelligence-kit/MASTER_SPEC.md",
+    "sha256": "d2f8c9a01d3e0149d7e74f950973c161ed93a4c81dbb324cc7db49a346649275"
+  },
+  "decision": "decisions/2026-10-12-model-intelligence-ui-cohesion.md",
+  "proof_scope": "Specification traceability only; implementation, runtime, tenant and hardware qualification remain owed.",
+  "acceptance": [
+    {
+      "id": "AC-MI-01",
+      "canonical_tasks": [
+        "P1-T20"
+      ],
+      "scenario": "Retries, cancellations and partial cohorts",
+      "expected": "Separate transport/attempt/logical/task success with explicit denominators, coverage, source, units and null reasons",
+      "proof_status": "owed",
+      "evidence": []
+    },
+    {
+      "id": "AC-MI-02",
+      "canonical_tasks": [
+        "P2-T16"
+      ],
+      "scenario": "Nested cache/reasoning, missing rates, retries and shared GPU allocations",
+      "expected": "Exclusive normalized buckets; logical/billed/physical separation; exact fixed-point cost and conserved unique allocation attribution",
+      "proof_status": "owed",
+      "evidence": []
+    },
+    {
+      "id": "AC-MI-03",
+      "canonical_tasks": [
+        "P1-T20"
+      ],
+      "scenario": "Sparse, mixed-workload and unobserved concurrency bins",
+      "expected": "Measured SLO bins only; no load extrapolation or invented active users; confidence and units retained",
+      "proof_status": "owed",
+      "evidence": []
+    },
+    {
+      "id": "AC-MI-04",
+      "canonical_tasks": [
+        "P2-T05",
+        "P2-T07",
+        "P2-T08"
+      ],
+      "scenario": "Versioned evaluations, unavailable hardware, skipped qualification and failed canary",
+      "expected": "Fair eligible Pareto evidence; no silent promotion; opt-in and known-good rollback required",
+      "proof_status": "owed",
+      "evidence": []
+    },
+    {
+      "id": "AC-MI-05",
+      "canonical_tasks": [
+        "P2-T10"
+      ],
+      "scenario": "No demand, unknown state intervals and scheduler reclaim",
+      "expected": "Unknown is not available; explicit time denominator; linked GPU/worker/logical-request interruption and recovery",
+      "proof_status": "owed",
+      "evidence": []
+    },
+    {
+      "id": "AC-MI-06",
+      "canonical_tasks": [
+        "P2-T03"
+      ],
+      "scenario": "Unauthenticated reads, forged tenant headers, private scope, shared exports and old facts",
+      "expected": "Explicit operator grants; unsupported private scopes fail closed; bounded redacted responses and additive unknown history",
+      "proof_status": "owed",
+      "evidence": []
+    },
+    {
+      "id": "AC-MI-07",
+      "canonical_tasks": [
+        "P1-T21"
+      ],
+      "scenario": "Every existing route/action at desktop/tablet/mobile, light/dark and accessible states",
+      "expected": "Retained workflows/roles/preferences; coherent shared UI, real-data provenance, no fixture fallback and source/dist parity",
+      "proof_status": "owed",
+      "evidence": []
+    }
+  ]
+}
