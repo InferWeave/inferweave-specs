@@ -1,0 +1,29 @@
+{
+  "schema": "openapi/model-intelligence.yaml",
+  "fixtures": [
+    {
+      "path": "../audit/rust-report-fixture.json",
+      "sha256": "af0265ae74ff27e1812896047b0131aa327a96b690f9ab872f7a1bcebd2aca7f",
+      "result": "pass"
+    },
+    {
+      "path": "../audit/rust-report-default-24h.json",
+      "sha256": "d1b4a100a8564692204b8a18f677c26d7cc657f29a5c2494ea47cdfbccce1555",
+      "result": "pass"
+    },
+    {
+      "path": "../audit/rust-report-default-30d.json",
+      "sha256": "d4783ce7315c738f35c5bbb34d62a13d6af13b00570bf113879de9cf19ba2fc9",
+      "result": "pass"
+    }
+  ],
+  "unsupported_envelopes": 2,
+  "negative_cases_rejected": [
+    "missing_window",
+    "numeric_money",
+    "invalid_capacity",
+    "invalid_comparison"
+  ],
+  "scope": "Schema shape validation only; no authorization/runtime/production qualification claim.",
+  "canonical_fixture": "evidence/model-intelligence-2026-10-12/report.demo.json"
+}

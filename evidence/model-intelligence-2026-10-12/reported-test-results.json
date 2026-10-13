@@ -1,0 +1,36 @@
+{
+  "status": "reported_test_execution_not_red_green_proof",
+  "records": [
+    {
+      "source": "/tmp/iw-intelligence-integrated.log",
+      "sha256": "d69eba196412c9432c2fcc7b8f27f081d2db957bd065170dc68b7bcfbe36d0bd",
+      "reported_results": [
+        "test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.34s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s"
+      ]
+    },
+    {
+      "source": "/tmp/iw-storage-intelligence-test.log",
+      "sha256": "6aa6d6127f26f8482c56258de4795e1c50c075f25a98a20ea27ce2de47c915a7",
+      "reported_results": [
+        "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.99s"
+      ]
+    },
+    {
+      "source": "/tmp/iw-intelligence-unit.log",
+      "sha256": "db1296dafddd22f9a79f12c75f5349d617cc67f6bd10be62efeb8e4398a95bfe",
+      "reported_results": [
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 307 filtered out; finished in 0.43s"
+      ]
+    },
+    {
+      "source": "/tmp/iw-intelligence-migrations.log",
+      "sha256": "7b486bbe0e1879d80eb19943c9895b5d724d907f04585d59a252b27e07feaec0",
+      "reported_results": [
+        "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.70s",
+        "test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 2.37s"
+      ]
+    }
+  ],
+  "note": "Source logs inspected during documentation handoff. Test execution alone does not prove the control fails when removed. Full final root gate is separately pending."
+}

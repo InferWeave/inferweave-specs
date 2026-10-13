@@ -1,0 +1,1689 @@
+openapi: 3.0.3
+info:
+  title: InferWeave Model Intelligence Read API
+  version: 1.0.0
+  description: Additive spec 58 API, pinned to Rust integration 35ac81e7b0a0c3cba23390c1adae092ea392ca0d. Independent
+    of Protocol v1 /inferweave/v1 base path. All eight Rust routes are authenticated read-only operator reports.
+    Unknown/duplicate scalar parameters, tenant/user filters and GET bodies are rejected. Headers never manufacture
+    grants. See model-intelligence.md for current capability gaps and evidence.
+servers:
+- url: /
+paths:
+  /iw/v1/model-intelligence/summary:
+    get:
+      operationId: getModelIntelligenceSummary
+      summary: 'Read operator model intelligence: summary'
+      security:
+      - RustAdmin: []
+      parameters:
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/end'
+      - $ref: '#/components/parameters/bucket_seconds'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/scope'
+      - $ref: '#/components/parameters/series_metric'
+      - $ref: '#/components/parameters/model_id'
+      - $ref: '#/components/parameters/gateway_id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Report'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '405':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /iw/v1/model-intelligence/timeseries:
+    get:
+      operationId: getModelIntelligenceTimeseries
+      summary: 'Read operator model intelligence: timeseries'
+      security:
+      - RustAdmin: []
+      parameters:
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/end'
+      - $ref: '#/components/parameters/bucket_seconds'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/scope'
+      - $ref: '#/components/parameters/series_metric'
+      - $ref: '#/components/parameters/model_id'
+      - $ref: '#/components/parameters/gateway_id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Report'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '405':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /iw/v1/model-intelligence/incidents:
+    get:
+      operationId: getModelIntelligenceIncidents
+      summary: 'Read operator model intelligence: incidents'
+      security:
+      - RustAdmin: []
+      parameters:
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/end'
+      - $ref: '#/components/parameters/bucket_seconds'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/scope'
+      - $ref: '#/components/parameters/series_metric'
+      - $ref: '#/components/parameters/model_id'
+      - $ref: '#/components/parameters/gateway_id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Report'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '405':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /iw/v1/model-intelligence/tokens:
+    get:
+      operationId: getModelIntelligenceTokens
+      summary: 'Read operator model intelligence: tokens'
+      security:
+      - RustAdmin: []
+      parameters:
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/end'
+      - $ref: '#/components/parameters/bucket_seconds'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/scope'
+      - $ref: '#/components/parameters/series_metric'
+      - $ref: '#/components/parameters/model_id'
+      - $ref: '#/components/parameters/gateway_id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Report'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '405':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /iw/v1/model-intelligence/capacity:
+    get:
+      operationId: getModelIntelligenceCapacity
+      summary: 'Read operator model intelligence: capacity'
+      security:
+      - RustAdmin: []
+      parameters:
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/end'
+      - $ref: '#/components/parameters/bucket_seconds'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/scope'
+      - $ref: '#/components/parameters/series_metric'
+      - $ref: '#/components/parameters/model_id'
+      - $ref: '#/components/parameters/gateway_id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Report'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '405':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /iw/v1/model-intelligence/evaluations:
+    get:
+      operationId: getModelIntelligenceEvaluations
+      summary: 'Read operator model intelligence: evaluations'
+      security:
+      - RustAdmin: []
+      parameters:
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/end'
+      - $ref: '#/components/parameters/bucket_seconds'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/scope'
+      - $ref: '#/components/parameters/series_metric'
+      - $ref: '#/components/parameters/model_id'
+      - $ref: '#/components/parameters/gateway_id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Report'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '405':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /iw/v1/model-intelligence/candidates:
+    get:
+      operationId: getModelIntelligenceCandidates
+      summary: 'Read operator model intelligence: candidates'
+      security:
+      - RustAdmin: []
+      parameters:
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/end'
+      - $ref: '#/components/parameters/bucket_seconds'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/scope'
+      - $ref: '#/components/parameters/series_metric'
+      - $ref: '#/components/parameters/model_id'
+      - $ref: '#/components/parameters/gateway_id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Report'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '405':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /iw/v1/model-intelligence/costs:
+    get:
+      operationId: getModelIntelligenceCosts
+      summary: 'Read operator model intelligence: costs'
+      security:
+      - RustAdmin: []
+      parameters:
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/end'
+      - $ref: '#/components/parameters/bucket_seconds'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/scope'
+      - $ref: '#/components/parameters/series_metric'
+      - $ref: '#/components/parameters/model_id'
+      - $ref: '#/components/parameters/gateway_id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Report'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+        '405':
+          $ref: '#/components/responses/Error'
+        '503':
+          $ref: '#/components/responses/Error'
+  /console/api/model-intelligence/report:
+    get:
+      operationId: getConsoleModelIntelligenceReport
+      summary: Existing Go operator-only adapter to Rust summary
+      description: 'Requires the existing operator middleware: operator-authorized iw_session cookie OR the exact
+        configured registration secret. Configured Rust origin and admin token file supply upstream authority; no
+        browser identity/bearer/tenant headers are forwarded. No user or private tenant grant exists. Query size
+        <=32 KiB; series_metric <=128 lowercase ASCII letters/digits/underscore; cursor <=1024 bytes. Nonoperators
+        never receive a report. The adapter preserves the Rust report, uses a 10s deadline, no redirects/cookie
+        jar, HTTPS or loopback HTTP, and a 2MiB response limit.'
+      security:
+      - ConsoleOperator: []
+      - ConsoleRegistration: []
+      parameters:
+      - $ref: '#/components/parameters/start'
+      - $ref: '#/components/parameters/end'
+      - $ref: '#/components/parameters/bucket_seconds'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/cursor'
+      - $ref: '#/components/parameters/scope'
+      - $ref: '#/components/parameters/series_metric'
+      - $ref: '#/components/parameters/model_id'
+      - $ref: '#/components/parameters/gateway_id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Report'
+        '400':
+          description: Invalid or unsupported query, including tenant/user filters.
+          content:
+            text/plain:
+              schema:
+                type: string
+        '401':
+          description: Console authentication required.
+          content:
+            text/plain:
+              schema:
+                type: string
+        '403':
+          description: Existing session lacks operator permission.
+          content:
+            text/plain:
+              schema:
+                type: string
+        '503':
+          description: Configured Rust source refused, unavailable or invalid; no substitute metrics.
+          content:
+            text/plain:
+              schema:
+                type: string
+        '404':
+          description: Browser sign-in is not configured and no valid registration secret was supplied.
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  securitySchemes:
+    RustAdmin:
+      type: apiKey
+      in: header
+      name: X-Inferweave-Admin
+      description: Existing configured Rust administration secret. Distinct from inference client/worker bearer
+        credentials; TLS required except authorized loopback development.
+    ConsoleOperator:
+      type: apiKey
+      in: cookie
+      name: iw_session
+      description: Existing gateway authenticated session plus operator middleware authorization; an arbitrary cookie
+        or regular user session is insufficient.
+    ConsoleRegistration:
+      type: http
+      scheme: bearer
+      description: 'Existing Go operator middleware alternative: the exact configured registration secret, compared
+        in constant time. Not an inference/client/worker bearer token and never forwarded upstream. No new authentication
+        path is introduced.'
+  parameters:
+    start:
+      name: start
+      in: query
+      required: false
+      description: Inclusive Unix milliseconds. Rust defaults to as_of minus one hour. Window must be positive and
+        at most 30 days.
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 18446744073709551615
+        format: uint64
+    end:
+      name: end
+      in: query
+      required: false
+      description: Exclusive Unix milliseconds, at or before as_of. Defaults to as_of.
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 18446744073709551615
+        format: uint64
+    bucket_seconds:
+      name: bucket_seconds
+      in: query
+      required: false
+      description: Requested bucket width. Effective width may increase to keep at most 400 model/bucket pairs per
+        page.
+      schema:
+        type: integer
+        minimum: 1
+        default: 3600
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: Requested model limit; effective limit capped at 20 and may shrink further for response size.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 100
+    cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Decimal model offset. Keep window, filters and series_metric unchanged across pages; no unbounded
+        automatic traversal.
+      schema:
+        type: string
+        pattern: ^[0-9]+$
+    scope:
+      name: scope
+      in: query
+      required: false
+      description: Both labels require the same authenticated Rust operator fleet authority. shared never grants
+        anonymous, user or tenant access.
+      schema:
+        type: string
+        enum:
+        - operator
+        - shared
+    series_metric:
+      name: series_metric
+      in: query
+      required: false
+      description: Must name an actual full-report metrics key. Each bucket includes only this metric; pooled full-window
+        metrics remain complete.
+      schema:
+        type: string
+        default: ttft_ms_p95
+    model_id:
+      name: model_id
+      in: query
+      required: false
+      description: Repeat model_id once per selected model.
+      schema:
+        type: array
+        maxItems: 200
+        items:
+          type: string
+          minLength: 1
+          maxLength: 512
+      style: form
+      explode: true
+    gateway_id:
+      name: gateway_id
+      in: query
+      required: false
+      description: Repeat gateway_id once per selected source gateway; legacy unattributed facts remain unknown.
+      schema:
+        type: array
+        maxItems: 200
+        items:
+          type: string
+          minLength: 1
+          maxLength: 512
+      style: form
+      explode: true
+  responses:
+    Report:
+      description: 'Bounded measured/partial/unknown report or explicit unsupported capability. Cache-Control: no-store.'
+      headers:
+        Cache-Control:
+          schema:
+            type: string
+            enum:
+            - no-store
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Report'
+    Error:
+      description: Content-free error code; never provider content or credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    TimeWindow:
+      type: object
+      required:
+      - start_inclusive
+      - end_exclusive
+      properties:
+        start_inclusive:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        end_exclusive:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+    MetricValue:
+      type: object
+      required:
+      - value
+      - unit
+      - numerator
+      - denominator
+      - sample_count
+      - eligible_count
+      - observed_count
+      - status
+      - unknown_reason
+      - source
+      - metric_definition_version
+      - cohort
+      - window
+      - as_of
+      - last_observed_at
+      - confidence
+      properties:
+        value:
+          type: number
+          format: double
+          nullable: true
+        unit:
+          type: string
+        numerator:
+          type: number
+          format: double
+          nullable: true
+        denominator:
+          type: number
+          format: double
+          nullable: true
+        sample_count:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        eligible_count:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        observed_count:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        status:
+          $ref: '#/components/schemas/MeasurementStatus'
+        unknown_reason:
+          type: string
+          nullable: true
+        source:
+          type: string
+        metric_definition_version:
+          type: string
+        cohort:
+          type: string
+        window:
+          $ref: '#/components/schemas/TimeWindow'
+        as_of:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        last_observed_at:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        confidence:
+          type: number
+          format: double
+          nullable: true
+    Incident:
+      type: object
+      required:
+      - occurred_at
+      - failure_chain
+      - deployment_id
+      - worker_id
+      - gpu_ids
+      - slurm_job_id
+      - affected_logical_requests
+      properties:
+        occurred_at:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        failure_chain:
+          type: array
+          items:
+            $ref: '#/components/schemas/FailureCause'
+        deployment_id:
+          type: string
+          nullable: true
+        worker_id:
+          type: string
+          nullable: true
+        gpu_ids:
+          type: array
+          items:
+            type: string
+        slurm_job_id:
+          type: string
+          nullable: true
+        affected_logical_requests:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+    TimeBucket:
+      type: object
+      required:
+      - window
+      - metrics
+      properties:
+        window:
+          $ref: '#/components/schemas/TimeWindow'
+        metrics:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/MetricValue'
+    ModelReport:
+      type: object
+      required:
+      - model_id
+      - metrics
+      - incidents
+      - incidents_truncated
+      - timeseries
+      - capacity
+      - evaluations
+      - candidates
+      - costs
+      - tokens
+      properties:
+        model_id:
+          type: string
+        metrics:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/MetricValue'
+        incidents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Incident'
+        incidents_truncated:
+          type: boolean
+        timeseries:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeBucket'
+        capacity:
+          oneOf:
+          - $ref: '#/components/schemas/CapacityReport'
+          - $ref: '#/components/schemas/MultipleCapacityReports'
+          - $ref: '#/components/schemas/UnavailableSection'
+        evaluations:
+          oneOf:
+          - $ref: '#/components/schemas/EvaluationReports'
+          - $ref: '#/components/schemas/UnavailableSection'
+        candidates:
+          oneOf:
+          - $ref: '#/components/schemas/EvaluationReports'
+          - $ref: '#/components/schemas/UnavailableSection'
+        costs:
+          oneOf:
+          - $ref: '#/components/schemas/Costs'
+          - $ref: '#/components/schemas/UnavailableSection'
+        tokens:
+          $ref: '#/components/schemas/UsageTotals'
+      description: Per-model aggregate plus typed economics/capacity/qualification. Detail may be explicitly unavailable
+        when evidence is absent or the response-size limit is reached.
+    CountAggregate:
+      type: object
+      required:
+      - total
+      - known_total
+      - reported_samples
+      - estimated_samples
+      - missing_samples
+      - unsupported_samples
+      properties:
+        total:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        known_total:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        reported_samples:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        estimated_samples:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        missing_samples:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        unsupported_samples:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+      description: total is null if any required observation is unknown or the warehouse cohort is truncated. known_total
+        is only the known subtotal. Sample counters preserve reported/estimated/missing/unsupported distinctions.
+    CacheHitRatio:
+      type: object
+      required:
+      - value
+      - cache_read_numerator
+      - input_denominator
+      - eligible_samples
+      - all_samples
+      - estimated_samples
+      properties:
+        value:
+          type: number
+          format: double
+          nullable: true
+        cache_read_numerator:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        input_denominator:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        eligible_samples:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        all_samples:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        estimated_samples:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+    UsageTotals:
+      type: object
+      required:
+      - samples
+      - input_total
+      - input_uncached
+      - input_cache_read
+      - input_cache_write
+      - unknown_input
+      - output_total
+      - output_visible
+      - output_reasoning
+      - unknown_output
+      - overlap_cache_write
+      - overlap_output_reasoning
+      - cache_hit_ratio
+      properties:
+        samples:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        input_total:
+          $ref: '#/components/schemas/CountAggregate'
+        input_uncached:
+          $ref: '#/components/schemas/CountAggregate'
+        input_cache_read:
+          $ref: '#/components/schemas/CountAggregate'
+        input_cache_write:
+          $ref: '#/components/schemas/CountAggregate'
+        unknown_input:
+          $ref: '#/components/schemas/CountAggregate'
+        output_total:
+          $ref: '#/components/schemas/CountAggregate'
+        output_visible:
+          $ref: '#/components/schemas/CountAggregate'
+        output_reasoning:
+          $ref: '#/components/schemas/CountAggregate'
+        unknown_output:
+          $ref: '#/components/schemas/CountAggregate'
+        overlap_cache_write:
+          $ref: '#/components/schemas/CountAggregate'
+        overlap_output_reasoning:
+          $ref: '#/components/schemas/CountAggregate'
+        cache_hit_ratio:
+          $ref: '#/components/schemas/CacheHitRatio'
+      description: Attempt-level physical usage, never implicit logical/billed usage. overlap_cache_write and overlap_output_reasoning
+        are annotations outside exclusive stacks; never add them to totals.
+    CostResult:
+      type: object
+      required:
+      - metric_definition_version
+      - amount_nanos
+      - currency
+      - status
+      - known_subtotal_nanos
+      - priced_components
+      - total_components
+      - rate_ids
+      - missing_reasons
+      - unattributed_nanos
+      properties:
+        metric_definition_version:
+          type: string
+        amount_nanos:
+          type: string
+          pattern: ^(0|[1-9][0-9]{0,19})$
+          description: Exact decimal unsigned u64 nano-currency amount (maximum 18446744073709551615); never a JSON
+            number. One unit is 1e-9 of the named currency.
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/CostStatus'
+        known_subtotal_nanos:
+          $ref: '#/components/schemas/NanoCurrency'
+        priced_components:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        total_components:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        rate_ids:
+          type: array
+          items:
+            type: string
+        missing_reasons:
+          type: array
+          items:
+            type: string
+        unattributed_nanos:
+          type: string
+          pattern: ^(0|[1-9][0-9]{0,19})$
+          description: Exact decimal unsigned u64 nano-currency amount (maximum 18446744073709551615); never a JSON
+            number. One unit is 1e-9 of the named currency.
+          nullable: true
+      description: Rust CostResult after HTTP redaction removes private allocation subjects. Configured-rate cost
+        is not proof of an invoice.
+    ProviderRateCard:
+      type: object
+      required:
+      - id
+      - provider
+      - region
+      - model
+      - currency
+      - effective_from
+      - effective_until
+      - min_context
+      - max_context
+      - input_uncached
+      - output
+      - cache_read
+      - cache_write
+      - reasoning
+      properties:
+        id:
+          type: string
+        provider:
+          type: string
+        region:
+          type: string
+        model:
+          type: string
+        currency:
+          type: string
+        effective_from:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        effective_until:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        min_context:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        max_context:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        input_uncached:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        output:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        cache_read:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        cache_write:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        reasoning:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+      description: Nano-currency per million tokens, integer configuration input. Versioned id; half-open effective
+        time/context intervals. Null category is unconfigured; zero is explicitly free.
+    SelfHostedRateCard:
+      type: object
+      required:
+      - id
+      - gpu_id
+      - currency
+      - effective_from_ms
+      - effective_until_ms
+      - basis
+      - compute_nanos_per_gpu_second
+      - power_nanos_per_gpu_second
+      - power_included_in_compute
+      properties:
+        id:
+          type: string
+        gpu_id:
+          type: string
+        currency:
+          type: string
+        effective_from_ms:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        effective_until_ms:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        basis:
+          $ref: '#/components/schemas/GpuAccountingBasis'
+        compute_nanos_per_gpu_second:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        power_nanos_per_gpu_second:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        power_included_in_compute:
+          type: boolean
+      description: Configured nano-currency per physical GPU-second. Reservation and active are alternative bases;
+        power inclusion is explicit.
+    CapacityContext:
+      type: object
+      required:
+      - model_id
+      - deployment_id
+      - profile_id
+      - hardware_class
+      - runtime_fingerprint
+      - workload_id
+      - context_tokens
+      - input_tokens
+      - cache_hit_basis_points
+      - output_tokens
+      - batch_size
+      properties:
+        model_id:
+          type: string
+        deployment_id:
+          type: string
+        profile_id:
+          type: string
+        hardware_class:
+          type: string
+        runtime_fingerprint:
+          type: string
+        workload_id:
+          type: string
+        context_tokens:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        input_tokens:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        cache_hit_basis_points:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        output_tokens:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        batch_size:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+    CapacitySlo:
+      type: object
+      required:
+      - max_p95_ttft_ms
+      - max_p95_end_to_end_ms
+      - min_success_rate
+      - min_samples
+      properties:
+        max_p95_ttft_ms:
+          type: number
+          format: double
+        max_p95_end_to_end_ms:
+          type: number
+          format: double
+        min_success_rate:
+          type: number
+          format: double
+        min_samples:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+    UserCapacityScenario:
+      type: object
+      required:
+      - name
+      - workload_id
+      - simultaneous_requests_per_user
+      - confidence
+      properties:
+        name:
+          type: string
+        workload_id:
+          type: string
+        simultaneous_requests_per_user:
+          type: number
+          format: double
+        confidence:
+          type: number
+          format: double
+    CapacityPoint:
+      type: object
+      required:
+      - concurrent_requests
+      - sample_count
+      - slo_compliant
+      - ttft_ms_p95
+      - end_to_end_ms_p95
+      - queue_wait_ms_p95
+      - success_rate
+      - preemption_rate
+      - success_confidence_lower_95
+      - last_observed_at
+      properties:
+        concurrent_requests:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        sample_count:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        slo_compliant:
+          type: boolean
+          nullable: true
+        ttft_ms_p95:
+          type: number
+          format: double
+          nullable: true
+        end_to_end_ms_p95:
+          type: number
+          format: double
+          nullable: true
+        queue_wait_ms_p95:
+          type: number
+          format: double
+          nullable: true
+        success_rate:
+          type: number
+          format: double
+          nullable: true
+        preemption_rate:
+          type: number
+          format: double
+          nullable: true
+        success_confidence_lower_95:
+          type: number
+          format: double
+          nullable: true
+        last_observed_at:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+    CapacityReport:
+      type: object
+      required:
+      - context
+      - slo
+      - points
+      - safe_request_concurrency
+      - user_equivalent_capacity
+      - user_scenario
+      - unmeasured_above
+      properties:
+        context:
+          $ref: '#/components/schemas/CapacityContext'
+        slo:
+          $ref: '#/components/schemas/CapacitySlo'
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapacityPoint'
+        safe_request_concurrency:
+          $ref: '#/components/schemas/MetricValue'
+        user_equivalent_capacity:
+          $ref: '#/components/schemas/MetricValue'
+        user_scenario:
+          type: object
+          required:
+          - name
+          - workload_id
+          - simultaneous_requests_per_user
+          - confidence
+          properties:
+            name:
+              type: string
+            workload_id:
+              type: string
+            simultaneous_requests_per_user:
+              type: number
+              format: double
+            confidence:
+              type: number
+              format: double
+          nullable: true
+        unmeasured_above:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+    WorkloadBin:
+      type: object
+      required:
+      - context_tokens
+      - output_tokens
+      - cache_read_basis_points
+      - batch_size
+      - concurrency
+      properties:
+        context_tokens:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        output_tokens:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        cache_read_basis_points:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        batch_size:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        concurrency:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+    CandidateAssessment:
+      type: object
+      required:
+      - candidate_id
+      - eligible
+      - rejection_reasons
+      - evidence_id
+      - sample_count
+      - window_start_unix_ms
+      - window_end_unix_ms
+      - confidence
+      - objectives
+      properties:
+        candidate_id:
+          type: string
+        eligible:
+          type: boolean
+        rejection_reasons:
+          type: array
+          items:
+            $ref: '#/components/schemas/RejectionReason'
+        evidence_id:
+          type: string
+          nullable: true
+        sample_count:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        window_start_unix_ms:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        window_end_unix_ms:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+          nullable: true
+        confidence:
+          type: number
+          format: double
+          nullable: true
+        objectives:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ObjectiveValue'
+    ComparisonReport:
+      type: object
+      required:
+      - metric_definition_version
+      - adapter
+      - dataset
+      - score_direction
+      - as_of_unix_ms
+      - origin
+      - workload
+      - candidates
+      - pareto_candidate_ids
+      - recommendation_only
+      properties:
+        metric_definition_version:
+          type: string
+        adapter:
+          $ref: '#/components/schemas/QualityAdapterVersion'
+        dataset:
+          $ref: '#/components/schemas/DatasetRevision'
+        score_direction:
+          $ref: '#/components/schemas/ObjectiveDirection'
+        as_of_unix_ms:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        origin:
+          $ref: '#/components/schemas/EvaluationOrigin'
+        workload:
+          $ref: '#/components/schemas/WorkloadBin'
+        candidates:
+          type: array
+          items:
+            $ref: '#/components/schemas/CandidateAssessment'
+        pareto_candidate_ids:
+          type: array
+          items:
+            type: string
+        recommendation_only:
+          type: boolean
+    QualityAdapterVersion:
+      type: object
+      required:
+      - adapter_id
+      - adapter_version
+      - dataset_id
+      - dataset_revision
+      - task_id
+      - task_version
+      - scorer_id
+      - scorer_version
+      properties:
+        adapter_id:
+          type: string
+        adapter_version:
+          type: string
+        dataset_id:
+          type: string
+        dataset_revision:
+          type: string
+        task_id:
+          type: string
+        task_version:
+          type: string
+        scorer_id:
+          type: string
+        scorer_version:
+          type: string
+    DatasetRevision:
+      type: object
+      required:
+      - dataset_id
+      - revision
+      - manifest_sha256
+      - item_count
+      properties:
+        dataset_id:
+          type: string
+        revision:
+          type: string
+        manifest_sha256:
+          type: string
+        item_count:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+    ObjectiveValue:
+      type: object
+      required:
+      - direction
+      - value
+      properties:
+        direction:
+          $ref: '#/components/schemas/ObjectiveDirection'
+        value:
+          type: number
+          format: double
+    MeasurementStatus:
+      type: string
+      enum:
+      - measured
+      - partial
+      - unknown
+      - not_applicable
+    CancellationPolicy:
+      type: string
+      enum:
+      - include
+      - exclude_client_cancelled
+    FailureCause:
+      type: string
+      enum:
+      - preempted
+      - slurm_reclaimed
+      - insufficient_world_size
+      - out_of_memory
+      - runtime_crash
+      - timeout
+      - rejected
+      - queue_expired
+      - model_unloaded
+      - network_error
+      - client_cancelled
+      - output_invalid
+      - failed_task
+      - other
+      - unknown
+    CostStatus:
+      type: string
+      enum:
+      - configured_rate
+      - estimated
+      - unknown
+    GpuAccountingBasis:
+      type: string
+      enum:
+      - reservation
+      - active
+    EvaluationOrigin:
+      type: string
+      enum:
+      - benchmark
+      - production
+    RejectionReason:
+      type: string
+      enum:
+      - capability
+      - context
+      - privacy_or_license
+      - hardware_unavailable
+      - hardware_stale
+      - hardware_fit
+      - missing_comparable_evidence
+      - evidence_provenance
+      - evidence_stale
+      - insufficient_samples
+      - insufficient_confidence
+      - quality
+      - latency
+      - success
+      - availability
+    ObjectiveDirection:
+      type: string
+      enum:
+      - minimize
+      - maximize
+    NanoCurrency:
+      type: string
+      pattern: ^(0|[1-9][0-9]{0,19})$
+      description: Exact decimal unsigned u64 nano-currency amount (maximum 18446744073709551615); never a JSON
+        number. One unit is 1e-9 of the named currency.
+    UnavailableSection:
+      type: object
+      required:
+      - status
+      - source
+      - unsupported_reason
+      - value
+      properties:
+        status:
+          type: string
+          enum:
+          - unknown
+          - partial
+        source:
+          type: string
+        unsupported_reason:
+          type: string
+        value:
+          type: string
+          nullable: true
+          enum:
+          - null
+    Costs:
+      type: object
+      required:
+      - status
+      - source
+      - unsupported_reason
+      - amount
+      - provider
+      - self_hosted
+      - successful_task_cost
+      properties:
+        status:
+          type: string
+          enum:
+          - unknown
+          - partial
+        source:
+          type: string
+        unsupported_reason:
+          type: string
+          nullable: true
+        amount:
+          type: string
+          nullable: true
+          enum:
+          - null
+        provider:
+          type: array
+          items:
+            $ref: '#/components/schemas/CostResult'
+        self_hosted:
+          $ref: '#/components/schemas/CostResult'
+        successful_task_cost:
+          $ref: '#/components/schemas/UnavailableSection'
+    MultipleCapacityReports:
+      type: object
+      required:
+      - status
+      - source
+      - reports
+      properties:
+        status:
+          type: string
+          enum:
+          - measured
+        source:
+          type: string
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/CapacityReport'
+    EvaluationReports:
+      type: object
+      required:
+      - status
+      - source
+      - comparisons
+      properties:
+        status:
+          type: string
+          enum:
+          - measured
+        source:
+          type: string
+        comparisons:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComparisonReport'
+    Coverage:
+      type: object
+      required:
+      - observed_attempts
+      - truncated
+      - retention_days
+      - historical_gateway_attribution
+      - observed_source
+      - retention_limited
+      - effective_start_inclusive
+      properties:
+        observed_attempts:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        truncated:
+          type: boolean
+        retention_days:
+          type: integer
+          enum:
+          - 30
+        historical_gateway_attribution:
+          type: string
+          enum:
+          - unknown
+        observed_source:
+          type: string
+          enum:
+          - this_configured_warehouse_only
+        retention_limited:
+          type: boolean
+        effective_start_inclusive:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        display_truncated:
+          type: boolean
+          description: Response detail was reduced to stay within the bounded transport budget.
+    WarehouseReport:
+      type: object
+      required:
+      - metric_definition_version
+      - window
+      - as_of
+      - cohort
+      - cancellation_policy
+      - metrics
+      - models
+      - next_cursor
+      - requested_bucket_seconds
+      - effective_bucket_seconds
+      - effective_limit
+      - series_metric
+      - source
+      - status
+      - unsupported_reason
+      - coverage
+      properties:
+        metric_definition_version:
+          type: string
+          enum:
+          - iw.model-intelligence/1
+        window:
+          $ref: '#/components/schemas/TimeWindow'
+        as_of:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        cohort:
+          type: string
+        cancellation_policy:
+          $ref: '#/components/schemas/CancellationPolicy'
+        metrics:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/MetricValue'
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModelReport'
+          maxItems: 20
+        next_cursor:
+          type: string
+          pattern: ^[0-9]+$
+          nullable: true
+        requested_bucket_seconds:
+          type: integer
+          minimum: 1
+        effective_bucket_seconds:
+          type: integer
+          minimum: 1
+        effective_limit:
+          type: integer
+          minimum: 1
+          maximum: 20
+        series_metric:
+          type: string
+        source:
+          type: string
+          description: Live source postgres_request_warehouse; exported synthetic fixtures explicitly use a DEMO
+            source label.
+        status:
+          type: string
+          enum:
+          - measured
+          - partial
+          - unknown
+        unsupported_reason:
+          type: string
+          nullable: true
+        coverage:
+          $ref: '#/components/schemas/Coverage'
+      description: All eight Rust GET resources return this same bounded full report. All time values are Unix milliseconds;
+        windows are half-open. Metadata reports effective coarsening and model pagination.
+    UnsupportedReport:
+      type: object
+      required:
+      - metric_definition_version
+      - window
+      - as_of
+      - cohort
+      - source
+      - status
+      - unsupported_reason
+      - models
+      properties:
+        metric_definition_version:
+          type: string
+          enum:
+          - iw.model-intelligence/1
+        window:
+          $ref: '#/components/schemas/TimeWindow'
+        as_of:
+          type: integer
+          minimum: 0
+          maximum: 18446744073709551615
+          format: uint64
+        cohort:
+          type: string
+        source:
+          type: string
+        status:
+          type: string
+          enum:
+          - unsupported
+        unsupported_reason:
+          type: string
+          enum:
+          - storage_backend_unsupported
+          - core_source_not_configured
+        models:
+          type: array
+          maxItems: 0
+          items:
+            $ref: '#/components/schemas/ModelReport'
+      description: Explicit capability absence. Current unsupported branches omit coverage and bucket/page metadata.
+        They are not empty successful WarehouseReports. Rust adds metrics and next_cursor; an unconfigured Go bridge
+        omits them.
+    Report:
+      oneOf:
+      - $ref: '#/components/schemas/WarehouseReport'
+      - $ref: '#/components/schemas/UnsupportedReport'
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          properties:
+            code:
+              type: string
+    RateConfiguration:
+      type: object
+      additionalProperties: false
+      properties:
+        provider:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderRateCard'
+          maxItems: 200
+          default: []
+        self_hosted:
+          type: array
+          items:
+            $ref: '#/components/schemas/SelfHostedRateCard'
+          maxItems: 200
+          default: []
+      description: Admin-local IW_MODEL_INTELLIGENCE_RATES_FILE JSON, maximum 65536 UTF-8 bytes. Input rates use
+        exact JSON u64 integers (not the response string format). Missing arrays default empty. Semantic validation
+        additionally rejects immutable-ID conflicts, overlapping effective/context tiers, mixed currencies and invalid
+        allocations. See model-intelligence.md.

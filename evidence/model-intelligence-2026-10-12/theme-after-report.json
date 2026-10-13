@@ -1,0 +1,517 @@
+{
+  "contrast": [
+    {
+      "theme": "light",
+      "rows": [
+        {
+          "text": "ThemeLightDarkSystem",
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(2, 40, 81)",
+          "ratio": 14.737730020071625
+        },
+        {
+          "text": "LightDarkSystem",
+          "fg": "rgb(23, 43, 66)",
+          "bg": "rgb(255, 255, 255)",
+          "ratio": 14.37714152287569
+        },
+        {
+          "text": "Body",
+          "fg": "rgb(23, 43, 66)",
+          "bg": "rgb(255, 255, 255)",
+          "ratio": 14.37714152287569
+        },
+        {
+          "text": "Secondary",
+          "fg": "rgb(82, 100, 119)",
+          "bg": "rgb(255, 255, 255)",
+          "ratio": 6.090455224353106
+        },
+        {
+          "text": "Healthy",
+          "fg": "rgb(35, 100, 60)",
+          "bg": "rgb(255, 255, 255)",
+          "ratio": 7.095595596668479
+        },
+        {
+          "text": "Error",
+          "fg": "rgb(161, 45, 37)",
+          "bg": "rgb(255, 255, 255)",
+          "ratio": 7.19798743755163
+        },
+        {
+          "text": "Link",
+          "fg": "rgb(2, 40, 81)",
+          "bg": "rgb(255, 255, 255)",
+          "ratio": 14.737730020071625
+        },
+        {
+          "text": "Action",
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(2, 40, 81)",
+          "ratio": 14.737730020071625
+        },
+        {
+          "text": "Selected",
+          "fg": "rgb(2, 40, 81)",
+          "bg": "rgb(255, 191, 0)",
+          "ratio": 8.915849917010053
+        },
+        {
+          "text": "Critical",
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(161, 45, 37)",
+          "ratio": 7.19798743755163
+        },
+        {
+          "text": "Caution",
+          "fg": "rgb(138, 90, 0)",
+          "bg": "rgb(253, 246, 227)",
+          "ratio": 5.49460474603182
+        },
+        {
+          "text": "Operator annotation",
+          "fg": "rgb(23, 43, 66)",
+          "bg": "rgb(253, 246, 227)",
+          "ratio": 13.328326631253399
+        },
+        {
+          "text": "working",
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(35, 100, 60)",
+          "ratio": 7.095595596668479
+        },
+        {
+          "text": "starting",
+          "fg": "rgb(77, 57, 0)",
+          "bg": "rgb(255, 223, 114)",
+          "ratio": 8.443808822113633
+        },
+        {
+          "text": "unloaded",
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(153, 84, 10)",
+          "ratio": 5.789951579981743
+        },
+        {
+          "text": "unavailable",
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(161, 45, 37)",
+          "ratio": 7.19798743755163
+        },
+        {
+          "text": "unverified",
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(82, 100, 119)",
+          "ratio": 6.090455224353106
+        },
+        {
+          "text": "GPU",
+          "fg": "rgb(2, 40, 81)",
+          "bg": "rgb(255, 244, 204)",
+          "ratio": 13.379192112154799
+        },
+        {
+          "text": "",
+          "fg": "rgb(23, 43, 66)",
+          "bg": "rgb(255, 255, 255)",
+          "ratio": 14.37714152287569
+        },
+        {
+          "text": "Placeholder",
+          "fg": "rgb(117, 117, 117)",
+          "bg": "rgb(255, 255, 255)",
+          "ratio": 4.607518093747377
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "rows": [
+        {
+          "text": "ThemeLightDarkSystem",
+          "fg": "rgb(255, 255, 255)",
+          "bg": "rgb(16, 37, 61)",
+          "ratio": 15.509104725332069
+        },
+        {
+          "text": "LightDarkSystem",
+          "fg": "rgb(237, 243, 250)",
+          "bg": "rgb(23, 43, 66)",
+          "ratio": 12.872037828590132
+        },
+        {
+          "text": "Body",
+          "fg": "rgb(237, 243, 250)",
+          "bg": "rgb(23, 43, 66)",
+          "ratio": 12.872037828590132
+        },
+        {
+          "text": "Secondary",
+          "fg": "rgb(179, 195, 212)",
+          "bg": "rgb(23, 43, 66)",
+          "ratio": 7.991963430778636
+        },
+        {
+          "text": "Healthy",
+          "fg": "rgb(139, 213, 165)",
+          "bg": "rgb(23, 43, 66)",
+          "ratio": 8.324238909566626
+        },
+        {
+          "text": "Error",
+          "fg": "rgb(255, 170, 162)",
+          "bg": "rgb(23, 43, 66)",
+          "ratio": 7.889365460009312
+        },
+        {
+          "text": "Link",
+          "fg": "rgb(154, 199, 250)",
+          "bg": "rgb(23, 43, 66)",
+          "ratio": 8.163340962101318
+        },
+        {
+          "text": "Action",
+          "fg": "rgb(16, 37, 61)",
+          "bg": "rgb(154, 199, 250)",
+          "ratio": 8.806069668882195
+        },
+        {
+          "text": "Selected",
+          "fg": "rgb(2, 40, 81)",
+          "bg": "rgb(255, 191, 0)",
+          "ratio": 8.915849917010053
+        },
+        {
+          "text": "Critical",
+          "fg": "rgb(48, 26, 24)",
+          "bg": "rgb(255, 170, 162)",
+          "ratio": 8.956482893050124
+        },
+        {
+          "text": "Caution",
+          "fg": "rgb(255, 215, 118)",
+          "bg": "rgb(59, 50, 27)",
+          "ratio": 9.187885458433444
+        },
+        {
+          "text": "Operator annotation",
+          "fg": "rgb(237, 243, 250)",
+          "bg": "rgb(59, 50, 27)",
+          "ratio": 11.339712470236693
+        },
+        {
+          "text": "working",
+          "fg": "rgb(16, 45, 32)",
+          "bg": "rgb(139, 213, 165)",
+          "ratio": 8.57315323504994
+        },
+        {
+          "text": "starting",
+          "fg": "rgb(77, 57, 0)",
+          "bg": "rgb(255, 223, 114)",
+          "ratio": 8.443808822113633
+        },
+        {
+          "text": "unloaded",
+          "fg": "rgb(55, 32, 6)",
+          "bg": "rgb(255, 196, 133)",
+          "ratio": 9.83222558856626
+        },
+        {
+          "text": "unavailable",
+          "fg": "rgb(48, 26, 24)",
+          "bg": "rgb(255, 170, 162)",
+          "ratio": 8.956482893050124
+        },
+        {
+          "text": "unverified",
+          "fg": "rgb(23, 43, 66)",
+          "bg": "rgb(179, 195, 212)",
+          "ratio": 7.991963430778636
+        },
+        {
+          "text": "GPU",
+          "fg": "rgb(255, 224, 138)",
+          "bg": "rgb(59, 50, 27)",
+          "ratio": 9.819648262489356
+        },
+        {
+          "text": "",
+          "fg": "rgb(237, 243, 250)",
+          "bg": "rgb(23, 43, 66)",
+          "ratio": 12.872037828590132
+        },
+        {
+          "text": "Placeholder",
+          "fg": "rgb(179, 195, 212)",
+          "bg": "rgb(23, 43, 66)",
+          "ratio": 7.991963430778636
+        },
+        {
+          "text": "Input border",
+          "fg": "rgb(106, 129, 153)",
+          "bg": "rgb(23, 43, 66)",
+          "minimum": 3,
+          "ratio": 3.5688984752211956
+        }
+      ]
+    }
+  ],
+  "chartContrast": [
+    {
+      "theme": "light",
+      "series": [
+        {
+          "series": 1,
+          "color": "rgb(2, 40, 81)",
+          "ratio": 14.737730020071625
+        },
+        {
+          "series": 2,
+          "color": "rgb(255, 191, 0)",
+          "ratio": 1.652980944862512
+        },
+        {
+          "series": 3,
+          "color": "rgb(35, 100, 60)",
+          "ratio": 7.095595596668479
+        },
+        {
+          "series": 4,
+          "color": "rgb(0, 124, 158)",
+          "ratio": 4.798042306788422
+        },
+        {
+          "series": 5,
+          "color": "rgb(161, 45, 37)",
+          "ratio": 7.19798743755163
+        },
+        {
+          "series": 6,
+          "color": "rgb(104, 71, 141)",
+          "ratio": 7.30555733933308
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "series": [
+        {
+          "series": 1,
+          "color": "rgb(154, 199, 250)",
+          "ratio": 8.163340962101318
+        },
+        {
+          "series": 2,
+          "color": "rgb(255, 191, 0)",
+          "ratio": 8.697705540744465
+        },
+        {
+          "series": 3,
+          "color": "rgb(139, 213, 165)",
+          "ratio": 8.324238909566626
+        },
+        {
+          "series": 4,
+          "color": "rgb(113, 215, 237)",
+          "ratio": 8.657231726567687
+        },
+        {
+          "series": 5,
+          "color": "rgb(255, 170, 162)",
+          "ratio": 7.889365460009312
+        },
+        {
+          "series": 6,
+          "color": "rgb(201, 172, 236)",
+          "ratio": 7.254114608616874
+        }
+      ]
+    }
+  ],
+  "captures": [
+    {
+      "theme": "light",
+      "width": 320,
+      "section": "overview",
+      "file": "light-320-overview.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "section": "model-detail",
+      "file": "light-320-model-detail.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "section": "usage-user",
+      "file": "light-320-usage-user.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 320,
+      "section": "model-intelligence",
+      "file": "light-320-model-intelligence.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "section": "overview",
+      "file": "dark-320-overview.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "section": "model-detail",
+      "file": "dark-320-model-detail.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "section": "usage-user",
+      "file": "dark-320-usage-user.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 320,
+      "section": "model-intelligence",
+      "file": "dark-320-model-intelligence.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "section": "overview",
+      "file": "light-768-overview.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "section": "model-detail",
+      "file": "light-768-model-detail.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "section": "usage-user",
+      "file": "light-768-usage-user.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 768,
+      "section": "model-intelligence",
+      "file": "light-768-model-intelligence.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "section": "overview",
+      "file": "dark-768-overview.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "section": "model-detail",
+      "file": "dark-768-model-detail.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "section": "usage-user",
+      "file": "dark-768-usage-user.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 768,
+      "section": "model-intelligence",
+      "file": "dark-768-model-intelligence.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 1280,
+      "section": "overview",
+      "file": "light-1280-overview.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 1280,
+      "section": "model-detail",
+      "file": "light-1280-model-detail.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 1280,
+      "section": "usage-user",
+      "file": "light-1280-usage-user.png",
+      "overflow": 0
+    },
+    {
+      "theme": "light",
+      "width": 1280,
+      "section": "model-intelligence",
+      "file": "light-1280-model-intelligence.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 1280,
+      "section": "overview",
+      "file": "dark-1280-overview.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 1280,
+      "section": "model-detail",
+      "file": "dark-1280-model-detail.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 1280,
+      "section": "usage-user",
+      "file": "dark-1280-usage-user.png",
+      "overflow": 0
+    },
+    {
+      "theme": "dark",
+      "width": 1280,
+      "section": "model-intelligence",
+      "file": "dark-1280-model-intelligence.png",
+      "overflow": 0
+    }
+  ],
+  "lightRegression": [
+    {
+      "width": 320,
+      "pixelIdentical": true
+    },
+    {
+      "width": 768,
+      "pixelIdentical": true
+    },
+    {
+      "width": 1280,
+      "pixelIdentical": true
+    }
+  ]
+}

@@ -199,3 +199,11 @@ artifact consistency only. Existing task dependencies/order remain in force.
 P1-T21 may show honest unsupported states while phase-2 data is unavailable; full
 kit integration requires all mapped tasks, not only the first dashboard task.
 No production, tenant, hardware or continuous-measurement gate closes here.
+
+## Implemented read-contract evidence
+
+`openapi/model-intelligence.yaml` and `openapi/model-intelligence.md` document the
+additive operator read API and typed response/unsupported branches. Evidence and
+remaining requirements are in `evidence/model-intelligence-2026-10-12/README.md`.
+Current Go access is operator-only through its existing middleware; normative
+shared operational and verified private tenant/user grants remain owed.

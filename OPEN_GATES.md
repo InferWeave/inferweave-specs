@@ -494,3 +494,20 @@ repository's validator proves specification consistency only.
 Record implementation tests separately from live-source and hardware evidence.
 Any later closure must name exact artifacts, commits, cohort/time window and
 remaining unsupported sources; never mark the whole kit proven from unit tests.
+
+### Model-intelligence implementation evidence checkpoint
+
+Rust integration `35ac81e7b0a0c3cba23390c1adae092ea392ca0d` and bounded
+operator Go transport have source/test mappings in
+`evidence/model-intelligence-2026-10-12/README.md`; additive wire schemas are in
+`openapi/model-intelligence.yaml`. Existing implementation tests and typed local
+PostgreSQL fixtures do not close AC-MI acceptance or final P5 review. Current
+Go reports are operator-only, with the existing registration-secret middleware
+alternative; ordinary shared viewers and verified private tenant/user grants
+remain unsupported. Shared-scope labels do not change that audience.
+
+Full live availability/preemption intervals, raw billing/physical allocation
+sources, complete task/logical linkage, sustained current hardware capacity and
+qualified production evaluation imports remain **owed**. Before/theme-after
+reports are bounded slices; final integrated route/browser/screenshots and
+source/dist evidence are still owed at this checkpoint. No production gate closes.

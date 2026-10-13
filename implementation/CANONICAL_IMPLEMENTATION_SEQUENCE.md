@@ -696,7 +696,7 @@ Rules:
 **Context:** `C75`
 **Depends on:** P0-T09, P1-T09, P1-T20
 **Features:** IW-UI-001
-**Read:** specs/10_DASHBOARD_PORTAL.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md
+**Read:** specs/10_DASHBOARD_PORTAL.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md, openapi/model-intelligence.yaml
 
 **Outcome:** Display live nodes, GPUs, models, seats/context/KV, requests, route state and freshness.
 
@@ -816,7 +816,7 @@ Rules:
 **Context:** `C75`
 **Depends on:** P2-T02
 **Features:** IW-BENCH-002
-**Read:** specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md
+**Read:** specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md, openapi/model-intelligence.yaml
 
 **Outcome:** Persist raw samples and dimensioned rollups by exact GPU/runtime/model/context/concurrency/settings fingerprint.
 

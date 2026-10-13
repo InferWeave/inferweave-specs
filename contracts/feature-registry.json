@@ -130,7 +130,8 @@
         "P1-T21"
       ],
       "contracts": [
-        "contracts/model-intelligence-acceptance.json"
+        "contracts/model-intelligence-acceptance.json",
+        "openapi/model-intelligence.yaml"
       ]
     },
     {
@@ -444,7 +445,8 @@
         "P2-T03"
       ],
       "contracts": [
-        "contracts/model-intelligence-acceptance.json"
+        "contracts/model-intelligence-acceptance.json",
+        "openapi/model-intelligence.yaml"
       ]
     },
     {
