@@ -116,7 +116,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
 - `docs/AI_INSTALL_INFERWEAVE.md` — `64b97a39d222` — ~509t
 - `docs/README.md` — `514ce6279d55` — ~100t
-- `docs/alias-implementation-gap-matrix.md` — `80a6cd6a2f43` — ~4,053t
+- `docs/alias-implementation-gap-matrix.md` — `81e0f9567131` — ~7,338t
 - `docs/architecture.md` — `3d2cc8e44219` — ~377t
 - `docs/compatibility.md` — `8ceb21cb1933` — ~713t
 - `docs/events.md` — `a957e821624f` — ~481t
