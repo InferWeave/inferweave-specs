@@ -29,7 +29,7 @@ class ExecutionContractTests(unittest.TestCase):
     def test_shared_transport_vectors_and_removed_control_detection(self):
         vectors=json.loads((ROOT/'conformance/alias-inference-transport-vectors.json').read_text())
         self.assertEqual(36,len(vectors['mime_cases']))
-        self.assertEqual(11,len(vectors['header_cases']))
+        self.assertEqual(12,len(vectors['header_cases']))
         self.assertEqual([],transport.check_vectors(ROOT))
         with patch.object(transport,'accepts_mime',lambda *args:True):
             self.assertTrue(transport.check_vectors(ROOT))

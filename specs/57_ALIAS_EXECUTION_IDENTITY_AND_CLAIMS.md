@@ -170,8 +170,8 @@ or alter claim lookup. Unknown InferWeave controls remain rejected.
 
 `conformance/alias-inference-transport-vectors.json` is the shared transport fixture imported
 from Rust commit `ebc195f3d584c190121b6716711e2173212589ac` and Go PR #474's
-interoperability work, preserving their 36 MIME and 10 header cases and adding an 8193-byte
-multibyte correlation rejection case. Those implementations initially counted Unicode scalar
+interoperability work, preserving their 36 MIME and 10 header cases and adding 8192-byte
+acceptance and 8193-byte rejection cases for multibyte correlation metadata. Those implementations initially counted Unicode scalar
 values for this metadata; that could admit substantially more than 8192 bytes. Both must enforce
 the byte limit and replay the added vector before claiming parity. `conformance/alias_inference_transport.py` replays its MIME/header cases
 as an offline classification oracle. It supplies neither cryptographic verification nor proof
