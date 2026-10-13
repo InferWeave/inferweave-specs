@@ -1,0 +1,15 @@
+{
+  "nodeId": "node-a",
+  "role": "node",
+  "credential": "credential-example",
+  "endpoint": "127.0.0.1:9101",
+  "models": [],
+  "deployment": "",
+  "vramBytes": 0,
+  "kvBytes": 0,
+  "kvBytesPerToken": 0,
+  "gpuIds": [],
+  "capabilities": {
+    "native_link_requests": "1"
+  }
+}

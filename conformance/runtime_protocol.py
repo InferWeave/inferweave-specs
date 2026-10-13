@@ -315,6 +315,18 @@ _NATIVE_ENDPOINTS = {
 _NATIVE_LINK_CAPABILITY = "iw.link-native-request/1"
 
 
+def negotiate_registration_capabilities(offered, supported):
+    """Exact, bounded intersection for POST /v1/node/register capabilities arrays."""
+    if not isinstance(offered, list):
+        return []
+    grammar = re.compile(r"^iw\.[a-z0-9-]+/(0|[1-9][0-9]*)$")
+    offered = {
+        item for item in offered[:32]
+        if isinstance(item, str) and len(item) <= 128 and grammar.fullmatch(item)
+    }
+    return [item for item in supported if item in offered]
+
+
 def _native_link_ack(hello, status, reason=None):
     ack = {
         "kind": "hello_ack",
@@ -335,9 +347,11 @@ def negotiate_native_link(registration, hello, local_features):
         return None
     if not registration or not registration.get("fresh"):
         return _native_link_ack(hello, "unbound", "registration_not_current")
+    if not registration.get("credential_valid"):
+        return _native_link_ack(hello, "unbound", "credential_invalid")
     if hello.get("registration_connection_id") != registration.get("connection_id"):
         return _native_link_ack(hello, "unbound", "registration_mismatch")
-    if _NATIVE_LINK_CAPABILITY not in registration.get("features", set()):
+    if _NATIVE_LINK_CAPABILITY not in registration.get("capabilities", set()):
         return _native_link_ack(hello, "unbound", "feature_not_registered")
     if _NATIVE_LINK_CAPABILITY not in hello.get("native_link_features", []):
         return _native_link_ack(hello, "unbound", "feature_not_offered")
@@ -368,11 +382,12 @@ class NativeLinkState:
         self.registrations = {}
         self.links = {}
 
-    def register(self, node_id, connection_id, features):
+    def register(self, node_id, connection_id, capabilities):
         self.registrations[node_id] = {
             "connection_id": connection_id,
-            "features": set(features),
+            "capabilities": set(capabilities),
             "fresh": True,
+            "credential_valid": True,
         }
 
     def accept(self, node_id, hello):
@@ -397,6 +412,17 @@ class NativeLinkState:
     def expire(self, node_id):
         self.withdraw(node_id)
 
+    def expire_credential(self, node_id):
+        registration = self.registrations.get(node_id)
+        if registration:
+            registration["credential_valid"] = False
+
+    def close(self, node_id):
+        link = self.links.get(node_id)
+        if link:
+            link["live"] = False
+            link["current"] = False
+
     def dispatch(self, node_id, link_incarnation_id, meta):
         # This lookup-and-check is one transition in the reference model. Production performs
         # selection, binding validation, and frame enqueue under one manager synchronization scope.
@@ -419,8 +445,9 @@ class NativeLinkState:
             )
             and registration
             and registration["fresh"]
+            and registration["credential_valid"]
             and registration["connection_id"] == link["registration_connection_id"]
-            and _NATIVE_LINK_CAPABILITY in registration["features"]
+            and _NATIVE_LINK_CAPABILITY in registration["capabilities"]
         )
         if not binding_valid:
             return {"allowed": False, "code": "FEATURE_UNSUPPORTED"}

@@ -43,7 +43,9 @@ all under `/inferweave/v1`:
 - Links that negotiate `native_link_requests: "1"` through the exact-registration and exact-Link
   incarnation handshake in `schemas/v1/requests/link-{hello,hello-ack}.json` may dispatch the
   bounded native metadata in `schemas/v1/requests/link-request-meta.json`. A registration feature
-  observed by node id is insufficient: the gateway must atomically select the held Link, verify its
+  observed by node id is insufficient: the exact capability must first be offered and returned in
+  the `/v1/node/register` `capabilities` arrays defined by spec 47 section 2.1. The gateway must
+  atomically select the held Link, verify its
   stored binding is still current, and enqueue the request. Family/endpoint pairs are fixed (`embeddings` →
   `/embeddings`, `reranking` → `/rerank`, `prediction` → `/predictions`, other registered
   families → `/jobs`); method and content type are fixed to JSON `POST`, and the payload is capped

@@ -9,18 +9,18 @@
   "properties": {
     "kind": {"const": "hello_ack"},
     "native_link_version": {"type": "integer", "const": 1},
-    "registration_connection_id": {"type": "string", "minLength": 16, "maxLength": 128, "pattern": "^[!-~]+$"},
+    "registration_connection_id": {"type": "string", "pattern": "^c-[0-9a-f]{16}$"},
     "link_incarnation_id": {"type": "string", "minLength": 16, "maxLength": 128, "pattern": "^[!-~]+$"},
     "binding_status": {"type": "string", "enum": ["bound", "unbound"]},
     "negotiated_features": {
       "type": "array",
       "maxItems": 16,
       "uniqueItems": true,
-      "items": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^iw\\.[a-z0-9.-]+/[0-9]+$"}
+      "items": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^iw\\.[a-z0-9-]+/(0|[1-9][0-9]*)$"}
     },
     "reason": {
       "type": "string",
-      "enum": ["registration_mismatch", "registration_not_current", "feature_not_registered", "feature_not_offered", "feature_not_supported"]
+      "enum": ["registration_mismatch", "registration_not_current", "credential_invalid", "feature_not_registered", "feature_not_offered", "feature_not_supported"]
     }
   },
   "oneOf": [

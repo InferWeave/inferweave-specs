@@ -184,8 +184,11 @@ Protocol 1.1.0 also defines additive runtime-family features `runtime_families`,
 (`specs/48`–`specs/53`). Each is negotiated independently. When absent, the sender uses the legacy
 Protocol v1 shape and omits its additive fields; it never infers a runtime family or treats version
 alone as proof that lifecycle, reservation, cache, or native link-dispatch behavior is present.
-`native_link_requests: "1"` names `iw.link-native-request/1`. Registration advertisement alone
-does not put this capability in force on a Link. The native Link v1 handshake in
+`native_link_requests: "1"` names `iw.link-native-request/1` in the generic feature vocabulary.
+On the actual camelCase `/v1/node/register` wire, the node offers that exact string in the optional
+`capabilities` array and the gateway returns the negotiated intersection in the response
+`capabilities` array (`specs/47` section 2.1). The generic `features` map is not sent in its place.
+Registration negotiation alone does not put this capability in force on a Link. The native Link v1 handshake in
 `schemas/v1/requests/link-hello.json` binds the offer to both the exact authenticated control
 registration and the exact Link incarnation. A sender may attach the bounded
 `LinkRequestMeta.native` shape in `schemas/v1/requests/link-request-meta.json` only after accepting
@@ -207,6 +210,7 @@ required. Legacy Hello frames remain valid and receive no `hello_ack`.
 
 After authenticating the Hello credential, the accepting gateway performs one negotiation against
 the current registration: the Hello registration id must equal its current, fresh registration id;
+the registration credential must still be valid and the socket must still be live;
 the registration, Hello, and gateway must all include `iw.link-native-request/1`. It sends a
 `hello_ack` only because the sender advertised native Link v1, and sends it on the same socket. A
 bound acknowledgement echoes both ids and lists the negotiated capability. An unbound

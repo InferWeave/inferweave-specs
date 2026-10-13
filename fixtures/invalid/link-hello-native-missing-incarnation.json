@@ -4,7 +4,7 @@
   "role": "node",
   "credential": "credential-example",
   "native_link_version": 1,
-  "registration_connection_id": "conn-current-0123456789",
+  "registration_connection_id": "c-0123456789abcdef",
   "native_link_features": [
     "iw.link-native-request/1"
   ]

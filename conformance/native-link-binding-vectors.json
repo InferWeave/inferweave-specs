@@ -2,9 +2,10 @@
   "schemaVersion": "inferweave.native-link-binding-v1",
   "capability": "iw.link-native-request/1",
   "registration": {
-    "connection_id": "conn-current-0123456789",
-    "features": ["iw.link-native-request/1"],
-    "fresh": true
+    "connection_id": "c-0123456789abcdef",
+    "capabilities": ["iw.link-native-request/1"],
+    "fresh": true,
+    "credential_valid": true
   },
   "hello": {
     "kind": "hello",
@@ -12,15 +13,22 @@
     "role": "node",
     "credential": "credential-example",
     "native_link_version": 1,
-    "registration_connection_id": "conn-current-0123456789",
+    "registration_connection_id": "c-0123456789abcdef",
     "link_incarnation_id": "link-incarnation-first-0001",
     "native_link_features": ["iw.link-native-request/1"]
   },
+  "registrationCases": [
+    {"id": "native-capability-intersection", "offered": ["iw.link-native-request/1"], "supported": ["iw.link-native-request/1"], "expect": ["iw.link-native-request/1"]},
+    {"id": "legacy-capabilities-absent", "supported": ["iw.link-native-request/1"], "expect": []},
+    {"id": "generic-feature-map-is-not-offer", "offered": {"native_link_requests": "1"}, "supported": ["iw.link-native-request/1"], "expect": []},
+    {"id": "gateway-does-not-support-native", "offered": ["iw.link-native-request/1"], "supported": [], "expect": []}
+  ],
   "negotiationCases": [
     {"id": "exact-binding", "mutation": "none", "expectStatus": "bound"},
     {"id": "stale-registration-id", "mutation": "registration_connection_id", "expectStatus": "unbound", "expectReason": "registration_mismatch"},
     {"id": "expired-registration", "mutation": "registration_fresh", "expectStatus": "unbound", "expectReason": "registration_not_current"},
-    {"id": "registration-withdrawal", "mutation": "registration_feature", "expectStatus": "unbound", "expectReason": "feature_not_registered"},
+    {"id": "expired-credential", "mutation": "credential_valid", "expectStatus": "unbound", "expectReason": "credential_invalid"},
+    {"id": "registration-withdrawal", "mutation": "registration_capability", "expectStatus": "unbound", "expectReason": "feature_not_registered"},
     {"id": "gateway-feature-absent", "mutation": "local_feature", "expectStatus": "unbound", "expectReason": "feature_not_supported"}
   ],
   "acknowledgementCases": [
@@ -32,6 +40,8 @@
     {"id": "re-registration-revokes-old-binding", "transition": "reregister", "expectNative": false},
     {"id": "replacement-revokes-old-incarnation", "transition": "replace_link", "expectNative": false},
     {"id": "withdrawal-revokes-binding", "transition": "withdraw", "expectNative": false},
-    {"id": "expiry-revokes-binding", "transition": "expire", "expectNative": false}
+    {"id": "expiry-revokes-binding", "transition": "expire", "expectNative": false},
+    {"id": "credential-expiry-revokes-binding", "transition": "expire_credential", "expectNative": false},
+    {"id": "socket-close-revokes-binding", "transition": "close", "expectNative": false}
   ]
 }

@@ -54,6 +54,8 @@ MAP = {
     "memory": "resources/memory.json",
     "runtime-instance": "runtime/runtime-instance.json",
     "runtime-load-request": "runtime/load-request.json",
+    "node-register-response": "requests/node-register-response.json",
+    "node-register": "requests/node-register.json",
     "link-hello-ack": "requests/link-hello-ack.json",
     "link-hello": "requests/link-hello.json",
     "link-request-meta": "requests/link-request-meta.json",
@@ -211,16 +213,22 @@ def check_native_link_binding_vectors():
     doc = json.loads((ROOT / "conformance" / "native-link-binding-vectors.json").read_text())
     capability = doc["capability"]
     failures = []
+    for case in doc["registrationCases"]:
+        got = runtime_protocol.negotiate_registration_capabilities(case.get("offered"), case["supported"])
+        if got != case["expect"]:
+            failures.append(case["id"])
     for case in doc["negotiationCases"]:
         registration = dict(doc["registration"])
         hello = dict(doc["hello"])
         local = {capability}
         if case["mutation"] == "registration_connection_id":
-            registration["connection_id"] = "conn-replacement-012345"
+            registration["connection_id"] = "c-fedcba9876543210"
         elif case["mutation"] == "registration_fresh":
             registration["fresh"] = False
-        elif case["mutation"] == "registration_feature":
-            registration["features"] = []
+        elif case["mutation"] == "credential_valid":
+            registration["credential_valid"] = False
+        elif case["mutation"] == "registration_capability":
+            registration["capabilities"] = []
         elif case["mutation"] == "local_feature":
             local.clear()
         ack = runtime_protocol.negotiate_native_link(registration, hello, local)
@@ -232,7 +240,7 @@ def check_native_link_binding_vectors():
     for case in doc["acknowledgementCases"]:
         ack = dict(exact_ack)
         if case["mutation"] == "registration_connection_id":
-            ack["registration_connection_id"] = "conn-replacement-012345"
+            ack["registration_connection_id"] = "c-fedcba9876543210"
         elif case["mutation"] == "link_incarnation_id":
             ack["link_incarnation_id"] = "link-incarnation-second-0002"
         if runtime_protocol.accept_native_link_ack(hello, ack) != case["expectAccepted"]:
@@ -245,16 +253,30 @@ def check_native_link_binding_vectors():
         first = dict(doc["hello"])
         state.accept("node-a", first)
         if case["transition"] == "reregister":
-            state.register("node-a", "conn-replacement-012345", {capability})
+            state.register("node-a", "c-fedcba9876543210", {capability})
         elif case["transition"] == "replace_link":
             state.accept("node-a", dict(first, link_incarnation_id="link-incarnation-second-0002"))
         elif case["transition"] == "withdraw":
             state.withdraw("node-a")
         elif case["transition"] == "expire":
             state.expire("node-a")
+        elif case["transition"] == "expire_credential":
+            state.expire_credential("node-a")
+        elif case["transition"] == "close":
+            state.close("node-a")
         allowed = state.dispatch("node-a", first["link_incarnation_id"], native)["allowed"]
         if allowed != case["expectNative"]:
             failures.append(case["id"])
+    register_request = json.loads((ROOT / "fixtures" / "valid" / "node-register-native.json").read_text())
+    register_response = json.loads((ROOT / "fixtures" / "valid" / "node-register-response-native.json").read_text())
+    negotiated = runtime_protocol.negotiate_registration_capabilities(
+        register_request.get("capabilities"), [capability]
+    )
+    if negotiated != register_response["capabilities"]:
+        failures.append("node-register-negotiated-response")
+    legacy = json.loads((ROOT / "fixtures" / "valid" / "node-register-legacy.json").read_text())
+    if runtime_protocol.negotiate_registration_capabilities(legacy.get("capabilities"), [capability]):
+        failures.append("legacy-register-negotiates-none")
     if failures:
         print("FAIL  native-link binding vectors: " + ", ".join(failures))
         return False

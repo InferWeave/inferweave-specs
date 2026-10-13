@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/node-register.json",
+  "title": "POST /v1/node/register request",
+  "description": "Canonical producer shape for the existing camelCase node registration wire. capabilities is the optional additive capability offer array used by both Rust and Go gateways; it is distinct from the generic Protocol features level map.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["nodeId", "role", "credential", "endpoint", "models", "deployment", "vramBytes", "kvBytes", "kvBytesPerToken", "gpuIds"],
+  "properties": {
+    "nodeId": {"type": "string", "minLength": 1, "maxLength": 256},
+    "role": {"type": "string", "minLength": 1, "maxLength": 64},
+    "credential": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "endpoint": {"type": "string", "maxLength": 1024},
+    "models": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["model", "contextSupported", "maxContextTokens", "engine", "backend", "slots", "vramBytes"],
+        "properties": {
+          "model": {"type": "string", "minLength": 1, "maxLength": 512},
+          "contextSupported": {"type": "integer", "minimum": 0},
+          "maxContextTokens": {"type": "integer", "minimum": 0},
+          "engine": {"type": "string", "minLength": 1, "maxLength": 128},
+          "backend": {"type": "string", "minLength": 1, "maxLength": 128},
+          "slots": {"type": "integer", "minimum": 0},
+          "vramBytes": {"type": "integer", "minimum": 0}
+        }
+      }
+    },
+    "deployment": {"type": "string", "maxLength": 512},
+    "vramBytes": {"type": "integer", "minimum": 0},
+    "kvBytes": {"type": "integer", "minimum": 0},
+    "kvBytesPerToken": {"type": "integer", "minimum": 0},
+    "gpuIds": {"type": "array", "maxItems": 256, "items": {"type": "string", "minLength": 1, "maxLength": 256}},
+    "capabilities": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^iw\\.[a-z0-9-]+/(0|[1-9][0-9]*)$"}
+    },
+    "hardware": {"$ref": "node-hardware.json"}
+  }
+}

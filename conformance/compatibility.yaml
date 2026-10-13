@@ -24,5 +24,6 @@ runtimeProtocol:
     - New producers emit succeeded; readers accept legacy completed and normalize it before re-emission.
     - Job family is absent on legacy records and must never be inferred from a model name.
     - A legacy Link Hello omits all native_link fields, receives no hello_ack and remains eligible only for legacy metadata-free dispatch.
+    - A legacy /v1/node/register request omits capabilities, still registers, and negotiates no native Link capability; capabilities is an array offer/response intersection, not the generic features map.
     - Native link dispatch requires iw.link-native-request/1 on the current registration plus a bound v1 Hello/ack for the exact registration_connection_id and link_incarnation_id.
-    - Re-registration, replacement, withdrawal, staleness or credential expiry revokes the old native binding before another native frame can be enqueued.
+    - Re-registration, replacement, withdrawal, staleness, credential expiry or socket close revokes the old native binding before another native frame can be enqueued.

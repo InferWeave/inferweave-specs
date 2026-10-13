@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/node-register-response.json",
+  "title": "POST /v1/node/register response",
+  "description": "Canonical negotiated node registration response. capabilities is always an array containing only the exact intersection of the request offer and gateway support for this connectionId; assignments is present and empty in Protocol 1.1.0.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["nodeId", "connectionId", "freshnessTtlSecs", "capabilities", "assignments"],
+  "properties": {
+    "nodeId": {"type": "string", "minLength": 1, "maxLength": 256},
+    "connectionId": {"type": "string", "pattern": "^c-[0-9a-f]{16}$"},
+    "freshnessTtlSecs": {"type": "integer", "minimum": 1},
+    "capabilities": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^iw\\.[a-z0-9-]+/(0|[1-9][0-9]*)$"}
+    },
+    "assignments": {"type": "array", "maxItems": 0}
+  }
+}

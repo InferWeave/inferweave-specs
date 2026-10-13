@@ -19,6 +19,7 @@ from conformance.runtime_protocol import (
     canonical_deployment_key,
     canonical_reservation_request_digest,
     link_dispatch_decision,
+    negotiate_registration_capabilities,
     negotiate_native_link,
     safe_peak_admissible,
 )
@@ -308,15 +309,16 @@ class NativeLinkDispatchSemantics(unittest.TestCase):
     def test_native_negotiation_is_bound_to_registration_and_link_incarnation(self):
         hello = load_json("fixtures/valid/link-hello-native-v1.json")
         registration = {
-            "connection_id": "conn-current-0123456789",
-            "features": ["iw.link-native-request/1"],
+            "connection_id": "c-0123456789abcdef",
+            "capabilities": ["iw.link-native-request/1"],
             "fresh": True,
+            "credential_valid": True,
         }
         ack = negotiate_native_link(registration, hello, {"iw.link-native-request/1"})
         self.assertEqual(ack["binding_status"], "bound")
         self.assertEqual(ack["registration_connection_id"], hello["registration_connection_id"])
         self.assertEqual(ack["link_incarnation_id"], hello["link_incarnation_id"])
-        stale = dict(registration, connection_id="conn-replacement-012345")
+        stale = dict(registration, connection_id="c-fedcba9876543210")
         self.assertEqual(negotiate_native_link(stale, hello, {"iw.link-native-request/1"})["binding_status"], "unbound")
         self.assertTrue(accept_native_link_ack(hello, ack))
         mismatched_ack = dict(ack, link_incarnation_id="link-incarnation-other-0002")
@@ -329,14 +331,14 @@ class NativeLinkDispatchSemantics(unittest.TestCase):
         state.accept("node-a", hello)
         native = load_json("fixtures/valid/link-request-meta-native.json")
         self.assertTrue(state.dispatch("node-a", hello["link_incarnation_id"], native)["allowed"])
-        state.register("node-a", "conn-new-0123456789", {"iw.link-native-request/1"})
+        state.register("node-a", "c-1111111111111111", {"iw.link-native-request/1"})
         self.assertEqual(state.dispatch("node-a", hello["link_incarnation_id"], native)["code"], "FEATURE_UNSUPPORTED")
         legacy = {"timeout_ms": 1000}
         self.assertTrue(state.dispatch("node-a", hello["link_incarnation_id"], legacy)["allowed"])
 
     def test_link_replacement_withdrawal_and_expiry_revoke_only_native_binding(self):
         state = NativeLinkState({"iw.link-native-request/1"})
-        state.register("node-a", "conn-current-0123456789", {"iw.link-native-request/1"})
+        state.register("node-a", "c-0123456789abcdef", {"iw.link-native-request/1"})
         first = load_json("fixtures/valid/link-hello-native-v1.json")
         state.accept("node-a", first)
         second = json.loads(json.dumps(first))
@@ -352,19 +354,49 @@ class NativeLinkDispatchSemantics(unittest.TestCase):
         hello = load_json("fixtures/valid/link-hello-native-v1.json")
         registration = {
             "connection_id": hello["registration_connection_id"],
-            "features": ["iw.link-native-request/1"],
+            "capabilities": ["iw.link-native-request/1"],
             "fresh": True,
+            "credential_valid": True,
         }
         mutations = (
-            (dict(registration, connection_id="conn-stale-0123456789"), hello, {"iw.link-native-request/1"}),
+            (dict(registration, connection_id="c-deadbeefdeadbeef"), hello, {"iw.link-native-request/1"}),
             (dict(registration, fresh=False), hello, {"iw.link-native-request/1"}),
-            (dict(registration, features=[]), hello, {"iw.link-native-request/1"}),
+            (dict(registration, capabilities=[]), hello, {"iw.link-native-request/1"}),
+            (dict(registration, credential_valid=False), hello, {"iw.link-native-request/1"}),
             (registration, hello, set()),
         )
         for mutated_registration, mutated_hello, local in mutations:
             ack = negotiate_native_link(mutated_registration, mutated_hello, local)
             self.assertEqual(ack["binding_status"], "unbound")
             self.assertEqual(ack["negotiated_features"], [])
+
+    def test_credential_expiry_and_socket_close_revoke_binding(self):
+        hello = load_json("fixtures/valid/link-hello-native-v1.json")
+        native = load_json("fixtures/valid/link-request-meta-native.json")
+        for transition in ("expire_credential", "close"):
+            state = NativeLinkState({"iw.link-native-request/1"})
+            state.register("node-a", hello["registration_connection_id"], {"iw.link-native-request/1"})
+            state.accept("node-a", hello)
+            getattr(state, transition)("node-a")
+            self.assertEqual(
+                state.dispatch("node-a", hello["link_incarnation_id"], native),
+                {"allowed": False, "code": "FEATURE_UNSUPPORTED"},
+            )
+
+    def test_node_register_offer_and_negotiated_response_are_exact_arrays(self):
+        request_validator = validator("requests/node-register.json")
+        response_validator = validator("requests/node-register-response.json")
+        for name in ("node-register-legacy.json", "node-register-native.json"):
+            self.assertEqual([], list(request_validator.iter_errors(load_json("fixtures/valid/" + name))), name)
+        for name in ("node-register-response-legacy.json", "node-register-response-native.json"):
+            self.assertEqual([], list(response_validator.iter_errors(load_json("fixtures/valid/" + name))), name)
+        malformed = load_json("fixtures/invalid/node-register-native-capability-map.json")
+        self.assertTrue(list(request_validator.iter_errors(malformed)))
+        capability = "iw.link-native-request/1"
+        self.assertEqual(negotiate_registration_capabilities([capability], [capability]), [capability])
+        self.assertEqual(negotiate_registration_capabilities(None, [capability]), [])
+        self.assertEqual(negotiate_registration_capabilities({"native_link_requests": "1"}, [capability]), [])
+        self.assertEqual(negotiate_registration_capabilities([capability], []), [])
 
     def test_hello_and_ack_schemas_cover_legacy_and_hostile_bindings(self):
         hello_validator = validator("requests/link-hello.json")

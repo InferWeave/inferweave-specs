@@ -1,7 +1,7 @@
 {
   "kind": "hello_ack",
   "native_link_version": 1,
-  "registration_connection_id": "conn-stale-0123456789",
+  "registration_connection_id": "c-deadbeefdeadbeef",
   "link_incarnation_id": "link-incarnation-first-0001",
   "binding_status": "unbound",
   "negotiated_features": [],

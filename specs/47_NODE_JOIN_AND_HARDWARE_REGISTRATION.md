@@ -50,9 +50,11 @@ All bodies are JSON with camelCase members. The reference gateway
 ```
 
 plus optional members an older node omits (`card`, `schedulerJobId`, `capabilities`, `linkOnly`,
-`declaredWeightsMib`, `declaredBudgetMib`). Those optional members are outside this contract; a
-conforming gateway need not implement them. The response is
-`{ nodeId, connectionId, freshnessTtlSecs, capabilities, linkOnly }`. For
+`declaredWeightsMib`, `declaredBudgetMib`). Except for `capabilities`, which section 2.1 makes
+normative, those optional members are outside this contract; a conforming gateway need not
+implement them. The common response members are
+`{ nodeId, connectionId, freshnessTtlSecs, capabilities, assignments }`; implementations may add
+the optional members already described elsewhere in this specification. For
 `iw.link-native-request/1`, this `connectionId` is also the authenticated registration-incarnation
 value copied into Link Hello `registration_connection_id`; see `specs/45_PROTOCOL_V1.md`. It must
 not be replaced by node id, process `session`, or a separately inferred current registration. Errors are
@@ -62,6 +64,33 @@ normative.
 
 A registration is authenticated by `nodeId`, `role` and `credential`. That is unchanged by this
 document: a hardware-only registration (section 4) is authenticated exactly like any other.
+
+### 2.1 Capability offer and negotiated response (normative)
+
+The actual `/v1/node/register` request and response producer shapes are
+`schemas/v1/requests/node-register.json` and `node-register-response.json`. They use the existing
+camelCase wire. The request's optional `capabilities` member is an array of at most 32 unique
+strings. Each is at most 128 bytes and has grammar `iw.<name>/<major>`, where `name` contains only
+lowercase ASCII letters, digits, or `-`, and `major` is `0` or a decimal integer without a leading
+zero. This array is the capability offer used by both the Rust and Go gateways. It is not the
+generic Protocol registration `features` level map in `schemas/v1/requests/registration.json`.
+
+The response always carries `connectionId` as lowercase `c-` followed by 16 hexadecimal digits,
+the volatile format minted by both current gateway implementations, and carries `capabilities` as
+an array. That array contains only the exact string
+intersection of the first 32 well-formed request entries and gateway support for this newly minted
+`connectionId`, de-duplicated in deterministic gateway-supported order. A capability is in force
+only when it appears in both arrays. Absence, `null`, a non-array, or an empty request array
+negotiates nothing. For compatibility, a gateway ignores malformed entries and entries beyond 32
+rather than refusing an otherwise valid legacy registration; such a request is not a conforming
+producer of the schema. Unknown well-formed capabilities are ignored unless supported.
+
+A node that wants native Link v1 includes `iw.link-native-request/1` in the request array and may
+send the native Link v1 Hello fields only when that exact string is present in the response array.
+The response `connectionId` is copied byte-for-byte into Hello `registration_connection_id`. A
+legacy registration without `capabilities` succeeds as before, receives an empty response array
+from a new gateway, and cannot enable native dispatch. No feature is inferred from protocol
+version, node id, model, or a generic features map.
 
 ## 3. The `hardware` member
 

@@ -1,0 +1,7 @@
+{
+  "nodeId": "node-legacy-01",
+  "connectionId": "c-0123456789abcdef",
+  "freshnessTtlSecs": 30,
+  "capabilities": [],
+  "assignments": []
+}
