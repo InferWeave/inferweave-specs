@@ -40,7 +40,8 @@
       "uniqueItems": true,
       "items": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^iw\\.[a-z0-9-]+/(0|[1-9][0-9]*)$"}
     },
-    "hardware": {"$ref": "node-hardware.json"}
+    "hardware": {"$ref": "node-hardware.json"},
+    "runtimeObservations": {"$ref": "runtime-observation-report.json"}
   },
   "oneOf": [
     {

@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "source_id": "node-fixture",
+  "source_epoch": "journal-a",
+  "sequence": 1,
+  "observed_at_ms": 1000,
+  "expires_at_ms": 11000,
+  "complete": true,
+  "instances": [
+    {
+      "observation": {
+        "instance_id": "instance-a",
+        "model_id": "example/model@sha256:fixture",
+        "deployment_fingerprint": "deployment-fixture",
+        "generation": "load-a",
+        "source_epoch": "journal-a",
+        "sequence": 1,
+        "observed_at_ms": 1000,
+        "expires_at_ms": 11000,
+        "lifecycle": "READY",
+        "health": "HEALTHY",
+        "capabilities": {
+          "family": "llm",
+          "input_modalities": [
+            "text"
+          ],
+          "output_modalities": [
+            "text"
+          ],
+          "limits": {
+            "context_tokens_per_slot": 32768,
+            "parallel_slots": 2
+          },
+          "confidence": "observed"
+        }
+      },
+      "required_gpu_ids": [
+        "gpu-fixture-a",
+        "gpu-fixture-b"
+      ],
+      "owner_policy_id": "policy-fixture",
+      "qualification_id": "qualification-fixture"
+    }
+  ]
+}

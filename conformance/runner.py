@@ -30,10 +30,13 @@ import node_join  # noqa: E402
 import runtime_protocol  # noqa: E402
 import dynamic_aliases  # noqa: E402
 import alias_edge_delegation  # noqa: E402
+import runtime_observations  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
 # fixture basename -> schema rel path (relative to schemas/v1)
 MAP = {
+    "runtime-observation-report": "requests/runtime-observation-report.json",
+    "runtime-observation-event": "events/runtime-observation-event.json",
     "dynamic-alias-edge-assertion": "aliases/edge-assertion.json",
     "dynamic-alias-capabilities": "aliases/capabilities.json",
     "dynamic-alias-routing-trace": "aliases/routing-trace.json",
@@ -173,6 +176,10 @@ def validate_fixture(path, must_pass, schema_rel=None):
                 semantic_errors.append("requestIdentity disagrees with duplicated reservation fields")
         except (KeyError, TypeError, ValueError) as error:
             semantic_errors.append(f"reservation request identity binding failed: {error}")
+    if schema_rel == "requests/runtime-observation-report.json" and not errors:
+        semantic_errors.extend(runtime_observations.semantic_errors(fixture))
+    if schema_rel == "events/runtime-observation-event.json" and not errors:
+        semantic_errors.extend(runtime_observations.semantic_errors(fixture["report"]))
     if schema_rel.startswith("aliases/") and not errors:
         semantic_errors.extend(dynamic_aliases.semantic_errors(fixture, Path(schema_rel).stem))
     ok = not errors and not semantic_errors
@@ -539,6 +546,12 @@ def main():
     )
     args = parser.parse_args()
     failures = 0
+    observation_errors = runtime_observations.check_vectors(ROOT)
+    for error in observation_errors:
+        print("FAIL  " + error)
+    failures += len(observation_errors)
+    if not observation_errors:
+        print("PASS  runtime observation vectors (offline producer facts; no admission proof)")
     edge_errors = alias_edge_delegation.check_vectors(ROOT)
     for error in edge_errors:
         print("FAIL  " + error)

@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/events/runtime-observation-event.json",
+  "title": "Internal owner runtime observation snapshot event",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "runtime.observations.snapshot"
+    },
+    "report": {
+      "$ref": "../requests/runtime-observation-report.json"
+    }
+  },
+  "required": [
+    "type",
+    "report"
+  ]
+}

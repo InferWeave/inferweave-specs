@@ -85,3 +85,13 @@ must be amended canonically before implementation relies on it.
 
 Spec 54 / IW-ALIAS-001 adds the level-2 contract; schemas and offline fixtures are artifact evidence
 only. All implementation scenarios remain owed in `contracts/dynamic-alias-acceptance.json`.
+
+## Runtime producer follow-up — spec 56
+
+The first contract omitted the bounded authenticated producer input needed by A-T05.
+`specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md` records source symbols and distinguishes
+per-load generation from registration/engine-set counters. The optional report, ordering and
+negative conformance artifacts are **implemented as contracts only**; live producer delivery,
+qualification, owner-policy binding and admission remain **missing/owed**. The working Rust
+`RuntimeInstanceObservation` is a partial producer, not an existing READY alias pathway.
+Master acceptance 3, 5, 6, 11–17, 19, 20 and 23 now link to this contract; none is marked proven.

@@ -2317,7 +2317,7 @@ Rules:
 **Context:** `C80`
 **Depends on:** A-T01, A-T03, A-T04
 **Features:** IW-ALIAS-001
-**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md, specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md
 
 **Outcome:** Consume existing lifecycle, GPU placement and owner federation authority with conservative profiles and exclusive reservations.
 
@@ -2326,6 +2326,10 @@ Rules:
 - shared supply and retry leases deduplicate across parents
 - stale cyclic offers and unauthorized provisioning rejected
 - owner preemption and policy-authorized provisioning exercised
+- generation, TTL, sequence, epoch and tombstone hostile report vectors
+- authenticated node report ingestion and mixed-version UNKNOWN fallback
+- generation-bound verifier and owner policy references cannot grant capability or capacity
+- multi-GPU group loss and source reconnect prevent stale READY resurrection
 
 ### A-T06 — Go typed alias client and transparent relay
 **Context:** `C80`
