@@ -41,7 +41,7 @@ class DynamicAliasContractTests(unittest.TestCase):
                 kind = 'definition'
             if kind == 'advertisement-embedding':
                 kind = 'advertisement'
-            self.assertFalse(errors(kind, load('fixtures/valid/dynamic-alias-' + kind + '.json')), kind)
+            self.assertFalse(errors(kind, json.loads(fixture.read_text())), fixture.name)
         for path in (ROOT / 'fixtures/invalid').glob('dynamic-alias-*.json'):
             kind = next(k for k in kinds if path.stem.startswith('dynamic-alias-' + k + '-'))
             self.assertTrue(errors(kind, json.loads(path.read_text())), path.name)
