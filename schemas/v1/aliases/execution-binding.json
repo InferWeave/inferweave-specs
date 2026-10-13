@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/aliases/execution-binding.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "request_fingerprint",
+    "executable_request_fingerprint",
+    "executable_body_sha256",
+    "transformation_version",
+    "model_id"
+  ],
+  "properties": {
+    "request_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "executable_request_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "executable_body_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "transformation_version": {
+      "enum": [
+        "inferweave.alias-materialization/v1"
+      ]
+    },
+    "model_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    }
+  }
+}

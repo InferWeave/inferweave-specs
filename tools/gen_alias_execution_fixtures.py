@@ -49,11 +49,28 @@ def generate(root=ROOT):
     write('conformance/alias-execution-vectors.json',doc)
     identity={'tenant_id':'fixture-tenant','principal_id':'principal-fixture','grant_revision':'grant-7','operation_id':value['operation_id'],'request_id':'request-fixture','idempotency_key':'fixture-operation','request_fingerprint':known[0]['envelope']['request_fingerprint'],'deadline_unix_ms':value['deadline_unix_ms']}
     selection={'alias_id':'coding-fast','alias_revision':2,'catalog_revision':'catalog-fixture','routing_policy_version':'fixture-policy-1','model_id':'fixture/model@1','deployment_key':'fixture-deployment','instance_id':'fixture-instance','instance_generation':'fixture-generation','capability_profile_id':'fixture-profile','policy_evidence_id':'fixture-policy','resource_owner_id':'fixture-owner','resource_group_id':'fixture-group','requirement_fingerprint':'a'*64}
-    claim={'schema_version':1,'claim_id':'claim-fixture','identity':identity,'state':'RESERVED','holder_id':'holder-a','fencing_token':1,'last_progress_at':1800000001000,'ownership_lease':{'lease_id':'holder-lease','generation':1,'expires_at_unix_ms':1800000010000},'attempt_count':1,'reservation_pending':False,'response_started':False,'selection':selection,'reservation_id':'reservation-fixture','cleanup_pending':False}
+    claim={'schema_version':1,'claim_id':'claim-fixture','identity':identity,'state':'RESERVED','holder_id':'holder-a','fencing_token':1,'last_progress_at':1800000001000,'ownership_lease':{'lease_id':'holder-lease','generation':1,'expires_at_unix_ms':1800000010000},'attempt_count':1,'reservation_pending':False,'response_started':False,'selection':selection,'reservation_id':'reservation-fixture','cleanup_pending':False,'dispatch_consumed':False}
+    source=known[0]['actual_request']
+    executable=copy.deepcopy(source)
+    executable['body']=json.dumps(dict(json.loads(source['body']),model='fixture/model@1'),separators=(',',':'))
+    executable['body_sha256']=hashlib.sha256(executable['body'].encode()).hexdigest()
+    binding=execution.materialization_binding(source,executable,'fixture/model@1')
+    permit={'schema_version':1,'permit_id':'permit-fixture','claim_id':claim['claim_id'],
+            'fencing_token':1,'admission_attempt':1,'tenant_id':identity['tenant_id'],
+            'principal_id':identity['principal_id'],'instance_id':selection['instance_id'],
+            'instance_generation':selection['instance_generation'],'resource_owner_id':selection['resource_owner_id'],
+            'reservation_id':claim['reservation_id'],'deadline_unix_ms':identity['deadline_unix_ms'],
+            'execution_binding':binding}
+    write('fixtures/valid/alias-execution-binding.json',binding)
+    write('fixtures/valid/alias-execution-permit.json',permit)
+    for name,field in [('missing-fingerprint','executable_request_fingerprint'),('missing-original','request_fingerprint'),('missing-transform','transformation_version')]:
+        bad=copy.deepcopy(binding);bad.pop(field);write('fixtures/invalid/alias-execution-binding-'+name+'.json',bad)
+    bad=copy.deepcopy(permit);bad.pop('admission_attempt');write('fixtures/invalid/alias-execution-permit-missing-attempt.json',bad)
     acquire={'action':'acquire','as':'first','holder':'parent-a','created':True}
     begin={'action':'begin_reservation','claim':'first','holder':'parent-a','fence':1,'generation':'g1','current_generation':'g1'}
-    reserve={'action':'reserve','claim':'first','holder':'parent-a','fence':1,'reservation_id':'reservation-1'}
-    dispatch={'action':'dispatch','claim':'first','holder':'parent-a','fence':1}
+    reserve={'action':'reserve','claim':'first','holder':'parent-a','fence':1,'reservation_id':'reservation-1','attempt_number':1,'generation':'g1'}
+    dispatch={'action':'dispatch','claim':'first','holder':'parent-a','fence':1,'attempt_number':1,'generation':'g1','binding':binding}
+    consume={'action':'consume','claim':'first','holder':'parent-a','fence':1,'attempt_number':1,'generation':'g1','binding':binding,'actual':executable,'permit_id':'permit-1','route_kind':'DIRECT'}
     def altered(base,**changes): return dict(base,**changes)
     def case(name,steps,state,attempts):
         return {'id':name,'steps':steps,'final_claim':'first','expected_state':state,'expected_attempt_count':attempts}
@@ -65,12 +82,25 @@ def generate(root=ROOT):
         case('reservation-progress-survives-holder-expiry',[acquire,begin,reserve,{'action':'takeover','claim':'first','holder':'parent-a','fence':1,'new_holder':'parent-b','expired':True,'expected_error':'LEASE_CONFLICT'}],'RESERVED',1),
         case('takeover-fences-old-holder',[acquire,{'action':'takeover','claim':'first','holder':'parent-a','fence':1,'new_holder':'parent-b','expired':True},altered(begin,expected_error='LEASE_CONFLICT'),altered(begin,holder='parent-b',fence=2)],'CLAIMED',1),
         case('generation-race-rejected',[acquire,altered(begin,current_generation='g2',expected_error='INSTANCE_GENERATION_STALE')],'CLAIMED',0),
-        case('compatible-fallback-after-owner-release',[acquire,begin,reserve,{'action':'release_before_dispatch','claim':'first','holder':'parent-a','fence':1,'owner_confirmed':True},begin,reserve],'RESERVED',2),
-        case('retry-budget-across-fallback',[acquire,altered(begin,budget=1),reserve,{'action':'release_before_dispatch','claim':'first','holder':'parent-a','fence':1,'owner_confirmed':True},altered(begin,budget=1,expected_error='RETRY_BUDGET_EXHAUSTED')],'CLAIMED',1),
-        case('ambiguous-send-before-response-never-replays',[acquire,begin,reserve,dispatch,{'action':'release_before_dispatch','claim':'first','holder':'parent-a','fence':1,'owner_confirmed':True,'expected_error':'EXECUTION_OUTCOME_UNKNOWN'},{'action':'terminal','claim':'first','holder':'parent-a','fence':1,'reason':'EXECUTION_OUTCOME_UNKNOWN'},{'action':'acquire','as':'retry','holder':'parent-b','created':False,'same_as':'first'},altered(begin,expected_error='EXECUTION_IN_PROGRESS')],'TERMINAL',1),
-        case('partial-stream-never-replays',[acquire,begin,reserve,dispatch,{'action':'mark_response_started','claim':'first','holder':'parent-a','fence':1},{'action':'terminal','claim':'first','holder':'parent-a','fence':1,'reason':'PARTIAL_STREAM_FAILURE'},altered(dispatch,expected_error='EXECUTION_IN_PROGRESS')],'TERMINAL',1),
+        case('compatible-fallback-after-owner-release',[acquire,begin,reserve,{'action':'release_before_dispatch','claim':'first','holder':'parent-a','fence':1,'owner_confirmed':True,'attempt_number':1,'generation':'g1'},begin,altered(reserve,attempt_number=2)],'RESERVED',2),
+        case('retry-budget-across-fallback',[acquire,altered(begin,budget=1),reserve,{'action':'release_before_dispatch','claim':'first','holder':'parent-a','fence':1,'owner_confirmed':True,'attempt_number':1,'generation':'g1'},altered(begin,budget=1,expected_error='RETRY_BUDGET_EXHAUSTED')],'CLAIMED',1),
+        case('ambiguous-send-before-response-never-replays',[acquire,begin,reserve,dispatch,{'action':'release_before_dispatch','claim':'first','holder':'parent-a','fence':1,'owner_confirmed':True,'attempt_number':1,'generation':'g1','expected_error':'EXECUTION_OUTCOME_UNKNOWN'},{'action':'terminal','claim':'first','holder':'parent-a','fence':1,'reason':'EXECUTION_OUTCOME_UNKNOWN'},{'action':'acquire','as':'retry','holder':'parent-b','created':False,'same_as':'first'},altered(begin,expected_error='EXECUTION_IN_PROGRESS')],'TERMINAL',1),
+        case('partial-stream-never-replays',[acquire,begin,reserve,dispatch,consume,{'action':'mark_response_started','claim':'first','holder':'parent-a','fence':1},{'action':'terminal','claim':'first','holder':'parent-a','fence':1,'reason':'PARTIAL_STREAM_FAILURE'},altered(dispatch,expected_error='EXECUTION_IN_PROGRESS')],'TERMINAL',1),
         case('cancel-requires-owner-confirmed-stop',[acquire,begin,reserve,{'action':'terminal','claim':'first','holder':'parent-a','fence':1,'reason':'CLIENT_CANCELLED','expected_error':'EXECUTION_OUTCOME_UNKNOWN'},{'action':'terminal','claim':'first','holder':'parent-a','fence':1,'reason':'CLIENT_CANCELLED','owner_confirmed':True}],'TERMINAL',1)
     ]
+    release={'action':'release_before_dispatch','claim':'first','holder':'parent-a','fence':1,'attempt_number':1,'generation':'g1','owner_confirmed':True}
+    doc['claim_cases'] += [
+        case('same-operation-cannot-change-key',[acquire,{'action':'acquire','as':'changed','holder':'parent-a','identity_changes':{'idempotency_key':'key-2'},'expected_error':'IDEMPOTENCY_CONFLICT'},{'action':'acquire','as':'different','holder':'parent-b','identity_changes':{'operation_id':edge.b64url(bytes([77])*16),'idempotency_key':'key-2'},'created':True}],'CLAIMED',0),
+        case('same-operation-cannot-remove-key',[acquire,{'action':'acquire','as':'changed','holder':'parent-a','identity_changes':{'idempotency_key':None},'expected_error':'IDEMPOTENCY_CONFLICT'}],'CLAIMED',0),
+        case('response-loss-same-owner-fallback-old-attempt-denied',[acquire,begin,release,altered(begin,generation='g2',current_generation='g2'),altered(reserve,expected_error='LEASE_CONFLICT'),altered(release,expected_error='LEASE_CONFLICT'),altered(reserve,attempt_number=2,generation='g2',reservation_id='reservation-2')],'RESERVED',2),
+        case('two-permit-ids-one-claim-execution',[acquire,begin,reserve,dispatch,consume,altered(consume,permit_id='permit-2',expected_error='EXECUTION_IN_PROGRESS')],'DISPATCHED',1),
+        case('direct-then-relay-one-claim-execution',[acquire,begin,reserve,dispatch,consume,altered(consume,permit_id='permit-relay',route_kind='RELAY',expected_error='EXECUTION_IN_PROGRESS')],'DISPATCHED',1),
+    ]
+    for field,changed in [('request_target','/v1/completions'),('content_type','text/plain'),('session_id','different-session')]:
+        doc['claim_cases'].append(case('permit-rejects-altered-'+field,[acquire,begin,reserve,dispatch,altered(consume,actual=dict(executable,**{field:changed}),expected_error='POLICY_DENIED')],'DISPATCHED',1))
+    original_body=copy.deepcopy(source)
+    doc['claim_cases'].append(case('node-rejects-original-alias-payload-after-materialization',[acquire,begin,reserve,dispatch,altered(consume,actual=original_body,expected_error='POLICY_DENIED')],'DISPATCHED',1))
+    doc['materialization_cases']=[{'id':'alias-to-exact-preserves-original-binding','source':source,'executable':executable,'model_id':'fixture/model@1','binding':binding}]
     write('conformance/alias-execution-vectors.json',doc)
     write('fixtures/valid/alias-inference-assertion.json',known[0]['envelope'])
     write('fixtures/valid/alias-execution-identity.json',identity)

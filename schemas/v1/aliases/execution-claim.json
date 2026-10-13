@@ -15,7 +15,8 @@
     "attempt_count",
     "response_started",
     "cleanup_pending",
-    "reservation_pending"
+    "reservation_pending",
+    "dispatch_consumed"
   ],
   "properties": {
     "schema_version": {
@@ -202,6 +203,12 @@
     },
     "reservation_pending": {
       "type": "boolean"
+    },
+    "dispatch_consumed": {
+      "type": "boolean"
+    },
+    "execution_binding": {
+      "$ref": "execution-binding.json"
     }
   },
   "allOf": [
@@ -286,6 +293,55 @@
           },
           "attempt_count": {
             "minimum": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "CLAIMED",
+              "RESERVED"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "dispatch_consumed": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "DISPATCHED"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "execution_binding"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "response_started": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "dispatch_consumed": {
+            "const": true
           }
         }
       }

@@ -116,5 +116,17 @@
   ],
   "terminal_reopens": false,
   "dispatch_intent_before_send": true,
-  "inference_credentials_forwarded": false
+  "inference_credentials_forwarded": false,
+  "operation_key_choice_immutable": true,
+  "owner_reservation_unique_key": [
+    "claim_id",
+    "admission_attempt"
+  ],
+  "admission_attempt": "attempt_count",
+  "execution_consumption_unique_key": [
+    "claim_id"
+  ],
+  "transformation_versions": [
+    "inferweave.alias-materialization/v1"
+  ]
 }

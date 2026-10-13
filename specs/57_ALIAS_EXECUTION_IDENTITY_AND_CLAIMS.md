@@ -142,7 +142,11 @@ fresh operation or on another parent. A user intentionally starting new work is 
 Rust's shared PostgreSQL claim authority enforces unique `(tenant_id, principal_id, operation_id)`.
 A supplied idempotency key has a second unique mapping scoped by `(tenant_id, principal_id, method,
 request_target, idempotency_key)` to the original operation and request IDs. Create mapping and
-claim atomically. Concurrent same-key requests with different proposed operation IDs converge on
+claim atomically. The optional key choice is immutable for an existing operation: adding,
+changing or removing its key returns `IDEMPOTENCY_CONFLICT`. If an existing key and an existing
+operation name different claims, reject the contradictory pair. A rejected key change must not
+appear successfully attached to the operation. Concurrent same-key requests with different new
+proposed operation IDs converge on
 one original operation. A conflict in fingerprint returns `IDEMPOTENCY_CONFLICT` without revealing
 the stored payload. Reusing an operation with changed method/target/body/semantic headers is also
 a conflict. A different valid principal or tenant cannot read or attach to the original operation.
@@ -165,7 +169,8 @@ semantics; authority outage is not permission to start a competing operation.
 The closed claim shape is `schemas/v1/aliases/execution-claim.json`. State vocabulary:
 `CLAIMED`, `RESERVED`, `DISPATCHED`, `TERMINAL`. Claim fields include `claim_id`, identity,
 `holder_id`, monotonic `fencing_token`, `last_progress_at`, `ownership_lease`, `attempt_count`,
-`response_started`, `reservation_pending` and optional selection/reservation/terminal evidence. These are protected
+`response_started`, `reservation_pending`, `dispatch_consumed` and optional
+selection/reservation/execution-binding/terminal evidence. These are protected
 internal records, never an unredacted public API or bearer credential.
 
 Every mutation uses PostgreSQL compare-and-swap on current holder/fence/state. The existing owner
@@ -205,18 +210,68 @@ fencing and confirmed release/nonexecution first. An owner reservation progressi
 not reclaimed due to elapsed wall time or database/holder lease expiry (invariant 37). Before calling owner admission, durably record the selected owner/instance, incremented attempt
 and `reservation_pending=true` while still CLAIMED. An ambiguous
 reservation acquisition must be reconciled by claim ID before retry. The owner reservation API
-must be idempotent by claim ID across an acquisition response lost before RESERVED was persisted.
+must be idempotent by `(claim_id, admission_attempt)`, where `admission_attempt` is the durable
+positive `attempt_count` captured when starting that attempt. Every acquisition, response, release,
+reconciliation and direct permit binds that attempt, holder fence, selected owner and exact
+instance/generation. The claim authority never increments the attempt while reservation outcome
+is unresolved. A response for attempt 1 cannot complete attempt 2, even at the same holder/fence
+and owner; equality of generation alone is insufficient. Same-owner compatible fallback after
+confirmed release starts a new attempt and may create a new reservation.
+
+Owners atomically retain retirement tombstones/high-water fences for completed/released attempts.
+A delayed acquisition for a retired attempt must return the retired outcome and never create a
+new reservation. Retirement must be owner-confirmed before the authority increments the attempt;
+if acknowledgement is lost, reconcile the same attempt rather than issuing a new one. Persist
+these fences through restart for the same horizon as the claim. With no authority/retirement
+proof, an owner refuses new acquisition. A holder change cannot resurrect an old attempt.
 Until confirmed, retain the claim and block takeover/admission elsewhere. A request deadline
 initiates cancellation; resources are released when the owner confirms stop, not by pretending
 unreachable work has stopped.
 
 DISPATCHED is durable **before transmission**, even when zero response bytes have arrived. A
 crash after that commit but before send is conservatively ambiguous. Do not automatically replay
-nondeterministic inference/tool operations on another model. A direct permit is one-use, scoped
-to claim ID/fence, instance generation, exact body digest, tenant/principal and deadline; node
-consumption is atomic and durable across reconnects. Releasing an unused reservation revokes all
-unspent permits. No stale holder may issue/spend a permit. Generic HTTP retry logic cannot bypass
-this boundary; no mid-stream transparent restart. Legacy exact routes retain their prior contract;
+nondeterministic inference/tool operations on another model. Direct/relay execution uses the same immutable `execution_binding` below and is exclusive by
+**claim ID**, not permit ID. Permits may be reissued for delivery, but two permit IDs, direct plus
+relay attempts, or reconnects cannot authorize two executions. Bind claim ID, holder fence,
+admission attempt, tenant/principal, exact selected owner/instance/generation, reservation and
+deadline in the existing authenticated permit transport. `schemas/v1/aliases/execution-permit.json`
+describes these protected fields; it defines no new unauthenticated bearer format.
+
+The node recomputes the executable fingerprint from actual method, target, Content-Type, every
+accepted semantic header and exact executable entity bytes. It compares the immutable binding
+and current claim/attempt/selection through the authenticated owner authority before spending.
+The shared claim authority atomically records `dispatch_consumed=true` once per claim; the node
+also persists a one-execution fence by claim so reconnect cannot repeat an already consumed
+execution. If consumption acknowledgement is lost, reconcile or fail without replay; neither
+side may treat uncertainty as unspent. A new permit/fence/transport does not reset consumption.
+Releasing an unused reservation revokes all unspent permits for its retired attempt. No stale
+holder may issue/spend a permit. Generic HTTP retry logic cannot bypass this boundary.
+
+### Original request versus executable payload
+
+Rust may replace an alias reference with its admitted exact model and serialize the inference
+body for the selected backend. Consequently the original client entity digest and node-visible
+digest are generally different. Preserve the original `request_fingerprint` as operation identity;
+never replace it with the materialized body's fingerprint during retry lookup.
+
+Before committing DISPATCHED, Rust stores immutable `execution_binding` containing the original
+`request_fingerprint`, `executable_request_fingerprint`, `executable_body_sha256`, selected
+`model_id`, and `transformation_version`. The only initial version is
+`inferweave.alias-materialization/v1`. Both fingerprints use the same spec57 field/domain framing,
+applied respectively to original and executable requests. The existing trusted Rust adapter must
+validate that the transformation selects the admitted exact model and preserves every other
+request value/constraint, method, target, Content-Type and semantic header. Re-serialization may
+change JSON whitespace/member order; it cannot change prompt, tools, generation parameters or
+hard constraints. Exact identity materialization may use the same version with unchanged model.
+A runtime needing another transformation or changed semantic headers must define and qualify it
+before use; unsupported body formats fail explicitly. Go must not perform this transformation.
+
+The node validates the **executable** fingerprint, including its body digest and selected model;
+the owner authenticates the binding back to the original claim/alias revision and selection.
+Comparing only the original body digest, accepting either digest opportunistically, or trusting
+an unsigned rewritten model loses this binding. The fixture transformation is a bounded JSON
+example, not a production adapter or authorization proof. No materialization may create a new
+logical operation, weaken constraints or reopen an ambiguous dispatch. Legacy exact routes retain their prior contract;
 this strict execution path is required before level-2 alias traffic is activated.
 
 ## 6. Existing router reuse, bounded fallback and diagnostics
@@ -257,3 +312,17 @@ one-use, GPU loss, admission-race fallback, queue/cancel/deadline cleanup, parti
 ambiguous pre-response dispatch, exact-ID compatibility, authorization redaction and measured load.
 Cross-language consumers must replay the same transcript vectors. Independent security review,
 actual shared PostgreSQL and owner/node fault injection are required before enabling traffic.
+
+### Independent review corrections
+
+Review of draft PR #256 found three contract defects. The first serial oracle returned an
+existing operation without rejecting a newly supplied idempotency key; A/key1 → A/key2 → B/key2
+could misleadingly acknowledge a key change and then create separate work. Key choice is now
+immutable, with regression coverage for added/removed/changed and contradictory existing keys.
+Second, owner idempotency by claim alone could confuse a delayed attempt-1 response with a
+same-owner attempt-2 fallback. Acquisition/release/reconcile now bind durable attempt/selection,
+and owner retirement fences reject delayed old acquisitions. Third, body-only permit binding
+omitted semantic headers and confused original alias payload with Rust's exact-model payload.
+The materialization record binds both fingerprints; claim-level consumption covers multiple
+permits and direct/relay delivery. Offline fixes do not close the corresponding implementation
+gates in OPEN_GATES.

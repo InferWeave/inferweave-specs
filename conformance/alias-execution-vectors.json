@@ -544,7 +544,9 @@
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
-          "reservation_id": "reservation-1"
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
         },
         {
           "action": "begin_reservation",
@@ -669,7 +671,9 @@
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
-          "reservation_id": "reservation-1"
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
         },
         {
           "action": "takeover",
@@ -769,14 +773,18 @@
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
-          "reservation_id": "reservation-1"
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
         },
         {
           "action": "release_before_dispatch",
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
-          "owner_confirmed": true
+          "owner_confirmed": true,
+          "attempt_number": 1,
+          "generation": "g1"
         },
         {
           "action": "begin_reservation",
@@ -791,7 +799,9 @@
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
-          "reservation_id": "reservation-1"
+          "reservation_id": "reservation-1",
+          "attempt_number": 2,
+          "generation": "g1"
         }
       ],
       "final_claim": "first",
@@ -821,14 +831,18 @@
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
-          "reservation_id": "reservation-1"
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
         },
         {
           "action": "release_before_dispatch",
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
-          "owner_confirmed": true
+          "owner_confirmed": true,
+          "attempt_number": 1,
+          "generation": "g1"
         },
         {
           "action": "begin_reservation",
@@ -867,13 +881,24 @@
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
-          "reservation_id": "reservation-1"
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
         },
         {
           "action": "dispatch",
           "claim": "first",
           "holder": "parent-a",
-          "fence": 1
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          }
         },
         {
           "action": "release_before_dispatch",
@@ -881,6 +906,8 @@
           "holder": "parent-a",
           "fence": 1,
           "owner_confirmed": true,
+          "attempt_number": 1,
+          "generation": "g1",
           "expected_error": "EXECUTION_OUTCOME_UNKNOWN"
         },
         {
@@ -933,13 +960,59 @@
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
-          "reservation_id": "reservation-1"
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
         },
         {
           "action": "dispatch",
           "claim": "first",
           "holder": "parent-a",
-          "fence": 1
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          }
+        },
+        {
+          "action": "consume",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          },
+          "actual": {
+            "method": "POST",
+            "request_target": "/v1/chat",
+            "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "content_type": "application/json",
+            "alias_level": "2",
+            "session_id": "session-fixture",
+            "timeout_ms": "12000",
+            "capabilities": "tools",
+            "min_context": "32768",
+            "prefer_family": "qwen",
+            "queue": "true",
+            "tenant_selector": "fixture-tenant",
+            "operation_id": "EBESExQVFhcYGRobHB0eHw",
+            "idempotency_key": "fixture-operation",
+            "deadline_unix_ms": 1800000012000,
+            "body": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+          },
+          "permit_id": "permit-1",
+          "route_kind": "DIRECT"
         },
         {
           "action": "mark_response_started",
@@ -959,6 +1032,15 @@
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          },
           "expected_error": "EXECUTION_IN_PROGRESS"
         }
       ],
@@ -988,7 +1070,9 @@
           "claim": "first",
           "holder": "parent-a",
           "fence": 1,
-          "reservation_id": "reservation-1"
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
         },
         {
           "action": "terminal",
@@ -1010,6 +1094,741 @@
       "final_claim": "first",
       "expected_state": "TERMINAL",
       "expected_attempt_count": 1
+    },
+    {
+      "id": "same-operation-cannot-change-key",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "acquire",
+          "as": "changed",
+          "holder": "parent-a",
+          "identity_changes": {
+            "idempotency_key": "key-2"
+          },
+          "expected_error": "IDEMPOTENCY_CONFLICT"
+        },
+        {
+          "action": "acquire",
+          "as": "different",
+          "holder": "parent-b",
+          "identity_changes": {
+            "operation_id": "TU1NTU1NTU1NTU1NTU1NTQ",
+            "idempotency_key": "key-2"
+          },
+          "created": true
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "CLAIMED",
+      "expected_attempt_count": 0
+    },
+    {
+      "id": "same-operation-cannot-remove-key",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "acquire",
+          "as": "changed",
+          "holder": "parent-a",
+          "identity_changes": {
+            "idempotency_key": null
+          },
+          "expected_error": "IDEMPOTENCY_CONFLICT"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "CLAIMED",
+      "expected_attempt_count": 0
+    },
+    {
+      "id": "response-loss-same-owner-fallback-old-attempt-denied",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "release_before_dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "owner_confirmed": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g2",
+          "current_generation": "g2"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1",
+          "expected_error": "LEASE_CONFLICT"
+        },
+        {
+          "action": "release_before_dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "owner_confirmed": true,
+          "expected_error": "LEASE_CONFLICT"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-2",
+          "attempt_number": 2,
+          "generation": "g2"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "RESERVED",
+      "expected_attempt_count": 2
+    },
+    {
+      "id": "two-permit-ids-one-claim-execution",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
+        },
+        {
+          "action": "dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          }
+        },
+        {
+          "action": "consume",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          },
+          "actual": {
+            "method": "POST",
+            "request_target": "/v1/chat",
+            "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "content_type": "application/json",
+            "alias_level": "2",
+            "session_id": "session-fixture",
+            "timeout_ms": "12000",
+            "capabilities": "tools",
+            "min_context": "32768",
+            "prefer_family": "qwen",
+            "queue": "true",
+            "tenant_selector": "fixture-tenant",
+            "operation_id": "EBESExQVFhcYGRobHB0eHw",
+            "idempotency_key": "fixture-operation",
+            "deadline_unix_ms": 1800000012000,
+            "body": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+          },
+          "permit_id": "permit-1",
+          "route_kind": "DIRECT"
+        },
+        {
+          "action": "consume",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          },
+          "actual": {
+            "method": "POST",
+            "request_target": "/v1/chat",
+            "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "content_type": "application/json",
+            "alias_level": "2",
+            "session_id": "session-fixture",
+            "timeout_ms": "12000",
+            "capabilities": "tools",
+            "min_context": "32768",
+            "prefer_family": "qwen",
+            "queue": "true",
+            "tenant_selector": "fixture-tenant",
+            "operation_id": "EBESExQVFhcYGRobHB0eHw",
+            "idempotency_key": "fixture-operation",
+            "deadline_unix_ms": 1800000012000,
+            "body": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+          },
+          "permit_id": "permit-2",
+          "route_kind": "DIRECT",
+          "expected_error": "EXECUTION_IN_PROGRESS"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "DISPATCHED",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "direct-then-relay-one-claim-execution",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
+        },
+        {
+          "action": "dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          }
+        },
+        {
+          "action": "consume",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          },
+          "actual": {
+            "method": "POST",
+            "request_target": "/v1/chat",
+            "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "content_type": "application/json",
+            "alias_level": "2",
+            "session_id": "session-fixture",
+            "timeout_ms": "12000",
+            "capabilities": "tools",
+            "min_context": "32768",
+            "prefer_family": "qwen",
+            "queue": "true",
+            "tenant_selector": "fixture-tenant",
+            "operation_id": "EBESExQVFhcYGRobHB0eHw",
+            "idempotency_key": "fixture-operation",
+            "deadline_unix_ms": 1800000012000,
+            "body": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+          },
+          "permit_id": "permit-1",
+          "route_kind": "DIRECT"
+        },
+        {
+          "action": "consume",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          },
+          "actual": {
+            "method": "POST",
+            "request_target": "/v1/chat",
+            "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "content_type": "application/json",
+            "alias_level": "2",
+            "session_id": "session-fixture",
+            "timeout_ms": "12000",
+            "capabilities": "tools",
+            "min_context": "32768",
+            "prefer_family": "qwen",
+            "queue": "true",
+            "tenant_selector": "fixture-tenant",
+            "operation_id": "EBESExQVFhcYGRobHB0eHw",
+            "idempotency_key": "fixture-operation",
+            "deadline_unix_ms": 1800000012000,
+            "body": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+          },
+          "permit_id": "permit-relay",
+          "route_kind": "RELAY",
+          "expected_error": "EXECUTION_IN_PROGRESS"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "DISPATCHED",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "permit-rejects-altered-request_target",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
+        },
+        {
+          "action": "dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          }
+        },
+        {
+          "action": "consume",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          },
+          "actual": {
+            "method": "POST",
+            "request_target": "/v1/completions",
+            "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "content_type": "application/json",
+            "alias_level": "2",
+            "session_id": "session-fixture",
+            "timeout_ms": "12000",
+            "capabilities": "tools",
+            "min_context": "32768",
+            "prefer_family": "qwen",
+            "queue": "true",
+            "tenant_selector": "fixture-tenant",
+            "operation_id": "EBESExQVFhcYGRobHB0eHw",
+            "idempotency_key": "fixture-operation",
+            "deadline_unix_ms": 1800000012000,
+            "body": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+          },
+          "permit_id": "permit-1",
+          "route_kind": "DIRECT",
+          "expected_error": "POLICY_DENIED"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "DISPATCHED",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "permit-rejects-altered-content_type",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
+        },
+        {
+          "action": "dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          }
+        },
+        {
+          "action": "consume",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          },
+          "actual": {
+            "method": "POST",
+            "request_target": "/v1/chat",
+            "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "content_type": "text/plain",
+            "alias_level": "2",
+            "session_id": "session-fixture",
+            "timeout_ms": "12000",
+            "capabilities": "tools",
+            "min_context": "32768",
+            "prefer_family": "qwen",
+            "queue": "true",
+            "tenant_selector": "fixture-tenant",
+            "operation_id": "EBESExQVFhcYGRobHB0eHw",
+            "idempotency_key": "fixture-operation",
+            "deadline_unix_ms": 1800000012000,
+            "body": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+          },
+          "permit_id": "permit-1",
+          "route_kind": "DIRECT",
+          "expected_error": "POLICY_DENIED"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "DISPATCHED",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "permit-rejects-altered-session_id",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
+        },
+        {
+          "action": "dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          }
+        },
+        {
+          "action": "consume",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          },
+          "actual": {
+            "method": "POST",
+            "request_target": "/v1/chat",
+            "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "content_type": "application/json",
+            "alias_level": "2",
+            "session_id": "different-session",
+            "timeout_ms": "12000",
+            "capabilities": "tools",
+            "min_context": "32768",
+            "prefer_family": "qwen",
+            "queue": "true",
+            "tenant_selector": "fixture-tenant",
+            "operation_id": "EBESExQVFhcYGRobHB0eHw",
+            "idempotency_key": "fixture-operation",
+            "deadline_unix_ms": 1800000012000,
+            "body": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+          },
+          "permit_id": "permit-1",
+          "route_kind": "DIRECT",
+          "expected_error": "POLICY_DENIED"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "DISPATCHED",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "node-rejects-original-alias-payload-after-materialization",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1",
+          "attempt_number": 1,
+          "generation": "g1"
+        },
+        {
+          "action": "dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          }
+        },
+        {
+          "action": "consume",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "attempt_number": 1,
+          "generation": "g1",
+          "binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          },
+          "actual": {
+            "method": "POST",
+            "request_target": "/v1/chat",
+            "body_sha256": "da3ff5cef4d2aedeba4846f17d5c1d90ad99b17de619040a9b382aca7b1c638f",
+            "content_type": "application/json",
+            "alias_level": "2",
+            "session_id": "session-fixture",
+            "timeout_ms": "12000",
+            "capabilities": "tools",
+            "min_context": "32768",
+            "prefer_family": "qwen",
+            "queue": "true",
+            "tenant_selector": "fixture-tenant",
+            "operation_id": "EBESExQVFhcYGRobHB0eHw",
+            "idempotency_key": "fixture-operation",
+            "deadline_unix_ms": 1800000012000,
+            "body": "{\"model\":\"alias:coding-fast\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+          },
+          "permit_id": "permit-1",
+          "route_kind": "DIRECT",
+          "expected_error": "POLICY_DENIED"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "DISPATCHED",
+      "expected_attempt_count": 1
+    }
+  ],
+  "materialization_cases": [
+    {
+      "id": "alias-to-exact-preserves-original-binding",
+      "source": {
+        "method": "POST",
+        "request_target": "/v1/chat",
+        "body_sha256": "da3ff5cef4d2aedeba4846f17d5c1d90ad99b17de619040a9b382aca7b1c638f",
+        "content_type": "application/json",
+        "alias_level": "2",
+        "session_id": "session-fixture",
+        "timeout_ms": "12000",
+        "capabilities": "tools",
+        "min_context": "32768",
+        "prefer_family": "qwen",
+        "queue": "true",
+        "tenant_selector": "fixture-tenant",
+        "operation_id": "EBESExQVFhcYGRobHB0eHw",
+        "idempotency_key": "fixture-operation",
+        "deadline_unix_ms": 1800000012000,
+        "body": "{\"model\":\"alias:coding-fast\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+      },
+      "executable": {
+        "method": "POST",
+        "request_target": "/v1/chat",
+        "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+        "content_type": "application/json",
+        "alias_level": "2",
+        "session_id": "session-fixture",
+        "timeout_ms": "12000",
+        "capabilities": "tools",
+        "min_context": "32768",
+        "prefer_family": "qwen",
+        "queue": "true",
+        "tenant_selector": "fixture-tenant",
+        "operation_id": "EBESExQVFhcYGRobHB0eHw",
+        "idempotency_key": "fixture-operation",
+        "deadline_unix_ms": 1800000012000,
+        "body": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+      },
+      "model_id": "fixture/model@1",
+      "binding": {
+        "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+        "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+        "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+        "transformation_version": "inferweave.alias-materialization/v1",
+        "model_id": "fixture/model@1"
+      }
     }
   ]
 }

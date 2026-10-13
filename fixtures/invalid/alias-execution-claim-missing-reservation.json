@@ -38,5 +38,6 @@
     "resource_group_id": "fixture-group",
     "requirement_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
-  "cleanup_pending": false
+  "cleanup_pending": false,
+  "dispatch_consumed": false
 }

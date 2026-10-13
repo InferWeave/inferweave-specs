@@ -1,0 +1,6 @@
+{
+  "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+  "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+  "transformation_version": "inferweave.alias-materialization/v1",
+  "model_id": "fixture/model@1"
+}

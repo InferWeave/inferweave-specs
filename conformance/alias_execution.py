@@ -91,6 +91,25 @@ def verify_bound(value, actual, public_key, trusted, now):
     return True
 
 
+def materialization_binding(source, executable, model_id):
+    for request in (source, executable):
+        if request['body_sha256'] != hashlib.sha256(request['body'].encode()).hexdigest():
+            raise ValueError('POLICY_DENIED')
+    if any(source[field] != executable[field] for field in FINGERPRINT_FIELDS if field != 'body_sha256'):
+        raise ValueError('POLICY_DENIED')
+    original=json.loads(source['body'], object_pairs_hook=edge._unique_members)
+    materialized=json.loads(executable['body'], object_pairs_hook=edge._unique_members)
+    if original['model'] != model_id and not original['model'].startswith('alias:'):
+        raise ValueError('POLICY_DENIED')
+    expected=dict(original, model=model_id)
+    if materialized != expected:
+        raise ValueError('POLICY_DENIED')
+    return {'request_fingerprint':fingerprint(source),
+            'executable_request_fingerprint':fingerprint(executable),
+            'executable_body_sha256':executable['body_sha256'],
+            'transformation_version':'inferweave.alias-materialization/v1', 'model_id':model_id}
+
+
 class ClaimOracle:
     """Serial safety oracle only. A production replacement needs durable atomic transactions."""
     def __init__(self):
@@ -103,18 +122,23 @@ class ClaimOracle:
         key = scope + (identity['operation_id'],)
         alias = scope + (method, target, identity['idempotency_key']) if identity.get('idempotency_key') else None
         if alias in self.keys:
-            key = self.keys[alias]
+            mapped = self.keys[alias]
+            if mapped != key and key in self.claims:
+                raise ValueError('IDEMPOTENCY_CONFLICT')
+            key = mapped
         if key in self.retired:
             raise ValueError('EXECUTION_RESULT_UNAVAILABLE')
         if key in self.claims:
             claim = self.claims[key]
-            if claim['identity']['request_fingerprint'] != identity['request_fingerprint']:
+            if (claim['identity']['request_fingerprint'] != identity['request_fingerprint']
+                    or claim['identity'].get('idempotency_key') != identity.get('idempotency_key')):
                 raise ValueError('IDEMPOTENCY_CONFLICT')
             claim['identity']['deadline_unix_ms'] = min(claim['identity']['deadline_unix_ms'], identity['deadline_unix_ms'])
             return claim, False
         claim = {'identity':copy.deepcopy(identity),'holder_id':holder,'fencing_token':1,
                  'state':'CLAIMED','attempt_count':0,'reservation_pending':False,
-                 'response_started':False,'reservation_id':None}
+                 'response_started':False,'reservation_id':None,'retired_attempts':set(),
+                 'dispatch_consumed':False}
         self.claims[key] = claim
         if alias:
             self.keys[alias] = key
@@ -125,7 +149,7 @@ class ClaimOracle:
         if claim['holder_id'] != holder or claim['fencing_token'] != fence:
             raise ValueError('LEASE_CONFLICT')
 
-    def begin_reservation(self, claim, holder, fence, generation, current_generation, budget=3):
+    def begin_reservation(self, claim, holder, fence, generation, current_generation, budget=3, model_id="fixture/model@1"):
         self.fence(claim, holder, fence)
         if claim['state'] != 'CLAIMED' or claim['reservation_pending']:
             raise ValueError('EXECUTION_IN_PROGRESS')
@@ -135,17 +159,28 @@ class ClaimOracle:
             raise ValueError('RETRY_BUDGET_EXHAUSTED')
         claim['attempt_count'] += 1
         claim['reservation_pending'] = True
+        claim['selected_generation'] = generation
+        claim['selected_model'] = model_id
 
-    def reserve(self, claim, holder, fence, reservation_id):
+    @staticmethod
+    def attempt(claim, attempt_number, generation):
+        if (attempt_number != claim['attempt_count'] or attempt_number in claim['retired_attempts']
+                or generation != claim.get('selected_generation')):
+            raise ValueError('LEASE_CONFLICT')
+
+    def reserve(self, claim, holder, fence, reservation_id, attempt_number, generation):
         self.fence(claim, holder, fence)
+        self.attempt(claim, attempt_number, generation)
         if claim['state'] != 'CLAIMED' or not claim['reservation_pending']:
             raise ValueError('EXECUTION_IN_PROGRESS')
         claim.update(state='RESERVED', reservation_pending=False, reservation_id=reservation_id)
 
-    def release_before_dispatch(self, claim, holder, fence, owner_confirmed):
+    def release_before_dispatch(self, claim, holder, fence, owner_confirmed, attempt_number, generation):
         self.fence(claim, holder, fence)
+        self.attempt(claim, attempt_number, generation)
         if claim['state'] not in ('CLAIMED', 'RESERVED') or not owner_confirmed:
             raise ValueError('EXECUTION_OUTCOME_UNKNOWN')
+        claim['retired_attempts'].add(attempt_number)
         claim.update(state='CLAIMED', reservation_pending=False, reservation_id=None)
 
     def takeover(self, claim, holder, fence, new_holder, expired):
@@ -155,15 +190,33 @@ class ClaimOracle:
             raise ValueError('LEASE_CONFLICT')
         claim.update(holder_id=new_holder, fencing_token=fence+1)
 
-    def dispatch(self, claim, holder, fence):
+    def dispatch(self, claim, holder, fence, attempt_number, generation, binding):
         self.fence(claim, holder, fence)
+        self.attempt(claim, attempt_number, generation)
         if claim['state'] != 'RESERVED':
             raise ValueError('EXECUTION_IN_PROGRESS')
-        claim['state'] = 'DISPATCHED'
+        if (binding['request_fingerprint'] != claim['identity']['request_fingerprint']
+                or binding['model_id'] != claim['selected_model']):
+            raise ValueError('POLICY_DENIED')
+        claim.update(state='DISPATCHED', execution_binding=copy.deepcopy(binding))
+
+    def consume(self, claim, holder, fence, attempt_number, generation, binding, actual,
+                permit_id, route_kind):
+        # permit ID/route annotate the attempt; neither establishes another execution namespace.
+        self.fence(claim, holder, fence)
+        self.attempt(claim, attempt_number, generation)
+        if claim['state'] != 'DISPATCHED' or claim['dispatch_consumed']:
+            raise ValueError('EXECUTION_IN_PROGRESS')
+        if (binding != claim['execution_binding']
+                or binding['executable_request_fingerprint'] != fingerprint(actual)
+                or binding['executable_body_sha256'] != hashlib.sha256(actual['body'].encode()).hexdigest()
+                or json.loads(actual['body'])['model'] != binding['model_id']):
+            raise ValueError('POLICY_DENIED')
+        claim['dispatch_consumed'] = True
 
     def mark_response_started(self, claim, holder, fence):
         self.fence(claim, holder, fence)
-        if claim['state'] != 'DISPATCHED':
+        if claim['state'] != 'DISPATCHED' or not claim['dispatch_consumed']:
             raise ValueError('EXECUTION_IN_PROGRESS')
         claim['response_started'] = True
 
@@ -231,6 +284,16 @@ def check_vectors(root):
     claim = json.loads((root/'schemas/v1/aliases/execution-claim.json').read_text())
     if claim['properties']['state']['enum'] != STATES:
         errors.append('claim state schema drift')
+    binding=json.loads((root/'schemas/v1/aliases/execution-binding.json').read_text())
+    if binding['properties']['transformation_version']['enum'] != contract['transformation_versions']:
+        errors.append('materialization version vocabulary drift')
+    for name in contract['transformation_versions']:
+        if f'`{name}`' not in spec:
+            errors.append('materialization version absent from spec')
+    if (contract['owner_reservation_unique_key'] != ['claim_id','admission_attempt']
+            or contract['execution_consumption_unique_key'] != ['claim_id']
+            or contract['operation_key_choice_immutable'] is not True):
+        errors.append('execution exclusivity identity drift')
     for number, field in enumerate(FIELDS,1):
         if f'{number}. `{field}`' not in spec:
             errors.append('inference transcript documentation drift: '+field)
@@ -264,4 +327,10 @@ def check_vectors(root):
         failure=run_claim_case(case,identity)
         if failure:
             errors.append(case['id']+': '+failure)
+    for case in vectors['materialization_cases']:
+        try:
+            if materialization_binding(case['source'], case['executable'], case['model_id']) != case['binding']:
+                errors.append(case['id']+': materialization binding mismatch')
+        except ValueError as error:
+            errors.append(case['id']+': '+str(error))
     return errors

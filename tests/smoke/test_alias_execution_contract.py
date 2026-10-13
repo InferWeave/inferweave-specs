@@ -85,10 +85,41 @@ class ExecutionContractTests(unittest.TestCase):
         cases={c['id']:c for c in self.vectors['claim_cases']}
         with patch.object(execution.ClaimOracle,'fence',lambda *args:None):
             self.assertIsNotNone(execution.run_claim_case(cases['takeover-fences-old-holder'],self.identity))
-        def broken_release(claim,holder,fence,owner_confirmed):
+        def broken_release(claim,holder,fence,owner_confirmed,**kwargs):
             claim.update(state='CLAIMED',reservation_pending=False,reservation_id=None)
         with patch.object(execution.ClaimOracle,'release_before_dispatch',staticmethod(broken_release)):
             self.assertIsNotNone(execution.run_claim_case(cases['ambiguous-send-before-response-never-replays'],self.identity))
+
+    def test_operation_key_choice_is_immutable_and_conflicting_names_reject(self):
+        for original,new_key in [(self.identity,'other-key'),(self.identity,None),
+                                 (dict(self.identity,idempotency_key=None),'new-key')]:
+            oracle=execution.ClaimOracle();oracle.acquire(original,'a')
+            with self.assertRaisesRegex(ValueError,'IDEMPOTENCY_CONFLICT'):
+                oracle.acquire(dict(original,idempotency_key=new_key),'b')
+        oracle=execution.ClaimOracle();oracle.acquire(self.identity,'a')
+        other=dict(self.identity,operation_id='different-operation-identifier',idempotency_key='other-key')
+        oracle.acquire(other,'a')
+        with self.assertRaisesRegex(ValueError,'IDEMPOTENCY_CONFLICT'):
+            oracle.acquire(dict(self.identity,idempotency_key='other-key'),'a')
+
+    def test_materialization_binds_original_and_executable_payload(self):
+        case=self.vectors['materialization_cases'][0]
+        bound=execution.materialization_binding(case['source'],case['executable'],case['model_id'])
+        self.assertNotEqual(bound['request_fingerprint'],bound['executable_request_fingerprint'])
+        changed=copy.deepcopy(case['executable'])
+        body=json.loads(changed['body']);body['messages'][0]['content']='altered prompt'
+        changed['body']=json.dumps(body)
+        import hashlib
+        changed['body_sha256']=hashlib.sha256(changed['body'].encode()).hexdigest()
+        with self.assertRaisesRegex(ValueError,'POLICY_DENIED'):
+            execution.materialization_binding(case['source'],changed,case['model_id'])
+        with self.assertRaisesRegex(ValueError,'POLICY_DENIED'):
+            execution.materialization_binding(case['source'],case['executable'],'wrong-model')
+
+    def test_old_attempt_vector_fails_when_attempt_fence_removed(self):
+        cases={c['id']:c for c in self.vectors['claim_cases']}
+        with patch.object(execution.ClaimOracle,'attempt',lambda *args:None):
+            self.assertIsNotNone(execution.run_claim_case(cases['response-loss-same-owner-fallback-old-attempt-denied'],self.identity))
 
     def test_frozen_contract_guard_detects_schema_and_vocab_drift(self):
         with tempfile.TemporaryDirectory() as directory:

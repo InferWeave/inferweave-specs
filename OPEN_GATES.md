@@ -453,3 +453,8 @@ The retry horizon/retention setting, protected claim/grant authority deployment,
 owner reconciliation behavior must be configured and exercised before activation. None is inferred
 from schemas or a single-process oracle. Traffic remains disabled until independent review and
 these implementation gates pass. No operator approval or new credentials are represented as present.
+
+Spec57 independent review additionally requires actual owner attempt-retirement persistence and
+lost-response reconciliation across same-owner fallback, immutable operation/key choice, full
+original/executable request materialization binding, and one claim consumption across distinct
+permit IDs plus direct/relay delivery. Offline hostile vectors cannot close these runtime gates.

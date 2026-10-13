@@ -39,5 +39,6 @@
     "requirement_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
   "reservation_id": "reservation-fixture",
-  "cleanup_pending": false
+  "cleanup_pending": false,
+  "dispatch_consumed": false
 }
