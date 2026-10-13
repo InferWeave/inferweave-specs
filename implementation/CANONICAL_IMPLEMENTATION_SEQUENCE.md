@@ -2196,7 +2196,7 @@ Rules:
 - family-routing (e.g. `POST /rerank` only for `reranking`)
 - parity (native endpoints honour admission/fairshare like `/v1/chat/completions`)
 - standalone/OpenAPI schema parity
-- exact node-register capability-array intersection, registration/Link-incarnation Hello/ack negotiation, and re-registration/credential/socket revocation vectors
+- node-register hardware-only conditional-schema parity and de-duplicated capability intersection; registration/Link-incarnation Hello/ack negotiation and re-registration/credential/socket revocation vectors
 - negotiated native link family/endpoint whitelist and hostile URI/content/size fixtures
 
 ### B-T03 — Transactional runtime hot-swap lifecycle

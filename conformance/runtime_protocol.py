@@ -324,7 +324,13 @@ def negotiate_registration_capabilities(offered, supported):
         item for item in offered[:32]
         if isinstance(item, str) and len(item) <= 128 and grammar.fullmatch(item)
     }
-    return [item for item in supported if item in offered]
+    negotiated = []
+    seen = set()
+    for item in supported:
+        if item in offered and item not in seen:
+            negotiated.append(item)
+            seen.add(item)
+    return negotiated
 
 
 def _native_link_ack(hello, status, reason=None):

@@ -19,6 +19,7 @@
   },
   "registrationCases": [
     {"id": "native-capability-intersection", "offered": ["iw.link-native-request/1"], "supported": ["iw.link-native-request/1"], "expect": ["iw.link-native-request/1"]},
+    {"id": "duplicate-gateway-support-is-deduplicated", "offered": ["iw.link-native-request/1"], "supported": ["iw.link-native-request/1", "iw.link-native-request/1"], "expect": ["iw.link-native-request/1"]},
     {"id": "legacy-capabilities-absent", "supported": ["iw.link-native-request/1"], "expect": []},
     {"id": "generic-feature-map-is-not-offer", "offered": {"native_link_requests": "1"}, "supported": ["iw.link-native-request/1"], "expect": []},
     {"id": "gateway-does-not-support-native", "offered": ["iw.link-native-request/1"], "supported": [], "expect": []}

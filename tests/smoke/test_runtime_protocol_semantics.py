@@ -390,10 +390,18 @@ class NativeLinkDispatchSemantics(unittest.TestCase):
             self.assertEqual([], list(request_validator.iter_errors(load_json("fixtures/valid/" + name))), name)
         for name in ("node-register-response-legacy.json", "node-register-response-native.json"):
             self.assertEqual([], list(response_validator.iter_errors(load_json("fixtures/valid/" + name))), name)
-        malformed = load_json("fixtures/invalid/node-register-native-capability-map.json")
-        self.assertTrue(list(request_validator.iter_errors(malformed)))
+        duplicate_response = load_json("fixtures/invalid/node-register-response-duplicate-capability.json")
+        self.assertTrue(list(response_validator.iter_errors(duplicate_response)))
+        for name in (
+            "node-register-native-capability-map.json",
+            "node-register-routable-missing-capacity.json",
+            "node-register-mixed-hardware-only.json",
+        ):
+            malformed = load_json("fixtures/invalid/" + name)
+            self.assertTrue(list(request_validator.iter_errors(malformed)), name)
         capability = "iw.link-native-request/1"
         self.assertEqual(negotiate_registration_capabilities([capability], [capability]), [capability])
+        self.assertEqual(negotiate_registration_capabilities([capability], [capability, capability]), [capability])
         self.assertEqual(negotiate_registration_capabilities(None, [capability]), [])
         self.assertEqual(negotiate_registration_capabilities({"native_link_requests": "1"}, [capability]), [])
         self.assertEqual(negotiate_registration_capabilities([capability], []), [])

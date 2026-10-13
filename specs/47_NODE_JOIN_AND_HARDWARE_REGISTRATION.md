@@ -75,6 +75,13 @@ lowercase ASCII letters, digits, or `-`, and `major` is `0` or a decimal integer
 zero. This array is the capability offer used by both the Rust and Go gateways. It is not the
 generic Protocol registration `features` level map in `schemas/v1/requests/registration.json`.
 
+The schema always requires the authentication/routing discriminator members `nodeId`, `role`,
+`credential`, `endpoint`, and `models`. A routable registration (non-empty endpoint and models)
+also requires `deployment`, `vramBytes`, `kvBytes`, `kvBytesPerToken`, and `gpuIds`. A hardware-only
+registration has empty endpoint and models; it may omit those deployment/capacity members because
+the gateway supplies their existing empty/zero defaults and must not route from them. Mixed shapes
+(for example a non-empty endpoint with no models) are invalid.
+
 The response always carries `connectionId` as lowercase `c-` followed by 16 hexadecimal digits,
 the volatile format minted by both current gateway implementations, and carries `capabilities` as
 an array. That array contains only the exact string
@@ -171,10 +178,10 @@ never enforces it (section 3.1 rule 5).
    with a non-empty `endpoint`, or a non-empty `models` with an empty `endpoint`) is not
    hardware-only and keeps every existing check unchanged, so a gateway that previously refused
    such a body still refuses it.
-2. The body still carries the baseline numeric members; a hardware-only body SHOULD send
-   `vramBytes`, `kvBytes`, `kvBytesPerToken` as `0` and `gpuIds` as `[]`. A gateway MUST NOT
-   derive routability or capacity from them for a hardware-only node. The reference gateway
-   currently refuses `deployment: ""` at deserialization, which it must relax for this case only.
+2. A hardware-only body MAY omit `deployment`, `vramBytes`, `kvBytes`, `kvBytesPerToken`, and
+   `gpuIds`; the existing gateway defaults are respectively empty, zero, zero, zero, and empty. If
+   sent, they SHOULD carry those values. A gateway MUST NOT derive routability or capacity from
+   them for a hardware-only node. A non-hardware-only registration still requires every member.
 3. A hardware-only node is **recorded**: it is authenticated, receives a `connectionId`, is
    subject to the normal freshness window and heartbeats normally, and appears in operator node
    listings together with its stored `hardware` (member name `hardware`; the listing endpoint

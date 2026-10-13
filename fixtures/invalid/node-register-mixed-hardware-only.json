@@ -1,0 +1,7 @@
+{
+  "nodeId": "node-a",
+  "role": "node",
+  "credential": "credential-example",
+  "endpoint": "127.0.0.1:9101",
+  "models": []
+}

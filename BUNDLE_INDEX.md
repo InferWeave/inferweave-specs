@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~635,387 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~636,233 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -48,18 +48,18 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/compatibility.yaml` — `cc192d9155ac` — ~448t
 - `conformance/deployment-key-vectors.json` — `f817862b8b8d` — ~1,149t
 - `conformance/manifest.yaml` — `6c044faddf2a` — ~395t
-- `conformance/native-link-binding-vectors.json` — `c90e5170e1e5` — ~718t
+- `conformance/native-link-binding-vectors.json` — `f3494ec3d592` — ~771t
 - `conformance/node-join-vectors.json` — `d7aa10218ed6` — ~9,063t
 - `conformance/node_join.py` — `606158868345` — ~3,836t
 - `conformance/release-manifest.yaml` — `06b831d5d0cc` — ~197t
 - `conformance/runner.py` — `a4c0599b40f1` — ~6,056t
 - `conformance/runtime-family-vectors.json` — `e9182c76245d` — ~3,138t
-- `conformance/runtime_protocol.py` — `9c973a084013` — ~5,680t
+- `conformance/runtime_protocol.py` — `f0e35ece3330` — ~5,714t
 - `contracts/README.md` — `82ce0097eabe` — ~467t
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
-- `contracts/canonical-task-graph.json` — `f9385896d3ec` — ~32,220t
+- `contracts/canonical-task-graph.json` — `b52a29ca787a` — ~32,231t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~167t
 - `contracts/deployment-manifest.image.example.yaml` — `94c2bd1e9061` — ~577t
@@ -218,7 +218,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/node-hardware-report-negative-vram.json` — `05ad3281363a` — ~212t
 - `fixtures/invalid/node-hardware-version-string.json` — `6072ed618bf3` — ~214t
 - `fixtures/invalid/node-missing-id.json` — `6df7ff2a4a7d` — ~13t
-- `fixtures/invalid/node-register-native-capability-map.json` — `1fc1e19ce6e7` — ~70t
+- `fixtures/invalid/node-register-mixed-hardware-only.json` — `d3706dd29296` — ~33t
+- `fixtures/invalid/node-register-native-capability-map.json` — `17f7c6deb67a` — ~139t
+- `fixtures/invalid/node-register-response-duplicate-capability.json` — `79b9e39a0f95` — ~50t
+- `fixtures/invalid/node-register-routable-missing-capacity.json` — `96b1d6acaa80` — ~92t
 - `fixtures/invalid/protocol-bad-version.json` — `56625bd802e2` — ~25t
 - `fixtures/invalid/quantity-measured-without-bytes.json` — `ac70bd5bc496` — ~13t
 - `fixtures/invalid/rebalance-decision-success-estimated.json` — `b87c5b07075c` — ~355t
@@ -259,8 +262,8 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/model.json` — `73854ced3bff` — ~14t
 - `fixtures/valid/node-hardware-report.json` — `11e6cfa1e2d9` — ~214t
 - `fixtures/valid/node-hardware.json` — `3e127be088c8` — ~245t
-- `fixtures/valid/node-register-legacy.json` — `8b24d611e6e3` — ~58t
-- `fixtures/valid/node-register-native.json` — `e21273ddfdb9` — ~70t
+- `fixtures/valid/node-register-legacy.json` — `e7860cdb79fa` — ~31t
+- `fixtures/valid/node-register-native.json` — `2ac2fa6533bd` — ~139t
 - `fixtures/valid/node-register-response-legacy.json` — `900d6239ef6d` — ~36t
 - `fixtures/valid/node-register-response-native.json` — `d7f962ef1e95` — ~42t
 - `fixtures/valid/node.json` — `b9f3cf13f185` — ~54t
@@ -283,7 +286,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/runtime-load-request.json` — `da7a4975f2a1` — ~56t
 - `fixtures/valid/seat.json` — `226b3cc299f9` — ~19t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `1423b1ba8762` — ~2,637t
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `7fc171a57afe` — ~23,461t
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `0520846dce63` — ~23,472t
 - `implementation/CANONICAL_TASK_INDEX.md` — `b1812bd9e00e` — ~3,518t
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
@@ -338,7 +341,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/requests/node-hardware-report.json` — `3b00c4fae6d6` — ~577t
 - `schemas/v1/requests/node-hardware.json` — `9d1413d86adb` — ~255t
 - `schemas/v1/requests/node-register-response.json` — `404762552103` — ~270t
-- `schemas/v1/requests/node-register.json` — `4604e3cb533e` — ~567t
+- `schemas/v1/requests/node-register.json` — `c8c2a9022cca` — ~743t
 - `schemas/v1/requests/prediction.json` — `2c8599634086` — ~120t
 - `schemas/v1/requests/registration.json` — `52a9e052a087` — ~250t
 - `schemas/v1/requests/request.json` — `2c893254aae6` — ~426t
@@ -419,7 +422,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
 - `specs/45_PROTOCOL_V1.md` — `144d5f8b6353` — ~10,521t
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `4ef07f017b84` — ~13,331t
-- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `f636ff45d477` — ~9,161t
+- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `f274414e8356` — ~9,303t
 - `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `5c95652f58bb` — ~1,761t
 - `specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md` — `53c00be313e7` — ~1,267t
 - `specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md` — `24d9f61452a1` — ~3,315t
@@ -586,7 +589,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-5/P5-T33.md` — `3b69e5031fde` — ~635t
 - `tasks/phase-5/P5-T34.md` — `7491e8f30dae` — ~642t
 - `tasks/phase-B/B-T01.md` — `de27ab6212c6` — ~311t
-- `tasks/phase-B/B-T02.md` — `331417a2c068` — ~391t
+- `tasks/phase-B/B-T02.md` — `c20f92c2fd9b` — ~402t
 - `tasks/phase-B/B-T03.md` — `8438abc83905` — ~306t
 - `tasks/phase-B/B-T04.md` — `531bab03f421` — ~252t
 - `tasks/phase-B/B-T05.md` — `696859878460` — ~251t
@@ -604,6 +607,6 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_runtime_families.py` — `f297f5195d5e` — ~949t
 - `tests/smoke/test_runtime_lifecycle.py` — `ce9f6eaf0c02` — ~1,245t
 - `tests/smoke/test_runtime_protocol_gap_repair.py` — `02d1a6dd7955` — ~1,692t
-- `tests/smoke/test_runtime_protocol_semantics.py` — `454a93a84c70` — ~7,089t
+- `tests/smoke/test_runtime_protocol_semantics.py` — `4bd8cf155fe0` — ~7,211t
 - `tools/README.md` — `4ab4454accb3` — ~79t
 - `tools/gen_gpu_memory_fixtures.py` — `8cc9a2cfedd9` — ~8,576t
