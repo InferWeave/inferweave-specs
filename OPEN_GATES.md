@@ -458,3 +458,13 @@ Spec57 independent review additionally requires actual owner attempt-retirement 
 lost-response reconciliation across same-owner fallback, immutable operation/key choice, full
 original/executable request materialization binding, and one claim consumption across distinct
 permit IDs plus direct/relay delivery. Offline hostile vectors cannot close these runtime gates.
+
+
+### Dynamic alias filtered pagination proof remains owed
+
+Spec 54 permits an empty filtered page with a continuation and requires bounded advancing
+scans, authorization/snapshot binding and explicit incomplete UI state. The list schema
+already permits this response. These requirements do not establish runtime enforcement:
+empty-page continuation, scan-budget exhaustion, repeated-cursor handling and authorization
+revision invalidation at the Rust/Go boundary remain **unsatisfied/owed** under
+A-T02/A-T06/A-T07/A-T08 and acceptance 20/27. No rollout gate is opened by this correction.

@@ -217,13 +217,36 @@ existing `{request_id}` route parameter. OpenAPI operations reference the standa
 | GET `/events` | Existing resumable source stream, alias events negotiated | event envelope |
 | GET `/federation/alias-advertisements` | Authorized conservative envelopes | advertisement page |
 
-Lists use opaque cursors bound to principal, filters and snapshot, limit 1–100 (default 50).
+Lists use opaque cursors bound to principal, current authorization revision, filters and snapshot,
+limit 1–100 (default 50).
 Expired cursor returns 410 and requires new snapshot; malformed cursor returns 400. Filters are
 server-side: `query` (case-insensitive alias ID/description), `runtime_family`, `owner_scope`,
 `status` (effective health), `visibility`, `route_kind` and `family` (structured model family).
 Filters are conjunctive; omitted filters are unrestricted only within the authorized view.
 An unsupported or malformed filter returns 400, never an unfiltered page.
 The server applies authorization before filtering/counts; cursor tampering cannot widen access.
+
+**Filtered-page continuation.** The original list contract did not say whether an empty page
+ends a filtered scan. A client implementing that assumption would hide later matching aliases
+when a bounded server scan rejects every row in an intermediate page. Dynamic server-side
+filters (for example effective `status`, `route_kind` or candidate `family`) may therefore return
+`items: []` together with `next_cursor`. The cursor, not item count or a short page, determines
+whether more of the authorized snapshot remains. A client requesting the complete result follows
+continuations until `next_cursor` is absent; a paginated UI must keep its continuation control
+available on an empty page and must not label the whole result empty while a cursor remains.
+
+Each request scans a bounded number of source rows. Every emitted continuation advances strictly
+past the rows already examined, including rows rejected by dynamic filters; it cannot repeat the
+same scan position or restart at the beginning. On exhaustion, omit `next_cursor`. Clients must
+bound any automatic page-draining work by request/time budgets, preserve a continuation when that
+budget expires, and reject repeated cursors rather than loop indefinitely. They must not silently
+present a budget-limited result as complete. Pagination never performs inference or provisioning.
+The continuation retains its original snapshot and filter binding; a changed current authorization
+revision or unavailable snapshot invalidates it (410, restart from a newly authorized snapshot).
+Authorization is rechecked on every request, so a cursor cannot preserve revoked access. Dynamic
+facts used by filters belong to the bound snapshot; a newer catalog requires a new scan rather
+than silently mixing revisions within one result. An opaque catalog revision is not a global
+atomic snapshot across owners (spec 40).
 `GET /alias-capabilities` requires the same signed level-2 authorization and durable nonce check
 as alias reads. It returns only the current Rust grant's `owner_scope`, role and boolean
 `can_read`, `can_preview`, `can_draft`, `can_publish`, `can_rollback`, `can_share` flags; it
