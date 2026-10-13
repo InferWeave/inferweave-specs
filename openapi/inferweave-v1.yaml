@@ -148,6 +148,24 @@ paths:
           content:
             application/json:
               schema: { type: array, items: { $ref: "#/components/schemas/Model" } }
+  /alias-capabilities:
+    get:
+      operationId: getAliasCapabilities
+      summary: Current Rust-authorized alias capabilities for the caller
+      description: Spec 54. A signed level-2 read returns current Rust grants for one authorized owner scope; the edge UI must not substitute its own operator group. Every later operation reauthorizes.
+      security: [{AliasEdgeDelegation: []}]
+      parameters:
+        - {name: InferWeave-Alias-Level, in: header, required: true, schema: {type: string, enum: ["2"]}}
+        - {name: owner_scope, in: query, required: true, schema: {type: string, minLength: 1, maxLength: 256}}
+      responses:
+        "200":
+          description: Current scope-limited grant projection
+          content:
+            application/json:
+              schema: {$ref: "../schemas/v1/aliases/capabilities.json"}
+        "401": {description: Missing or invalid identity proof}
+        "403": {description: Scope denied by current Rust grants}
+        "503": {description: Delegation or replay authority unavailable}
   /aliases:
     get:
       operationId: listAliases

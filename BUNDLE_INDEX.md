@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~716,701 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~717,677 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -57,14 +57,14 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/node-join-vectors.json` — `d7aa10218ed6` — ~9,063t
 - `conformance/node_join.py` — `606158868345` — ~3,836t
 - `conformance/release-manifest.yaml` — `f1864185a739` — ~294t
-- `conformance/runner.py` — `bd95ccb447fb` — ~6,849t
+- `conformance/runner.py` — `2dc1755035de` — ~6,864t
 - `conformance/runtime-family-vectors.json` — `e9182c76245d` — ~3,138t
 - `conformance/runtime_protocol.py` — `9142473a04b6` — ~6,816t
 - `contracts/README.md` — `82ce0097eabe` — ~467t
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
-- `contracts/canonical-task-graph.json` — `4d67ddd1a979` — ~34,221t
+- `contracts/canonical-task-graph.json` — `c10c501be171` — ~34,252t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~167t
 - `contracts/deployment-manifest.image.example.yaml` — `94c2bd1e9061` — ~577t
@@ -192,6 +192,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/cache-state-published-unverified.json` — `38025af6d9fc` — ~117t
 - `fixtures/invalid/deployment-key-mismatch.json` — `eca7c712dc01` — ~264t
 - `fixtures/invalid/device-bad-enum.json` — `8cff0b010519` — ~15t
+- `fixtures/invalid/dynamic-alias-capabilities-extra-role.json` — `09382fafbb21` — ~66t
 - `fixtures/invalid/dynamic-alias-definition-unbounded-retries.json` — `2a128e633470` — ~256t
 - `fixtures/invalid/dynamic-alias-definition-unknown-policy.json` — `61379a4eb4c0` — ~263t
 - `fixtures/invalid/dynamic-alias-definition-uppercase.json` — `f3bec96219cb` — ~256t
@@ -270,6 +271,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/dynamic-alias-advertisement-embedding.json` — `148efdbed502` — ~390t
 - `fixtures/valid/dynamic-alias-advertisement-page.json` — `f1fb246e8f38` — ~578t
 - `fixtures/valid/dynamic-alias-advertisement.json` — `6fe49847c179` — ~490t
+- `fixtures/valid/dynamic-alias-capabilities.json` — `98b7d7e454f7` — ~58t
 - `fixtures/valid/dynamic-alias-catalog.json` — `79ddf1f6953f` — ~502t
 - `fixtures/valid/dynamic-alias-definition-empty-allowlists.json` — `ed2acbd3ec9e` — ~264t
 - `fixtures/valid/dynamic-alias-definition.json` — `1da6fb035aaf` — ~256t
@@ -350,7 +352,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/runtime-load-request.json` — `da7a4975f2a1` — ~56t
 - `fixtures/valid/seat.json` — `226b3cc299f9` — ~19t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `1423b1ba8762` — ~2,637t
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `2ea94670425f` — ~24,724t
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `00f59ff724a5` — ~24,753t
 - `implementation/CANONICAL_TASK_INDEX.md` — `7bd504d142d8` — ~3,683t
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
@@ -364,7 +366,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `implementation/TEST_STRATEGY.md` — `5ded1d51fb57` — ~1,301t
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `openapi/README.md` — `fd85aef8a3a6` — ~98t
-- `openapi/inferweave-v1.yaml` — `2bfe4d9f7574` — ~14,248t
+- `openapi/inferweave-v1.yaml` — `364453281a7f` — ~14,509t
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
 - `pi/CONTEXT_PACK_CHECKLIST.md` — `8a9c95b7ec3d` — ~200t
 - `pi/FIRST_TASKS.md` — `674dbf07c4f5` — ~462t
@@ -376,6 +378,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/README.md` — `d0192d8bb85d` — ~616t
 - `schemas/v1/aliases/advertisement-page.json` — `0e22e98c15e3` — ~49t
 - `schemas/v1/aliases/advertisement.json` — `a248a77490cd` — ~47t
+- `schemas/v1/aliases/capabilities.json` — `e3e71c58e2d7` — ~257t
 - `schemas/v1/aliases/catalog.json` — `291bebdacbb9` — ~44t
 - `schemas/v1/aliases/contract.json` — `e29b3a7110a5` — ~10,135t
 - `schemas/v1/aliases/definition.json` — `223305508427` — ~45t
@@ -515,7 +518,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/51_PIPELINES_AND_DURABLE_JOBS.md` — `ab9f8df6a816` — ~624t
 - `specs/52_DURABLE_INFERENCE_JOBS.md` — `ed268f3478d8` — ~785t
 - `specs/53_RUNTIME_FAMILY_CONFORMANCE.md` — `d1c8172161f8` — ~923t
-- `specs/54_DYNAMIC_MODEL_ALIASES.md` — `17b56c8457c0` — ~6,925t
+- `specs/54_DYNAMIC_MODEL_ALIASES.md` — `741f61df41cc` — ~7,151t
 - `specs/55_ALIAS_EDGE_DELEGATION.md` — `38b0da721b74` — ~2,316t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
@@ -682,7 +685,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-A/A-T04.md` — `c7fbdcff5051` — ~201t
 - `tasks/phase-A/A-T05.md` — `a1d5964f4f5b` — ~219t
 - `tasks/phase-A/A-T06.md` — `b3c26da51bc8` — ~203t
-- `tasks/phase-A/A-T07.md` — `966d31468c9b` — ~206t
+- `tasks/phase-A/A-T07.md` — `fa31cbb7ea3a` — ~235t
 - `tasks/phase-A/A-T08.md` — `44924ae9a7cd` — ~216t
 - `tasks/phase-B/B-T01.md` — `de27ab6212c6` — ~311t
 - `tasks/phase-B/B-T02.md` — `a2305dc7cc56` — ~484t
@@ -693,7 +696,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_alias_edge_delegation.py` — `e8f8df50ee53` — ~869t
 - `tests/smoke/test_bundle_self_test.py` — `f0115f5e0f1a` — ~281t
 - `tests/smoke/test_conformance.py` — `40dd0543b1e5` — ~1,230t
-- `tests/smoke/test_dynamic_alias_contract.py` — `4f5e4afe9dd6` — ~2,470t
+- `tests/smoke/test_dynamic_alias_contract.py` — `bc7c6423c81d` — ~2,474t
 - `tests/smoke/test_family_routing.py` — `d44eef95e64a` — ~457t
 - `tests/smoke/test_jobs.py` — `a7c0900840ea` — ~400t
 - `tests/smoke/test_jobs_endpoint.py` — `36a80b52a28b` — ~348t

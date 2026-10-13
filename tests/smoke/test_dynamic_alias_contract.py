@@ -34,7 +34,7 @@ class DynamicAliasContractTests(unittest.TestCase):
         self.assertEqual([], dynamic_aliases.contract_errors(ROOT))
 
     def test_positive_and_hostile_fixtures(self):
-        kinds = ['definition', 'resolution', 'resolve-request', 'event', 'advertisement']
+        kinds = ['definition', 'resolution', 'resolve-request', 'event', 'advertisement', 'capabilities']
         for fixture in (ROOT / 'fixtures/valid').glob('dynamic-alias-*.json'):
             kind = fixture.stem.removeprefix('dynamic-alias-')
             if kind == 'definition-empty-allowlists':

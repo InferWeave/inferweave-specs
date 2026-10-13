@@ -201,6 +201,7 @@ existing `{request_id}` route parameter. OpenAPI operations reference the standa
 
 | Method/path | Meaning | Body / response |
 |---|---|---|
+| GET `/alias-capabilities` | Current Rust principal's alias permissions for one authorized owner scope | capabilities |
 | GET `/aliases` | Visible definitions; level 1 unchanged, level 2 paginated | list |
 | POST `/aliases` | Create draft, idempotent and absent precondition | draft-write / detail |
 | GET `/aliases/{id}` | Current draft/published/effective state | detail |
@@ -223,6 +224,11 @@ server-side: `query` (case-insensitive alias ID/description), `runtime_family`, 
 Filters are conjunctive; omitted filters are unrestricted only within the authorized view.
 An unsupported or malformed filter returns 400, never an unfiltered page.
 The server applies authorization before filtering/counts; cursor tampering cannot widen access.
+`GET /alias-capabilities` requires the same signed level-2 authorization and durable nonce check
+as alias reads. It returns only the current Rust grant's `owner_scope`, role and boolean
+`can_read`, `can_preview`, `can_draft`, `can_publish`, `can_rollback`, `can_share` flags; it
+exposes no candidate names or credentials. Every subsequent action is authorized again in Rust.
+The Go edge may display these flags but may not derive them from its operator group snapshot.
 Every response identifies authoritative observed time/revision. Never expose forbidden model IDs,
 internal addresses, peer secrets, lease tokens or cross-tenant metrics in catalog/preview/errors.
 Dry-run limits and candidate cap (256) are enforced in Rust; truncated output is explicitly flagged.
@@ -331,7 +337,11 @@ is not a reason to remove user-facing operation confirmations.
 
 Inventory existing Rust operator/static/logical aliases and Go worker/model aliases; characterize
 exact names before import. Shadow compare eligibility/decisions before any traffic switch. Feature
-flag `alias_engine_v1` and read-only UI flag default off until parity/security gates pass. No
+flag `alias_engine_v1` and a separate site UI mode `off|read_only|full` default `off` until
+parity/security gates pass. `read_only` permits authorized index/detail/preview displays but
+hides mutations; `full` additionally shows only controls allowed by current Rust alias
+capabilities. Unknown/absent UI mode is `off`. UI visibility is guidance, never an authority
+substitute for Rust per-operation checks. No
 migration marks a hard capability verified without evidence. Preserve legacy exact behavior and
 mixed-version links. Remove Go duplicate selection only after parity and rollback window; never
 remove active production behavior merely because the target contract differs.
