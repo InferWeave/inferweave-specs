@@ -244,6 +244,11 @@ must be redacted by principal policy. Go compatibility relay preserves status, b
 order/tool JSON, multimodal/audio content types, caller deadline, cancellation, backpressure and
 idempotency. It never resolves or re-scores aliases from a UI cache.
 
+Inference identity and exclusive execution/admission claims are specified in
+`57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md`. Spec55 management assertions cannot authorize
+`/v1/` inference. Level-2 execution requires the separate current infer grant and durable claim
+boundary; none of these controls is proven by management or preview tests.
+
 ## Events, errors, cache and telemetry
 
 Frozen vocabulary is `contracts/protocol-v1/dynamic-aliases.json`; tables below are reconciled
@@ -291,6 +296,9 @@ correlation ID; retry-after is optional and measured.
 | `PRECONDITION_REQUIRED` | false | 428 |
 | `IDEMPOTENCY_CONFLICT` | false | 409 |
 | `UNSUPPORTED_ALIAS_LEVEL` | false | 400 |
+| `EXECUTION_IN_PROGRESS` | true | 409 |
+| `EXECUTION_OUTCOME_UNKNOWN` | false | 409 |
+| `EXECUTION_RESULT_UNAVAILABLE` | false | 409 |
 
 Health: `READY`, `DEGRADED`, `QUEUE_ONLY`, `PROVISIONABLE`, `UNAVAILABLE`, `DISABLED`.
 

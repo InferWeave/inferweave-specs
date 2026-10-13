@@ -31,10 +31,16 @@ import runtime_protocol  # noqa: E402
 import dynamic_aliases  # noqa: E402
 import alias_edge_delegation  # noqa: E402
 import runtime_observations  # noqa: E402
+import alias_execution  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
 # fixture basename -> schema rel path (relative to schemas/v1)
 MAP = {
+    "alias-execution-binding": "aliases/execution-binding.json",
+    "alias-execution-permit": "aliases/execution-permit.json",
+    "alias-inference-assertion": "aliases/inference-assertion.json",
+    "alias-execution-identity": "aliases/execution-identity.json",
+    "alias-execution-claim": "aliases/execution-claim.json",
     "runtime-observation-report": "requests/runtime-observation-report.json",
     "runtime-observation-event": "events/runtime-observation-event.json",
     "dynamic-alias-edge-assertion": "aliases/edge-assertion.json",
@@ -555,6 +561,12 @@ def main():
     )
     args = parser.parse_args()
     failures = 0
+    execution_errors = alias_execution.check_vectors(ROOT)
+    for error in execution_errors:
+        print("FAIL  " + error)
+    failures += len(execution_errors)
+    if not execution_errors:
+        print("PASS  alias execution vectors (offline only; HTTP/DB/node proof owed)")
     observation_errors = runtime_observations.check_vectors(ROOT)
     for error in observation_errors:
         print("FAIL  " + error)

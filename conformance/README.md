@@ -30,3 +30,11 @@ These vectors do not qualify a production Link implementation.
 The conformance suite and fixtures are delivered (feature `IW-PROTO-002`, task `P5-T28`);
 production conformance by a running component remains `owed` until the reference implementation
 ships.
+
+## Alias execution identity and claims (spec57)
+
+Run `python3 -B tests/smoke/test_alias_execution_contract.py` for mutation-tested offline
+transcript/fingerprint and serial claim safety vectors. `python3 tools/gen_alias_execution_fixtures.py`
+reproduces public-seed fixtures. `runner.py` and `validate_specs.py --self-test` include the checks.
+These do not exercise production HTTP, PostgreSQL concurrency, owner/node fencing or cleanup.
+Actual implementation qualification remains owed in OPEN_GATES and A-T02/A-T04/A-T05/A-T06/A-T08.

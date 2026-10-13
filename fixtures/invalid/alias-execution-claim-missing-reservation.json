@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "claim_id": "claim-fixture",
+  "identity": {
+    "tenant_id": "fixture-tenant",
+    "principal_id": "principal-fixture",
+    "grant_revision": "grant-7",
+    "operation_id": "EBESExQVFhcYGRobHB0eHw",
+    "request_id": "request-fixture",
+    "idempotency_key": "fixture-operation",
+    "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+    "deadline_unix_ms": 1800000012000
+  },
+  "state": "RESERVED",
+  "holder_id": "holder-a",
+  "fencing_token": 1,
+  "last_progress_at": 1800000001000,
+  "ownership_lease": {
+    "lease_id": "holder-lease",
+    "generation": 1,
+    "expires_at_unix_ms": 1800000010000
+  },
+  "attempt_count": 1,
+  "reservation_pending": false,
+  "response_started": false,
+  "selection": {
+    "alias_id": "coding-fast",
+    "alias_revision": 2,
+    "catalog_revision": "catalog-fixture",
+    "routing_policy_version": "fixture-policy-1",
+    "model_id": "fixture/model@1",
+    "deployment_key": "fixture-deployment",
+    "instance_id": "fixture-instance",
+    "instance_generation": "fixture-generation",
+    "capability_profile_id": "fixture-profile",
+    "policy_evidence_id": "fixture-policy",
+    "resource_owner_id": "fixture-owner",
+    "resource_group_id": "fixture-group",
+    "requirement_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "cleanup_pending": false,
+  "dispatch_consumed": false
+}

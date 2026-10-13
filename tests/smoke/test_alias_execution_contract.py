@@ -1,0 +1,137 @@
+"""Spec57 offline proof. Real HTTP/DB/node fault-injection gates remain owed."""
+import copy
+import json
+from pathlib import Path
+import shutil
+import sys
+import tempfile
+import unittest
+from unittest.mock import patch
+
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT/'conformance'))
+import alias_execution as execution
+import alias_edge_delegation as edge
+import node_join
+
+
+class ExecutionContractTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.vectors=json.loads((ROOT/'conformance/alias-execution-vectors.json').read_text())
+        cls.identity=json.loads((ROOT/'fixtures/valid/alias-execution-identity.json').read_text())
+
+    def test_all_known_answers_hostile_vectors_and_claim_transitions(self):
+        self.assertEqual([],execution.check_vectors(ROOT))
+        self.assertGreaterEqual(len(self.vectors['claim_cases']),12)
+
+    def test_signature_domain_cannot_be_reused_from_management(self):
+        v=self.vectors['known_answers'][0]
+        wire=execution.transcript(v['envelope'])
+        wrong=edge.DOMAIN+wire[len(execution.DOMAIN):]
+        signature=node_join.ed25519_sign(bytes.fromhex(v['test_seed_hex']),wrong)
+        self.assertFalse(node_join.ed25519_verify(bytes.fromhex(v['public_key_hex']),wire,signature))
+
+    def test_fingerprint_binds_every_accepted_semantic_header(self):
+        base=self.vectors['known_answers'][0]['envelope']
+        original=execution.fingerprint(base)
+        for field in execution.FINGERPRINT_FIELDS:
+            changed=dict(base);changed[field]+='x'
+            self.assertNotEqual(original,execution.fingerprint(changed),field)
+        for field in ['edge_id','nonce','signature','operation_id','deadline_unix_ms']:
+            changed=dict(base);changed[field]=changed[field]+1 if type(changed[field]) is int else changed[field]+'x'
+            self.assertEqual(original,execution.fingerprint(changed),field)
+
+    def test_header_rejects_duplicate_unknown_fields_padding_and_wrong_fingerprint(self):
+        base=self.vectors['known_answers'][0]
+        raw=json.dumps(base['envelope'])
+        malformed=[base['header']+'=',edge.b64url((raw[:-1]+',"subject":"foreign"}').encode())]
+        for mutation in [{'tenant_id':'foreign'},{'version':2},{'version':True},{'nonce':'AA'},
+                         {'signature':'AA'},{'request_fingerprint':'0'*64},{'deadline_unix_ms':1.0}]:
+            malformed.append(edge.b64url(json.dumps(dict(base['envelope'],**mutation)).encode()))
+        for header in malformed:
+            with self.assertRaises(ValueError): execution.decode_header(header)
+
+    def test_equal_prompts_without_idempotency_key_are_distinct_work(self):
+        oracle=execution.ClaimOracle();a=dict(self.identity);a.pop('idempotency_key')
+        b=dict(a,operation_id='another-valid-operation-id')
+        first,_=oracle.acquire(a,'a');second,created=oracle.acquire(b,'a')
+        self.assertTrue(created);self.assertIsNot(first,second)
+
+    def test_changed_principal_or_tenant_does_not_observe_original(self):
+        oracle=execution.ClaimOracle();first,_=oracle.acquire(self.identity,'a')
+        for field in ['tenant_id','principal_id']:
+            second,created=oracle.acquire(dict(self.identity,**{field:'foreign'}),'b')
+            self.assertTrue(created);self.assertIsNot(first,second)
+
+    def test_retry_deadline_never_extends_and_request_id_survives(self):
+        oracle=execution.ClaimOracle();first,_=oracle.acquire(self.identity,'a')
+        retry=dict(self.identity,request_id='attempt-correlation',deadline_unix_ms=self.identity['deadline_unix_ms']+10000)
+        second,created=oracle.acquire(retry,'b')
+        self.assertFalse(created);self.assertIs(first,second)
+        self.assertEqual(self.identity['request_id'],second['identity']['request_id'])
+        self.assertEqual(self.identity['deadline_unix_ms'],second['identity']['deadline_unix_ms'])
+        retry['deadline_unix_ms']-=11000;oracle.acquire(retry,'b')
+        self.assertEqual(retry['deadline_unix_ms'],first['identity']['deadline_unix_ms'])
+
+    def test_retired_operation_cannot_recreate_work(self):
+        oracle=execution.ClaimOracle();claim,_=oracle.acquire(self.identity,'a')
+        key=tuple(self.identity[f] for f in ['tenant_id','principal_id','operation_id'])
+        oracle.retired.add(key);del oracle.claims[key]
+        with self.assertRaisesRegex(ValueError,'EXECUTION_RESULT_UNAVAILABLE'):
+            oracle.acquire(self.identity,'b')
+
+    def test_fence_and_ambiguity_cases_detect_removed_controls(self):
+        cases={c['id']:c for c in self.vectors['claim_cases']}
+        with patch.object(execution.ClaimOracle,'fence',lambda *args:None):
+            self.assertIsNotNone(execution.run_claim_case(cases['takeover-fences-old-holder'],self.identity))
+        def broken_release(claim,holder,fence,owner_confirmed,**kwargs):
+            claim.update(state='CLAIMED',reservation_pending=False,reservation_id=None)
+        with patch.object(execution.ClaimOracle,'release_before_dispatch',staticmethod(broken_release)):
+            self.assertIsNotNone(execution.run_claim_case(cases['ambiguous-send-before-response-never-replays'],self.identity))
+
+    def test_operation_key_choice_is_immutable_and_conflicting_names_reject(self):
+        for original,new_key in [(self.identity,'other-key'),(self.identity,None),
+                                 (dict(self.identity,idempotency_key=None),'new-key')]:
+            oracle=execution.ClaimOracle();oracle.acquire(original,'a')
+            with self.assertRaisesRegex(ValueError,'IDEMPOTENCY_CONFLICT'):
+                oracle.acquire(dict(original,idempotency_key=new_key),'b')
+        oracle=execution.ClaimOracle();oracle.acquire(self.identity,'a')
+        other=dict(self.identity,operation_id='different-operation-identifier',idempotency_key='other-key')
+        oracle.acquire(other,'a')
+        with self.assertRaisesRegex(ValueError,'IDEMPOTENCY_CONFLICT'):
+            oracle.acquire(dict(self.identity,idempotency_key='other-key'),'a')
+
+    def test_materialization_binds_original_and_executable_payload(self):
+        case=self.vectors['materialization_cases'][0]
+        bound=execution.materialization_binding(case['source'],case['executable'],case['model_id'])
+        self.assertNotEqual(bound['request_fingerprint'],bound['executable_request_fingerprint'])
+        changed=copy.deepcopy(case['executable'])
+        body=json.loads(changed['body']);body['messages'][0]['content']='altered prompt'
+        changed['body']=json.dumps(body)
+        import hashlib
+        changed['body_sha256']=hashlib.sha256(changed['body'].encode()).hexdigest()
+        with self.assertRaisesRegex(ValueError,'POLICY_DENIED'):
+            execution.materialization_binding(case['source'],changed,case['model_id'])
+        with self.assertRaisesRegex(ValueError,'POLICY_DENIED'):
+            execution.materialization_binding(case['source'],case['executable'],'wrong-model')
+
+    def test_old_attempt_vector_fails_when_attempt_fence_removed(self):
+        cases={c['id']:c for c in self.vectors['claim_cases']}
+        with patch.object(execution.ClaimOracle,'attempt',lambda *args:None):
+            self.assertIsNotNone(execution.run_claim_case(cases['response-loss-same-owner-fallback-old-attempt-denied'],self.identity))
+
+    def test_frozen_contract_guard_detects_schema_and_vocab_drift(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            for part in ['contracts','conformance','schemas','specs','fixtures']:
+                shutil.copytree(ROOT/part,root/part)
+            path=root/'contracts/protocol-v1/alias-execution.json';base=path.read_text();value=json.loads(base)
+            value['claim_states'].append('RETRY');path.write_text(json.dumps(value))
+            self.assertTrue(execution.check_vectors(root));path.write_text(base)
+            path=root/'schemas/v1/aliases/inference-assertion.json';value=json.loads(path.read_text())
+            value['required'].remove('operation_id');path.write_text(json.dumps(value))
+            self.assertTrue(execution.check_vectors(root))
+
+
+if __name__=='__main__': unittest.main()

@@ -46,3 +46,11 @@ negotiated_profiles:
     implementation_acceptance: contracts/dynamic-alias-acceptance.json
     proof_status: owed
     required_scenarios: [aliases, schema_validation, feature_negotiation, errors, retries, federation, events, snapshot_consistency, backwards_compatibility]
+
+  IW-ALIAS-EXECUTION-IDENTITY-1:
+    feature: dynamic_aliases
+    level: "2"
+    artifact_runner: tests/smoke/test_alias_execution_contract.py
+    implementation_acceptance: contracts/dynamic-alias-acceptance.json
+    proof_status: owed
+    required_scenarios: [aliases, schema_validation, retries, errors, federation, backwards_compatibility]

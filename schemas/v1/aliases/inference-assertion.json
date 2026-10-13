@@ -1,0 +1,176 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/aliases/inference-assertion.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "edge_id",
+    "key_id",
+    "audience",
+    "idp_issuer",
+    "subject",
+    "issued_at_unix_ms",
+    "expires_at_unix_ms",
+    "nonce",
+    "method",
+    "request_target",
+    "body_sha256",
+    "content_type",
+    "alias_level",
+    "session_id",
+    "timeout_ms",
+    "capabilities",
+    "min_context",
+    "prefer_family",
+    "queue",
+    "tenant_selector",
+    "operation_id",
+    "idempotency_key",
+    "request_fingerprint",
+    "deadline_unix_ms",
+    "version",
+    "signature"
+  ],
+  "properties": {
+    "edge_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "key_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "audience": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "idp_issuer": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "issued_at_unix_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "expires_at_unix_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{22}$"
+    },
+    "method": {
+      "const": "POST"
+    },
+    "request_target": {
+      "enum": [
+        "/v1/chat",
+        "/v1/chat/completions",
+        "/v1/completions",
+        "/v1/responses",
+        "/v1/embeddings",
+        "/v1/audio/transcriptions",
+        "/v1/audio/speech",
+        "/v1/rerank"
+      ]
+    },
+    "body_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "content_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "alias_level": {
+      "const": "2"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "timeout_ms": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^(|[1-9][0-9]*)$"
+    },
+    "capabilities": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 1024,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "min_context": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^(|[1-9][0-9]*)$"
+    },
+    "prefer_family": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "queue": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "tenant_selector": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{22,128}$"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "request_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "deadline_unix_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "version": {
+      "const": 1
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+  }
+}

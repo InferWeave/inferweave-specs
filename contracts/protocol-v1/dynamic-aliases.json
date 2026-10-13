@@ -173,6 +173,21 @@
       "code": "UNSUPPORTED_ALIAS_LEVEL",
       "retryable": false,
       "http_status": 400
+    },
+    {
+      "code": "EXECUTION_IN_PROGRESS",
+      "retryable": true,
+      "http_status": 409
+    },
+    {
+      "code": "EXECUTION_OUTCOME_UNKNOWN",
+      "retryable": false,
+      "http_status": 409
+    },
+    {
+      "code": "EXECUTION_RESULT_UNAVAILABLE",
+      "retryable": false,
+      "http_status": 409
     }
   ],
   "events": [
