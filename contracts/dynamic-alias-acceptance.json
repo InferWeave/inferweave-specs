@@ -1,0 +1,238 @@
+{
+  "source": "INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md#15",
+  "feature": "IW-ALIAS-001",
+  "acceptance": [
+    {
+      "id": 1,
+      "requirement": "exact IDs and namespace precedence",
+      "owner_task": "A-T04",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 2,
+      "requirement": "hard capability and policy constraints",
+      "owner_task": "A-T03",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 3,
+      "requirement": "confidence freshness and missing metrics",
+      "owner_task": "A-T03",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 4,
+      "requirement": "cycles depth deterministic ranking and weights",
+      "owner_task": "A-T03",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 5,
+      "requirement": "snapshot/cache invalidation",
+      "owner_task": "A-T03",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 6,
+      "requirement": "draining preempted unhealthy generation exclusion",
+      "owner_task": "A-T05",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 7,
+      "requirement": "typed errors and no candidate disclosure",
+      "owner_task": "A-T03",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 8,
+      "requirement": "OpenAI alias/exact SSE tools cancellation",
+      "owner_task": "A-T04",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 9,
+      "requirement": "busy candidate bounded atomic fallback",
+      "owner_task": "A-T04",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 10,
+      "requirement": "context floor safe failure",
+      "owner_task": "A-T03",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 11,
+      "requirement": "no READY capacity truthfulness",
+      "owner_task": "A-T03",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 12,
+      "requirement": "authorized provisioning via existing rebalancer",
+      "owner_task": "A-T05",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 13,
+      "requirement": "hot-load unload cancellation and preemption",
+      "owner_task": "A-T05",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 14,
+      "requirement": "multi-GPU placement loss",
+      "owner_task": "A-T05",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 15,
+      "requirement": "multi-parent de-dup and idempotent leases",
+      "owner_task": "A-T05",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 16,
+      "requirement": "owner local priority and preemption",
+      "owner_task": "A-T05",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 17,
+      "requirement": "cyclic malformed expired advertisements",
+      "owner_task": "A-T05",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 18,
+      "requirement": "partial stream no replay",
+      "owner_task": "A-T04",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 19,
+      "requirement": "snapshot resume gap recovery",
+      "owner_task": "A-T06",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 20,
+      "requirement": "tenant authorization and redaction",
+      "owner_task": "A-T02",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 21,
+      "requirement": "lossless Go relay under load",
+      "owner_task": "A-T06",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 22,
+      "requirement": "Go API-only management and no selector/store",
+      "owner_task": "A-T06",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 23,
+      "requirement": "mixed-version exact compatibility",
+      "owner_task": "A-T06",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 24,
+      "requirement": "UI create validate preview publish trace rollback",
+      "owner_task": "A-T07",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 25,
+      "requirement": "candidate comparison and GPU crosslinks",
+      "owner_task": "A-T07",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 26,
+      "requirement": "federation expiry dedup priority views",
+      "owner_task": "A-T07",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 27,
+      "requirement": "offline permission conflict empty pagination",
+      "owner_task": "A-T07",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 28,
+      "requirement": "responsive keyboard accessibility screenshots",
+      "owner_task": "A-T07",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    },
+    {
+      "id": 29,
+      "requirement": "load saturation provisioning failures recovery",
+      "owner_task": "A-T08",
+      "proof_status": "owed",
+      "evidence": [],
+      "gate": "Must run against implementation; contract fixture checks are insufficient."
+    }
+  ]
+}

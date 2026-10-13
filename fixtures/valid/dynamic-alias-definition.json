@@ -1,0 +1,51 @@
+{
+  "api_version": "inferweave/v1",
+  "kind": "ModelAlias",
+  "id": "coding-fast",
+  "revision": 1,
+  "status": "ACTIVE",
+  "description": "Illustrative verified tool-use policy",
+  "visibility": "TENANT",
+  "owner_scope": "tenant/example",
+  "selection": {
+    "type": "DYNAMIC",
+    "families_allow": [
+      "qwen"
+    ],
+    "required": {
+      "runtime_families": [
+        "llm"
+      ],
+      "input_modalities": [
+        "text"
+      ],
+      "features": {
+        "tool_calling": {
+          "confidence": "verified",
+          "fidelity": [
+            "native"
+          ]
+        }
+      },
+      "min_context_tokens": 32768
+    },
+    "preferred": {
+      "latency": 0.4,
+      "quality": 0.3,
+      "availability": 0.2,
+      "cost_efficiency": 0.1
+    }
+  },
+  "execution": {
+    "allow_cold_start": false,
+    "allow_federation": true,
+    "fallback_policy": "COMPATIBLE_ONLY",
+    "max_admission_attempts": 3,
+    "queue_deadline_ms": 15000
+  },
+  "metadata": {
+    "tags": [
+      "coding"
+    ]
+  }
+}

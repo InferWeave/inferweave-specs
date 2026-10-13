@@ -4048,6 +4048,240 @@
         "self-test-green"
       ],
       "notes": ""
+    },
+    {
+      "id": "A-T01",
+      "phase": "A",
+      "title": "Contracts and compatibility",
+      "depends_on": [],
+      "specs": [
+        "00_INVARIANTS",
+        "45_PROTOCOL_V1",
+        "54_DYNAMIC_MODEL_ALIASES"
+      ],
+      "features": [
+        "IW-ALIAS-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Canonical schemas, frozen vocabularies, compatibility fixtures and independently reviewed alias authority boundaries.",
+      "required_tests": [
+        "artifact schema and vocabulary guard rejects deliberate drift",
+        "legacy level-1 fixture unchanged and validates"
+      ],
+      "notes": "Operator master alias handoff; live implementation proof remains owed.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "A-T01"
+      ]
+    },
+    {
+      "id": "A-T02",
+      "phase": "A",
+      "title": "Rust alias persistence and authorization",
+      "depends_on": [
+        "A-T01"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "45_PROTOCOL_V1",
+        "54_DYNAMIC_MODEL_ALIASES"
+      ],
+      "features": [
+        "IW-ALIAS-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Durable tenant-scoped drafts, immutable publication, optimistic concurrency, idempotency and audit/rollback under Rust authorization.",
+      "required_tests": [
+        "concurrent CAS and idempotency survive restart",
+        "cross-tenant CRUD and forged identity rejected",
+        "publish and rollback append immutable history"
+      ],
+      "notes": "Operator master alias handoff; live implementation proof remains owed.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "A-T02"
+      ]
+    },
+    {
+      "id": "A-T03",
+      "phase": "A",
+      "title": "Rust alias preview and deterministic matching",
+      "depends_on": [
+        "A-T01",
+        "A-T02"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "45_PROTOCOL_V1",
+        "54_DYNAMIC_MODEL_ALIASES"
+      ],
+      "features": [
+        "IW-ALIAS-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Instance-level hard filtering and deterministic ranking reuse current router facts with read-only preview and bounded redacted explanations.",
+      "required_tests": [
+        "hard constraints and evidence confidence cannot be bypassed by scores",
+        "preview leaves demand, leases and allocations unchanged",
+        "stable ties and snapshot/cache invalidation"
+      ],
+      "notes": "Operator master alias handoff; live implementation proof remains owed.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "A-T03"
+      ]
+    },
+    {
+      "id": "A-T04",
+      "phase": "A",
+      "title": "Rust admission and stream integration",
+      "depends_on": [
+        "A-T03"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "45_PROTOCOL_V1",
+        "54_DYNAMIC_MODEL_ALIASES"
+      ],
+      "features": [
+        "IW-ALIAS-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Aliases and exact requests use the existing owner admission path with generation revalidation, bounded retries and stream-safe cancellation.",
+      "required_tests": [
+        "exact identity and legacy precedence preserved",
+        "admission races are atomic and retry budgets bounded",
+        "partial stream never replays and cancellation releases leases"
+      ],
+      "notes": "Operator master alias handoff; live implementation proof remains owed.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "A-T04"
+      ]
+    },
+    {
+      "id": "A-T05",
+      "phase": "A",
+      "title": "Runtime and federation alias integration",
+      "depends_on": [
+        "A-T01",
+        "A-T03",
+        "A-T04"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "45_PROTOCOL_V1",
+        "54_DYNAMIC_MODEL_ALIASES"
+      ],
+      "features": [
+        "IW-ALIAS-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Consume existing lifecycle, GPU placement and owner federation authority with conservative profiles and exclusive reservations.",
+      "required_tests": [
+        "multi-GPU loss invalidates entire placement",
+        "shared supply and retry leases deduplicate across parents",
+        "stale cyclic offers and unauthorized provisioning rejected",
+        "owner preemption and policy-authorized provisioning exercised"
+      ],
+      "notes": "Operator master alias handoff; live implementation proof remains owed.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "A-T05"
+      ]
+    },
+    {
+      "id": "A-T06",
+      "phase": "A",
+      "title": "Go typed alias client and transparent relay",
+      "depends_on": [
+        "A-T01",
+        "A-T02",
+        "A-T04"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "45_PROTOCOL_V1",
+        "54_DYNAMIC_MODEL_ALIASES"
+      ],
+      "features": [
+        "IW-ALIAS-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Go consumes Rust alias contracts with validated identity and lossless compatible relay; no local alias authority.",
+      "required_tests": [
+        "schema parity and mixed-version negotiation",
+        "status bytes headers SSE cancellation and trusted identity survive relay",
+        "code audit finds no new Go alias resolver or database"
+      ],
+      "notes": "Operator master alias handoff; live implementation proof remains owed.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "A-T06"
+      ]
+    },
+    {
+      "id": "A-T07",
+      "phase": "A",
+      "title": "Go alias administration and observability",
+      "depends_on": [
+        "A-T06",
+        "A-T03",
+        "A-T05"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "45_PROTOCOL_V1",
+        "54_DYNAMIC_MODEL_ALIASES"
+      ],
+      "features": [
+        "IW-ALIAS-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Existing operator UI provides alias drafts, preview, publication, history, routing, simulation and federation views backed by Rust APIs.",
+      "required_tests": [
+        "create preview publish trace rollback journey",
+        "permission stale offline conflict empty and pagination states",
+        "desktop tablet keyboard accessibility and screenshots"
+      ],
+      "notes": "Operator master alias handoff; live implementation proof remains owed.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "A-T07"
+      ]
+    },
+    {
+      "id": "A-T08",
+      "phase": "A",
+      "title": "Alias migration load and measured rollout",
+      "depends_on": [
+        "A-T02",
+        "A-T03",
+        "A-T04",
+        "A-T05",
+        "A-T06",
+        "A-T07"
+      ],
+      "specs": [
+        "00_INVARIANTS",
+        "45_PROTOCOL_V1",
+        "54_DYNAMIC_MODEL_ALIASES"
+      ],
+      "features": [
+        "IW-ALIAS-001"
+      ],
+      "context_class": "C80",
+      "outcome": "Run all master acceptance scenarios, characterize migration, shadow compare, canary and verify rollback before removing duplicate behavior.",
+      "required_tests": [
+        "all 29 acceptance IDs have reproducible evidence",
+        "measured baseline and canary overhead under saturation/failure",
+        "legacy exact traffic and feature-flag rollback preserved"
+      ],
+      "notes": "Operator master alias handoff; live implementation proof remains owed.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "A-T08"
+      ]
     }
   ]
 }

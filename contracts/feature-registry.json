@@ -1200,6 +1200,24 @@
       "canonical_tasks": [
         "B-T06"
       ]
+    },
+    {
+      "id": "IW-ALIAS-001",
+      "name": "Dynamic model alias policy, authoritative routing and site administration",
+      "phase": "A",
+      "priority": "P0",
+      "status": "required",
+      "owner_component": "control-plane+gateway",
+      "canonical_tasks": [
+        "A-T01",
+        "A-T02",
+        "A-T03",
+        "A-T04",
+        "A-T05",
+        "A-T06",
+        "A-T07",
+        "A-T08"
+      ]
     }
   ]
 }

@@ -35,6 +35,13 @@ operator surface of the D-001 conformant production site gateway, not authority 
 general browser application or to use Go templates for new InferWeave web products. New dashboard,
 portal, explorer, Workbench and standalone administration surfaces remain Next.js + TypeScript.
 
+**Alias administration extension, amended 2026-10-12.** The same existing embedded Go
+operator UI may implement spec 54 alias administration, candidate/routing explanations, simulation,
+federation alias views and existing model/GPU crosslinks. Rust remains the only alias persistence,
+resolution and admission authority. This exception does not authorize a standalone Go web product
+or Go scheduling, discovery or backend integrations. See
+`decisions/2026-10-12-dynamic-alias-authority.md`.
+
 ## D-003 Owner priority — RESOLVED
 The physical owner/provider of a GPU always has priority over shared/network workloads on that GPU.
 

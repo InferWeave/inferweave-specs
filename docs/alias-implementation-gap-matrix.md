@@ -71,3 +71,17 @@ decision amendment before Go UI work.
 The operator's handoff is a proposed target. Existing decisions/invariants and
 live incident evidence remain explicit in this matrix; any changed boundary
 must be amended canonically before implementation relies on it.
+
+## Contract audit follow-up (level 2)
+
+- Rust `crates/iw-gateway/src/adaptive/logical.rs:424` builds a model-level candidate projection;
+  merged worker capabilities lose per-instance joint feature evidence and lifecycle generation.
+  Level-2 schema therefore binds every candidate to instance/generation/deployment/owner facts.
+- Rust `crates/iw-gateway/src/client_auth.rs:123` gates existing client routes without native
+  `/inferweave/v1` alias coverage. Native alias auth is missing until implementation proves it.
+- Go `cmd/gateway/admission_identity.go:140` strips admission identity and the proxy replaces
+  authorization. A validated caller-identity mechanism must survive edge relay before writes or
+  tenant-scoped alias routing are enabled. A shared service token cannot establish end-user scope.
+
+Spec 54 / IW-ALIAS-001 adds the level-2 contract; schemas and offline fixtures are artifact evidence
+only. All implementation scenarios remain owed in `contracts/dynamic-alias-acceptance.json`.

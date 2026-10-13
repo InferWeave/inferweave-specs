@@ -19,3 +19,13 @@ releases:
       event_schema_bundle: schemas/v1/events/
       conformance_fixtures: fixtures/
       contract_fixtures: contracts/gpu-memory/
+
+# Part of the unreleased v1.1.0 bundle; no new immutable release has been published.
+negotiated_additions:
+  dynamic_aliases_2:
+    protocol: 1.1.0
+    status: owed
+    schema: schemas/v1/aliases/contract.json
+    vocabulary: contracts/protocol-v1/dynamic-aliases.json
+    acceptance: contracts/dynamic-alias-acceptance.json
+    conformance: tests/smoke/test_dynamic_alias_contract.py

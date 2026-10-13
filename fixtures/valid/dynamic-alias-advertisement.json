@@ -1,0 +1,64 @@
+{
+  "schema_version": "inferweave.alias-advertisement/v1",
+  "alias_id": "coding-fast",
+  "alias_revision": 1,
+  "owner_gateway_id": "gw-a",
+  "resource_group_id": "gpu-group-a",
+  "owner_policy_id": "sharing-1",
+  "profiles": [
+    {
+      "profile_id": "profile-42",
+      "runtime_family": "llm",
+      "input_modalities": [
+        "text"
+      ],
+      "output_modalities": [
+        "text"
+      ],
+      "features": {
+        "tool_calling": {
+          "fidelity": "native",
+          "confidence": "verified",
+          "provenance": {
+            "source_id": "gw-a",
+            "source_generation": "epoch-1",
+            "sequence": 42,
+            "observed_at": "2026-10-12T20:00:00Z",
+            "expires_at": "2026-10-12T20:00:02Z",
+            "protocol_version": "1.1.0",
+            "build_version": "fixture-only",
+            "verification_id": "probe-42"
+          }
+        }
+      },
+      "max_context_tokens": 65536,
+      "policy_evidence_id": "policy-42",
+      "provenance": {
+        "source_id": "gw-a",
+        "source_generation": "epoch-1",
+        "sequence": 42,
+        "observed_at": "2026-10-12T20:00:00Z",
+        "expires_at": "2026-10-12T20:00:02Z",
+        "protocol_version": "1.1.0",
+        "build_version": "fixture-only",
+        "verification_id": "probe-42"
+      }
+    }
+  ],
+  "availability": "READY",
+  "provenance": {
+    "source_id": "gw-a",
+    "source_generation": "epoch-1",
+    "sequence": 42,
+    "observed_at": "2026-10-12T20:00:00Z",
+    "expires_at": "2026-10-12T20:00:02Z",
+    "protocol_version": "1.1.0",
+    "build_version": "fixture-only",
+    "verification_id": "probe-42"
+  },
+  "path": [
+    "gw-a"
+  ],
+  "tombstone": false,
+  "allocation_entitlement": false
+}

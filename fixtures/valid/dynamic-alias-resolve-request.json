@@ -1,0 +1,11 @@
+{
+  "alias_id": "coding-fast",
+  "request_context": {
+    "runtime_family": "llm",
+    "required": {
+      "min_context_tokens": 65536
+    },
+    "deadline_ms": 12000
+  },
+  "include_explanations": true
+}

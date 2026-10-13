@@ -383,3 +383,18 @@ implementation work:
 Runtime-family production integration remains owed until those real demonstrations and the
 independent review are recorded as `proven`. The schemas, fixtures and local runner must not be
 cited as operational qualification.
+
+## Dynamic model aliases level 2 — runtime and rollout unsatisfied
+
+Spec 54 / IW-ALIAS-001 / A-T01–A-T08 defines the operator's 2026-10-12 handoff. Schema,
+OpenAPI, vocabulary and fixture checks prove artifact consistency only. All 29 runtime/UI/load
+acceptance tests in contracts/dynamic-alias-acceptance.json are **owed**. No production gateway
+may advertise level 2 based on this contract commit alone.
+
+Unsatisfied gates: native Rust alias authentication and tenant isolation; validated edge identity
+forwarding (existing Go relay strips identity); durable alias publication/CAS/idempotent rollback;
+instance-generation joint capability evidence; owner atomic admission and stream-safe fallback;
+GPU-loss/preemption/runtime integration; owner sharing/de-duplication/expiry; resumable alias
+snapshots/events; complete UI journeys/visual/accessibility evidence; migration shadow parity,
+measured p95 baseline/canary and feature-flag rollback. Existing exact-model paths must continue.
+D-002's narrow Go UI exception supplies architecture authority, not proof of security or function.

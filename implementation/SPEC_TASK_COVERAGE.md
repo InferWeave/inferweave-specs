@@ -56,3 +56,5 @@
 | `specs/51_PIPELINES_AND_DURABLE_JOBS.md` | `B-T04` |
 | `specs/52_DURABLE_INFERENCE_JOBS.md` | `B-T05` |
 | `specs/53_RUNTIME_FAMILY_CONFORMANCE.md` | `B-T06` |
+
+| `specs/54_DYNAMIC_MODEL_ALIASES.md` | `A-T01`, `A-T02`, `A-T03`, `A-T04`, `A-T05`, `A-T06`, `A-T07`, `A-T08` |

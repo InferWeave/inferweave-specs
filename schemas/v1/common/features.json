@@ -15,7 +15,8 @@
       "type": "string"
     },
     "dynamic_aliases": {
-      "type": "string"
+      "type": "string",
+      "description": "Level \"1\" preserves model/alias.json; level \"2\" negotiates spec54 revisioned policies and instance-level preview. New HTTP operations require InferWeave-Alias-Level: 2; default GET /aliases remains level1."
     },
     "gpu_memory_breakdown": {
       "type": "string"

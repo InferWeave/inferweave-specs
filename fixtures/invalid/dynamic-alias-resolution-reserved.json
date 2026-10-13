@@ -1,0 +1,80 @@
+{
+  "resolution_id": "res-1",
+  "alias_id": "coding-fast",
+  "alias_revision": 1,
+  "catalog_revision": "cat-42",
+  "routing_policy_version": "alias-policy-1",
+  "evaluated_at": "2026-10-12T20:00:00Z",
+  "expires_at": "2026-10-12T20:00:02Z",
+  "status": "READY",
+  "selected": {
+    "model_id": "qwen/example@revision",
+    "instance_id": "rt-42",
+    "instance_generation": "generation-3",
+    "deployment_key": "deployment-sha256-example",
+    "owner_gateway_id": "gw-a",
+    "resource_group_id": "gpu-group-a",
+    "state": "READY"
+  },
+  "candidates": [
+    {
+      "model_id": "qwen/example@revision",
+      "instance_id": "rt-42",
+      "instance_generation": "generation-3",
+      "deployment_key": "deployment-sha256-example",
+      "owner_gateway_id": "gw-a",
+      "resource_group_id": "gpu-group-a",
+      "state": "READY",
+      "eligibility": "ELIGIBLE",
+      "reasons": [],
+      "route_kind": "LOCAL",
+      "score": 0.9,
+      "factors": {
+        "latency": 0.9
+      },
+      "capability_profile": {
+        "profile_id": "profile-42",
+        "runtime_family": "llm",
+        "input_modalities": [
+          "text"
+        ],
+        "output_modalities": [
+          "text"
+        ],
+        "features": {
+          "tool_calling": {
+            "fidelity": "native",
+            "confidence": "verified",
+            "provenance": {
+              "source_id": "gw-a",
+              "source_generation": "epoch-1",
+              "sequence": 42,
+              "observed_at": "2026-10-12T20:00:00Z",
+              "expires_at": "2026-10-12T20:00:02Z",
+              "protocol_version": "1.1.0",
+              "build_version": "fixture-only",
+              "verification_id": "probe-42"
+            }
+          }
+        },
+        "max_context_tokens": 65536,
+        "policy_evidence_id": "policy-42",
+        "provenance": {
+          "source_id": "gw-a",
+          "source_generation": "epoch-1",
+          "sequence": 42,
+          "observed_at": "2026-10-12T20:00:00Z",
+          "expires_at": "2026-10-12T20:00:02Z",
+          "protocol_version": "1.1.0",
+          "build_version": "fixture-only",
+          "verification_id": "probe-42"
+        }
+      },
+      "owner_admission_required": true
+    }
+  ],
+  "admission_reserved": true,
+  "warnings": [
+    "PREVIEW_ONLY_REVALIDATE_ON_DISPATCH"
+  ]
+}
