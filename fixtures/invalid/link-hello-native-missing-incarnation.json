@@ -1,0 +1,11 @@
+{
+  "kind": "hello",
+  "node_id": "node-a",
+  "role": "node",
+  "credential": "credential-example",
+  "native_link_version": 1,
+  "registration_connection_id": "conn-current-0123456789",
+  "native_link_features": [
+    "iw.link-native-request/1"
+  ]
+}

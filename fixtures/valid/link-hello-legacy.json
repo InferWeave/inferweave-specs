@@ -1,0 +1,7 @@
+{
+  "kind": "hello",
+  "node_id": "node-legacy-01",
+  "role": "node",
+  "credential": "credential-example",
+  "session": "process-session-legacy-01"
+}

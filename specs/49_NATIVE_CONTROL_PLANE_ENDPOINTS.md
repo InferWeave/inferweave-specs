@@ -40,12 +40,17 @@ all under `/inferweave/v1`:
   `schemas/v1/requests/{rerank,prediction,embeddings}.json`. Their OpenAPI components must match
   the standalone value constraints as well as required fields and properties; CI resolves local
   reference spelling and rejects any validation-decision drift.
-- Links that negotiate `native_link_requests: "1"` may dispatch the bounded native metadata in
-  `schemas/v1/requests/link-request-meta.json`. Family/endpoint pairs are fixed (`embeddings` →
+- Links that negotiate `native_link_requests: "1"` through the exact-registration and exact-Link
+  incarnation handshake in `schemas/v1/requests/link-{hello,hello-ack}.json` may dispatch the
+  bounded native metadata in `schemas/v1/requests/link-request-meta.json`. A registration feature
+  observed by node id is insufficient: the gateway must atomically select the held Link, verify its
+  stored binding is still current, and enqueue the request. Family/endpoint pairs are fixed (`embeddings` →
   `/embeddings`, `reranking` → `/rerank`, `prediction` → `/predictions`, other registered
   families → `/jobs`); method and content type are fixed to JSON `POST`, and the payload is capped
   at 16 MiB. Arbitrary/absolute URIs, proxy behavior, and inline bulk media are forbidden. Media
-  uses content-addressed `artifact_refs`. Senders omit this additive metadata for older nodes.
+  uses content-addressed `artifact_refs`. Senders omit this additive metadata for older or unbound
+  nodes. Missing/revoked binding returns `FEATURE_UNSUPPORTED`; the error envelope and retry fields
+  are unchanged.
 - Family-specific endpoints reject requests whose family does not match their
   contract (e.g. `POST /rerank` rejects a non-reranking request) with a typed
   error from `schemas/v1/errors/`.
@@ -68,5 +73,7 @@ all under `/inferweave/v1`:
   the OpenAI-compatible surface (a shared conformance fixture).
 - schema-parity: standalone deployment and family-request schemas make identical validation
   decisions to their OpenAPI components, including empty values, item counts, patterns and refs.
-- link-native-dispatch: negotiation, family/path whitelist, method/content-type bounds, payload
-  limit and artifact-reference grammar have executable positive and hostile fixtures.
+- link-native-dispatch: exact registration/Link-incarnation negotiation, acknowledgement echo,
+  replacement/re-registration/withdrawal revocation, family/path whitelist, method/content-type
+  bounds, payload limit and artifact-reference grammar have executable positive and hostile
+  fixtures.

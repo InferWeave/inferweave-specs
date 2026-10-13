@@ -2189,13 +2189,14 @@ Rules:
 **Features:** IW-RT-002
 **Read:** specs/00_INVARIANTS.md, specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md
 
-**Outcome:** Extend `openapi/inferweave-v1.yaml` with native runtime-family endpoints, publish standalone deployment and family-request JSON Schemas reconciled against the full inline constraints, and define negotiated bounded native link dispatch without arbitrary URI or proxy behavior.
+**Outcome:** Extend `openapi/inferweave-v1.yaml` with native runtime-family endpoints, publish standalone deployment and family-request JSON Schemas reconciled against the full inline constraints, and define negotiated bounded native link dispatch bound to the exact authenticated registration and Link incarnation without arbitrary URI or proxy behavior.
 
 **Required tests:**
 - openapi-validation
 - family-routing (e.g. `POST /rerank` only for `reranking`)
 - parity (native endpoints honour admission/fairshare like `/v1/chat/completions`)
 - standalone/OpenAPI schema parity
+- exact-registration/Link-incarnation Hello/ack negotiation and revocation vectors
 - negotiated native link family/endpoint whitelist and hostile URI/content/size fixtures
 
 ### B-T03 — Transactional runtime hot-swap lifecycle

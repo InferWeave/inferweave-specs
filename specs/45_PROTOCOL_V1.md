@@ -184,13 +184,45 @@ Protocol 1.1.0 also defines additive runtime-family features `runtime_families`,
 (`specs/48`–`specs/53`). Each is negotiated independently. When absent, the sender uses the legacy
 Protocol v1 shape and omits its additive fields; it never infers a runtime family or treats version
 alone as proof that lifecycle, reservation, cache, or native link-dispatch behavior is present.
-`native_link_requests: "1"` names `iw.link-native-request/1`. A sender may then attach the
-bounded `LinkRequestMeta.native` shape in `schemas/v1/requests/link-request-meta.json`: a typed
-family, its fixed relative endpoint, `POST`, `application/json`, declared payload bytes, and
+`native_link_requests: "1"` names `iw.link-native-request/1`. Registration advertisement alone
+does not put this capability in force on a Link. The native Link v1 handshake in
+`schemas/v1/requests/link-hello.json` binds the offer to both the exact authenticated control
+registration and the exact Link incarnation. A sender may attach the bounded
+`LinkRequestMeta.native` shape in `schemas/v1/requests/link-request-meta.json` only after accepting
+the matching `schemas/v1/requests/link-hello-ack.json` on that socket. The metadata contains a
+typed family, its fixed relative endpoint, `POST`, `application/json`, declared payload bytes, and
 artifact references. It cannot carry an arbitrary URI, method, content type, or proxy target.
 Large media travels through content-addressed artifact references rather than inline link frames.
-The sender omits `native` for an older peer; receiving an unnegotiated `native` field returns
-`FEATURE_UNSUPPORTED` and does not dispatch it.
+The sender omits `native` for an older or unbound peer; receiving an unnegotiated `native` field
+returns `FEATURE_UNSUPPORTED` and does not dispatch it.
+
+### Native Link v1 incarnation binding
+
+The node copies the current registration response `connectionId` into the Hello
+`registration_connection_id`, creates a fresh unpredictable `link_incarnation_id` for every
+socket/dial (including reconnects by the same process `session`), sets `native_link_version: 1`,
+and offers `iw.link-native-request/1` in `native_link_features`. `session` remains process identity
+and MUST NOT be used as the Link incarnation. If any native Link v1 field is present, all are
+required. Legacy Hello frames remain valid and receive no `hello_ack`.
+
+After authenticating the Hello credential, the accepting gateway performs one negotiation against
+the current registration: the Hello registration id must equal its current, fresh registration id;
+the registration, Hello, and gateway must all include `iw.link-native-request/1`. It sends a
+`hello_ack` only because the sender advertised native Link v1, and sends it on the same socket. A
+bound acknowledgement echoes both ids and lists the negotiated capability. An unbound
+acknowledgement echoes both ids, has no negotiated feature, and gives one of the frozen reasons in
+the acknowledgement schema. A node enables native handling only when a bound acknowledgement
+echoes both values from its Hello; an acknowledgement from another dial cannot be reused.
+
+The gateway stores the resulting binding on the held Link object. Selection of that exact Link,
+verification that the exact registration is still current and fresh, verification of the exact
+incarnation and negotiated capability, and enqueue of a native request frame form one atomic
+operation with respect to re-registration and Link replacement. Implementations MUST NOT read a
+node-id-wide feature set and then independently look up a Link. Re-registration, registration
+withdrawal or staleness, credential expiry, socket close, and Link replacement immediately revoke
+native dispatch on the old binding. Retired sockets may finish already accepted legacy streams
+under their existing rules, but receive no new native request. Metadata-free legacy chat behavior
+is unchanged.
 
 ## Stable identity model
 

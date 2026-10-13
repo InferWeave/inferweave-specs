@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-hello.json",
+  "title": "Link Hello",
+  "description": "Authenticated Link handshake. Legacy peers omit all native_link_* fields. A v1 native sender binds its offer to the exact current control registration and generates a fresh link_incarnation_id for every socket/dial.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["kind", "node_id", "role", "credential"],
+  "properties": {
+    "kind": {"const": "hello"},
+    "node_id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "role": {"type": "string", "minLength": 1, "maxLength": 64},
+    "credential": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "session": {"type": "string", "minLength": 1, "maxLength": 256},
+    "native_link_version": {"type": "integer", "const": 1},
+    "registration_connection_id": {"type": "string", "minLength": 16, "maxLength": 128, "pattern": "^[!-~]+$"},
+    "link_incarnation_id": {"type": "string", "minLength": 16, "maxLength": 128, "pattern": "^[!-~]+$"},
+    "native_link_features": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^iw\\.[a-z0-9.-]+/[0-9]+$"},
+      "contains": {"const": "iw.link-native-request/1"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "anyOf": [
+          {"required": ["native_link_version"]},
+          {"required": ["registration_connection_id"]},
+          {"required": ["link_incarnation_id"]},
+          {"required": ["native_link_features"]}
+        ]
+      },
+      "then": {
+        "required": ["native_link_version", "registration_connection_id", "link_incarnation_id", "native_link_features"]
+      }
+    }
+  ]
+}

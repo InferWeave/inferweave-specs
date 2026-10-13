@@ -3932,12 +3932,13 @@
         "IW-RT-002"
       ],
       "context_class": "C75",
-      "outcome": "Extend `openapi/inferweave-v1.yaml` with native runtime-family endpoints, publish standalone deployment and family-request JSON Schemas reconciled against the full inline constraints, and define negotiated bounded native link dispatch without arbitrary URI or proxy behavior.",
+      "outcome": "Extend `openapi/inferweave-v1.yaml` with native runtime-family endpoints, publish standalone deployment and family-request JSON Schemas reconciled against the full inline constraints, and define negotiated bounded native link dispatch bound to the exact authenticated registration and Link incarnation without arbitrary URI or proxy behavior.",
       "required_tests": [
         "openapi-validation",
         "family-routing (e.g. `POST /rerank` only for `reranking`)",
         "parity (native endpoints honour admission/fairshare like `/v1/chat/completions`)",
         "standalone/OpenAPI schema parity",
+        "exact-registration/Link-incarnation Hello/ack negotiation and revocation vectors",
         "negotiated native link family/endpoint whitelist and hostile URI/content/size fixtures"
       ],
       "notes": ""

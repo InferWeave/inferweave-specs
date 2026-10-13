@@ -52,7 +52,10 @@ All bodies are JSON with camelCase members. The reference gateway
 plus optional members an older node omits (`card`, `schedulerJobId`, `capabilities`, `linkOnly`,
 `declaredWeightsMib`, `declaredBudgetMib`). Those optional members are outside this contract; a
 conforming gateway need not implement them. The response is
-`{ nodeId, connectionId, freshnessTtlSecs, capabilities, linkOnly }`. Errors are
+`{ nodeId, connectionId, freshnessTtlSecs, capabilities, linkOnly }`. For
+`iw.link-native-request/1`, this `connectionId` is also the authenticated registration-incarnation
+value copied into Link Hello `registration_connection_id`; see `specs/45_PROTOCOL_V1.md`. It must
+not be replaced by node id, process `session`, or a separately inferred current registration. Errors are
 `{"error": {"code": "...", "message": "..."}}`; the codes used here are `bad_request` (400),
 `control_auth_failed` (401) and `node_id_conflict` (409). `message` is for humans and is not
 normative.

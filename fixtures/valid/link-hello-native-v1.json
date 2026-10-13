@@ -1,0 +1,13 @@
+{
+  "kind": "hello",
+  "node_id": "node-a",
+  "role": "node",
+  "credential": "credential-example",
+  "session": "process-session-node-a",
+  "native_link_version": 1,
+  "registration_connection_id": "conn-current-0123456789",
+  "link_incarnation_id": "link-incarnation-first-0001",
+  "native_link_features": [
+    "iw.link-native-request/1"
+  ]
+}

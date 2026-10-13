@@ -1148,7 +1148,7 @@
     },
     {
       "id": "IW-RT-002",
-      "name": "Native /inferweave/v1 endpoints, standalone parity and bounded negotiated link dispatch",
+      "name": "Native /inferweave/v1 endpoints, standalone parity and exact-incarnation bounded negotiated link dispatch",
       "phase": "B",
       "priority": "P1",
       "status": "required",

@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-hello-ack.json",
+  "title": "Native Link Hello acknowledgement",
+  "description": "Gateway acknowledgement sent only in response to a native Link v1 Hello on the same authenticated socket. Echoed identities prevent an acknowledgement from enabling another registration or Link incarnation.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["kind", "native_link_version", "registration_connection_id", "link_incarnation_id", "binding_status", "negotiated_features"],
+  "properties": {
+    "kind": {"const": "hello_ack"},
+    "native_link_version": {"type": "integer", "const": 1},
+    "registration_connection_id": {"type": "string", "minLength": 16, "maxLength": 128, "pattern": "^[!-~]+$"},
+    "link_incarnation_id": {"type": "string", "minLength": 16, "maxLength": 128, "pattern": "^[!-~]+$"},
+    "binding_status": {"type": "string", "enum": ["bound", "unbound"]},
+    "negotiated_features": {
+      "type": "array",
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^iw\\.[a-z0-9.-]+/[0-9]+$"}
+    },
+    "reason": {
+      "type": "string",
+      "enum": ["registration_mismatch", "registration_not_current", "feature_not_registered", "feature_not_offered", "feature_not_supported"]
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "binding_status": {"const": "bound"},
+        "negotiated_features": {"minItems": 1, "contains": {"const": "iw.link-native-request/1"}}
+      },
+      "not": {"required": ["reason"]}
+    },
+    {
+      "required": ["reason"],
+      "properties": {
+        "binding_status": {"const": "unbound"},
+        "negotiated_features": {"maxItems": 0}
+      }
+    }
+  ]
+}
