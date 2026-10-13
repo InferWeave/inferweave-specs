@@ -193,7 +193,7 @@ prerequisite. Current backend health/probe reports and Farm qualification files 
 establish this verifier; Hive/Farm Apptainer also require equivalent allocation fences.
 No production alias flag is enabled by the work in this register.
 
-### Live Farm/Hive incident evidence and limits
+### Live Farm/Hive incident evidence and limits (updated 2026-10-13 09:30 UTC)
 
 These are bounded observations from the supervisor's 2026-10-13 rollout record, separately
 attributed from this documentation audit; this change does not rerun SSH probes or deploy.
@@ -203,20 +203,50 @@ PRs below hold the shareable source and rollout evidence.
 - **Farm gateway registration repaired:** specs [#250](https://github.com/InferWeave/inferweave-specs/pull/250)
   and Rust [#867](https://github.com/InferWeave/inferweave/pull/867). Deployed source
   `5b4a08cb` permits model-less gateway registration and explicit empty queue-advertisement
-  allowlists. Fry topology observed a fresh `node_iw-farm` gateway; Farm workers were absent
-  while GPU jobs waited for Slurm priority. This proves gateway visibility, not READY model
-  capacity or inference. #867 merged into `feat/farm-throughput`, not `main`; its failed CI
-  pipelines lack accessible stage logs, so local tests/live registration do not close CI triage.
-- **Hive gateway and providers observed:** a normal parent peer and hot DeepSeek/Qwen
-  advertisements were present in the later supervisor observation. Existing worker GPU
-  display-name IDs still differed from persistent residency identities, leaving placement
-  unresolved. Advertisement presence is not an inference or qualified-alias proof.
-  [#876](https://github.com/InferWeave/inferweave/pull/876) fixes synthetic-alias bootstrap
-  selection; [#877](https://github.com/InferWeave/inferweave/pull/877) binds allocation-visible
-  GPU IDs and fences live-session loss. Both remain open. Combined release `5e775122` is
-  staged only; live gateway remains on `2ad2de78`. Activation must coordinate the existing
-  pull-cycle desired revision, parent identity and recovery steps, preserve current model
-  service, and retain rollback artifacts. Staging tests do not prove production rollout.
+  allowlists. Authenticated Fry topology at 08:48 UTC showed exactly one live
+  `node_iw-farm` gateway. A guarded Farm gateway job is running. One A100 Flash worker
+  allocation began restoring model files at 08:50 UTC and had not registered as a READY
+  child at the last check; three other GPU jobs were PENDING Priority. The legacy Flash
+  launcher was backed up and guarded on the remote host to verify the full model manifest
+  and default to local Farm registration before engine start. Its live result remains owed.
+  This proves gateway visibility, not READY Farm capacity or inference. #867 merged into
+  `feat/farm-throughput`, not `main`; the rollout and rollback evidence is in the local
+  operator handoff.
+- **Hive gateway and providers visible:** [#876](https://github.com/InferWeave/inferweave/pull/876),
+  [#886](https://github.com/InferWeave/inferweave/pull/886), and
+  [#887](https://github.com/InferWeave/inferweave/pull/887) merged and supplied the
+  launcher selection, internal gateway identity, and topology-root fixes. A verified
+  gateway-only V2 release `ace50622088c6d8cf6afe22f45aef757041e7e5b` is active
+  under Slurm job 24775420; the 09:15 UTC pull-cycle heartbeat reported the installed
+  revision up to date. Authenticated Fry topology at 08:48 UTC showed one live
+  `node_hive-rust` gateway with Hive child providers (12 vertices and 20 edges across
+  the whole Fry graph). An exact Qwen flash-next chat through Fry returned HTTP 200,
+  one choice, in a bounded smoke check. Several existing Hive worker cards still report
+  display-name GPU IDs as unplaceable. [#877](https://github.com/InferWeave/inferweave/pull/877)
+  remains open, and the worker launcher/install automation has not been switched. One
+  exact chat response does not qualify all deployed models or any dynamic alias.
+
+### Transport and alias implementation update (2026-10-13 09:30 UTC)
+
+- Specs [#262](https://github.com/InferWeave/inferweave-specs/pull/262) defines
+  negotiated `iw.link-http-json/1` for exact-model HTTP semantics. Go
+  [#480](https://github.com/metabolomics-us/inferweave-gateway/pull/480) merged its
+  **default-off** relay with passing CI and real Go-to-Rust loopback cases;
+  [#481](https://github.com/metabolomics-us/inferweave-gateway/pull/481) merged a
+  deterministic cancellation test fixture. Rust
+  [#900](https://github.com/InferWeave/inferweave/pull/900) is a reviewed **draft**
+  default-off peer; the actual two-process replacement regression and CI are still
+  being completed. Live Fry `/v1/completions` remains broken until both sides are
+  qualified and enabled; Go source merge does not fix that route by itself.
+- Rust [#899](https://github.com/InferWeave/inferweave/pull/899) is a reviewed **draft**
+  unmounted owner-permit signature verifier stacked on canonical protocol
+  [#890](https://github.com/InferWeave/inferweave/pull/890). Its 7 focused and 2,322
+  `iw-core` tests passed, but no runtime caller, owner admission, consume fence or
+  alias dispatch is connected. Full master acceptance 1–29 remains owed.
+- Rust [#898](https://github.com/InferWeave/inferweave/pull/898) combines the private
+  PostgreSQL CI harness and two test-fixture race repairs to restore a meaningful
+  full-workspace gate; CI was pending at this snapshot. Component tests alone cannot
+  mark the stacked alias PRs complete or authorize production rollout.
 
 ### Verification scope and remaining acceptance
 
