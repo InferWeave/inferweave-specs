@@ -286,7 +286,8 @@ nondeterministic inference/tool operations on another model. Direct/relay execut
 relay attempts, or reconnects cannot authorize two executions. Bind claim ID, holder fence,
 admission attempt, tenant/principal, exact selected owner/instance/generation, reservation and
 deadline in the existing authenticated permit transport. `schemas/v1/aliases/execution-permit.json`
-describes these protected fields; it defines no new unauthenticated bearer format.
+describes these protected fields; section 5.1 now binds them in an authenticated owner envelope.
+Neither the inner permit alone nor an unsigned envelope is a bearer authorization.
 
 The node recomputes the executable fingerprint from actual method, target, Content-Type, every
 accepted semantic header and exact executable entity bytes. It compares the immutable binding
@@ -297,6 +298,101 @@ execution. If consumption acknowledgement is lost, reconcile or fail without rep
 side may treat uncertainty as unspent. A new permit/fence/transport does not reset consumption.
 Releasing an unused reservation revokes all unspent permits for its retired attempt. No stale
 holder may issue/spend a permit. Generic HTTP retry logic cannot bypass this boundary.
+
+### 5.1 Owner-to-node envelope and one-use execution fence
+
+The previous text required an authenticated permit transport without defining its issuer,
+node audience or the node's crash ordering. A literal implementation could accept a generic
+Link request as execution authority or resume after losing a consumption acknowledgement.
+This contract gap is corrected here; no running vulnerability is asserted.
+
+`schemas/v1/aliases/owner-execution-permit.json` wraps the complete existing protected permit
+and immutable claim `selection`. Its purpose is exactly `inferweave.owner-execution-permit/v1`,
+version integer 1. The envelope contains trusted `issuer` (equal to `permit.resource_owner_id`),
+`key_id`, exact registered node `audience`, current authenticated `owner_incarnation`, current
+`holder_id`, stable `claim_authority_id`, `issued_at_unix_ms`, `expires_at_unix_ms`, `permit`,
+`selection` and `signature`. Authority IDs resolve only through configured trust; no envelope
+field supplies a URL or key. Keys are separately provisioned and authorized for this purpose,
+owner and node audience. Edge inference, management, enrollment and generic Link credentials
+cannot sign this envelope or imply this trust. Do not reuse edge signing keys as owner keys.
+Check current key revocation and owner registration incarnation at receipt and before execution.
+
+Use strict Ed25519 with canonical unpadded base64url signatures, strict UTF-8 JSON, duplicate
+member rejection at every nesting level, closed schemas and safe positive integers. The encoded
+UTF-8 JSON envelope is at most 16384 bytes before parsing. Reject unsupported versions and unknown
+fields; never ignore an invalid envelope and fall back to legacy inference. Sign the literal
+purpose plus zero byte, followed by u32 big-endian byte-length framing of every field in the
+ordered `owner_permit.transcript_fields` list in `contracts/protocol-v1/alias-execution.json`.
+Dotted names select nested fields; strings use exact UTF-8 bytes, integers canonical decimal ASCII.
+The domain selects version 1 and the fixed schema selects inner schema_version 1; neither is
+negotiable. Signature is excluded. No JSON serialization convention participates in signing.
+The public-seed known answer freezes field order and encoding for cross-language replay.
+
+Permit lifetime is at most 30000 ms; accept at most 5000 ms future issue skew and no expired
+permit. Effective expiry is also bounded by the original operation deadline and current owner
+reservation validity. This cryptographic expiry does not reclaim progressing GPU work.
+`selection` must equal the current durable claim selection in full; repeated instance, generation,
+owner and model fields must agree with inner permit/binding. Claim authority validates current
+DISPATCHED state, holder/fence, admission attempt, reservation, tenant/principal, original and
+executable binding and unretired selection. A valid signature alone grants no execution.
+
+Feature `owner_execution_permits: "1"` names capability `iw.owner-execution-permit/1`.
+Negotiate it through the existing registration and exact Link
+incarnation capability intersection. The existing native-request Link frame gains optional
+`ownerExecutionPermit` containing this envelope. Level-2 alias execution requires the field and
+capability in addition to the applicable native request/response negotiation; legacy exact-model
+frames retain their contract. Link frame/request IDs are correlation only. Unsupported or
+unnegotiated peers fail closed before dispatch, without stripping the envelope or retrying legacy
+frames. This version initially qualifies only that protected Link path. Direct client permits,
+node HTTP proxy and other relay variants remain unsupported for level-2 aliases until they
+implement and independently qualify the identical central and node fence. D-005 remains the
+target data path; this bounded extension does not approve general gateway proxy activation.
+
+The one-execution key is **`(claim_authority_id, claim_id)`**, persistent across permit IDs,
+holders, attempts, Link reconnects and any future qualified direct/relay path. Stable authority
+identity cannot be changed to escape a consumed claim. Request ID, permit ID, frame ID and ticket
+ID never define an execution namespace. The node must:
+
+1. Verify envelope and actual executable request (exact method, target, Content-Type, accepted
+   semantic headers, body digest and materialized exact model), then acquire a generation-pinned
+   runtime handle for the exact selected instance. Resolve through authenticated runtime state,
+   never arbitrary URLs or model-name-only lookup. GPU loss, drain or generation replacement
+   invalidates the handle. Retain this validity guard through the backend start boundary.
+2. Atomically insert and durably sync a local `INTENT` record keyed by the one-execution key,
+   containing a fresh consume invocation ID, envelope transcript digest, selection and binding.
+   Existing INTENT/SPENT/terminal/tombstoned records allow status/reconciliation only. A restart
+   with an INTENT cannot retry inference or create a fresh intent. Local persistence failure
+   prevents central consumption and backend execution. Retain denial for the claim retry horizon
+   and durable retirement requirements of section 4; storage pressure fails closed.
+3. Call authenticated central `ConsumeDispatch` (through the existing trusted owner control
+   transport) with that invocation ID, node identity and complete envelope binding. The authority
+   atomically revalidates current claim/owner state and sets dispatch_consumed once. Its definitive
+   response is bound to invocation ID, authenticated node, authority/claim and SHA-256 of the
+   signed transcript. Only the original successful transaction may answer `NEWLY_CONSUMED`;
+   duplicates, including the same invocation, answer `ALREADY_CONSUMED` or a rejected outcome.
+   A cached original acknowledgement, status response or `dispatch_consumed=true` is never a fresh
+   permission to execute. Authenticated responses must match the outstanding live invocation.
+4. Only after receiving this definitive fresh `NEWLY_CONSUMED` response, revalidate the pinned
+   runtime and durably sync `SPENT` before calling the backend exactly once. If revalidation or
+   syncing fails, record/reconcile the nonexecution and fail closed; consumption is not undone.
+   A crash between SPENT and backend is conservatively ambiguous and cannot trigger replay.
+   Backend setup/start failure also cannot reopen the claim or spend another permit.
+
+If the consume request or its acknowledgement is lost, times out or has unknown outcome, the
+node never starts the backend. Reconciliation records outcome/cleanup only; it cannot issue a
+replacement start permission. Concurrent nodes and transports compete on the same central CAS;
+local durability additionally blocks restart/reconnect re-entry. An unavailable central authority
+or unsynced local fence means no execution. This sacrifices availability in ambiguous cases to
+preserve one execution; no status poll or fresh permit ID restores permission. No response byte
+or tool action can be replayed after streaming starts. Cancellation/revocation and resource
+release still require owner-confirmed cleanup; claim or permit expiry is not proof of stopped work.
+
+`conformance/owner-execution-permit-vectors.json` supplies a signature known answer and hostile
+serial ordering scenarios, including duplicate/changed permits across transports, stale runtime
+generations, payload/header mutation and lost consume acknowledgement. The oracle models durable
+steps as explicit booleans; it does not perform an fsync, authenticated RPC or distributed CAS.
+All real node persistence, runtime start fencing, Link negotiation and failure injection remain
+**owed** under A-T04/A-T05/A-T08. No runtime activation gate is closed by these artifacts.
 
 ### Original request versus executable payload
 

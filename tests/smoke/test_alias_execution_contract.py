@@ -14,6 +14,7 @@ import alias_execution as execution
 import alias_inference_transport as transport
 import alias_edge_delegation as edge
 import node_join
+import owner_execution_permit as owner
 
 
 class ExecutionContractTests(unittest.TestCase):
@@ -21,6 +22,55 @@ class ExecutionContractTests(unittest.TestCase):
     def setUpClass(cls):
         cls.vectors=json.loads((ROOT/'conformance/alias-execution-vectors.json').read_text())
         cls.identity=json.loads((ROOT/'fixtures/valid/alias-execution-identity.json').read_text())
+
+    def test_owner_envelope_known_answer_and_ordering_vectors(self):
+        self.assertEqual([], owner.check_vectors(ROOT))
+        vectors=json.loads((ROOT/'conformance/owner-execution-permit-vectors.json').read_text())
+        self.assertGreaterEqual(len(vectors['cases']), 28)
+
+    def test_owner_envelope_rejects_oversized_duplicate_and_unknown_fields(self):
+        base=json.loads((ROOT/'fixtures/valid/alias-owner-execution-permit.json').read_text())
+        wire=json.dumps(base).encode()
+        self.assertEqual(base, owner.decode(wire, ROOT))
+        invalid=[wire+b' '*owner.MAX_BYTES,
+                 (json.dumps(base)[:-1]+',"holder_id":"other"}').encode()]
+        for changes in [{'version':2},{'version':True},{'signature':'AA'},
+                        {'unbound_endpoint':'http://untrusted.invalid'},
+                        {'purpose':'inferweave.edge-inference-delegation/v1'}]:
+            invalid.append(json.dumps(dict(base,**changes)).encode())
+        nested=copy.deepcopy(base);nested['permit']['execution_binding']['extra']='x'
+        invalid.append(json.dumps(nested).encode())
+        for raw in invalid:
+            with self.assertRaises(ValueError):owner.decode(raw,ROOT)
+
+    def test_owner_signature_binds_every_field_and_purpose(self):
+        vectors=json.loads((ROOT/'conformance/owner-execution-permit-vectors.json').read_text())
+        fields=json.loads((ROOT/'contracts/protocol-v1/alias-execution.json').read_text())['owner_permit']['transcript_fields']
+        base=vectors['known_answer'];original=owner.transcript(base['envelope'],fields)
+        for name in fields:
+            changed=copy.deepcopy(base['envelope']);target=changed;parts=name.split('.')
+            for part in parts[:-1]:target=target[part]
+            old=target[parts[-1]];target[parts[-1]]=old+1 if type(old)is int else old+'x'
+            wire=owner.transcript(changed,fields)
+            self.assertNotEqual(original,wire,name)
+            self.assertFalse(node_join.ed25519_verify(bytes.fromhex(base['trusted']['public_key_hex']),
+                            wire,edge.decode_base64(base['envelope']['signature'])),name)
+
+    def test_owner_hostile_vectors_detect_removed_authentication(self):
+        with patch.object(owner,'verify',lambda *args:None):
+            self.assertTrue(owner.check_vectors(ROOT))
+
+    def test_owner_lost_ack_does_not_start_or_reopen_on_restart(self):
+        vectors=json.loads((ROOT/'conformance/owner-execution-permit-vectors.json').read_text())
+        fields=json.loads((ROOT/'contracts/protocol-v1/alias-execution.json').read_text())['owner_permit']['transcript_fields']
+        case=next(c for c in vectors['cases'] if c['id']=='lost-consume-ack-restart')
+        self.assertEqual([],owner.run_case(case,vectors['known_answer'],fields,ROOT))
+        real=owner.NodeOracle.execute
+        def unsafe_ack(self,*args,**kwargs):
+            kwargs['ack']='NEWLY_CONSUMED'
+            return real(self,*args,**kwargs)
+        with patch.object(owner.NodeOracle,'execute',unsafe_ack):
+            self.assertTrue(owner.run_case(case,vectors['known_answer'],fields,ROOT))
 
     def test_all_known_answers_hostile_vectors_and_claim_transitions(self):
         self.assertEqual([],execution.check_vectors(ROOT))

@@ -1,0 +1,592 @@
+{
+  "operational_proof_status": "owed",
+  "known_answer": {
+    "envelope": {
+      "version": 1,
+      "purpose": "inferweave.owner-execution-permit/v1",
+      "issuer": "fixture-owner",
+      "key_id": "owner-key-fixture",
+      "audience": "node-fixture",
+      "owner_incarnation": "owner-epoch-fixture",
+      "holder_id": "holder-fixture",
+      "claim_authority_id": "authority-fixture",
+      "issued_at_unix_ms": 1800000000000,
+      "expires_at_unix_ms": 1800000010000,
+      "permit": {
+        "schema_version": 1,
+        "permit_id": "permit-fixture",
+        "claim_id": "claim-fixture",
+        "fencing_token": 1,
+        "admission_attempt": 1,
+        "tenant_id": "fixture-tenant",
+        "principal_id": "principal-fixture",
+        "instance_id": "fixture-instance",
+        "instance_generation": "fixture-generation",
+        "resource_owner_id": "fixture-owner",
+        "reservation_id": "reservation-fixture",
+        "deadline_unix_ms": 1800000012000,
+        "execution_binding": {
+          "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+          "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+          "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+          "transformation_version": "inferweave.alias-materialization/v1",
+          "model_id": "fixture/model@1"
+        }
+      },
+      "selection": {
+        "alias_id": "coding-fast",
+        "alias_revision": 2,
+        "catalog_revision": "catalog-fixture",
+        "routing_policy_version": "fixture-policy-1",
+        "model_id": "fixture/model@1",
+        "deployment_key": "fixture-deployment",
+        "instance_id": "fixture-instance",
+        "instance_generation": "fixture-generation",
+        "capability_profile_id": "fixture-profile",
+        "policy_evidence_id": "fixture-policy",
+        "resource_owner_id": "fixture-owner",
+        "resource_group_id": "fixture-group",
+        "requirement_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "signature": "P0ytFUUQ7Tr9tJYObuuIC6samZJNZuYAG684ZfCK9_Ofge9EwfxgN3IdHKMBrd5HTH3X4yy3fPPjtBOqQnnaCQ"
+    },
+    "actual": {
+      "method": "POST",
+      "request_target": "/v1/chat",
+      "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+      "content_type": "application/json",
+      "alias_level": "2",
+      "session_id": "session-fixture",
+      "timeout_ms": "12000",
+      "capabilities": "tools",
+      "min_context": "32768",
+      "prefer_family": "qwen",
+      "queue": "true",
+      "tenant_selector": "fixture-tenant",
+      "operation_id": "EBESExQVFhcYGRobHB0eHw",
+      "idempotency_key": "fixture-operation",
+      "deadline_unix_ms": 1800000012000,
+      "body": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+    },
+    "test_seed_hex": "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f",
+    "transcript_hex": "696e66657277656176652e6f776e65722d657865637574696f6e2d7065726d69742f7631000000000d666978747572652d6f776e6572000000116f776e65722d6b65792d666978747572650000000c6e6f64652d66697874757265000000136f776e65722d65706f63682d666978747572650000000e686f6c6465722d6669787475726500000011617574686f726974792d666978747572650000000d313830303030303030303030300000000d313830303030303031303030300000000e7065726d69742d666978747572650000000d636c61696d2d66697874757265000000013100000001310000000e666978747572652d74656e616e74000000117072696e636970616c2d6669787475726500000010666978747572652d696e7374616e636500000012666978747572652d67656e65726174696f6e0000000d666978747572652d6f776e6572000000137265736572766174696f6e2d666978747572650000000d313830303030303031323030300000004062663964373131393930316532303765343262366630386137346437646236366239383239663531353264323034616138313136323230656232396237333232000000403065613633323835646330666461323538666130303064643939333433346632656661343032626165636363303532663065313930303531393635363439353500000040316336386164663931393339343039326138313166306437393666626562366434353464316366363539626636636366633863353633666631396664373962370000000f666978747572652f6d6f64656c403100000023696e66657277656176652e616c6961732d6d6174657269616c697a6174696f6e2f76310000000b636f64696e672d666173740000000f636174616c6f672d6669787475726500000010666978747572652d706f6c6963792d310000000f666978747572652f6d6f64656c403100000012666978747572652d6465706c6f796d656e7400000010666978747572652d696e7374616e636500000012666978747572652d67656e65726174696f6e0000000f666978747572652d70726f66696c650000000e666978747572652d706f6c6963790000000d666978747572652d6f776e65720000000d666978747572652d67726f757000000001320000004061616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161",
+    "now": 1800000001000,
+    "trusted": {
+      "purpose": "inferweave.owner-execution-permit/v1",
+      "key_enabled": true,
+      "issuer": "fixture-owner",
+      "key_id": "owner-key-fixture",
+      "node_id": "node-fixture",
+      "claim_authority_id": "authority-fixture",
+      "public_key_hex": "29acbae141bccaf0b22e1a94d34d0bc7361e526d0bfe12c89794bc9322966dd7"
+    },
+    "current": {
+      "permit": {
+        "schema_version": 1,
+        "permit_id": "permit-fixture",
+        "claim_id": "claim-fixture",
+        "fencing_token": 1,
+        "admission_attempt": 1,
+        "tenant_id": "fixture-tenant",
+        "principal_id": "principal-fixture",
+        "instance_id": "fixture-instance",
+        "instance_generation": "fixture-generation",
+        "resource_owner_id": "fixture-owner",
+        "reservation_id": "reservation-fixture",
+        "deadline_unix_ms": 1800000012000,
+        "execution_binding": {
+          "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+          "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+          "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+          "transformation_version": "inferweave.alias-materialization/v1",
+          "model_id": "fixture/model@1"
+        }
+      },
+      "selection": {
+        "alias_id": "coding-fast",
+        "alias_revision": 2,
+        "catalog_revision": "catalog-fixture",
+        "routing_policy_version": "fixture-policy-1",
+        "model_id": "fixture/model@1",
+        "deployment_key": "fixture-deployment",
+        "instance_id": "fixture-instance",
+        "instance_generation": "fixture-generation",
+        "capability_profile_id": "fixture-profile",
+        "policy_evidence_id": "fixture-policy",
+        "resource_owner_id": "fixture-owner",
+        "resource_group_id": "fixture-group",
+        "requirement_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "owner_incarnation": "owner-epoch-fixture",
+      "holder_id": "holder-fixture",
+      "state": "DISPATCHED",
+      "reservation_valid": true,
+      "retired": false,
+      "runtime_instance": "fixture-instance",
+      "runtime_generation": "fixture-generation",
+      "runtime_ready": true
+    }
+  },
+  "cases": [
+    {
+      "id": "valid-once",
+      "steps": [
+        {
+          "expected": "STARTED"
+        }
+      ],
+      "expected_starts": 1,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "same-permit-reconnect",
+      "steps": [
+        {
+          "expected": "STARTED"
+        },
+        {
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 1,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "new-permit-id-same-claim",
+      "steps": [
+        {
+          "expected": "STARTED"
+        },
+        {
+          "changes": [
+            {
+              "surface": "envelope",
+              "field": "permit.permit_id",
+              "value": "new-permit"
+            },
+            {
+              "surface": "current",
+              "field": "permit.permit_id",
+              "value": "new-permit"
+            }
+          ],
+          "resign": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 1,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "second-node-shares-central-fence",
+      "steps": [
+        {
+          "expected": "STARTED"
+        },
+        {
+          "node": "second",
+          "expected": "ALREADY_CONSUMED"
+        }
+      ],
+      "expected_starts": 1,
+      "expected_consume_calls": 2
+    },
+    {
+      "id": "duplicate-across-direct-and-link",
+      "steps": [
+        {
+          "expected": "STARTED"
+        },
+        {
+          "options": {
+            "transport": "DIRECT"
+          },
+          "expected": "UNSUPPORTED"
+        },
+        {
+          "options": {
+            "transport": "NODE_PROXY"
+          },
+          "expected": "UNSUPPORTED"
+        },
+        {
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 1,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "lost-consume-ack-restart",
+      "steps": [
+        {
+          "options": {
+            "ack": "TIMEOUT"
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        },
+        {
+          "node": "second",
+          "expected": "ALREADY_CONSUMED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 2
+    },
+    {
+      "id": "unknown-consume-status",
+      "steps": [
+        {
+          "options": {
+            "ack": "UNKNOWN"
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "duplicate-ack-is-not-start-authority",
+      "steps": [
+        {
+          "options": {
+            "ack": "ALREADY_CONSUMED"
+          },
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "intent-sync-failure",
+      "steps": [
+        {
+          "options": {
+            "intent_synced": false
+          },
+          "expected": "LOCAL_STORAGE_FAILED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "spent-sync-failure",
+      "steps": [
+        {
+          "options": {
+            "spent_synced": false
+          },
+          "expected": "LOCAL_STORAGE_FAILED"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "generation-changes-before-start",
+      "steps": [
+        {
+          "options": {
+            "generation_at_start": "new-generation"
+          },
+          "expected": "INSTANCE_GENERATION_STALE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "capability-unnegotiated",
+      "steps": [
+        {
+          "options": {
+            "negotiated": false
+          },
+          "expected": "UNSUPPORTED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "stale-generation",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "current",
+              "field": "runtime_generation",
+              "value": "new"
+            }
+          ],
+          "expected": "INSTANCE_GENERATION_STALE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "wrong-instance",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "current",
+              "field": "runtime_instance",
+              "value": "other"
+            }
+          ],
+          "expected": "INSTANCE_GENERATION_STALE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "draining",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "current",
+              "field": "runtime_ready",
+              "value": false
+            }
+          ],
+          "expected": "INSTANCE_GENERATION_STALE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "stale-owner-incarnation",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "current",
+              "field": "owner_incarnation",
+              "value": "new"
+            }
+          ],
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "stale-holder",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "current",
+              "field": "holder_id",
+              "value": "new"
+            }
+          ],
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "retired-attempt",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "current",
+              "field": "retired",
+              "value": true
+            }
+          ],
+          "expected": "LEASE_CONFLICT"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "reservation-revoked",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "current",
+              "field": "reservation_valid",
+              "value": false
+            }
+          ],
+          "expected": "LEASE_CONFLICT"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "wrong-audience",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "trusted",
+              "field": "node_id",
+              "value": "other"
+            }
+          ],
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "edge-purpose-rejected",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "trusted",
+              "field": "purpose",
+              "value": "inferweave.edge-inference-delegation/v1"
+            }
+          ],
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "revoked-key",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "trusted",
+              "field": "key_enabled",
+              "value": false
+            }
+          ],
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "authority-substitution",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "trusted",
+              "field": "claim_authority_id",
+              "value": "other"
+            }
+          ],
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "changed-payload",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "actual",
+              "field": "body",
+              "value": "{}"
+            }
+          ],
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "changed-semantic-header",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "actual",
+              "field": "session_id",
+              "value": "changed"
+            }
+          ],
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "changed-target",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "actual",
+              "field": "request_target",
+              "value": "/v1/embeddings"
+            }
+          ],
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "changed-signature",
+      "steps": [
+        {
+          "changes": [
+            {
+              "surface": "envelope",
+              "field": "signature",
+              "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            }
+          ],
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    },
+    {
+      "id": "expired-permit",
+      "steps": [
+        {
+          "now": 1800000010001,
+          "expected": "POLICY_DENIED"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 0
+    }
+  ]
+}

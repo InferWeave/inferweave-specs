@@ -124,9 +124,65 @@
   ],
   "admission_attempt": "attempt_count",
   "execution_consumption_unique_key": [
+    "claim_authority_id",
     "claim_id"
   ],
   "transformation_versions": [
     "inferweave.alias-materialization/v1"
-  ]
+  ],
+  "owner_permit": {
+    "purpose": "inferweave.owner-execution-permit/v1",
+    "link_capability": "iw.owner-execution-permit/1",
+    "schema": "aliases/owner-execution-permit.json",
+    "transcript_fields": [
+      "issuer",
+      "key_id",
+      "audience",
+      "owner_incarnation",
+      "holder_id",
+      "claim_authority_id",
+      "issued_at_unix_ms",
+      "expires_at_unix_ms",
+      "permit.permit_id",
+      "permit.claim_id",
+      "permit.fencing_token",
+      "permit.admission_attempt",
+      "permit.tenant_id",
+      "permit.principal_id",
+      "permit.instance_id",
+      "permit.instance_generation",
+      "permit.resource_owner_id",
+      "permit.reservation_id",
+      "permit.deadline_unix_ms",
+      "permit.execution_binding.request_fingerprint",
+      "permit.execution_binding.executable_request_fingerprint",
+      "permit.execution_binding.executable_body_sha256",
+      "permit.execution_binding.model_id",
+      "permit.execution_binding.transformation_version",
+      "selection.alias_id",
+      "selection.catalog_revision",
+      "selection.routing_policy_version",
+      "selection.model_id",
+      "selection.deployment_key",
+      "selection.instance_id",
+      "selection.instance_generation",
+      "selection.capability_profile_id",
+      "selection.policy_evidence_id",
+      "selection.resource_owner_id",
+      "selection.resource_group_id",
+      "selection.alias_revision",
+      "selection.requirement_fingerprint"
+    ],
+    "maximum_encoded_bytes": 16384,
+    "maximum_lifetime_ms": 30000,
+    "supported_transport": "LINK",
+    "consume_outcomes": [
+      "NEWLY_CONSUMED",
+      "ALREADY_CONSUMED",
+      "REJECTED"
+    ],
+    "local_intent_before_consume": true,
+    "local_spent_before_backend": true,
+    "operational_proof_status": "owed"
+  }
 }

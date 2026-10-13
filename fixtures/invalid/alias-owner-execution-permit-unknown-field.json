@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "purpose": "inferweave.owner-execution-permit/v1",
+  "issuer": "fixture-owner",
+  "key_id": "owner-key-fixture",
+  "audience": "node-fixture",
+  "owner_incarnation": "owner-epoch-fixture",
+  "holder_id": "holder-fixture",
+  "claim_authority_id": "authority-fixture",
+  "issued_at_unix_ms": 1800000000000,
+  "expires_at_unix_ms": 1800000010000,
+  "permit": {
+    "schema_version": 1,
+    "permit_id": "permit-fixture",
+    "claim_id": "claim-fixture",
+    "fencing_token": 1,
+    "admission_attempt": 1,
+    "tenant_id": "fixture-tenant",
+    "principal_id": "principal-fixture",
+    "instance_id": "fixture-instance",
+    "instance_generation": "fixture-generation",
+    "resource_owner_id": "fixture-owner",
+    "reservation_id": "reservation-fixture",
+    "deadline_unix_ms": 1800000012000,
+    "execution_binding": {
+      "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+      "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+      "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+      "transformation_version": "inferweave.alias-materialization/v1",
+      "model_id": "fixture/model@1"
+    },
+    "unknown_authority": "ignored?"
+  },
+  "selection": {
+    "alias_id": "coding-fast",
+    "alias_revision": 2,
+    "catalog_revision": "catalog-fixture",
+    "routing_policy_version": "fixture-policy-1",
+    "model_id": "fixture/model@1",
+    "deployment_key": "fixture-deployment",
+    "instance_id": "fixture-instance",
+    "instance_generation": "fixture-generation",
+    "capability_profile_id": "fixture-profile",
+    "policy_evidence_id": "fixture-policy",
+    "resource_owner_id": "fixture-owner",
+    "resource_group_id": "fixture-group",
+    "requirement_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "signature": "P0ytFUUQ7Tr9tJYObuuIC6samZJNZuYAG684ZfCK9_Ofge9EwfxgN3IdHKMBrd5HTH3X4yy3fPPjtBOqQnnaCQ"
+}

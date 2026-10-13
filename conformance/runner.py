@@ -36,6 +36,7 @@ SCHEMA_DIR = ROOT / "schemas" / "v1"
 
 # fixture basename -> schema rel path (relative to schemas/v1)
 MAP = {
+    "alias-owner-execution-permit": "aliases/owner-execution-permit.json",
     "alias-execution-binding": "aliases/execution-binding.json",
     "alias-execution-permit": "aliases/execution-permit.json",
     "alias-inference-assertion": "aliases/inference-assertion.json",
