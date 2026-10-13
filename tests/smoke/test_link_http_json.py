@@ -2,12 +2,13 @@
 import copy
 import json
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
 
 from conformance.link_http_json import (
-    CONTRACT, CAPABILITY, Response, bound_for_dispatch, request_valid, validate, dispatch_mode,
+    CONTRACT, CAPABILITY, Response, bound_for_dispatch, request_valid, validate, dispatch_mode, request_decision,
 )
 from conformance.runtime_protocol import negotiate_native_link
 
@@ -38,6 +39,24 @@ class LinkHttpContract(unittest.TestCase):
                     self.assertEqual(b''.join(chunks),expected)
                 self.assertEqual(response.outcome,case['outcome'])
                 self.assertTrue(response.terminal)
+
+    def test_allowed_headers_reject_control_bytes_in_schema_and_oracle(self):
+        cases=json.loads((ROOT/'conformance/link-http-json-vectors.json').read_text())['cases']
+        for case in cases:
+            if not case['name'].startswith(('x-inferweave-request-id_', 'retry-after_')):
+                continue
+            frame=case['frames'][0]
+            with self.subTest(case=case['name'], guard='schema'):
+                with self.assertRaises(Exception):
+                    validate('link-http-response-head',frame['response_head'])
+            # Independently exercise semantic validation: schema removal must not
+            # permit committing an HTTP head with an injected header value.
+            with self.subTest(case=case['name'], guard='semantic'):
+                response=Response('r1')
+                with patch('conformance.link_http_json.validate',return_value=None):
+                    with self.assertRaises(Exception):response.accept(json.dumps(frame))
+                self.assertIsNone(response.head)
+                self.assertEqual(response.outcome,502)
 
     def test_request_exact_utf8_bytes_and_mime(self):
         for target in CONTRACT['targets']:
@@ -107,6 +126,20 @@ class LinkHttpContract(unittest.TestCase):
                 response.disconnected(cancelled)
                 self.assertEqual(response.outcome,"cancelled" if cancelled else "partial_failure" if with_head else 502)
                 with self.assertRaises(Exception):response.accept(json.dumps({"kind":"end","request_id":"r1"}))
+
+    def test_legacy_completions_streaming_contract(self):
+        fixtures=json.loads((ROOT/'conformance/link-http-json-vectors.json').read_text())
+        for case in fixtures['request_cases']:
+            with self.subTest(case=case['name']):
+                self.assertEqual(request_decision(case['request'],case['bound']),case['expected'])
+                if 'response_case' in case:
+                    response_case=next(c for c in fixtures['cases'] if c['name']==case['response_case'])
+                    self.assertEqual(response_case['frames'][0]['response_head'],
+                                     {'status':200,'content_type':'application/json'})
+        # Legacy stream rejection must also happen before old-peer fallback.
+        request=fixtures['request_cases'][1]['request']
+        self.assertEqual(request_decision(request,False),
+                         {'dispatch_allowed':False,'status':400,'code':'stream_unsupported'})
 
     def test_downgrade_is_explicit_before_dispatch(self):
         self.assertEqual(dispatch_mode("/v1/completions",False),"FEATURE_UNSUPPORTED")

@@ -76,7 +76,7 @@
     },
     "link_http_json": {
       "type": "string",
-      "description": "Level \"1\" names iw.link-http-json/1, spec58 bounded exact-model HTTP JSON transport on an authenticated current registration and Link incarnation. Independent of native response proof and owner execution permits."
+      "description": "Level \"1\" names iw.link-http-json/1, spec59 bounded exact-model HTTP JSON transport on an authenticated current registration and Link incarnation. Independent of native response proof and owner execution permits."
     }
   }
 }

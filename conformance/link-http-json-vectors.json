@@ -640,6 +640,401 @@
       ],
       "outcome": 502,
       "invalid": true
+    },
+    {
+      "name": "x-inferweave-request-id_lf",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "x-inferweave-request-id": "r1\n"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "x-inferweave-request-id_cr",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "x-inferweave-request-id": "r1\r"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "x-inferweave-request-id_crlf",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "x-inferweave-request-id": "r1\r\n"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "x-inferweave-request-id_nul",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "x-inferweave-request-id": "r1\u0000"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "x-inferweave-request-id_tab",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "x-inferweave-request-id": "r1\t"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "x-inferweave-request-id_del",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "x-inferweave-request-id": "r1\u007f"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "x-inferweave-request-id_embedded_lf",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "x-inferweave-request-id": "r1\nx"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "x-inferweave-request-id_injected_header",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "x-inferweave-request-id": "r1\r\nx-injected: yes"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "retry-after_lf",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "retry-after": "2\n"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "retry-after_cr",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "retry-after": "2\r"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "retry-after_crlf",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "retry-after": "2\r\n"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "retry-after_nul",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "retry-after": "2\u0000"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "retry-after_tab",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "retry-after": "2\t"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "retry-after_del",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "retry-after": "2\u007f"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "retry-after_embedded_lf",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "retry-after": "2\nx"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "retry-after_injected_header",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "application/json",
+            "headers": {
+              "retry-after": "2\r\nx-injected: yes"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "nonstreaming_completion_json_success",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": "{\"choices\":[{\"text\":\"ok\"}]}"
+        },
+        {
+          "kind": "end",
+          "request_id": "r1"
+        }
+      ],
+      "outcome": "complete",
+      "invalid": false
+    }
+  ],
+  "request_cases": [
+    {
+      "name": "legacy_completions_stream_false",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"exact@rev\", \"prompt\": \"hello\", \"stream\": false}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/completions",
+            "content_type": "application/json",
+            "payload_bytes": 58
+          }
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": true,
+        "mode": "http"
+      },
+      "response_case": "nonstreaming_completion_json_success"
+    },
+    {
+      "name": "legacy_completions_stream_true",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"exact@rev\", \"prompt\": \"hello\", \"stream\": true}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/completions",
+            "content_type": "application/json",
+            "payload_bytes": 57
+          }
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": false,
+        "status": 400,
+        "code": "stream_unsupported"
+      }
     }
   ]
 }

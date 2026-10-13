@@ -216,7 +216,7 @@ native Link HTTP relay and uses another eligible transport or returns `FEATURE_U
 The node copies the current registration response `connectionId` into the Hello
 `registration_connection_id`, creates a fresh unpredictable `link_incarnation_id` for every
 socket/dial (including reconnects by the same process `session`), sets `native_link_version: 1`,
-and offers its supported request capability (`iw.link-native-request/1` or spec58
+and offers its supported request capability (`iw.link-native-request/1` or spec59
 `iw.link-http-json/1`) plus each separately supported feature in
 `native_link_features`. `session` remains process identity
 and MUST NOT be used as the Link incarnation. If any native Link v1 field is present, all are
@@ -226,7 +226,7 @@ After authenticating the Hello credential, the accepting gateway performs one ne
 the current registration: the Hello registration id must equal its current, fresh registration id;
 the registration credential must still be valid and the socket must still be live;
 the registration, Hello, and gateway must all include a common request capability:
-`iw.link-native-request/1` or `iw.link-http-json/1` (spec58). HTTP JSON is independent;
+`iw.link-native-request/1` or `iw.link-http-json/1` (spec59). HTTP JSON is independent;
 native response proof still requires native request support. Each other
 native feature, including `iw.link-native-response/1`, enters the bound acknowledgement only when
 it appears in those same three sets. It sends a
@@ -895,7 +895,7 @@ The existing level-1 alias shape and default list response remain unchanged. See
 
 ## Exact-model HTTP JSON Link transport
 
-Spec58 defines independently negotiated `link_http_json: "1"` / `iw.link-http-json/1`,
+Spec59 defines independently negotiated `link_http_json: "1"` / `iw.link-http-json/1`,
 closed `meta.http`, first-Token `response_head`, and `End.failure`. It preserves
 exact `/v1/completions` and chat HTTP semantics. It neither reuses native end-proof
 nor composes with spec57 protected alias execution. Older chat behavior remains

@@ -1,4 +1,4 @@
-"""Offline spec58 oracle. No network, backend, admission or routing implementation."""
+"""Offline spec59 oracle. No network, backend, admission or routing implementation."""
 import json
 import re
 from pathlib import Path
@@ -111,8 +111,20 @@ class Response:
                     head = frame['response_head']
                     if not mime_valid(head['content_type'], response=True):
                         raise ValueError('response MIME')
-                    if 'retry-after' in head.get('headers', {}) and head['status'] not in (429, 503):
-                        raise ValueError('retry-after status')
+                    headers = head.get('headers', {})
+                    correlation = headers.get('x-inferweave-request-id')
+                    if correlation is not None and (
+                        not isinstance(correlation, str)
+                        or re.fullmatch(r'[!-~]{1,256}', correlation) is None
+                    ):
+                        raise ValueError('request-id header')
+                    retry_after = headers.get('retry-after')
+                    if retry_after is not None and (
+                        not isinstance(retry_after, str)
+                        or re.fullmatch(r'(0|[1-9][0-9]{0,9})', retry_after) is None
+                        or head['status'] not in (429, 503)
+                    ):
+                        raise ValueError('retry-after header/status')
                     self.head = head
                 elif any(key in frame for key in ('response_head', 'queue_ms', 'queue_hops')):
                     raise ValueError('repeated head')
@@ -159,4 +171,19 @@ def check_vectors(root=ROOT):
             failed = True
         if failed != case['invalid'] or response.outcome != case['outcome']:
             errors.append(f"link HTTP vector {case['name']} disagrees")
+    for case in json.loads((root / 'conformance/link-http-json-vectors.json').read_text())['request_cases']:
+        if request_decision(case['request'], case['bound']) != case['expected']:
+            errors.append(f"link HTTP request vector {case['name']} disagrees")
     return errors
+
+
+def request_decision(frame, bound):
+    """Preserve existing legacy completions stream rejection before transport dispatch."""
+    request_valid(frame)
+    if (frame['meta']['http']['target'] == '/v1/completions'
+            and strict_json(frame['payload']).get('stream') is True):
+        return {'dispatch_allowed': False, 'status': 400, 'code': 'stream_unsupported'}
+    mode = dispatch_mode(frame['meta']['http']['target'], bound)
+    if mode == 'FEATURE_UNSUPPORTED':
+        return {'dispatch_allowed': False, 'status': 503, 'code': mode}
+    return {'dispatch_allowed': True, 'mode': mode}

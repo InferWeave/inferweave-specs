@@ -553,7 +553,7 @@ qualified production evaluation imports remain **owed**. Before/theme-after
 reports are bounded slices; final integrated route/browser/screenshots and
 source/dist evidence are still owed at this checkpoint. No production gate closes.
 
-## Exact-model HTTP JSON Held Link (spec58)
+## Exact-model HTTP JSON Held Link (spec59)
 
 **BLOCKED / production proof owed.** Closed schemas and offline golden/hostile
 stream and binding vectors are executable contract evidence only. Rust/Go mixed-version

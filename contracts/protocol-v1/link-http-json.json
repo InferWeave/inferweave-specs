@@ -1,5 +1,5 @@
 {
-  "spec": "58_LINK_HTTP_JSON",
+  "spec": "59_LINK_HTTP_JSON",
   "feature": "link_http_json",
   "level": "1",
   "capability": "iw.link-http-json/1",

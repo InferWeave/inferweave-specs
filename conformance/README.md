@@ -44,7 +44,7 @@ present-empty optional controls and non-authoritative correlation metadata cases
 execution smoke test and both runners replay it through `alias_inference_transport.py`. Exact
 raw Content-Type binding is also checked; MIME equivalence does not normalize fingerprints.
 
-## Exact-model Link HTTP JSON (spec58)
+## Exact-model Link HTTP JSON (spec59)
 
 `python3 -B tests/smoke/test_link_http_json.py` verifies closed schemas and the
 `link-http-json-vectors.json` stream fixtures plus registration/incarnation, legacy

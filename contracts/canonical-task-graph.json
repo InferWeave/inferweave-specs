@@ -1056,19 +1056,19 @@
       ],
       "specs": [
         "08_CONNECTIVITY_DATA_PLANE",
-        "58_LINK_HTTP_JSON"
+        "59_LINK_HTTP_JSON"
       ],
       "features": [
         "IW-DP-001",
         "IW-DP-002"
       ],
       "context_class": "C75",
-      "outcome": "Fallback order is direct \u2192 site/regional relay \u2192 gateway relay last resort with byte accounting/circuit breakers. Negotiated exact-model Held Link HTTP JSON preserves target, status, MIME and bytes with terminal failure and no replay (spec58).",
+      "outcome": "Fallback order is direct \u2192 site/regional relay \u2192 gateway relay last resort with byte accounting/circuit breakers. Negotiated exact-model Held Link HTTP JSON preserves target, status, MIME and bytes with terminal failure and no replay (spec59).",
       "required_tests": [
         "forced NAT failure",
         "fallback ordering",
         "gateway relay bandwidth circuit breaker",
-        "spec58 exact-registration/Link negotiation, HTTP byte fidelity and hostile response vectors; production mixed-version, cancellation/backpressure and no-replay proof owed"
+        "spec59 exact-registration/Link negotiation, HTTP byte fidelity and hostile response vectors; production mixed-version, cancellation/backpressure and no-replay proof owed"
       ],
       "notes": ""
     },

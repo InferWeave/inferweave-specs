@@ -1,4 +1,4 @@
-# 58 — Exact-model HTTP JSON over Held Link
+# 59 — Exact-model HTTP JSON over Held Link
 
 ## Scope and defect
 
@@ -64,6 +64,11 @@ the number above is illustrative. Only exact `/v1/chat/completions` and
 `/v1/completions` targets are legal. No query, fragment, percent-encoded alternative,
 absolute URL, alternate method, arbitrary headers or destination is expressible.
 The backend origin comes only from authenticated deployment configuration.
+The existing `/v1/completions` API remains non-streaming: `stream:true` MUST return
+HTTP400 with JSON error code `stream_unsupported` before backend dispatch, even
+when `iw.link-http-json/1` is negotiated. `stream:false` or an omitted stream flag
+retains non-streaming JSON completion behavior. This transport adds no new legacy
+completions streaming support; SSE preservation applies to supported chat streams.
 Request content type is `application/json`, optionally a single `charset=utf-8`
 parameter (ASCII case-insensitive, SP/HTAB around separators and optional quoted
 `utf-8`). Preserve the original valid MIME string, including casing and spacing.
@@ -96,7 +101,11 @@ The head comes from the backend HTTP response. Accept final statuses 200–299 a
 `application/json` or `text/event-stream` with the same optional UTF-8 parameter
 grammar as above. Preserve its original valid value. `headers` is optional and
 closed: `x-inferweave-request-id` is a bounded visible ASCII opaque correlation
-value; `retry-after` is decimal seconds on 429/503 only. No cookies, credentials,
+value; `retry-after` is decimal seconds on 429/503 only. Validate the entire
+header value, including its last byte; no CR, LF, HTAB, NUL, DEL or other control
+byte is allowed. JSON Schema patterns use a strict end assertion because `$`
+can match before a final LF. The semantic verifier independently uses full-string
+matching before committing the head. No cookies, credentials,
 internal addresses, candidate identities or arbitrary header forwarding. Correlation
 headers confer no caller authority. Existing independently negotiated queue_ms and
 queue_hops may occur on this first token under their prior semantics.

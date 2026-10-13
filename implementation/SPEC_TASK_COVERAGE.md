@@ -65,4 +65,4 @@
 | `specs/58_MODEL_INTELLIGENCE_UI_COHESION.md` | `P1-T20`, `P1-T21`, `P2-T03`, `P2-T05`, `P2-T07`, `P2-T08`, `P2-T10`, `P2-T16` |
 
 
-| `specs/58_LINK_HTTP_JSON.md` | `P1-T18` |
+| `specs/59_LINK_HTTP_JSON.md` | `P1-T18` |
