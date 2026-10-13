@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,033,098 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,045,395 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `5dd235f21d25` — ~9,440t
+- `OPEN_GATES.md` — `bf0229f66392` — ~9,798t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -121,11 +121,12 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
 - `docs/AI_INSTALL_INFERWEAVE.md` — `64b97a39d222` — ~509t
 - `docs/README.md` — `514ce6279d55` — ~100t
-- `docs/alias-implementation-gap-matrix.md` — `81e0f9567131` — ~7,338t
+- `docs/alias-implementation-gap-matrix.md` — `37c1cf59a5b9` — ~7,876t
 - `docs/architecture.md` — `3d2cc8e44219` — ~377t
 - `docs/compatibility.md` — `8ceb21cb1933` — ~713t
 - `docs/events.md` — `a957e821624f` — ~481t
 - `docs/extensions.md` — `64c0b09b4dcb` — ~227t
+- `docs/federated-provisioning-audit.md` — `531b32d25737` — ~6,966t
 - `docs/federation.md` — `dfe0a66eaf91` — ~320t
 - `docs/lifecycle.md` — `d17f7ed1827f` — ~408t
 - `docs/scheduling.md` — `743fddcd8bda` — ~412t
@@ -135,6 +136,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/specs/2026-10-08-universal-runtime-framework.md` — `886811df137b` — ~4,283t
 - `docs/specs/README.md` — `dcad2fc1fc61` — ~571t
 - `docs/specs/backpressure-actions-load-report/00-design.md` — `ee0e95f599e1` — ~4,408t
+- `docs/specs/cli-unification/spec-28-change-request.md` — `296c353f2b6a` — ~4,435t
 - `docs/specs/dynamic-context-capabilities/00-overview-and-architecture.md` — `b0892f0f1915` — ~1,569t
 - `docs/specs/dynamic-context-capabilities/01-inferweave-capability-api.md` — `cd6a838fdfd6` — ~1,538t
 - `docs/specs/dynamic-context-capabilities/02-pi-provider-integration.md` — `684f5dfcc922` — ~1,243t
