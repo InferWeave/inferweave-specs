@@ -38,3 +38,8 @@ transcript/fingerprint and serial claim safety vectors. `python3 tools/gen_alias
 reproduces public-seed fixtures. `runner.py` and `validate_specs.py --self-test` include the checks.
 These do not exercise production HTTP, PostgreSQL concurrency, owner/node fencing or cleanup.
 Actual implementation qualification remains owed in OPEN_GATES and A-T02/A-T04/A-T05/A-T06/A-T08.
+
+The shared `alias-inference-transport-vectors.json` fixture adds bounded MIME classification,
+present-empty optional controls and non-authoritative correlation metadata cases. The existing
+execution smoke test and both runners replay it through `alias_inference_transport.py`. Exact
+raw Content-Type binding is also checked; MIME equivalence does not normalize fingerprints.

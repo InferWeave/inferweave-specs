@@ -459,6 +459,47 @@ lost-response reconciliation across same-owner fallback, immutable operation/key
 original/executable request materialization binding, and one claim consumption across distinct
 permit IDs plus direct/relay delivery. Offline hostile vectors cannot close these runtime gates.
 
+
+### Dynamic alias filtered pagination proof remains owed
+
+Spec 54 permits an empty filtered page with a continuation and requires bounded advancing
+scans, authorization/snapshot binding and explicit incomplete UI state. The list schema
+already permits this response. These requirements do not establish runtime enforcement:
+empty-page continuation, scan-budget exhaustion, repeated-cursor handling and authorization
+revision invalidation at the Rust/Go boundary remain **unsatisfied/owed** under
+A-T02/A-T06/A-T07/A-T08 and acceptance 20/27. No rollout gate is opened by this correction.
+
+### Alias inference transport interoperability remains owed
+
+Spec57's shared MIME/header vectors and offline classifier prove the bounded contract only.
+A-T02/A-T06/A-T08 still owe running Go-to-Rust signature/byte preservation, endpoint semantic
+validation, correlation non-authority and malformed transport rejection across the actual HTTP
+boundary. Rust `c750d31d` and Go PR #476 at `2ceaf49` enforce the 8192 UTF-8 byte
+correlation bound and share the canonical 36 MIME/12 header fixture, including multibyte
+acceptance/rejection boundaries. Their fixture bytes agree with the canonical fixture
+(SHA-256 `f485aaed3bc914df74eebc0ff9ee0d658e615c51ca7eac3c9101335963b93f2a`).
+This component parity does not prove live cross-process HTTP interoperability or shared
+execution-claim enforcement; those proofs remain **owed**. No deployed interoperability or
+alias traffic activation gate is established by this evidence.
+
+### Owner-to-node execution permit fence remains owed
+
+Spec57's purpose-separated owner envelope and hostile serial oracle define authentication and
+ordering only. A-T04/A-T05/A-T08 still owe actual durable node INTENT/SPENT fences across restart,
+authenticated shared ConsumeDispatch and lost-acknowledgement fault injection, exact runtime
+generation pinning through backend start, key/owner-incarnation revocation and negotiated Link
+interoperability. Direct/client and node-proxy level-2 execution remain unsupported until separately
+qualified against the same central claim fence. No production execution or activation is proven
+by these schemas, public-seed signatures or offline scenarios.
+
+PR #259 review correction: the earlier permit text incorrectly assumed native Link metadata
+could preserve spec57 compatibility targets and semantic headers. The protected Request and
+separate asynchronous consume control schemas now specify those missing bytes and bindings.
+Running Link request/ack multiplexing, continued heartbeat/cancellation while awaiting consume,
+late/wrong acknowledgement rejection, and post-fsync expiry/deadline/cancellation revalidation
+remain **owed**. JSON-only bounded fixture success does not qualify multipart, chunking,
+OpenAI SSE/tool streams, direct execution or node HTTP proxying.
+
 ## Model intelligence and existing UI cohesion — implementation versus qualification
 
 **Implementation and merge authorized; all new qualification proof owed.** The

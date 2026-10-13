@@ -102,7 +102,7 @@ Bind actual `Content-Type`, `InferWeave-Alias-Level`, `x-inferweave-session`,
 `InferWeave-Operation-Id`, `Idempotency-Key` and `InferWeave-Request-Deadline-Unix-Ms`.
 These map respectively to content_type, alias_level, session_id, timeout_ms, capabilities,
 min_context, prefer_family, queue, tenant_selector, operation_id, idempotency_key and
-deadline_unix_ms. Absent optional values bind empty strings; alias level is exactly `2`.
+deadline_unix_ms. Absent or present-empty optional values bind the same empty strings; alias level is exactly `2`.
 Headers are singular, bounded, control-free with no surrounding whitespace; reject ambiguous
 or noncanonical forms. Existing semantic parsing still validates every accepted value and
 rejects unknown capabilities. The tenant selector must match a current Rust grant; signing a
@@ -125,6 +125,57 @@ SHA-256 hex of exact entity bytes. Nonce, signature, parent/edge, attempt correl
 are excluded so attempts converge. Deadline is separately signed: retries may shorten the stored
 deadline, never extend it. Content-identical intentional new requests are **not** deduplicated by
 fingerprint; fingerprint detects changed work under an existing operation/key.
+
+### Supported transport subset and correlation metadata
+
+Spec57 originally left MIME parsing and present-empty headers underspecified. Independent Rust/Go
+interoperability work found that strict literal MIME matching could reject equivalent media types,
+while unrestricted MIME libraries could disagree on duplicate or RFC2231 parameters. Following
+that underspecified text would reintroduce a signer/verifier disagreement. This bounded common
+subset fixes the contract; it does not normalize the signed request or enable an endpoint.
+
+`Content-Type` is required, ASCII, at most 1024 bytes, without controls (including tabs), or leading
+or trailing whitespace. Accept `application/json` on supported targets and `multipart/form-data`
+only on `/v1/audio/transcriptions`. Type and parameter names compare case-insensitively; parameter
+order is irrelevant to classification. ASCII spaces around `;` and `=` are allowed. Parameter
+names and unquoted values use MIME token characters (ASCII letters/digits and
+`!#$%&'*+-.^_` plus backtick, `|~`); unquoted values are nonempty. Quoted values may be empty and
+contain printable ASCII; only quote and backslash may be backslash-escaped. A single final
+semicolon is allowed; empty intermediate parameters, missing equals/value, unterminated quotes,
+characters after a closing quote, duplicate names (even with identical values) and any parameter
+name containing `*` are rejected. In particular, RFC2231 extended and continued parameters are
+unsupported. Unknown well-formed ordinary parameters may be parsed but confer no capabilities.
+
+Multipart requires exactly one `boundary` parameter. Its decoded value is 1–70 ASCII bytes,
+using only letters/digits, apostrophe, parentheses, plus, underscore, comma, hyphen, period,
+slash, colon, equals, question mark and space, with no trailing space. Quoting permits spaces
+or colons; escaped quotes/backslashes remain invalid boundary characters after decoding.
+Classification never rewrites `Content-Type`: its exact received bytes, including case,
+parameter order, spaces and quotes, remain in the signature and request fingerprint. Two MIME
+spellings with equivalent classification can therefore have different fingerprints. Endpoint
+body validation and semantic validation remain required after transport classification.
+
+The optional signed controls are `session_id`, `timeout_ms`, `capabilities`, `min_context`,
+`prefer_family`, `queue`, `tenant_selector` and `idempotency_key`, mapped to the headers above.
+Present-empty is equivalent to absent only for these controls. Required headers, including
+Content-Type, alias level, operation ID and absolute deadline, must be nonempty and otherwise
+valid. Reject duplicate names case-insensitively before a header map can collapse them.
+
+`x-inferweave-request-id` is allowed as non-authoritative correlation metadata: if present it
+must be singular, nonempty valid UTF-8, at most 8192 UTF-8 bytes, control-free and without surrounding
+whitespace. It is excluded from the signed semantic transcript and request fingerprint. It
+never supplies a principal, tenant, operation ID, canonical claim request ID, idempotency key,
+capability or admission authority. Changing correlation metadata cannot create another execution
+or alter claim lookup. Unknown InferWeave controls remain rejected.
+
+`conformance/alias-inference-transport-vectors.json` is the shared transport fixture imported
+from Rust commit `ebc195f3d584c190121b6716711e2173212589ac` and Go PR #474's
+interoperability work, preserving their 36 MIME and 10 header cases and adding 8192-byte
+acceptance and 8193-byte rejection cases for multibyte correlation metadata. Those implementations initially counted Unicode scalar
+values for this metadata; that could admit substantially more than 8192 bytes. Both must enforce
+the byte limit and replay the added vector before claiming parity. `conformance/alias_inference_transport.py` replays its MIME/header cases
+as an offline classification oracle. It supplies neither cryptographic verification nor proof
+of running HTTP interoperability; those implementation and activation gates remain owed.
 
 ## 4. Canonical identity, idempotency and durable authority
 
@@ -235,7 +286,8 @@ nondeterministic inference/tool operations on another model. Direct/relay execut
 relay attempts, or reconnects cannot authorize two executions. Bind claim ID, holder fence,
 admission attempt, tenant/principal, exact selected owner/instance/generation, reservation and
 deadline in the existing authenticated permit transport. `schemas/v1/aliases/execution-permit.json`
-describes these protected fields; it defines no new unauthenticated bearer format.
+describes these protected fields; section 5.1 now binds them in an authenticated owner envelope.
+Neither the inner permit alone nor an unsigned envelope is a bearer authorization.
 
 The node recomputes the executable fingerprint from actual method, target, Content-Type, every
 accepted semantic header and exact executable entity bytes. It compares the immutable binding
@@ -246,6 +298,161 @@ execution. If consumption acknowledgement is lost, reconcile or fail without rep
 side may treat uncertainty as unspent. A new permit/fence/transport does not reset consumption.
 Releasing an unused reservation revokes all unspent permits for its retired attempt. No stale
 holder may issue/spend a permit. Generic HTTP retry logic cannot bypass this boundary.
+
+### 5.1 Owner-to-node envelope and one-use execution fence
+
+The previous text required an authenticated permit transport without defining its issuer,
+node audience or the node's crash ordering. A literal implementation could accept a generic
+Link request as execution authority or resume after losing a consumption acknowledgement.
+This contract gap is corrected here; no running vulnerability is asserted.
+
+`schemas/v1/aliases/owner-execution-permit.json` wraps the complete existing protected permit
+and immutable claim `selection`. Its purpose is exactly `inferweave.owner-execution-permit/v1`,
+version integer 1. The envelope contains trusted `issuer` (equal to `permit.resource_owner_id`),
+`key_id`, exact registered node `audience`, current authenticated `owner_incarnation`, current
+`holder_id`, stable `claim_authority_id`, `issued_at_unix_ms`, `expires_at_unix_ms`, `permit`,
+`selection` and `signature`. Authority IDs resolve only through configured trust; no envelope
+field supplies a URL or key. Keys are separately provisioned and authorized for this purpose,
+owner and node audience. Edge inference, management, enrollment and generic Link credentials
+cannot sign this envelope or imply this trust. Do not reuse edge signing keys as owner keys.
+Check current key revocation and owner registration incarnation at receipt and before execution.
+
+Use strict Ed25519 with canonical unpadded base64url signatures, strict UTF-8 JSON, duplicate
+member rejection at every nesting level, closed schemas and safe positive integers. The encoded
+UTF-8 JSON envelope is at most 16384 bytes before parsing. Reject unsupported versions and unknown
+fields; never ignore an invalid envelope and fall back to legacy inference. Sign the literal
+purpose plus zero byte, followed by u32 big-endian byte-length framing of every field in the
+ordered `owner_permit.transcript_fields` list in `contracts/protocol-v1/alias-execution.json`.
+Dotted names select nested fields; strings use exact UTF-8 bytes, integers canonical decimal ASCII.
+The domain selects version 1 and the fixed schema selects inner schema_version 1; neither is
+negotiable. Signature is excluded. No JSON serialization convention participates in signing.
+The public-seed known answer freezes field order and encoding for cross-language replay.
+
+Permit lifetime is at most 30000 ms; accept at most 5000 ms future issue skew and no expired
+permit. Effective expiry is also bounded by the original operation deadline and current owner
+reservation validity. This cryptographic expiry does not reclaim progressing GPU work.
+`selection` must equal the current durable claim selection in full; repeated instance, generation,
+owner and model fields must agree with inner permit/binding. Claim authority validates current
+DISPATCHED state, holder/fence, admission attempt, reservation, tenant/principal, original and
+executable binding and unretired selection. A valid signature alone grants no execution.
+
+Feature `owner_execution_permits: "1"` names capability `iw.owner-execution-permit/1`.
+Negotiate it through the existing registration and exact Link
+incarnation capability intersection. This capability independently authorizes the protected
+request and asynchronous consume control frames below; native-request negotiation alone cannot
+carry them. The existing native metadata only supports relative `/embeddings`, `/rerank`,
+`/predictions`, `/jobs` and fixed JSON Content-Type. It cannot reconstruct spec57's `/v1/*`
+fingerprint. Treating it as a ready transport was a contract defect, corrected by this explicit
+shape; no new native endpoint mapping or silent transform is introduced.
+
+**Protected Request frame.** `schemas/v1/requests/link-alias-request.json` is the closed level-2
+variant of the existing `kind: "request"` frame. It carries correlation-only `request_id`,
+`deployment` equal to the admitted exact model ID, the original string `payload` holding the
+**materialized** UTF-8 request bytes, and `meta` with exactly `ownerExecutionPermit` (the signed
+envelope) and `executable` (schema `link-alias-executable.json`). The executable object contains
+all twelve spec57 fingerprint fields, including exact method, `/v1/*` target, Content-Type,
+body digest and each semantic header value, plus `payload_bytes`. The node hashes the UTF-8
+encoding of the decoded payload string, checks its exact byte count/digest, reconstructs the
+fingerprint, and compares the signed binding. JSON transport escaping changes no decoded bytes;
+re-serializing the inference payload or normalizing MIME/headers before verification is forbidden.
+Reject duplicate JSON members, unknown fields, missing metadata and conflicting deployment/model.
+
+`meta.native`, launch/probe/queue/timeout overrides, chunk fields and a second permit location
+are forbidden in this variant. Queue/timeout semantics come solely from the bound executable
+fields and absolute claim deadline. Targets are the existing spec57 allowlist, never arbitrary
+URLs. Initial bodies must be valid UTF-8 JSON with an application/json Content-Type under the
+section 3 grammar; multipart/binary and inline bulk media remain unsupported. Both decoded body
+and complete encoded frame are capped at 16 MiB, further reduced by the existing Link frame cap;
+a frame that cannot fit fails before consumption. Chunking needs separate qualification. Exact
+selected runtime adapters must implement the given compatibility target and preserve its semantics;
+this metadata does not authorize generic backend proxying or mapping `/v1/*` to native endpoints.
+
+A level-2 sender checks this capability on the exact current registration and held Link before
+enqueueing; a receiver rejects a protected frame without it. Never strip metadata or retry a
+legacy frame after failure. The response format must be independently qualified for the requested
+endpoint: native-response v1 covers its bounded JSON response contract only, and is not proof of
+OpenAI SSE/tool-stream fidelity. Streaming, other response content types and unsupported endpoint
+pairs remain unavailable until their byte/status/cancellation contract is qualified. Direct client
+permits, node HTTP proxy and other relay variants remain unsupported for level-2 aliases until
+they implement and independently qualify the identical central and node fence. D-005 remains the
+target data path; this bounded extension does not approve general gateway proxy activation.
+
+**Consume control exchange.** The same negotiated capability authorizes separate node→owner
+`kind: "consume_dispatch"` and owner→node `kind: "consume_dispatch_ack"` frames, version 1,
+matching `link-consume-dispatch.json` and `link-consume-dispatch-ack.json`. These are control frames,
+never inference Request payloads or in-process storage calls disguised as network RPC. The request
+carries the complete owner envelope and explicit `invocation_id`, `node_id`, `link_incarnation_id`,
+`claim_authority_id`, `claim_id`, `owner_incarnation`, `holder_id`, `fencing_token`,
+`admission_attempt`, `reservation_id` and `permit_transcript_sha256`. The invocation ID is fresh
+128-bit randomness encoded as canonical unpadded base64url; persist it with the node INTENT.
+All repeated fields must match the signed envelope, authenticated node/current Link and stored
+claim. The owner resolves the configured claim authority, performs the authenticated central CAS,
+and returns the exact correlation fields with `outcome` of NEWLY_CONSUMED, ALREADY_CONSUMED or
+REJECTED. A response from another owner, Link incarnation, closed invocation or status API cannot
+authorize a start. Reject malformed/oversized control frames before parsing; the complete encoded
+request is capped at 32768 bytes and acknowledgement at 8192 bytes, reduced by Link limits.
+
+The node keeps a bounded outstanding-invocation table keyed by invocation plus exact Link
+incarnation. Dispatch processing must yield to the shared receive loop while awaiting the ack,
+so cancellation, heartbeat and flow-control processing continue. Deadline, disconnect, cancel or
+owner revocation closes the invocation and leaves durable INTENT for reconciliation. A late ack
+for that invocation is discarded even if correctly authenticated. Cancellation is a monotonic
+local latch associated with the claim, not merely the inference frame correlation ID. Owner
+cancellation must invalidate pending control waits. No timeout, reconnect or fresh invocation
+may clear the durable fence. Authenticated status/reconciliation is separate from this exchange
+and must never emit a newly-consumed start permission. Runtime implementation and fault-injected
+proof of these asynchronous behaviors remain owed.
+
+The one-execution key is **`(claim_authority_id, claim_id)`**, persistent across permit IDs,
+holders, attempts, Link reconnects and any future qualified direct/relay path. Stable authority
+identity cannot be changed to escape a consumed claim. Request ID, permit ID, frame ID and ticket
+ID never define an execution namespace. The node must:
+
+1. Verify envelope and actual executable request (exact method, target, Content-Type, accepted
+   semantic headers, body digest and materialized exact model), then acquire a generation-pinned
+   runtime handle for the exact selected instance. Resolve through authenticated runtime state,
+   never arbitrary URLs or model-name-only lookup. GPU loss, drain or generation replacement
+   invalidates the handle. Retain this validity guard through the backend start boundary.
+2. Atomically insert and durably sync a local `INTENT` record keyed by the one-execution key,
+   containing a fresh consume invocation ID, envelope transcript digest, selection and binding.
+   Existing INTENT/SPENT/terminal/tombstoned records allow status/reconciliation only. A restart
+   with an INTENT cannot retry inference or create a fresh intent. Local persistence failure
+   prevents central consumption and backend execution. Retain denial for the claim retry horizon
+   and durable retirement requirements of section 4; storage pressure fails closed.
+3. Call authenticated central `ConsumeDispatch` (through the existing trusted owner control
+   transport) with that invocation ID, node identity and complete envelope binding. The authority
+   atomically revalidates current claim/owner state and sets dispatch_consumed once. Its definitive
+   response is bound to invocation ID, authenticated node, authority/claim and SHA-256 of the
+   signed transcript. Only the original successful transaction may answer `NEWLY_CONSUMED`;
+   duplicates, including the same invocation, answer `ALREADY_CONSUMED` or a rejected outcome.
+   A cached original acknowledgement, status response or `dispatch_consumed=true` is never a fresh
+   permission to execute. Authenticated responses must match the outstanding live invocation.
+4. Only after receiving this definitive fresh `NEWLY_CONSUMED` response, revalidate the pinned
+   runtime and durably sync `SPENT`. **After that sync and immediately at the atomic backend-start
+   boundary**, recheck trusted current time against both permit expiry and the original/effective
+   operation deadline; the cancellation latch, current claim/reservation validity, holder/fence,
+   owner incarnation/key revocation and exact runtime generation must still permit starting.
+   A delayed acknowledgement or slow fsync cannot extend authorization. If cancellation, expiry,
+   revocation, generation change, state uncertainty or syncing failure prevents the start,
+   record/reconcile nonexecution and fail closed; the spent central claim is never reset.
+   A crash between SPENT and backend is conservatively ambiguous and cannot trigger replay.
+   Backend setup/start failure also cannot reopen the claim or spend another permit.
+
+If the consume request or its acknowledgement is lost, times out or has unknown outcome, the
+node never starts the backend. Reconciliation records outcome/cleanup only; it cannot issue a
+replacement start permission. Concurrent nodes and transports compete on the same central CAS;
+local durability additionally blocks restart/reconnect re-entry. An unavailable central authority
+or unsynced local fence means no execution. This sacrifices availability in ambiguous cases to
+preserve one execution; no status poll or fresh permit ID restores permission. No response byte
+or tool action can be replayed after streaming starts. Cancellation/revocation and resource
+release still require owner-confirmed cleanup; claim or permit expiry is not proof of stopped work.
+
+`conformance/owner-execution-permit-vectors.json` supplies a signature known answer and hostile
+serial ordering scenarios, including duplicate/changed permits across transports, stale runtime
+generations, payload/header mutation and lost consume acknowledgement. The oracle models durable
+steps as explicit booleans; it does not perform an fsync, authenticated RPC or distributed CAS.
+All real node persistence, runtime start fencing, Link negotiation and failure injection remain
+**owed** under A-T04/A-T05/A-T08. No runtime activation gate is closed by these artifacts.
 
 ### Original request versus executable payload
 

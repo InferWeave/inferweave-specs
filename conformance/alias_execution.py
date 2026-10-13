@@ -9,6 +9,7 @@ import json
 import struct
 from pathlib import Path
 import alias_edge_delegation as edge
+import alias_inference_transport as transport
 import node_join
 
 DOMAIN = b'inferweave.edge-inference-delegation/v1\0'
@@ -267,7 +268,8 @@ def check_vectors(root):
     contract = json.loads((root/'contracts/protocol-v1/alias-execution.json').read_text())
     vectors = json.loads((root/'conformance/alias-execution-vectors.json').read_text())
     spec = (root/'specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md').read_text()
-    errors = []
+    import owner_execution_permit
+    errors = transport.check_vectors(root) + owner_execution_permit.check_vectors(root)
     comparisons = [('assertion_fields', list(FIELDS)), ('fingerprint_fields', list(FINGERPRINT_FIELDS)),
                    ('claim_states', STATES), ('transitions',[list(t) for t in TRANSITIONS]),
                    ('assertion_domain',DOMAIN[:-1].decode()),('fingerprint_domain',FINGERPRINT_DOMAIN[:-1].decode())]
@@ -291,7 +293,7 @@ def check_vectors(root):
         if f'`{name}`' not in spec:
             errors.append('materialization version absent from spec')
     if (contract['owner_reservation_unique_key'] != ['claim_id','admission_attempt']
-            or contract['execution_consumption_unique_key'] != ['claim_id']
+            or contract['execution_consumption_unique_key'] != ['claim_authority_id','claim_id']
             or contract['operation_key_choice_immutable'] is not True):
         errors.append('execution exclusivity identity drift')
     for number, field in enumerate(FIELDS,1):
