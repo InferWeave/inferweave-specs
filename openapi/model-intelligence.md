@@ -2,9 +2,9 @@
 
 This additive [OpenAPI 3.0.3 contract](model-intelligence.yaml) uses server `/`.
 It does not change Protocol v1's `/inferweave/v1` base or inference APIs. The
-Rust source snapshot is `35ac81e7b0a0c3cba23390c1adae092ea392ca0d` in
+Rust source snapshot is `be8ce4055f57d4498218176920d13b5ed38f2c92` in
 `InferWeave/inferweave`; the Go adapter snapshot is
-`613c78187af0719b7dc91eda06b677b58f06a2b8` in
+`ce247cf (upstream-integrated snapshot)` in
 `metabolomics-us/inferweave-gateway`. This is an implementation contract, not
 proof that all normative spec 58 requirements or the full kit are complete.
 
@@ -59,8 +59,25 @@ observations, never completeness of every nested metric or production qualificat
 eligible/observed counts, source, cohort, time window and definition version.
 `CountAggregate.total` is nullable while `known_total` is a subtotal. Token
 `overlap_cache_write` and `overlap_output_reasoning` are separate annotations,
-never additive exclusive buckets. These reports currently expose physical attempt
-usage; missing logical request or downstream task linkage remains unknown.
+never additive exclusive buckets. Physical attempt totals remain separate from optional authoritative logical
+projections. Logical/task linkage is never inferred from retries or request IDs.
+Normalized task and per-million-logical-token prices require explicitly closed
+cohorts, successful task feedback, complete attempt evidence and globally proved
+identity/GPU ownership across filters. They include failed and retried attempts;
+missing rates, identities, feedback or closure remain unknown. Private proof and
+allocation identities are not serialized.
+
+Sparse UTC token_days expose physical and logical compositions with explicit
+coverage. Logical daily placement requires its authoritative projection clock;
+missing placement remains unknown even when window totals are known. Sparse days
+are not padded with zero. Estimated/missing counts preserve partial/unknown status.
+
+Observation recording uses at most64 nonblocking concurrent writes, each with a
+two-second timeout. Recording counts expose pending, dropped, failed, unsupported
+and snapshot changes. Loss or incomplete recording suppresses complete normalized
+claims without discarding known physical subtotals. Dispatch clocks, measured
+queue wait and first complete SSE inference output are distinct; nonstream first
+output stays unknown without an engine measurement.
 
 HTTP `amount_nanos`, `known_subtotal_nanos` and `unattributed_nanos` are **decimal
 strings**, preserving all u64 digits. Null remains null. No money is inferred
@@ -107,4 +124,7 @@ These are synthetic DEMO inputs, not measured fleet qualification. Missing windo
 numeric money, string capacity count and string recommendation flag were rejected.
 Both explicitly unsupported envelope forms were accepted. All references resolve
 and all eight Rust paths require Rust admin authentication in the document.
-Executable runtime authorization and final browser/P5 review remain separate.
+Final logical/task/day fixtures and eight negative schema mutations also passed,
+including exact all-retry task prices and private identity exclusion. Independent
+runtime/domain/security and browser reviews passed locally; complete operational
+P5 qualification, verified private grants and production rollout remain owed.
