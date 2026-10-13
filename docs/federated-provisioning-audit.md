@@ -1,6 +1,6 @@
 # InferWeave Federated Model Provisioning — Phase 0 Audit & Gap Matrix
 
-Status: **Phase 2 (approval-required activation) delivered & merged** (`inferweave/inferweave` PR #881, merge commit `6a227e09`, squash of `feat/provisioning-phase2` onto `main`). Phase 1 (observe-only slice: gate, capacity signal, dry-run planner, `provision.*` message family, controller core, wire transport, durable persistence, parent client, HTTP wiring, live-server registration) was merged as PR #863 (merge commit `75a6ee94`). Phase 2 adds operator `approve()`/`reject()` to the controller and enables end-to-end approval-required activation: a parent can request → offer → reserve → (operator approve) → activate → Ready, staying disabled by default until an owner explicitly sets policy. Items 1–4 and workstreams B, C, D, E done; item 5 (GUI/API owner-policy controls) and autonomous mode remain later-phase.
+Status: **Item 5 (operator API + persisted owner-policy store) delivered & merged** (`inferweave/inferweave` PR #916, branch `feat/provisioning-item5`). This completes the owner's management half of Phase 2's approval flow: an owner-gated gateway API (`/iw/v1/provision/operator/...`) to read/update the owner policy, list the pending approval queue, and approve/reject reservations, plus a durable owner-policy store that survives restart. Prior milestones: Phase 1 (observe-only slice) merged as PR #863 (merge `75a6ee94`); Phase 2 (approval-required activation) merged as PR #881 (merge `6a227e09`). Items 1-4 and workstreams B, C, D, E done, plus item 5's gateway API + policy store; autonomous mode remains later-phase.
 Date: 2026-10-12
 Author: pi agent (in-session, mission pipeline unavailable due to orchestration store lock).
 Scope: `inferweave/inferweave`, `inferweave/inferweave-specs`, `metabolomics-us/inferweave-gateway`.
@@ -143,7 +143,7 @@ exists but the federated-provisioning behavior is absent. **Missing** = no sourc
 | Provision wizard (registry/digest/runtime/profile/replicas/priority/constraints) | **Missing** | No provisioning wizard. |
 | Placement preview (candidates, VRAM est., cold-start, reject reasons, dry-run caveats) | **Partial** | Gateway `placement`/`capacityplan` size; no federated candidate preview. |
 | Owner settings (opt-in, allowlists, caps, reserve, quotas, preemption, emergency stop) | **Missing** | No settings surface. |
-| Approval queue (exact proposal, resource impact, TTL, approve/reject) | **Missing** | No approval queue. |
+| Approval queue (exact proposal, resource impact, TTL, approve/reject) | **API present; GUI missing** | Operator API exposes the pending-approval queue (`GET /iw/v1/provision/operator/approvals`) and approve/reject; a GUI consuming it is later-phase (WS H). |
 | Live deployment lifecycle | **Partial** | Gateway lifecycle/stateplane; not the provisioning states. |
 | Federation topology | **Partial** | Topology exists (`topology.rs`, gateway `link`); no provisioning provenance display. |
 | Audit/history | **Partial** | `audit.rs`; no provisioning audit UI. |
@@ -319,8 +319,7 @@ gateway prove: endpoint absent (404) without a transport; negotiate→
 request→offer over the wire (200); a parent outside the allowlist refused
 (403) on request, fail closed.
 
-Remaining (later workstreams): item 5 (GUI owner-policy controls, gated on
-a persisted owner-policy store + gateway API) and autonomous mode.
+Item 5 (operator API + persisted owner-policy store) delivered in PR #916; see the Item 5 status section below. Remaining (later workstreams): the GUI that calls the operator API, and autonomous mode.
 
 ### Status — Phase 2: approval-required activation (2026-10-11)
 
@@ -362,8 +361,7 @@ approval-required activation, HTTP round-trip, client approval/rejection;
 updated gate and `may_activate` tests. Full `iw-gateway` lib (315) and
 `gateway_e2e` (29) suites green; clippy clean on the changed modules.
 
-Remaining (later workstreams): item 5 (GUI/API owner-policy controls, gated
-  on a persisted owner-policy store + gateway API) and autonomous mode.
+Item 5 (operator API + persisted owner-policy store) delivered in PR #916; see the Item 5 status section below. Remaining (later workstreams): the GUI that calls the operator API, and autonomous mode.
 
 ---
 
@@ -374,4 +372,53 @@ Remaining (later workstreams): item 5 (GUI/API owner-policy controls, gated
 - Where does the provisioning controller live in the current gateway
   (`crates/iw-gateway/src/`) vs the Go gateway? The Rust `iw-gateway` is the
   natural home; the Go gateway is a relay/UI per §13.
-- Lease/approval persistence: reuse `iw-storage` (SQLite) patterns.
+- Lease/approval persistence: reuse `iw-storage` (SQLite) patterns. **Resolved (Item 5, PR #916):** the owner policy is persisted to its own `provisioning-policy.json` in the existing `ProvisionStore` directory using the same atomic write-then-rename discipline as the ledger snapshot — consistent with the existing store pattern, no SQLite dependency, and it keeps the ledger snapshot policy-free (a restored ledger never overrides the operator's configured policy).
+
+---
+
+## 6. Status — Item 5: operator API + persisted owner-policy store (2026-10-12)
+
+Implemented on `feat/provisioning-item5` and merged via PR #916 (commit
+`bcfc9473`). This is the owner's management half of the Phase 2 approval
+flow, which previously had `approve()`/`reject()` reachable only
+programmatically. Item 5 delivers the owner-facing gateway API and makes the
+owner policy durable.
+
+- `crates/iw-gateway/src/provision_operator.rs` (new) — a pure, clock-free,
+  testable operator handler plus route parsing. Actions: get/set policy,
+  list pending approvals, approve/reject a reservation, and a status view
+  (policy + capacity + ledger counts). The handler never bypasses the gate:
+  it drives the same `Controller` the transport drives, and approve/reject
+  move a reservation through the same state machine a remote `activate`
+  would have to pass. No model is ever downloaded or loaded here.
+- `crates/iw-gateway/src/provision_controller.rs` — `Controller::set_policy`
+  (an *owner operator* action, **not** gated by `permits` — the operator is
+  configuring its own opt-in mode/allowlist/emergency stop) and `pending()`
+  (the `Reserved` approval-queue view).
+- `crates/iw-gateway/src/provision_store.rs` — persist the `OwnerPolicy` to
+  its own `provisioning-policy.json` with the same atomic write-then-rename
+  discipline as the ledger snapshot. Policy is stored **separately** from the
+  ledger, so a restored ledger never overrides the operator's configured
+  policy; a corrupt policy file is refused (fail closed), never silently
+  replaced by defaults.
+- `crates/iw-gateway/src/server.rs` — register `/iw/v1/provision/operator/...`
+  gated on the **owner**: admin secret (`x-inferweave-admin`) OR loopback
+  (`same_host`), mirroring `occupancy_shows_devices`. A parent's `origin=`
+  token is explicitly *not* sufficient (fail-closed), so a remote parent
+  cannot touch policy or approve its own reservation. Attach a `ProvisionStore`
+  via `Gateway::with_provision_store` to persist policy and operator
+  decisions across a restart (without one, the API works but is volatile).
+
+Security model: operator endpoints are owner-only and distinct from the
+parent-facing `/iw/v1/provision` channel. The approval/rejection message an
+operator action produces is surfaced in the API response body for the
+operator tooling to relay to the parent over the inter-gateway channel
+(approval remains an outbound owner→parent message; the transport's inbound
+refusal of `Approval` stays correct).
+
+Tests: operator handler unit tests (policy get/set + persist, approvals list,
+approve/reject, status, route parsing), store policy round-trip + malformed-
+file refusal, and gateway e2e operator endpoints (policy read/persist, status,
+empty approvals, owner gating). Full `iw-gateway` lib (361) and `gateway_e2e`
+suites green; clippy clean on the changed modules. Remaining later-phase work:
+the GUI that calls this API (WS H) and autonomous mode.
