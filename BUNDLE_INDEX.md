@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~715,366 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~716,701 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -46,7 +46,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `agents/spec-reviewer.md` — `b428d8e915af` — ~134t
 - `bundle-manifest.json` — `d70a5b0d6742` — ~553t
 - `conformance/README.md` — `97720272356f` — ~553t
-- `conformance/alias-edge-delegation-vectors.json` — `83ce6bc56650` — ~3,158t
+- `conformance/alias-edge-delegation-vectors.json` — `6a38e2d28078` — ~4,446t
 - `conformance/alias_edge_delegation.py` — `1876a720e671` — ~950t
 - `conformance/compatibility.yaml` — `bc14705e6e9e` — ~726t
 - `conformance/deployment-key-vectors.json` — `f817862b8b8d` — ~1,149t
@@ -516,7 +516,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/52_DURABLE_INFERENCE_JOBS.md` — `ed268f3478d8` — ~785t
 - `specs/53_RUNTIME_FAMILY_CONFORMANCE.md` — `d1c8172161f8` — ~923t
 - `specs/54_DYNAMIC_MODEL_ALIASES.md` — `17b56c8457c0` — ~6,925t
-- `specs/55_ALIAS_EDGE_DELEGATION.md` — `c799e8c87aee` — ~2,269t
+- `specs/55_ALIAS_EDGE_DELEGATION.md` — `38b0da721b74` — ~2,316t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `99f922c820cb` — ~544t
@@ -690,7 +690,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-B/B-T04.md` — `531bab03f421` — ~252t
 - `tasks/phase-B/B-T05.md` — `696859878460` — ~251t
 - `tasks/phase-B/B-T06.md` — `f156bf0d5ea7` — ~257t
-- `tests/smoke/test_alias_edge_delegation.py` — `3f3d89e81f04` — ~869t
+- `tests/smoke/test_alias_edge_delegation.py` — `e8f8df50ee53` — ~869t
 - `tests/smoke/test_bundle_self_test.py` — `f0115f5e0f1a` — ~281t
 - `tests/smoke/test_conformance.py` — `40dd0543b1e5` — ~1,230t
 - `tests/smoke/test_dynamic_alias_contract.py` — `4f5e4afe9dd6` — ~2,470t

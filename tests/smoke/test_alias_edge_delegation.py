@@ -18,7 +18,7 @@ class EdgeDelegationContractTests(unittest.TestCase):
     def test_known_answers_reproduce(self):
         self.assertEqual([], edge.check_vectors(ROOT))
         self.assertEqual(36, len(edge.DOMAIN))
-        self.assertEqual(2, len(self.vectors['known_answers']))
+        self.assertEqual(3, len(self.vectors['known_answers']))
 
     def test_every_signed_field_tamper_invalidates_signature(self):
         base = self.vectors['known_answers'][0]
