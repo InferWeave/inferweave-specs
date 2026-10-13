@@ -62,7 +62,10 @@ journal identity creates a new epoch and requires full resynchronization. Never 
 from model name, endpoint, wall-clock, registration ID, GPU inventory revision or engine-set counter.
 
 Version 1 uses **full snapshots only**, at most 256 items, with unique instance IDs. Runtime report
-encoded size is at most 256 KiB; existing stricter registration/body limits still apply. IDs and
+encoded size is at most 256 KiB (262144 actual UTF-8 transport bytes, including whitespace);
+check this bound before JSON decoding, never after reserializing a parsed object. A registration
+ingester must bound the raw member span or apply an equally strict whole-body cap before decoding.
+Existing stricter registration/body limits still apply. IDs and
 arrays are bounded by schema, numeric values by the interoperable unsigned 53-bit integer range.
 An oversized report must fail explicitly, never truncate into a complete snapshot. An owner may
 impose tighter negotiated operational limits. TTL is positive and at most 60000 ms; 10000 ms is
@@ -75,6 +78,16 @@ clock disagreement fails closed with diagnostic status rather than extending exp
 Envelope sequence increases within source epoch; an item's sequence is no greater than envelope
 sequence, its epoch matches, and its observation time is no later than envelope observation time.
 An item's expiry may be earlier or later than the envelope; effective validity is their minimum.
+Envelope monotonicity does **not** replace per-item ordering. The owner retains the highest
+accepted item sequence and canonical full item content for each source epoch/instance/generation,
+including items omitted from subsequent snapshots. An item below that fence is rejected; equal
+item sequence is allowed only with identical full item content and unchanged expiry. Any change
+to lifecycle, health, GPU references, policy/qualification references or timestamps requires a
+strictly newer item sequence. Reject the entire conflicting snapshot atomically. For example,
+DRAINING item sequence 2 cannot be replaced by old READY item sequence 1 carried inside a newer
+envelope sequence 3. Unchanged older items may be carried forward only while their original
+expiry remains valid. Retain item fences alongside tombstones through the authenticated epoch
+lifetime, with the same restart/resynchronization obligations below.
 Expiry never grants lease reclamation authority and does not replace progress-based leases.
 
 Only the current authenticated registration incarnation may submit. On an epoch transition the
@@ -162,3 +175,14 @@ against positive/negative vectors. It cannot prove actual registration authentic
 GPU-loss propagation, verifier trust or owner admission. Required producer/ingestion/mixed-version
 integration evidence remains **owed** under A-T05 and the open gate. The exact source commit, test
 commands, failure injection and live traces must accompany any future claim of runtime proof.
+
+### Contract review corrections
+
+Independent review of PR #254 found that the first offline reference checked only envelope
+sequence, so a new envelope could resurrect an older READY item after DRAINING. It also checked
+JSON shape without checking encoded byte length, allowing a schema-valid 334441-byte report
+through the specified 256 KiB limit. The item sequence/content fence and predecode byte bound
+above correct specification defects; implementers must not reproduce the earlier permissive
+interpretation. Hostile vectors include stale-item replay, same-sequence item conflict, retained
+fences across omission, oversized content and oversized JSON whitespace. Their offline success
+remains distinct from producer/owner implementation proof.

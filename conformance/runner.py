@@ -147,7 +147,16 @@ def validate_fixture(path, must_pass, schema_rel=None):
     if schema_rel is None:
         print(f"FAIL  {rel}: no schema mapped for fixture name '{stem}'")
         return False
-    fixture = json.loads(path.read_text())
+    wire = path.read_bytes()
+    if schema_rel == "requests/runtime-observation-report.json":
+        try:
+            fixture = runtime_observations.decode_report(wire)
+        except (ValueError, UnicodeDecodeError) as error:
+            if must_pass:
+                print(f"FAIL  {rel}: {error}")
+            return not must_pass
+    else:
+        fixture = json.loads(wire)
     errors = list(validator(schema_rel).iter_errors(fixture))
     semantic_errors = []
     if schema_rel == "deployments/deployment.json" and not errors:

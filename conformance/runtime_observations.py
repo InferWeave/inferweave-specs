@@ -4,6 +4,37 @@ from pathlib import Path
 from jsonschema import Draft7Validator, RefResolver
 
 
+MAX_REPORT_BYTES = 256 * 1024
+
+
+def decode_report(wire):
+    """Bound actual UTF-8 transport bytes before decoding, including whitespace."""
+    if len(wire) > MAX_REPORT_BYTES:
+        raise ValueError('runtime report exceeds 256 KiB encoded limit')
+    return json.loads(wire.decode('utf-8'))
+
+
+def item_fence_errors(report, context):
+    """Retained item fences survive omission from later complete snapshots."""
+    prior_items = list(context.get('item_fences', []))
+    previous = context.get('previous_report')
+    if previous is not None and previous['source_epoch'] == report['source_epoch']:
+        prior_items.extend(previous['instances'])
+    errors = []
+    for item in report['instances']:
+        obs = item['observation']
+        for prior in prior_items:
+            old = prior['observation']
+            identity = ('source_epoch', 'instance_id', 'generation')
+            if any(obs[field] != old[field] for field in identity):
+                continue
+            if obs['sequence'] < old['sequence']:
+                errors.append('instance observation sequence regression')
+            if obs['sequence'] == old['sequence'] and item != prior:
+                errors.append('conflicting instance observation duplicate')
+    return errors
+
+
 def semantic_errors(report):
     errors = []
     if not 0 < report['expires_at_ms'] - report['observed_at_ms'] <= 60000:
@@ -27,7 +58,7 @@ def semantic_errors(report):
 
 def disposition(report, context):
     """Reference for fixed-clock hostile vectors, without real credentials or storage."""
-    errors = semantic_errors(report)
+    errors = semantic_errors(report) + item_fence_errors(report, context)
     now = context['now_ms']
     if report['source_id'] != context['authenticated_node_id']:
         errors.append('source identity mismatch')
@@ -72,9 +103,17 @@ def check_vectors(root):
     if not vectors['vectors']:
         return ['runtime observation vectors empty']
     for case in vectors['vectors']:
-        report = case['report']
-        actual = ({'accepted': False, 'producer_ready': []} if list(validator.iter_errors(report))
-                  else disposition(report, case['context']))
+        if 'report_fixture' in case:
+            wire = (root / case['report_fixture']).read_bytes()
+        else:
+            wire = json.dumps(case['report'], ensure_ascii=False).encode('utf-8')
+            wire += b' ' * case.get('wire_padding_bytes', 0)
+        try:
+            report = decode_report(wire)
+            actual = ({'accepted': False, 'producer_ready': []} if list(validator.iter_errors(report))
+                      else disposition(report, case['context']))
+        except (ValueError, UnicodeDecodeError):
+            actual = {'accepted': False, 'producer_ready': []}
         if actual != case['expected']:
             errors.append(f"runtime observation {case['id']}: {actual} != {case['expected']}")
     return errors

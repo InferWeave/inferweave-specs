@@ -425,7 +425,8 @@ until independent security review and executable evidence close this gate.
 binding. They do not prove authenticated registration ingestion or runtime readiness. A-T05
 still owes durable actual-load generation production, registration-incarnation/epoch replay
 fencing, profile qualification by an approved verifier, independently authorized owner policy,
-complete-snapshot expiry/tombstone invalidation, physical resource-group de-duplication,
+complete-snapshot expiry/tombstone invalidation, durable per-item sequence/content replay
+fences, actual encoded-byte report bounds before parsing, physical resource-group de-duplication,
 multi-GPU-loss propagation and atomic admission revalidation. A-T08 owes mixed-version live
 rollout, latency/parity and failure/recovery evidence. Working Rust observation helpers and
 local fixture success cannot close these gates or promote probes into verified tools/privacy.
