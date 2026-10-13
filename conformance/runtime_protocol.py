@@ -3,6 +3,7 @@
 from copy import deepcopy
 import hashlib
 import json
+import math
 import re
 
 
@@ -316,6 +317,19 @@ _NATIVE_LINK_CAPABILITY = "iw.link-native-request/1"
 _NATIVE_LINK_RESPONSE_CAPABILITY = "iw.link-native-response/1"
 
 
+def _draft7_integer(value):
+    """Return the canonical int for a finite Draft 7 integer-valued JSON number."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    if isinstance(value, float) and (not math.isfinite(value) or not value.is_integer()):
+        return None
+    return int(value)
+
+
+def _reject_non_json_constant(value):
+    raise ValueError(f"non-JSON numeric constant: {value}")
+
+
 def validate_native_link_response(body, response, negotiated_features):
     """Validate one buffered native Link response without inferring HTTP semantics from its body."""
     features = set(negotiated_features or ())
@@ -325,13 +339,12 @@ def validate_native_link_response(body, response, negotiated_features):
         return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
     if set(response) != {"status", "headers", "body_bytes", "body_sha256"}:
         return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
-    status = response.get("status")
+    status = _draft7_integer(response.get("status"))
     headers = response.get("headers")
-    body_bytes = response.get("body_bytes")
+    body_bytes = _draft7_integer(response.get("body_bytes"))
     digest = response.get("body_sha256")
     valid_status = (
-        isinstance(status, int)
-        and not isinstance(status, bool)
+        status is not None
         and (200 <= status <= 299 or 400 <= status <= 599)
     )
     valid_headers = isinstance(headers, dict) and set(headers) <= {
@@ -341,7 +354,9 @@ def validate_native_link_response(body, response, negotiated_features):
         return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
     if "content-type" in headers and headers["content-type"] != "application/json":
         return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
-    if not isinstance(body_bytes, int) or isinstance(body_bytes, bool) or not 0 <= body_bytes <= 16_777_216:
+    if body_bytes is None or not 0 <= body_bytes <= 16_777_216:
+        return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    if len(body) > 16_777_216:
         return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
     actual_digest = "sha256:" + hashlib.sha256(body).hexdigest()
     if body_bytes != len(body) or digest != actual_digest:
@@ -350,8 +365,8 @@ def validate_native_link_response(body, response, negotiated_features):
         if headers.get("content-type") != "application/json":
             return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
         try:
-            json.loads(body.decode("utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError):
+            json.loads(body.decode("utf-8"), parse_constant=_reject_non_json_constant)
+        except (UnicodeDecodeError, json.JSONDecodeError, ValueError, RecursionError):
             return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
     if status == 204 and body:
         return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}

@@ -83,9 +83,15 @@ all under `/inferweave/v1`:
   `body_sha256` bind those exact bytes. Status 204 binds the empty body and its SHA-256 digest. A
   non-empty body is valid JSON.
 
+  The schema uses JSON Schema Draft 7 integer semantics: finite JSON numbers with no fractional
+  part, including lexical forms such as `200.0` and `2e2`, are accepted for `status` and
+  `body_bytes` and normalized to integers before comparison or relay. Non-finite extensions such
+  as `NaN` and positive or negative infinity are not JSON and invalidate the proof.
+
   The receiving gateway emits no upstream status, headers, or body until the `end` proof validates.
-  It uses the metadata status verbatim and never interprets a top-level body member such as `code`
-  as an error signal. Missing metadata, a byte or digest mismatch, invalid JSON/UTF-8, a disallowed
+  It uses the validated, normalized metadata status and never interprets a top-level body member
+  such as `code` as an error signal. Missing metadata, a byte or digest mismatch, invalid
+  JSON/UTF-8, a disallowed
   header/status combination, or an oversized body is `502 invalid_upstream_response`. A
   request-only peer remains valid for its prior negotiated Link behavior, but is ineligible for
   native HTTP relay that needs response semantics; selection uses direct HTTP or another eligible

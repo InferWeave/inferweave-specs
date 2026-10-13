@@ -5,6 +5,7 @@ import json
 import hashlib
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import yaml
 from jsonschema import Draft7Validator, RefResolver
@@ -326,6 +327,11 @@ class NativeLinkDispatchSemantics(unittest.TestCase):
             "link-response-meta-400.json",
             "link-response-meta-503.json",
             "link-response-meta-success-extension.json",
+            "link-response-meta-integral-decimal.json",
+            "link-response-meta-integral-exponent.json",
+            "link-response-meta-nan-body-proof.json",
+            "link-response-meta-positive-infinity-body-proof.json",
+            "link-response-meta-negative-infinity-body-proof.json",
         ):
             payload = load_json("fixtures/valid/" + name)
             self.assertEqual([], list(response_validator.iter_errors(payload)), name)
@@ -336,6 +342,8 @@ class NativeLinkDispatchSemantics(unittest.TestCase):
             "link-response-meta-location-on-200.json",
             "link-response-meta-nonempty-without-content-type.json",
             "link-response-meta-204-with-body.json",
+            "link-response-meta-nonintegral-status.json",
+            "link-response-meta-nonintegral-body-bytes.json",
         ):
             payload = load_json("fixtures/invalid/" + name)
             self.assertTrue(list(response_validator.iter_errors(payload)), name)
@@ -402,6 +410,76 @@ class NativeLinkDispatchSemantics(unittest.TestCase):
             b"", empty_with_wrong_content_type, ["iw.link-native-request/1", "iw.link-native-response/1"]
         )
         self.assertEqual({"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}, got)
+
+    def test_native_response_integer_fields_follow_draft7_number_semantics(self):
+        body = b'{"code":"snapshot_accepted","result":{"id":"snapshot-1"}}'
+        digest = "sha256:" + hashlib.sha256(body).hexdigest()
+        features = ["iw.link-native-request/1", "iw.link-native-response/1"]
+        for status, body_bytes in ((200.0, 57.0), (2e2, 5.7e1)):
+            response = {
+                "status": status,
+                "headers": {"content-type": "application/json"},
+                "body_bytes": body_bytes,
+                "body_sha256": digest,
+            }
+            got = runtime_semantics.validate_native_link_response(body, response, features)
+            self.assertTrue(got["allowed"], (status, body_bytes, got))
+            self.assertEqual(200, got["status"])
+
+    def test_native_response_rejects_non_json_constants_and_oversize_before_hashing(self):
+        features = ["iw.link-native-request/1", "iw.link-native-response/1"]
+        for body in (b"NaN", b"Infinity", b"-Infinity"):
+            response = {
+                "status": 200,
+                "headers": {"content-type": "application/json"},
+                "body_bytes": len(body),
+                "body_sha256": "sha256:" + hashlib.sha256(body).hexdigest(),
+            }
+            self.assertEqual(
+                {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"},
+                runtime_semantics.validate_native_link_response(body, response, features),
+                body,
+            )
+
+        valid_empty_proof = {
+            "status": 200,
+            "headers": {},
+            "body_bytes": 0,
+            "body_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        }
+        for field, value in (("status", float("nan")), ("status", float("inf")),
+                             ("body_bytes", float("nan")), ("body_bytes", float("inf"))):
+            response = dict(valid_empty_proof, **{field: value})
+            self.assertEqual(
+                {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"},
+                runtime_semantics.validate_native_link_response(b"", response, features),
+                (field, value),
+            )
+
+        deeply_nested = b"[" * 10_000 + b"0" + b"]" * 10_000
+        response = {
+            "status": 200,
+            "headers": {"content-type": "application/json"},
+            "body_bytes": len(deeply_nested),
+            "body_sha256": "sha256:" + hashlib.sha256(deeply_nested).hexdigest(),
+        }
+        self.assertEqual(
+            {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"},
+            runtime_semantics.validate_native_link_response(deeply_nested, response, features),
+        )
+
+        oversized = b"x" * (16_777_216 + 1)
+        response = {
+            "status": 200,
+            "headers": {"content-type": "application/json"},
+            "body_bytes": 16_777_216,
+            "body_sha256": "sha256:" + "0" * 64,
+        }
+        with patch.object(runtime_semantics.hashlib, "sha256", side_effect=AssertionError("hashed oversized body")):
+            self.assertEqual(
+                {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"},
+                runtime_semantics.validate_native_link_response(oversized, response, features),
+            )
 
     def test_native_negotiation_is_bound_to_registration_and_link_incarnation(self):
         hello = load_json("fixtures/valid/link-hello-native-v1.json")

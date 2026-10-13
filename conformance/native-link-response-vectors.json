@@ -63,6 +63,46 @@
       "expectStatus": 200
     },
     {
+      "id": "draft7-integral-decimal-response-proof",
+      "body": "{\"code\":\"snapshot_accepted\",\"result\":{\"id\":\"snapshot-1\"}}",
+      "responseFixture": "fixtures/valid/link-response-meta-integral-decimal.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": true,
+      "expectStatus": 200
+    },
+    {
+      "id": "draft7-integral-exponent-response-proof",
+      "body": "{\"code\":\"snapshot_accepted\",\"result\":{\"id\":\"snapshot-1\"}}",
+      "responseFixture": "fixtures/valid/link-response-meta-integral-exponent.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": true,
+      "expectStatus": 200
+    },
+    {
+      "id": "python-nan-extension-is-not-json",
+      "body": "NaN",
+      "responseFixture": "fixtures/valid/link-response-meta-nan-body-proof.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": false,
+      "expectCode": "INVALID_NATIVE_RESPONSE"
+    },
+    {
+      "id": "python-positive-infinity-extension-is-not-json",
+      "body": "Infinity",
+      "responseFixture": "fixtures/valid/link-response-meta-positive-infinity-body-proof.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": false,
+      "expectCode": "INVALID_NATIVE_RESPONSE"
+    },
+    {
+      "id": "python-negative-infinity-extension-is-not-json",
+      "body": "-Infinity",
+      "responseFixture": "fixtures/valid/link-response-meta-negative-infinity-body-proof.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": false,
+      "expectCode": "INVALID_NATIVE_RESPONSE"
+    },
+    {
       "id": "request-capability-alone-is-ineligible",
       "body": "{\"code\":\"snapshot_accepted\",\"result\":{\"id\":\"snapshot-1\"}}",
       "responseFixture": "fixtures/valid/link-response-meta-success-extension.json",

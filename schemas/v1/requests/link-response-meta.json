@@ -9,6 +9,7 @@
   "properties": {
     "status": {
       "type": "integer",
+      "description": "Draft 7 integer-valued JSON number, normalized to an integer before HTTP relay.",
       "anyOf": [
         {"minimum": 200, "maximum": 299},
         {"minimum": 400, "maximum": 599}
@@ -24,7 +25,12 @@
         "location": {"type": "string", "minLength": 1, "maxLength": 320, "pattern": "^/inferweave/v1/jobs/[A-Za-z0-9._:-]{1,256}$"}
       }
     },
-    "body_bytes": {"type": "integer", "minimum": 0, "maximum": 16777216},
+    "body_bytes": {
+      "type": "integer",
+      "description": "Draft 7 integer-valued JSON number equal to the actual buffered UTF-8 byte length.",
+      "minimum": 0,
+      "maximum": 16777216
+    },
     "body_sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
   },
   "allOf": [
