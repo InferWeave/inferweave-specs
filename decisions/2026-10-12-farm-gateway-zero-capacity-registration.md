@@ -13,7 +13,9 @@ registration. Tracked Farm `gateway-peer.sh` withheld enrollment until
 following that condition literally would again hide an idle but live gateway.
 
 **Decision:** an authenticated gateway-role peer may register with no model
-advertisements when its endpoint, deployment identity and held link are valid.
+advertisements when its authenticated role, endpoint and deployment identity
+are valid. Registration yields the connectionId that the subsequent held-link
+handshake binds; link state is reported independently and cannot create capacity.
 Serving models and slots remain a separate, current, owner-controlled claim.
 Successful empty catalogue snapshots withdraw old model claims; failed reads
 retain the last acknowledged state and retry. The GPU-worker rule requiring a

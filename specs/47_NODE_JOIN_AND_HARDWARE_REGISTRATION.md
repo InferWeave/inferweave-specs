@@ -81,7 +81,8 @@ also requires `deployment`, `vramBytes`, `kvBytes`, `kvBytesPerToken`, and `gpuI
 registration has empty endpoint and models; it may omit those deployment/capacity members because
 the gateway supplies their existing empty/zero defaults and must not route from them. An
 **operator-enrolled gateway-role** registration may have a non-empty endpoint and deployment with
-`models: []` while its authenticated held link is live. It conveys control-plane presence only,
+`models: []`; the registration response supplies the `connectionId` needed to bind its held link
+afterward. It conveys control-plane presence only,
 not serving capacity. Any supplied pool or GPU inventory fields are reported facts and cannot
 create routeable seats without model advertisements. Other mixed shapes remain invalid. A proof-only credential cannot use the
 gateway-role exception (section 6.1).
@@ -560,7 +561,7 @@ apply to the older-node vector).
 | `requestSizeCases` | oversize bodies are refused before parsing (SHOULD) |
 | `enrollmentTrustCases` | tokenless + endpoint is 403; tokenless + models is 403; tokenless hardware-only is 200; code-enrolled with an endpoint is 200; a proof over an operator-enrolled id is 403 |
 | `enrollmentRoleCases` | tokenless challenge for role `node` is 200; for `gateway` (and other roles) is `400 bad_request` |
-| `gatewayEmptyCapacityCases` | an operator-enrolled gateway with endpoint, deployment, authenticated held link and `models: []` registers as a gateway with zero model capacity; ordinary node and proof-only credentials cannot use this shape; READY publication and successful empty withdrawal change model capacity without deleting gateway identity. The schema fixtures cover only the request shape; running Rust and Go parent conformance remains owed. |
+| `gatewayEmptyCapacityCases` | an operator-enrolled gateway with endpoint, deployment and `models: []` registers with zero model capacity and receives a connectionId; Link Hello then binds that registration, and link reachability is reported separately. Ordinary node and proof-only credentials cannot use this shape; READY publication and successful empty withdrawal change model capacity without deleting gateway identity. The schema fixtures cover only the request shape; running Rust and Go parent conformance remains owed. |
 | `enrollmentKnownAnswers` | (f) transcript and signature for fixed seed, challenge, nonce and claim |
 
 The reference gateway replays the vectors in addition to its own `conformance/MANIFEST.json`; that

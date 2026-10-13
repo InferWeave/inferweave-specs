@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~705,881 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~706,036 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -100,7 +100,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-07-gpu-memory-accounting.md` — `4d308b939760` — ~1,408t
 - `decisions/2026-10-08-open-proof-enrollment-and-hardware-registration.md` — `bc7f9361bf52` — ~1,596t
 - `decisions/2026-10-12-dynamic-alias-authority.md` — `da2d9267f07f` — ~520t
-- `decisions/2026-10-12-farm-gateway-zero-capacity-registration.md` — `c0b69f82d5c9` — ~598t
+- `decisions/2026-10-12-farm-gateway-zero-capacity-registration.md` — `dc2e67481da6` — ~638t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `d6eb9f752efc` — ~4,054t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
@@ -475,14 +475,14 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/37_CONTAINER_DEPLOYMENT_STANDARD.md` — `d8a2dfbfa660` — ~1,687t
 - `specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md` — `3be309a25553` — ~1,179t
 - `specs/39_INFERENCE_RUNTIME_TUNING.md` — `3da89d20da5e` — ~1,485t
-- `specs/40_NETWORK_TOPOLOGY_GRAPH.md` — `88e71ca252dc` — ~6,475t
+- `specs/40_NETWORK_TOPOLOGY_GRAPH.md` — `25006d9feecf` — ~6,507t
 - `specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md` — `c2f00ea9bf1d` — ~1,820t
-- `specs/42_SITE_GATEWAY_CONFORMANCE.md` — `b8b4da0060c3` — ~2,730t
+- `specs/42_SITE_GATEWAY_CONFORMANCE.md` — `e4ce09cb57dd` — ~2,781t
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `c8c57b73aa55` — ~3,492t
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
 - `specs/45_PROTOCOL_V1.md` — `2f0636a00cd5` — ~10,623t
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `4ef07f017b84` — ~13,331t
-- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `5784525a3bb2` — ~9,548t
+- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `ae8046240905` — ~9,580t
 - `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `5c95652f58bb` — ~1,761t
 - `specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md` — `53c00be313e7` — ~1,267t
 - `specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md` — `24d9f61452a1` — ~3,315t

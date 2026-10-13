@@ -81,8 +81,10 @@ chain (B1–B5).
 
   A **gateway-role peer** is a control-plane identity, not a GPU worker. Its
   authenticated registration MAY carry `models: []` when it has no READY serving
-  capacity, provided its endpoint, deployment identity and held link remain
-  valid. This does not qualify any model, create slots, or bypass the worker
+  capacity, provided its authenticated role, endpoint and deployment identity
+  are valid. Registration returns a `connectionId` before the peer can bind its
+  held Link Hello; the held link is checked afterward and reported separately.
+  A missing link cannot create model reachability. This does not qualify any model, create slots, or bypass the worker
   rule above. A successful empty model snapshot withdraws earlier model
   advertisements while preserving the live gateway identity. A failed snapshot
   read does not assert emptiness; failed registration updates must retry the
