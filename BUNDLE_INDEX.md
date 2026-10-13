@@ -426,7 +426,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `openapi/README.md` — `2cec122d644f` — ~207t
 - `openapi/inferweave-v1.yaml` — `364453281a7f` — ~14,509t
-- `openapi/model-intelligence.md` — `fd95b4a09c56` — ~1,809t
+- `openapi/model-intelligence.md` — `87fa71e8e832` — ~1,809t
 - `openapi/model-intelligence.yaml` — `ef5983db9e38` — ~16,418t
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
 - `pi/CONTEXT_PACK_CHECKLIST.md` — `8a9c95b7ec3d` — ~200t
