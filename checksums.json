@@ -456,7 +456,7 @@
   "schemas/v1/topology/node.json": "f677b7b3ec90f85d82fb2d1d9eb9fb44ebd46e880a322577abc9f3dad153175f",
   "scripts/bootstrap-repositories.sh": "914de3443dbc86195e7d0a6f702d3592a3250ccde17d20faf710b19c0fc8d0a9",
   "scripts/generate_bundle_metadata.py": "03c432ffabab77113b2af63330d32526f1a8098143bbbc0508c1b86383a18140",
-  "scripts/test_native_control_plane.py": "6adbdabc7c65d999f28296cf638f011364f2eeba0bb16d4c525e06f0784b8bad",
+  "scripts/test_native_control_plane.py": "fd4e33413e1cef6d99bff2d119fd1048ffd136fea84837a8f1662aab11deff14",
   "scripts/test_validate_specs.py": "45b7fd4b5ecc7f9c708dfdc662f8015130a364393875e99151954944705303fc",
   "scripts/validate_specs.py": "73569435e36a6c357a273882e38054886b3ab5da74d63f0aaedc50ef8d07e8f2",
   "solana/DEVNET_ONLY.md": "1a8ea96fcc580aa266209747df5223314df59bf81a7492e2e5ff5e63bef3eb01",
