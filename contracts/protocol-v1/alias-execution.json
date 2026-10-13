@@ -1,0 +1,120 @@
+{
+  "feature": "dynamic_aliases",
+  "level": "2",
+  "spec": "57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS",
+  "proof_status": "owed",
+  "assertion_domain": "inferweave.edge-inference-delegation/v1",
+  "assertion_header": "InferWeave-Inference-Assertion",
+  "assertion_fields": [
+    "edge_id",
+    "key_id",
+    "audience",
+    "idp_issuer",
+    "subject",
+    "issued_at_unix_ms",
+    "expires_at_unix_ms",
+    "nonce",
+    "method",
+    "request_target",
+    "body_sha256",
+    "content_type",
+    "alias_level",
+    "session_id",
+    "timeout_ms",
+    "capabilities",
+    "min_context",
+    "prefer_family",
+    "queue",
+    "tenant_selector",
+    "operation_id",
+    "idempotency_key",
+    "request_fingerprint",
+    "deadline_unix_ms"
+  ],
+  "fingerprint_domain": "inferweave.alias-request-fingerprint/v1",
+  "fingerprint_fields": [
+    "method",
+    "request_target",
+    "body_sha256",
+    "content_type",
+    "alias_level",
+    "session_id",
+    "timeout_ms",
+    "capabilities",
+    "min_context",
+    "prefer_family",
+    "queue",
+    "tenant_selector"
+  ],
+  "bound_headers": {
+    "content_type": "Content-Type",
+    "alias_level": "InferWeave-Alias-Level",
+    "session_id": "x-inferweave-session",
+    "timeout_ms": "x-inferweave-timeout-ms",
+    "capabilities": "x-inferweave-capabilities",
+    "min_context": "x-inferweave-min-context",
+    "prefer_family": "x-inferweave-prefer-family",
+    "queue": "x-inferweave-queue",
+    "tenant_selector": "x-inferweave-tenant",
+    "operation_id": "InferWeave-Operation-Id",
+    "idempotency_key": "Idempotency-Key",
+    "deadline_unix_ms": "InferWeave-Request-Deadline-Unix-Ms"
+  },
+  "allowed_targets": [
+    "/v1/chat",
+    "/v1/chat/completions",
+    "/v1/completions",
+    "/v1/responses",
+    "/v1/embeddings",
+    "/v1/audio/transcriptions",
+    "/v1/audio/speech",
+    "/v1/rerank"
+  ],
+  "claim_states": [
+    "CLAIMED",
+    "RESERVED",
+    "DISPATCHED",
+    "TERMINAL"
+  ],
+  "claim_unique_key": [
+    "tenant_id",
+    "principal_id",
+    "operation_id"
+  ],
+  "idempotency_unique_key": [
+    "tenant_id",
+    "principal_id",
+    "method",
+    "request_target",
+    "idempotency_key"
+  ],
+  "transitions": [
+    [
+      "CLAIMED",
+      "RESERVED"
+    ],
+    [
+      "RESERVED",
+      "CLAIMED"
+    ],
+    [
+      "RESERVED",
+      "DISPATCHED"
+    ],
+    [
+      "CLAIMED",
+      "TERMINAL"
+    ],
+    [
+      "RESERVED",
+      "TERMINAL"
+    ],
+    [
+      "DISPATCHED",
+      "TERMINAL"
+    ]
+  ],
+  "terminal_reopens": false,
+  "dispatch_intent_before_send": true,
+  "inference_credentials_forwarded": false
+}

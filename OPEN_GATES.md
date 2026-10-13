@@ -430,3 +430,26 @@ fences, actual encoded-byte report bounds before parsing, physical resource-grou
 multi-GPU-loss propagation and atomic admission revalidation. A-T08 owes mixed-version live
 rollout, latency/parity and failure/recovery evidence. Working Rust observation helpers and
 local fixture success cannot close these gates or promote probes into verified tools/privacy.
+
+## Alias execution identity and exclusive claims (spec57) — unsatisfied
+
+Spec57, its schemas, public-seed signatures and serial hostile claim oracle are **offline contract
+proof only**. They do not qualify `/v1/chat` or any other inference endpoint for level-2 aliases.
+Management delegation (spec55), pure previews and runtime observations (spec56) cannot substitute
+for current tenant infer grants or exclusive execution admission.
+
+A-T02 owes native personal-key validation/revocation and current Rust tenant infer grants; separate
+Go inference purpose/audience/path/body/semantic-header verification; grant/key revocation and
+shared PostgreSQL nonce consumption. A-T04 owes shared operation/key claim transactions across
+two parents, current holder/node fencing, reservation response-loss reconciliation, durable
+DISPATCHED-before-send, no retry after ambiguous dispatch/partial stream, deadline/cancel cleanup,
+exact-ID safety and redacted causal traces. A-T05 owes owner/node integration and one-use direct
+permits; progressing GPU reservations cannot expire merely because a claim holder lease elapsed.
+A-T06 owes a transparent Go signer/relay preserving stable operation identity, all accepted semantic
+headers and cancellation without forwarding caller credentials. A-T08 owes fault-injected HTTP/DB/
+owner/node concurrency and measured load on the actual implementation.
+
+The retry horizon/retention setting, protected claim/grant authority deployment, signing trust and
+owner reconciliation behavior must be configured and exercised before activation. None is inferred
+from schemas or a single-process oracle. Traffic remains disabled until independent review and
+these implementation gates pass. No operator approval or new credentials are represented as present.

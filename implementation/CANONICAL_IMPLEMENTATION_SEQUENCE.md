@@ -2265,19 +2265,20 @@ Rules:
 **Context:** `C80`
 **Depends on:** none
 **Features:** IW-ALIAS-001
-**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md, specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md
 
 **Outcome:** Canonical schemas, frozen vocabularies, compatibility fixtures and independently reviewed alias authority boundaries.
 
 **Required tests:**
 - artifact schema and vocabulary guard rejects deliberate drift
 - legacy level-1 fixture unchanged and validates
+- spec57 inference transcript/fingerprint, claim schema and hostile vectors agree; offline proof only
 
 ### A-T02 — Rust alias persistence and authorization
 **Context:** `C80`
 **Depends on:** A-T01
 **Features:** IW-ALIAS-001
-**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md, specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md
 
 **Outcome:** Durable tenant-scoped drafts, immutable publication, optimistic concurrency, idempotency and audit/rollback under Rust authorization.
 
@@ -2286,6 +2287,7 @@ Rules:
 - cross-tenant CRUD and forged identity rejected
 - publish and rollback append immutable history
 - independently reviewed request-bound Ed25519 edge delegation, Rust-owned identity grants and cross-language replay vectors
+- personal-key current tenant infer grant; separate inference purpose and shared nonce ledger; no raw tenant/header authority
 
 ### A-T03 — Rust alias preview and deterministic matching
 **Context:** `C80`
@@ -2304,7 +2306,7 @@ Rules:
 **Context:** `C80`
 **Depends on:** A-T03
 **Features:** IW-ALIAS-001
-**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md, specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md
 
 **Outcome:** Aliases and exact requests use the existing owner admission path with generation revalidation, bounded retries and stream-safe cancellation.
 
@@ -2312,12 +2314,14 @@ Rules:
 - exact identity and legacy precedence preserved
 - admission races are atomic and retry budgets bounded
 - partial stream never replays and cancellation releases leases
+- shared operation/idempotency claim prevents two-parent double admission; reservation acquisition crash reconciles before takeover
+- fenced DISPATCHED intent precedes bytes/direct permit; ambiguous and partial streams never auto-replay
 
 ### A-T05 — Runtime and federation alias integration
 **Context:** `C80`
 **Depends on:** A-T01, A-T03, A-T04
 **Features:** IW-ALIAS-001
-**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md, specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md, specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md, specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md
 
 **Outcome:** Consume existing lifecycle, GPU placement and owner federation authority with conservative profiles and exclusive reservations.
 
@@ -2330,12 +2334,13 @@ Rules:
 - authenticated node report ingestion and mixed-version UNKNOWN fallback
 - generation-bound verifier and owner policy references cannot grant capability or capacity
 - multi-GPU group loss and source reconnect prevent stale READY resurrection
+- claim-bound owner/node reservation fencing and one-use direct permits; holder expiry never reclaims progressing GPU work
 
 ### A-T06 — Go typed alias client and transparent relay
 **Context:** `C80`
 **Depends on:** A-T01, A-T02, A-T04
 **Features:** IW-ALIAS-001
-**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md, specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md
 
 **Outcome:** Go consumes Rust alias contracts with validated identity and lossless compatible relay; no local alias authority.
 
@@ -2343,6 +2348,7 @@ Rules:
 - schema parity and mixed-version negotiation
 - status bytes headers SSE cancellation and trusted identity survive relay
 - code audit finds no new Go alias resolver or database
+- Go signs distinct inference proof binding every accepted semantic header; no caller credential forwarding; operation identity survives retry
 
 ### A-T07 — Go alias administration and observability
 **Context:** `C80`
@@ -2362,7 +2368,7 @@ Rules:
 **Context:** `C80`
 **Depends on:** A-T02, A-T03, A-T04, A-T05, A-T06, A-T07
 **Features:** IW-ALIAS-001
-**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md, specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md
 
 **Outcome:** Run all master acceptance scenarios, characterize migration, shadow compare, canary and verify rollback before removing duplicate behavior.
 
@@ -2370,3 +2376,4 @@ Rules:
 - all 29 acceptance IDs have reproducible evidence
 - measured baseline and canary overhead under saturation/failure
 - legacy exact traffic and feature-flag rollback preserved
+- actual HTTP PostgreSQL owner/node crash and concurrent-parent tests prove spec57 before activation

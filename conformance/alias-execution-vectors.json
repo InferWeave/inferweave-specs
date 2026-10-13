@@ -1,0 +1,1015 @@
+{
+  "schema_version": 1,
+  "operational_proof_status": "owed",
+  "known_answers": [
+    {
+      "id": "ascii",
+      "test_seed_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "public_key_hex": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+      "transcript_hex": "696e66657277656176652e656467652d696e666572656e63652d64656c65676174696f6e2f76310000000006656467652d610000000f696e666572656e63652d6b65792d6100000011636c61696d2d617574686f726974792d610000002168747470733a2f2f6964656e746974792e6578616d706c652e696e76616c69642f0000000c666978747572652d757365720000000d313830303030303030303030300000000d31383030303030303230303030000000164151454241514542415145424151454241514542415100000004504f5354000000082f76312f636861740000004064613366663563656634643261656465626134383436663137643563316439306164393962313764653631393034306139623338326163613762316336333866000000106170706c69636174696f6e2f6a736f6e00000001320000000f73657373696f6e2d6669787475726500000005313230303000000005746f6f6c73000000053332373638000000047177656e00000004747275650000000e666978747572652d74656e616e740000001645424553457851564668635947526f6248423065487700000011666978747572652d6f7065726174696f6e00000040626639643731313939303165323037653432623666303861373464376462363662393832396635313532643230346161383131363232306562323962373332320000000d31383030303030303132303030",
+      "envelope": {
+        "version": 1,
+        "edge_id": "edge-a",
+        "key_id": "inference-key-a",
+        "audience": "claim-authority-a",
+        "idp_issuer": "https://identity.example.invalid/",
+        "subject": "fixture-user",
+        "issued_at_unix_ms": 1800000000000,
+        "expires_at_unix_ms": 1800000020000,
+        "nonce": "AQEBAQEBAQEBAQEBAQEBAQ",
+        "method": "POST",
+        "request_target": "/v1/chat",
+        "body_sha256": "da3ff5cef4d2aedeba4846f17d5c1d90ad99b17de619040a9b382aca7b1c638f",
+        "content_type": "application/json",
+        "alias_level": "2",
+        "session_id": "session-fixture",
+        "timeout_ms": "12000",
+        "capabilities": "tools",
+        "min_context": "32768",
+        "prefer_family": "qwen",
+        "queue": "true",
+        "tenant_selector": "fixture-tenant",
+        "operation_id": "EBESExQVFhcYGRobHB0eHw",
+        "idempotency_key": "fixture-operation",
+        "deadline_unix_ms": 1800000012000,
+        "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+        "signature": "RsaE49GjbKJea1dOt8WrRm1lo_ePGsRueXxdcT7Uz1mjbmMPgZIxV6Uck_iHzed4xA1g_Q_MQmVBFezWXbF4DA"
+      },
+      "header": "eyJ2ZXJzaW9uIjoxLCJlZGdlX2lkIjoiZWRnZS1hIiwia2V5X2lkIjoiaW5mZXJlbmNlLWtleS1hIiwiYXVkaWVuY2UiOiJjbGFpbS1hdXRob3JpdHktYSIsImlkcF9pc3N1ZXIiOiJodHRwczovL2lkZW50aXR5LmV4YW1wbGUuaW52YWxpZC8iLCJzdWJqZWN0IjoiZml4dHVyZS11c2VyIiwiaXNzdWVkX2F0X3VuaXhfbXMiOjE4MDAwMDAwMDAwMDAsImV4cGlyZXNfYXRfdW5peF9tcyI6MTgwMDAwMDAyMDAwMCwibm9uY2UiOiJBUUVCQVFFQkFRRUJBUUVCQVFFQkFRIiwibWV0aG9kIjoiUE9TVCIsInJlcXVlc3RfdGFyZ2V0IjoiL3YxL2NoYXQiLCJib2R5X3NoYTI1NiI6ImRhM2ZmNWNlZjRkMmFlZGViYTQ4NDZmMTdkNWMxZDkwYWQ5OWIxN2RlNjE5MDQwYTliMzgyYWNhN2IxYzYzOGYiLCJjb250ZW50X3R5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiYWxpYXNfbGV2ZWwiOiIyIiwic2Vzc2lvbl9pZCI6InNlc3Npb24tZml4dHVyZSIsInRpbWVvdXRfbXMiOiIxMjAwMCIsImNhcGFiaWxpdGllcyI6InRvb2xzIiwibWluX2NvbnRleHQiOiIzMjc2OCIsInByZWZlcl9mYW1pbHkiOiJxd2VuIiwicXVldWUiOiJ0cnVlIiwidGVuYW50X3NlbGVjdG9yIjoiZml4dHVyZS10ZW5hbnQiLCJvcGVyYXRpb25faWQiOiJFQkVTRXhRVkZoY1lHUm9iSEIwZUh3IiwiaWRlbXBvdGVuY3lfa2V5IjoiZml4dHVyZS1vcGVyYXRpb24iLCJkZWFkbGluZV91bml4X21zIjoxODAwMDAwMDEyMDAwLCJyZXF1ZXN0X2ZpbmdlcnByaW50IjoiYmY5ZDcxMTk5MDFlMjA3ZTQyYjZmMDhhNzRkN2RiNjZiOTgyOWY1MTUyZDIwNGFhODExNjIyMGViMjliNzMyMiIsInNpZ25hdHVyZSI6IlJzYUU0OUdqYktKZWExZE90OFdyUm0xbG9fZVBHc1J1ZVh4ZGNUN1V6MW1qYm1NUGdaSXhWNlVja19pSHplZDR4QTFnX1FfTVFtVkJGZXpXWGJGNERBIn0",
+      "actual_request": {
+        "method": "POST",
+        "request_target": "/v1/chat",
+        "body_sha256": "da3ff5cef4d2aedeba4846f17d5c1d90ad99b17de619040a9b382aca7b1c638f",
+        "content_type": "application/json",
+        "alias_level": "2",
+        "session_id": "session-fixture",
+        "timeout_ms": "12000",
+        "capabilities": "tools",
+        "min_context": "32768",
+        "prefer_family": "qwen",
+        "queue": "true",
+        "tenant_selector": "fixture-tenant",
+        "operation_id": "EBESExQVFhcYGRobHB0eHw",
+        "idempotency_key": "fixture-operation",
+        "deadline_unix_ms": 1800000012000,
+        "body": "{\"model\":\"alias:coding-fast\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+      },
+      "now": 1800000001000,
+      "trusted": {
+        "purpose": "inferweave.edge-inference-delegation/v1",
+        "key_enabled": true,
+        "infer_grant": true,
+        "audience": "claim-authority-a",
+        "issuer": "https://identity.example.invalid/",
+        "allowed_targets": [
+          "/v1/chat",
+          "/v1/chat/completions",
+          "/v1/completions",
+          "/v1/responses",
+          "/v1/embeddings",
+          "/v1/audio/transcriptions",
+          "/v1/audio/speech",
+          "/v1/rerank"
+        ]
+      }
+    },
+    {
+      "id": "unicode",
+      "test_seed_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "public_key_hex": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+      "transcript_hex": "696e66657277656176652e656467652d696e666572656e63652d64656c65676174696f6e2f76310000000006656467652d610000000f696e666572656e63652d6b65792d6100000011636c61696d2d617574686f726974792d610000002168747470733a2f2f6964656e746974792e6578616d706c652e696e76616c69642f0000000e666978747572652de794a8e688b70000000d313830303030303030303030300000000d31383030303030303230303030000000164167494341674943416749434167494341674943416700000004504f5354000000082f76312f636861740000004064613366663563656634643261656465626134383436663137643563316439306164393962313764653631393034306139623338326163613762316336333866000000106170706c69636174696f6e2f6a736f6e00000001320000000f73657373696f6e2d6669787475726500000005313230303000000005746f6f6c73000000053332373638000000047177656e00000004747275650000000e666978747572652d74656e616e740000001645424553457851564668635947526f6248423065487700000011666978747572652d6f7065726174696f6e00000040626639643731313939303165323037653432623666303861373464376462363662393832396635313532643230346161383131363232306562323962373332320000000d31383030303030303132303030",
+      "envelope": {
+        "version": 1,
+        "edge_id": "edge-a",
+        "key_id": "inference-key-a",
+        "audience": "claim-authority-a",
+        "idp_issuer": "https://identity.example.invalid/",
+        "subject": "fixture-用户",
+        "issued_at_unix_ms": 1800000000000,
+        "expires_at_unix_ms": 1800000020000,
+        "nonce": "AgICAgICAgICAgICAgICAg",
+        "method": "POST",
+        "request_target": "/v1/chat",
+        "body_sha256": "da3ff5cef4d2aedeba4846f17d5c1d90ad99b17de619040a9b382aca7b1c638f",
+        "content_type": "application/json",
+        "alias_level": "2",
+        "session_id": "session-fixture",
+        "timeout_ms": "12000",
+        "capabilities": "tools",
+        "min_context": "32768",
+        "prefer_family": "qwen",
+        "queue": "true",
+        "tenant_selector": "fixture-tenant",
+        "operation_id": "EBESExQVFhcYGRobHB0eHw",
+        "idempotency_key": "fixture-operation",
+        "deadline_unix_ms": 1800000012000,
+        "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+        "signature": "uilHIxc0qV2DS_dKFmS7d8lnh4OlqC9_VK1bovzo3VhsMhGV0QF8oFuguLVtLoxAFI4Q1iDXrFuI-zvqLO84Cg"
+      },
+      "header": "eyJ2ZXJzaW9uIjoxLCJlZGdlX2lkIjoiZWRnZS1hIiwia2V5X2lkIjoiaW5mZXJlbmNlLWtleS1hIiwiYXVkaWVuY2UiOiJjbGFpbS1hdXRob3JpdHktYSIsImlkcF9pc3N1ZXIiOiJodHRwczovL2lkZW50aXR5LmV4YW1wbGUuaW52YWxpZC8iLCJzdWJqZWN0IjoiZml4dHVyZS3nlKjmiLciLCJpc3N1ZWRfYXRfdW5peF9tcyI6MTgwMDAwMDAwMDAwMCwiZXhwaXJlc19hdF91bml4X21zIjoxODAwMDAwMDIwMDAwLCJub25jZSI6IkFnSUNBZ0lDQWdJQ0FnSUNBZ0lDQWciLCJtZXRob2QiOiJQT1NUIiwicmVxdWVzdF90YXJnZXQiOiIvdjEvY2hhdCIsImJvZHlfc2hhMjU2IjoiZGEzZmY1Y2VmNGQyYWVkZWJhNDg0NmYxN2Q1YzFkOTBhZDk5YjE3ZGU2MTkwNDBhOWIzODJhY2E3YjFjNjM4ZiIsImNvbnRlbnRfdHlwZSI6ImFwcGxpY2F0aW9uL2pzb24iLCJhbGlhc19sZXZlbCI6IjIiLCJzZXNzaW9uX2lkIjoic2Vzc2lvbi1maXh0dXJlIiwidGltZW91dF9tcyI6IjEyMDAwIiwiY2FwYWJpbGl0aWVzIjoidG9vbHMiLCJtaW5fY29udGV4dCI6IjMyNzY4IiwicHJlZmVyX2ZhbWlseSI6InF3ZW4iLCJxdWV1ZSI6InRydWUiLCJ0ZW5hbnRfc2VsZWN0b3IiOiJmaXh0dXJlLXRlbmFudCIsIm9wZXJhdGlvbl9pZCI6IkVCRVNFeFFWRmhjWUdSb2JIQjBlSHciLCJpZGVtcG90ZW5jeV9rZXkiOiJmaXh0dXJlLW9wZXJhdGlvbiIsImRlYWRsaW5lX3VuaXhfbXMiOjE4MDAwMDAwMTIwMDAsInJlcXVlc3RfZmluZ2VycHJpbnQiOiJiZjlkNzExOTkwMWUyMDdlNDJiNmYwOGE3NGQ3ZGI2NmI5ODI5ZjUxNTJkMjA0YWE4MTE2MjIwZWIyOWI3MzIyIiwic2lnbmF0dXJlIjoidWlsSEl4YzBxVjJEU19kS0ZtUzdkOGxuaDRPbHFDOV9WSzFib3Z6bzNWaHNNaEdWMFFGOG9GdWd1TFZ0TG94QUZJNFExaURYckZ1SS16dnFMTzg0Q2cifQ",
+      "actual_request": {
+        "method": "POST",
+        "request_target": "/v1/chat",
+        "body_sha256": "da3ff5cef4d2aedeba4846f17d5c1d90ad99b17de619040a9b382aca7b1c638f",
+        "content_type": "application/json",
+        "alias_level": "2",
+        "session_id": "session-fixture",
+        "timeout_ms": "12000",
+        "capabilities": "tools",
+        "min_context": "32768",
+        "prefer_family": "qwen",
+        "queue": "true",
+        "tenant_selector": "fixture-tenant",
+        "operation_id": "EBESExQVFhcYGRobHB0eHw",
+        "idempotency_key": "fixture-operation",
+        "deadline_unix_ms": 1800000012000,
+        "body": "{\"model\":\"alias:coding-fast\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+      },
+      "now": 1800000001000,
+      "trusted": {
+        "purpose": "inferweave.edge-inference-delegation/v1",
+        "key_enabled": true,
+        "infer_grant": true,
+        "audience": "claim-authority-a",
+        "issuer": "https://identity.example.invalid/",
+        "allowed_targets": [
+          "/v1/chat",
+          "/v1/chat/completions",
+          "/v1/completions",
+          "/v1/responses",
+          "/v1/embeddings",
+          "/v1/audio/transcriptions",
+          "/v1/audio/speech",
+          "/v1/rerank"
+        ]
+      }
+    },
+    {
+      "id": "second-parent",
+      "test_seed_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "public_key_hex": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+      "transcript_hex": "696e66657277656176652e656467652d696e666572656e63652d64656c65676174696f6e2f76310000000006656467652d620000000f696e666572656e63652d6b65792d6100000011636c61696d2d617574686f726974792d610000002168747470733a2f2f6964656e746974792e6578616d706c652e696e76616c69642f0000000c666978747572652d757365720000000d313830303030303030303030300000000d313830303030303032303030300000001641774d4441774d4441774d4441774d4441774d44417700000004504f5354000000082f76312f636861740000004064613366663563656634643261656465626134383436663137643563316439306164393962313764653631393034306139623338326163613762316336333866000000106170706c69636174696f6e2f6a736f6e00000001320000000f73657373696f6e2d6669787475726500000005313230303000000005746f6f6c73000000053332373638000000047177656e00000004747275650000000e666978747572652d74656e616e740000001645424553457851564668635947526f6248423065487700000011666978747572652d6f7065726174696f6e00000040626639643731313939303165323037653432623666303861373464376462363662393832396635313532643230346161383131363232306562323962373332320000000d31383030303030303132303030",
+      "envelope": {
+        "version": 1,
+        "edge_id": "edge-b",
+        "key_id": "inference-key-a",
+        "audience": "claim-authority-a",
+        "idp_issuer": "https://identity.example.invalid/",
+        "subject": "fixture-user",
+        "issued_at_unix_ms": 1800000000000,
+        "expires_at_unix_ms": 1800000020000,
+        "nonce": "AwMDAwMDAwMDAwMDAwMDAw",
+        "method": "POST",
+        "request_target": "/v1/chat",
+        "body_sha256": "da3ff5cef4d2aedeba4846f17d5c1d90ad99b17de619040a9b382aca7b1c638f",
+        "content_type": "application/json",
+        "alias_level": "2",
+        "session_id": "session-fixture",
+        "timeout_ms": "12000",
+        "capabilities": "tools",
+        "min_context": "32768",
+        "prefer_family": "qwen",
+        "queue": "true",
+        "tenant_selector": "fixture-tenant",
+        "operation_id": "EBESExQVFhcYGRobHB0eHw",
+        "idempotency_key": "fixture-operation",
+        "deadline_unix_ms": 1800000012000,
+        "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+        "signature": "6T_yV1HnRABsGfzuLMFZK6vsHbv1LArh4j_6ukOCsrv8EGDdT6CVlCEUhGTnujA6c7HR_kwrPV46aJf6j9hdDg"
+      },
+      "header": "eyJ2ZXJzaW9uIjoxLCJlZGdlX2lkIjoiZWRnZS1iIiwia2V5X2lkIjoiaW5mZXJlbmNlLWtleS1hIiwiYXVkaWVuY2UiOiJjbGFpbS1hdXRob3JpdHktYSIsImlkcF9pc3N1ZXIiOiJodHRwczovL2lkZW50aXR5LmV4YW1wbGUuaW52YWxpZC8iLCJzdWJqZWN0IjoiZml4dHVyZS11c2VyIiwiaXNzdWVkX2F0X3VuaXhfbXMiOjE4MDAwMDAwMDAwMDAsImV4cGlyZXNfYXRfdW5peF9tcyI6MTgwMDAwMDAyMDAwMCwibm9uY2UiOiJBd01EQXdNREF3TURBd01EQXdNREF3IiwibWV0aG9kIjoiUE9TVCIsInJlcXVlc3RfdGFyZ2V0IjoiL3YxL2NoYXQiLCJib2R5X3NoYTI1NiI6ImRhM2ZmNWNlZjRkMmFlZGViYTQ4NDZmMTdkNWMxZDkwYWQ5OWIxN2RlNjE5MDQwYTliMzgyYWNhN2IxYzYzOGYiLCJjb250ZW50X3R5cGUiOiJhcHBsaWNhdGlvbi9qc29uIiwiYWxpYXNfbGV2ZWwiOiIyIiwic2Vzc2lvbl9pZCI6InNlc3Npb24tZml4dHVyZSIsInRpbWVvdXRfbXMiOiIxMjAwMCIsImNhcGFiaWxpdGllcyI6InRvb2xzIiwibWluX2NvbnRleHQiOiIzMjc2OCIsInByZWZlcl9mYW1pbHkiOiJxd2VuIiwicXVldWUiOiJ0cnVlIiwidGVuYW50X3NlbGVjdG9yIjoiZml4dHVyZS10ZW5hbnQiLCJvcGVyYXRpb25faWQiOiJFQkVTRXhRVkZoY1lHUm9iSEIwZUh3IiwiaWRlbXBvdGVuY3lfa2V5IjoiZml4dHVyZS1vcGVyYXRpb24iLCJkZWFkbGluZV91bml4X21zIjoxODAwMDAwMDEyMDAwLCJyZXF1ZXN0X2ZpbmdlcnByaW50IjoiYmY5ZDcxMTk5MDFlMjA3ZTQyYjZmMDhhNzRkN2RiNjZiOTgyOWY1MTUyZDIwNGFhODExNjIyMGViMjliNzMyMiIsInNpZ25hdHVyZSI6IjZUX3lWMUhuUkFCc0dmenVMTUZaSzZ2c0hidjFMQXJoNGpfNnVrT0NzcnY4RUdEZFQ2Q1ZsQ0VVaEdUbnVqQTZjN0hSX2t3clBWNDZhSmY2ajloZERnIn0",
+      "actual_request": {
+        "method": "POST",
+        "request_target": "/v1/chat",
+        "body_sha256": "da3ff5cef4d2aedeba4846f17d5c1d90ad99b17de619040a9b382aca7b1c638f",
+        "content_type": "application/json",
+        "alias_level": "2",
+        "session_id": "session-fixture",
+        "timeout_ms": "12000",
+        "capabilities": "tools",
+        "min_context": "32768",
+        "prefer_family": "qwen",
+        "queue": "true",
+        "tenant_selector": "fixture-tenant",
+        "operation_id": "EBESExQVFhcYGRobHB0eHw",
+        "idempotency_key": "fixture-operation",
+        "deadline_unix_ms": 1800000012000,
+        "body": "{\"model\":\"alias:coding-fast\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}"
+      },
+      "now": 1800000001000,
+      "trusted": {
+        "purpose": "inferweave.edge-inference-delegation/v1",
+        "key_enabled": true,
+        "infer_grant": true,
+        "audience": "claim-authority-a",
+        "issuer": "https://identity.example.invalid/",
+        "allowed_targets": [
+          "/v1/chat",
+          "/v1/chat/completions",
+          "/v1/completions",
+          "/v1/responses",
+          "/v1/embeddings",
+          "/v1/audio/transcriptions",
+          "/v1/audio/speech",
+          "/v1/rerank"
+        ]
+      }
+    }
+  ],
+  "hostile_cases": [
+    {
+      "id": "tampered-edge_id",
+      "surface": "envelope",
+      "field": "edge_id",
+      "replacement": "edge-ax"
+    },
+    {
+      "id": "tampered-key_id",
+      "surface": "envelope",
+      "field": "key_id",
+      "replacement": "inference-key-ax"
+    },
+    {
+      "id": "tampered-audience",
+      "surface": "envelope",
+      "field": "audience",
+      "replacement": "claim-authority-ax"
+    },
+    {
+      "id": "tampered-idp_issuer",
+      "surface": "envelope",
+      "field": "idp_issuer",
+      "replacement": "https://identity.example.invalid/x"
+    },
+    {
+      "id": "tampered-subject",
+      "surface": "envelope",
+      "field": "subject",
+      "replacement": "fixture-userx"
+    },
+    {
+      "id": "tampered-issued_at_unix_ms",
+      "surface": "envelope",
+      "field": "issued_at_unix_ms",
+      "replacement": 1800000000001
+    },
+    {
+      "id": "tampered-expires_at_unix_ms",
+      "surface": "envelope",
+      "field": "expires_at_unix_ms",
+      "replacement": 1800000020001
+    },
+    {
+      "id": "tampered-nonce",
+      "surface": "envelope",
+      "field": "nonce",
+      "replacement": "AQEBAQEBAQEBAQEBAQEBAQx"
+    },
+    {
+      "id": "tampered-method",
+      "surface": "envelope",
+      "field": "method",
+      "replacement": "POSTx"
+    },
+    {
+      "id": "tampered-request_target",
+      "surface": "envelope",
+      "field": "request_target",
+      "replacement": "/v1/chatx"
+    },
+    {
+      "id": "tampered-body_sha256",
+      "surface": "envelope",
+      "field": "body_sha256",
+      "replacement": "da3ff5cef4d2aedeba4846f17d5c1d90ad99b17de619040a9b382aca7b1c638fx"
+    },
+    {
+      "id": "tampered-content_type",
+      "surface": "envelope",
+      "field": "content_type",
+      "replacement": "application/jsonx"
+    },
+    {
+      "id": "tampered-alias_level",
+      "surface": "envelope",
+      "field": "alias_level",
+      "replacement": "2x"
+    },
+    {
+      "id": "tampered-session_id",
+      "surface": "envelope",
+      "field": "session_id",
+      "replacement": "session-fixturex"
+    },
+    {
+      "id": "tampered-timeout_ms",
+      "surface": "envelope",
+      "field": "timeout_ms",
+      "replacement": "12000x"
+    },
+    {
+      "id": "tampered-capabilities",
+      "surface": "envelope",
+      "field": "capabilities",
+      "replacement": "toolsx"
+    },
+    {
+      "id": "tampered-min_context",
+      "surface": "envelope",
+      "field": "min_context",
+      "replacement": "32768x"
+    },
+    {
+      "id": "tampered-prefer_family",
+      "surface": "envelope",
+      "field": "prefer_family",
+      "replacement": "qwenx"
+    },
+    {
+      "id": "tampered-queue",
+      "surface": "envelope",
+      "field": "queue",
+      "replacement": "truex"
+    },
+    {
+      "id": "tampered-tenant_selector",
+      "surface": "envelope",
+      "field": "tenant_selector",
+      "replacement": "fixture-tenantx"
+    },
+    {
+      "id": "tampered-operation_id",
+      "surface": "envelope",
+      "field": "operation_id",
+      "replacement": "EBESExQVFhcYGRobHB0eHwx"
+    },
+    {
+      "id": "tampered-idempotency_key",
+      "surface": "envelope",
+      "field": "idempotency_key",
+      "replacement": "fixture-operationx"
+    },
+    {
+      "id": "tampered-request_fingerprint",
+      "surface": "envelope",
+      "field": "request_fingerprint",
+      "replacement": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322x"
+    },
+    {
+      "id": "tampered-deadline_unix_ms",
+      "surface": "envelope",
+      "field": "deadline_unix_ms",
+      "replacement": 1800000012001
+    },
+    {
+      "id": "actual-method",
+      "surface": "actual",
+      "field": "method",
+      "replacement": "POSTx"
+    },
+    {
+      "id": "actual-request_target",
+      "surface": "actual",
+      "field": "request_target",
+      "replacement": "/v1/chatx"
+    },
+    {
+      "id": "actual-body_sha256",
+      "surface": "actual",
+      "field": "body_sha256",
+      "replacement": "da3ff5cef4d2aedeba4846f17d5c1d90ad99b17de619040a9b382aca7b1c638fx"
+    },
+    {
+      "id": "actual-content_type",
+      "surface": "actual",
+      "field": "content_type",
+      "replacement": "application/jsonx"
+    },
+    {
+      "id": "actual-alias_level",
+      "surface": "actual",
+      "field": "alias_level",
+      "replacement": "2x"
+    },
+    {
+      "id": "actual-session_id",
+      "surface": "actual",
+      "field": "session_id",
+      "replacement": "session-fixturex"
+    },
+    {
+      "id": "actual-timeout_ms",
+      "surface": "actual",
+      "field": "timeout_ms",
+      "replacement": "12000x"
+    },
+    {
+      "id": "actual-capabilities",
+      "surface": "actual",
+      "field": "capabilities",
+      "replacement": "toolsx"
+    },
+    {
+      "id": "actual-min_context",
+      "surface": "actual",
+      "field": "min_context",
+      "replacement": "32768x"
+    },
+    {
+      "id": "actual-prefer_family",
+      "surface": "actual",
+      "field": "prefer_family",
+      "replacement": "qwenx"
+    },
+    {
+      "id": "actual-queue",
+      "surface": "actual",
+      "field": "queue",
+      "replacement": "truex"
+    },
+    {
+      "id": "actual-tenant_selector",
+      "surface": "actual",
+      "field": "tenant_selector",
+      "replacement": "fixture-tenantx"
+    },
+    {
+      "id": "actual-operation_id",
+      "surface": "actual",
+      "field": "operation_id",
+      "replacement": "EBESExQVFhcYGRobHB0eHwx"
+    },
+    {
+      "id": "actual-idempotency_key",
+      "surface": "actual",
+      "field": "idempotency_key",
+      "replacement": "fixture-operationx"
+    },
+    {
+      "id": "actual-deadline_unix_ms",
+      "surface": "actual",
+      "field": "deadline_unix_ms",
+      "replacement": 1800000012001
+    },
+    {
+      "id": "actual-body",
+      "surface": "actual",
+      "field": "body",
+      "replacement": "{\"model\":\"alias:coding-fast\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}x"
+    },
+    {
+      "id": "trust-purpose",
+      "surface": "trusted",
+      "field": "purpose",
+      "replacement": "inferweave.edge-alias-delegation/v1"
+    },
+    {
+      "id": "trust-key_enabled",
+      "surface": "trusted",
+      "field": "key_enabled",
+      "replacement": false
+    },
+    {
+      "id": "trust-infer_grant",
+      "surface": "trusted",
+      "field": "infer_grant",
+      "replacement": false
+    },
+    {
+      "id": "trust-audience",
+      "surface": "trusted",
+      "field": "audience",
+      "replacement": "foreign"
+    },
+    {
+      "id": "trust-issuer",
+      "surface": "trusted",
+      "field": "issuer",
+      "replacement": "foreign"
+    },
+    {
+      "id": "expired",
+      "surface": "clock",
+      "replacement": 1800000020000
+    },
+    {
+      "id": "future-clock",
+      "surface": "clock",
+      "replacement": 1799999990000
+    }
+  ],
+  "runtime_obligations": [
+    "native-personal-key-revocation",
+    "raw-tenant-header-is-not-authority",
+    "management-purpose-rejected",
+    "shared-postgresql-two-parent-concurrency",
+    "nonce-replay-across-purposes",
+    "reservation-acquire-response-lost",
+    "stale-holder-node-fencing",
+    "direct-permit-one-use",
+    "admission-generation-race",
+    "partial-stream-no-replay",
+    "ambiguous-dispatch-before-first-byte",
+    "deadline-cancel-owner-cleanup",
+    "exact-model-precedence",
+    "tenant-trace-redaction"
+  ],
+  "claim_cases": [
+    {
+      "id": "two-parents-same-operation",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "acquire",
+          "as": "duplicate",
+          "holder": "parent-b",
+          "created": false,
+          "same_as": "first"
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1"
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "duplicate",
+          "holder": "parent-b",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1",
+          "expected_error": "LEASE_CONFLICT"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "RESERVED",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "two-parents-same-idempotency-key",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "acquire",
+          "as": "duplicate",
+          "holder": "parent-b",
+          "identity_changes": {
+            "operation_id": "TU1NTU1NTU1NTU1NTU1NTQ"
+          },
+          "created": false,
+          "same_as": "first"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "CLAIMED",
+      "expected_attempt_count": 0
+    },
+    {
+      "id": "key-reused-for-changed-body",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "acquire",
+          "as": "duplicate",
+          "holder": "parent-b",
+          "identity_changes": {
+            "request_fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "expected_error": "IDEMPOTENCY_CONFLICT"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "CLAIMED",
+      "expected_attempt_count": 0
+    },
+    {
+      "id": "lost-reservation-response-prevents-takeover",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "takeover",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "new_holder": "parent-b",
+          "expired": true,
+          "expected_error": "LEASE_CONFLICT"
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1",
+          "expected_error": "EXECUTION_IN_PROGRESS"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "CLAIMED",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "reservation-progress-survives-holder-expiry",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1"
+        },
+        {
+          "action": "takeover",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "new_holder": "parent-b",
+          "expired": true,
+          "expected_error": "LEASE_CONFLICT"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "RESERVED",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "takeover-fences-old-holder",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "takeover",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "new_holder": "parent-b",
+          "expired": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1",
+          "expected_error": "LEASE_CONFLICT"
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-b",
+          "fence": 2,
+          "generation": "g1",
+          "current_generation": "g1"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "CLAIMED",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "generation-race-rejected",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g2",
+          "expected_error": "INSTANCE_GENERATION_STALE"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "CLAIMED",
+      "expected_attempt_count": 0
+    },
+    {
+      "id": "compatible-fallback-after-owner-release",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1"
+        },
+        {
+          "action": "release_before_dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "owner_confirmed": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "RESERVED",
+      "expected_attempt_count": 2
+    },
+    {
+      "id": "retry-budget-across-fallback",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1",
+          "budget": 1
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1"
+        },
+        {
+          "action": "release_before_dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "owner_confirmed": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1",
+          "budget": 1,
+          "expected_error": "RETRY_BUDGET_EXHAUSTED"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "CLAIMED",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "ambiguous-send-before-response-never-replays",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1"
+        },
+        {
+          "action": "dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1
+        },
+        {
+          "action": "release_before_dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "owner_confirmed": true,
+          "expected_error": "EXECUTION_OUTCOME_UNKNOWN"
+        },
+        {
+          "action": "terminal",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reason": "EXECUTION_OUTCOME_UNKNOWN"
+        },
+        {
+          "action": "acquire",
+          "as": "retry",
+          "holder": "parent-b",
+          "created": false,
+          "same_as": "first"
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1",
+          "expected_error": "EXECUTION_IN_PROGRESS"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "TERMINAL",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "partial-stream-never-replays",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1"
+        },
+        {
+          "action": "dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1
+        },
+        {
+          "action": "mark_response_started",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1
+        },
+        {
+          "action": "terminal",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reason": "PARTIAL_STREAM_FAILURE"
+        },
+        {
+          "action": "dispatch",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "expected_error": "EXECUTION_IN_PROGRESS"
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "TERMINAL",
+      "expected_attempt_count": 1
+    },
+    {
+      "id": "cancel-requires-owner-confirmed-stop",
+      "steps": [
+        {
+          "action": "acquire",
+          "as": "first",
+          "holder": "parent-a",
+          "created": true
+        },
+        {
+          "action": "begin_reservation",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "generation": "g1",
+          "current_generation": "g1"
+        },
+        {
+          "action": "reserve",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reservation_id": "reservation-1"
+        },
+        {
+          "action": "terminal",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reason": "CLIENT_CANCELLED",
+          "expected_error": "EXECUTION_OUTCOME_UNKNOWN"
+        },
+        {
+          "action": "terminal",
+          "claim": "first",
+          "holder": "parent-a",
+          "fence": 1,
+          "reason": "CLIENT_CANCELLED",
+          "owner_confirmed": true
+        }
+      ],
+      "final_claim": "first",
+      "expected_state": "TERMINAL",
+      "expected_attempt_count": 1
+    }
+  ]
+}

@@ -1,0 +1,294 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/aliases/execution-claim.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "claim_id",
+    "identity",
+    "state",
+    "holder_id",
+    "fencing_token",
+    "last_progress_at",
+    "ownership_lease",
+    "attempt_count",
+    "response_started",
+    "cleanup_pending",
+    "reservation_pending"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "claim_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "identity": {
+      "$ref": "execution-identity.json"
+    },
+    "state": {
+      "enum": [
+        "CLAIMED",
+        "RESERVED",
+        "DISPATCHED",
+        "TERMINAL"
+      ]
+    },
+    "holder_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "fencing_token": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "last_progress_at": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "ownership_lease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lease_id",
+        "generation",
+        "expires_at_unix_ms"
+      ],
+      "properties": {
+        "lease_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "expires_at_unix_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "attempt_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 8
+    },
+    "response_started": {
+      "type": "boolean"
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "alias_id",
+        "catalog_revision",
+        "routing_policy_version",
+        "model_id",
+        "deployment_key",
+        "instance_id",
+        "instance_generation",
+        "capability_profile_id",
+        "policy_evidence_id",
+        "resource_owner_id",
+        "resource_group_id",
+        "alias_revision",
+        "requirement_fingerprint"
+      ],
+      "properties": {
+        "alias_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "catalog_revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "routing_policy_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "model_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "deployment_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "instance_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "instance_generation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "capability_profile_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "policy_evidence_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "resource_owner_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "resource_group_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "alias_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "requirement_fingerprint": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "reservation_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "terminal_reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "cleanup_pending": {
+      "type": "boolean"
+    },
+    "reservation_pending": {
+      "type": "boolean"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "RESERVED",
+              "DISPATCHED"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "selection",
+          "reservation_id"
+        ],
+        "properties": {
+          "attempt_count": {
+            "minimum": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "enum": [
+              "CLAIMED",
+              "RESERVED"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "response_started": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "TERMINAL"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "terminal_reason"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "terminal_reason"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "reservation_pending": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "selection"
+        ],
+        "properties": {
+          "state": {
+            "const": "CLAIMED"
+          },
+          "attempt_count": {
+            "minimum": 1
+          }
+        }
+      }
+    }
+  ]
+}

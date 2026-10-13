@@ -95,3 +95,14 @@ negative conformance artifacts are **implemented as contracts only**; live produ
 qualification, owner-policy binding and admission remain **missing/owed**. The working Rust
 `RuntimeInstanceObservation` is a partial producer, not an existing READY alias pathway.
 Master acceptance 3, 5, 6, 11–17, 19, 20 and 23 now link to this contract; none is marked proven.
+
+### Execution boundary follow-up — spec57
+
+| Requirement | Status | Canonical contract / evidence | Remaining implementation proof |
+|---|---|---|---|
+| Infer identity differs from management purpose | missing at audit; contract specified | specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md; inference-assertion schema; signed hostile fixtures | Native personal keys/current infer grants and separate Go proof at real HTTP boundary (A-T02/A-T06) |
+| One execution through multiple parents | missing at audit; contract specified | execution-claim schema; two-parent and admission-race serial vectors | PostgreSQL unique claim/key mapping, owner/node fencing and crash reconciliation (A-T04/A-T05) |
+| Ambiguous dispatch and partial stream do not replay | partial contract in spec54; strengthened in spec57 | DISPATCHED-before-send and no-reopen oracle mutations | Real byte-path/direct-permit failure injection, cancellation, deadline and release (A-T04/A-T08) |
+
+These rows describe contract closure only. Offline conformance is not a running alias engine,
+production authentication, shared transactional admission or rollout evidence.

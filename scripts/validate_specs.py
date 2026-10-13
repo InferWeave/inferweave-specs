@@ -837,6 +837,8 @@ def validate():
     errors.extend(guard_protocol_vocab(ROOT, features, tasks))
     errors.extend(guard_gpu_memory_contracts(ROOT))
     errors.extend(guard_dynamic_alias_contracts(ROOT))
+    import alias_execution
+    errors.extend(alias_execution.check_vectors(ROOT))
     import importlib.util
     observation_spec = importlib.util.spec_from_file_location("runtime_observation_contract", ROOT / "conformance/runtime_observations.py")
     observation_module = importlib.util.module_from_spec(observation_spec)
@@ -1010,6 +1012,10 @@ def self_test():
     observation_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_runtime_observation_contract.py")], capture_output=True, text=True)
     if observation_test.returncode:
         print(observation_test.stdout + observation_test.stderr)
+        return 1
+    execution_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_alias_execution_contract.py")], capture_output=True, text=True)
+    if execution_test.returncode:
+        print(execution_test.stdout + execution_test.stderr)
         return 1
     file_mutations = 1 + len(gpu_breaks) + len(semantic)
     print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "

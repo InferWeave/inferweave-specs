@@ -60,3 +60,5 @@
 | `specs/54_DYNAMIC_MODEL_ALIASES.md` | `A-T01`, `A-T02`, `A-T03`, `A-T04`, `A-T05`, `A-T06`, `A-T07`, `A-T08` |
 | `specs/55_ALIAS_EDGE_DELEGATION.md` | `A-T02`, `A-T06` |
 | `specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md` | `A-T01`, `A-T03`, `A-T05`, `A-T08` |
+
+| `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` | `A-T01`, `A-T02`, `A-T04`, `A-T05`, `A-T06`, `A-T08` |
