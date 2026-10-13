@@ -1,0 +1,645 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "name": "json_bytes_with_nonerror_code",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        },
+        {
+          "kind": "end",
+          "request_id": "r1"
+        }
+      ],
+      "outcome": "complete",
+      "invalid": false
+    },
+    {
+      "name": "backend_429",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 429,
+            "content_type": "Application/JSON; charset=\"UTF-8\"",
+            "headers": {
+              "retry-after": "3",
+              "x-inferweave-request-id": "correlation-1"
+            }
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        },
+        {
+          "kind": "end",
+          "request_id": "r1"
+        }
+      ],
+      "outcome": "complete",
+      "invalid": false
+    },
+    {
+      "name": "opaque_sse",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "text/event-stream"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": "data: {\"delta\":\"\u00e9\"}\n\ndata: [DONE]\n\n"
+        },
+        {
+          "kind": "end",
+          "request_id": "r1"
+        }
+      ],
+      "outcome": "complete",
+      "invalid": false
+    },
+    {
+      "name": "empty_204",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 204,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "end",
+          "request_id": "r1"
+        }
+      ],
+      "outcome": "complete",
+      "invalid": false
+    },
+    {
+      "name": "body_before_head",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "missing_head",
+      "frames": [
+        {
+          "kind": "end",
+          "request_id": "r1"
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "head_has_body",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "x",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "wrong_id",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "other",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "initial_sequence",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "redirect",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 302,
+            "content_type": "application/json"
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "informational",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 100,
+            "content_type": "application/json"
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "invalid_mime",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "text/plain"
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "header_injection",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json\r\nx: yes"
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "forbidden_header",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json",
+            "headers": {
+              "authorization": "secret"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "retry_after_on_200",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json",
+            "headers": {
+              "retry-after": "3"
+            }
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    },
+    {
+      "name": "repeated_head",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        }
+      ],
+      "outcome": "partial_failure",
+      "invalid": true
+    },
+    {
+      "name": "duplicate_sequence",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        }
+      ],
+      "outcome": "partial_failure",
+      "invalid": true
+    },
+    {
+      "name": "post_end_frame",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "end",
+          "request_id": "r1"
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        }
+      ],
+      "outcome": "partial_failure",
+      "invalid": true
+    },
+    {
+      "name": "nonempty_204",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 204,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        }
+      ],
+      "outcome": "partial_failure",
+      "invalid": true
+    },
+    {
+      "name": "prehead_BACKEND_TIMEOUT",
+      "frames": [
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "BACKEND_TIMEOUT",
+            "retryable": false
+          }
+        }
+      ],
+      "outcome": 504,
+      "invalid": false
+    },
+    {
+      "name": "posthead_BACKEND_TIMEOUT",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        },
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "BACKEND_TIMEOUT",
+            "retryable": false
+          }
+        }
+      ],
+      "outcome": "partial_failure",
+      "invalid": false
+    },
+    {
+      "name": "prehead_BACKEND_UNREACHABLE",
+      "frames": [
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "BACKEND_UNREACHABLE",
+            "retryable": false
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": false
+    },
+    {
+      "name": "posthead_BACKEND_UNREACHABLE",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        },
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "BACKEND_UNREACHABLE",
+            "retryable": false
+          }
+        }
+      ],
+      "outcome": "partial_failure",
+      "invalid": false
+    },
+    {
+      "name": "prehead_BACKEND_STREAM_FAILED",
+      "frames": [
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "BACKEND_STREAM_FAILED",
+            "retryable": false
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": false
+    },
+    {
+      "name": "posthead_BACKEND_STREAM_FAILED",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        },
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "BACKEND_STREAM_FAILED",
+            "retryable": false
+          }
+        }
+      ],
+      "outcome": "partial_failure",
+      "invalid": false
+    },
+    {
+      "name": "prehead_CLIENT_CANCELLED",
+      "frames": [
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "CLIENT_CANCELLED",
+            "retryable": false
+          }
+        }
+      ],
+      "outcome": "cancelled",
+      "invalid": false
+    },
+    {
+      "name": "posthead_CLIENT_CANCELLED",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        },
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "CLIENT_CANCELLED",
+            "retryable": false
+          }
+        }
+      ],
+      "outcome": "partial_failure",
+      "invalid": false
+    },
+    {
+      "name": "prehead_INVALID_UPSTREAM_RESPONSE",
+      "frames": [
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "INVALID_UPSTREAM_RESPONSE",
+            "retryable": false
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": false
+    },
+    {
+      "name": "posthead_INVALID_UPSTREAM_RESPONSE",
+      "frames": [
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 0,
+          "payload": "",
+          "response_head": {
+            "status": 200,
+            "content_type": "application/json"
+          }
+        },
+        {
+          "kind": "token",
+          "request_id": "r1",
+          "seq": 1,
+          "payload": " {\"code\":\"custom\", \"text\":\"\u00e9\"}\n"
+        },
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "INVALID_UPSTREAM_RESPONSE",
+            "retryable": false
+          }
+        }
+      ],
+      "outcome": "partial_failure",
+      "invalid": false
+    },
+    {
+      "name": "no_retryable_terminal",
+      "frames": [
+        {
+          "kind": "end",
+          "request_id": "r1",
+          "failure": {
+            "code": "BACKEND_TIMEOUT",
+            "retryable": true
+          }
+        }
+      ],
+      "outcome": 502,
+      "invalid": true
+    }
+  ]
+}

@@ -27,7 +27,7 @@
     {
       "properties": {
         "binding_status": {"const": "bound"},
-        "negotiated_features": {"minItems": 1, "contains": {"const": "iw.link-native-request/1"}}
+        "negotiated_features": {"minItems": 1, "contains": {"enum": ["iw.link-native-request/1", "iw.link-http-json/1"]}}
       },
       "not": {"required": ["reason"]}
     },

@@ -73,6 +73,10 @@
     "owner_execution_permits": {
       "type": "string",
       "description": "Level \"1\" names iw.owner-execution-permit/1 (spec57). A separately trusted owner envelope and durable claim-wide node fence are required on the exact negotiated Link incarnation. Direct/proxy level-2 alias execution remains unsupported until independently qualified."
+    },
+    "link_http_json": {
+      "type": "string",
+      "description": "Level \"1\" names iw.link-http-json/1, spec58 bounded exact-model HTTP JSON transport on an authenticated current registration and Link incarnation. Independent of native response proof and owner execution permits."
     }
   }
 }

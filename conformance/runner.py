@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "conformance"))
 import node_join  # noqa: E402
 import runtime_protocol  # noqa: E402
+import link_http_json  # noqa: E402
 import dynamic_aliases  # noqa: E402
 import alias_edge_delegation  # noqa: E402
 import runtime_observations  # noqa: E402
@@ -93,6 +94,12 @@ MAP = {
     "node-register": "requests/node-register.json",
     "link-hello-ack": "requests/link-hello-ack.json",
     "link-hello": "requests/link-hello.json",
+    "link-http-meta": "requests/link-http-meta.json",
+    "link-http-request": "requests/link-http-request.json",
+    "link-http-response-head": "requests/link-http-response-head.json",
+    "link-http-token": "requests/link-http-token.json",
+    "link-http-failure": "requests/link-http-failure.json",
+    "link-http-end": "requests/link-http-end.json",
     "link-request-meta": "requests/link-request-meta.json",
     "link-end": "requests/link-end.json",
     "link-response-meta": "requests/link-response-meta.json",
@@ -565,6 +572,12 @@ def main():
     )
     args = parser.parse_args()
     failures = 0
+    http_errors = link_http_json.check_vectors(ROOT)
+    for error in http_errors:
+        print("FAIL  " + error)
+    failures += len(http_errors)
+    if not http_errors:
+        print("PASS  Link HTTP JSON vectors (offline; production proof owed)")
     execution_errors = alias_execution.check_vectors(ROOT)
     for error in execution_errors:
         print("FAIL  " + error)

@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-http-meta.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "method",
+    "target",
+    "content_type",
+    "payload_bytes"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "method": {
+      "const": "POST"
+    },
+    "target": {
+      "enum": [
+        "/v1/chat/completions",
+        "/v1/completions"
+      ]
+    },
+    "content_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[\\x20-\\x7e\\t]+$"
+    },
+    "payload_bytes": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 9007199254740991
+    }
+  }
+}

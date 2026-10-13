@@ -216,7 +216,8 @@ native Link HTTP relay and uses another eligible transport or returns `FEATURE_U
 The node copies the current registration response `connectionId` into the Hello
 `registration_connection_id`, creates a fresh unpredictable `link_incarnation_id` for every
 socket/dial (including reconnects by the same process `session`), sets `native_link_version: 1`,
-and offers `iw.link-native-request/1` plus each separately supported native feature in
+and offers its supported request capability (`iw.link-native-request/1` or spec58
+`iw.link-http-json/1`) plus each separately supported feature in
 `native_link_features`. `session` remains process identity
 and MUST NOT be used as the Link incarnation. If any native Link v1 field is present, all are
 required. Legacy Hello frames remain valid and receive no `hello_ack`.
@@ -224,7 +225,9 @@ required. Legacy Hello frames remain valid and receive no `hello_ack`.
 After authenticating the Hello credential, the accepting gateway performs one negotiation against
 the current registration: the Hello registration id must equal its current, fresh registration id;
 the registration credential must still be valid and the socket must still be live;
-the registration, Hello, and gateway must all include `iw.link-native-request/1`. Each other
+the registration, Hello, and gateway must all include a common request capability:
+`iw.link-native-request/1` or `iw.link-http-json/1` (spec58). HTTP JSON is independent;
+native response proof still requires native request support. Each other
 native feature, including `iw.link-native-response/1`, enters the bound acknowledgement only when
 it appears in those same three sets. It sends a
 `hello_ack` only because the sender advertised native Link v1, and sends it on the same socket. A
@@ -889,3 +892,11 @@ Spec 54 adds `dynamic_aliases: "2"` with explicit native HTTP selection, revisio
 policy, instance-level capability evidence, read-only preview and owner admission revalidation.
 The existing level-1 alias shape and default list response remain unchanged. See
 `54_DYNAMIC_MODEL_ALIASES.md` for schema, reason/event vocabulary, API and mixed-version rules.
+
+## Exact-model HTTP JSON Link transport
+
+Spec58 defines independently negotiated `link_http_json: "1"` / `iw.link-http-json/1`,
+closed `meta.http`, first-Token `response_head`, and `End.failure`. It preserves
+exact `/v1/completions` and chat HTTP semantics. It neither reuses native end-proof
+nor composes with spec57 protected alias execution. Older chat behavior remains
+unchanged; unbound completions fail before dispatch rather than losing their path.

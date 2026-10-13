@@ -1,0 +1,30 @@
+{
+  "spec": "58_LINK_HTTP_JSON",
+  "feature": "link_http_json",
+  "level": "1",
+  "capability": "iw.link-http-json/1",
+  "targets": [
+    "/v1/chat/completions",
+    "/v1/completions"
+  ],
+  "method": "POST",
+  "failure_codes": [
+    "BACKEND_UNREACHABLE",
+    "BACKEND_TIMEOUT",
+    "BACKEND_STREAM_FAILED",
+    "CLIENT_CANCELLED",
+    "INVALID_UPSTREAM_RESPONSE"
+  ],
+  "unsupported_code": "FEATURE_UNSUPPORTED",
+  "invalid_response_status": 502,
+  "timeout_status": 504,
+  "head_sequence": 0,
+  "body_start_sequence": 1,
+  "proof_status": "owed",
+  "default_max_request_bytes": 33554432,
+  "max_frame_json_bytes": 1048576,
+  "response_headers": [
+    "x-inferweave-request-id",
+    "retry-after"
+  ]
+}
