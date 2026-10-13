@@ -1,6 +1,6 @@
 # InferWeave Federated Model Provisioning — Phase 0 Audit & Gap Matrix
 
-Status: **Phase 2 (approval-required activation) implemented** on branch `feat/provisioning-phase2` (commit `c1cc40d3`, based on `main` @ `3d00cf77`). Phase 1 (observe-only slice: gate, capacity signal, dry-run planner, `provision.*` message family, controller core, wire transport, durable persistence, parent client, HTTP wiring, live-server registration) is already merged on `main` (`inferweave/inferweave` PR #863, merge commit `75a6ee94`). Phase 2 adds operator `approve()`/`reject()` to the controller and enables end-to-end approval-required activation: a parent can request → offer → reserve → (operator approve) → activate → Ready, staying disabled by default until an owner explicitly sets policy. Items 1–4 and workstreams B, C, D, E done; item 5 (GUI/API owner-policy controls) and autonomous mode remain later-phase.
+Status: **Phase 2 (approval-required activation) delivered & merged** (`inferweave/inferweave` PR #881, merge commit `6a227e09`, squash of `feat/provisioning-phase2` onto `main`). Phase 1 (observe-only slice: gate, capacity signal, dry-run planner, `provision.*` message family, controller core, wire transport, durable persistence, parent client, HTTP wiring, live-server registration) was merged as PR #863 (merge commit `75a6ee94`). Phase 2 adds operator `approve()`/`reject()` to the controller and enables end-to-end approval-required activation: a parent can request → offer → reserve → (operator approve) → activate → Ready, staying disabled by default until an owner explicitly sets policy. Items 1–4 and workstreams B, C, D, E done; item 5 (GUI/API owner-policy controls) and autonomous mode remain later-phase.
 Date: 2026-10-12
 Author: pi agent (in-session, mission pipeline unavailable due to orchestration store lock).
 Scope: `inferweave/inferweave`, `inferweave/inferweave-specs`, `metabolomics-us/inferweave-gateway`.
@@ -324,9 +324,9 @@ a persisted owner-policy store + gateway API) and autonomous mode.
 
 ### Status — Phase 2: approval-required activation (2026-10-11)
 
-Implemented on `feat/provisioning-phase2` (`c1cc40d3`), the approval-required
-slice that closes the observe-only gap: a parent can now bring an approved
-reservation live. The gate stays stateless (policy-level); the approval is a
+Implemented on `feat/provisioning-phase2` and merged via PR #881 (merge
+commit `6a227e09`), the approval-required slice that closes the observe-only
+gap: a parent can now bring an approved reservation live. The gate stays stateless (policy-level); the approval is a
 per-reservation controller concern.
 
 - `crates/iw-core/src/provisioning.rs` — `ApprovalRequired + Action::Activate`
