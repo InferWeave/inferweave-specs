@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `7326411c0245` — ~7,737t
+- `OPEN_GATES.md` — `55c937c0c49f` — ~7,873t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -112,7 +112,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
 - `docs/AI_INSTALL_INFERWEAVE.md` — `64b97a39d222` — ~509t
 - `docs/README.md` — `514ce6279d55` — ~100t
-- `docs/alias-implementation-gap-matrix.md` — `399b48747340` — ~3,385t
+- `docs/alias-implementation-gap-matrix.md` — `a97a75f0128e` — ~4,050t
 - `docs/architecture.md` — `3d2cc8e44219` — ~377t
 - `docs/compatibility.md` — `8ceb21cb1933` — ~713t
 - `docs/events.md` — `a957e821624f` — ~481t
@@ -558,7 +558,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/51_PIPELINES_AND_DURABLE_JOBS.md` — `ab9f8df6a816` — ~624t
 - `specs/52_DURABLE_INFERENCE_JOBS.md` — `ed268f3478d8` — ~785t
 - `specs/53_RUNTIME_FAMILY_CONFORMANCE.md` — `d1c8172161f8` — ~923t
-- `specs/54_DYNAMIC_MODEL_ALIASES.md` — `69da88bb3b9f` — ~7,401t
+- `specs/54_DYNAMIC_MODEL_ALIASES.md` — `f9fe400ea3ea` — ~7,870t
 - `specs/55_ALIAS_EDGE_DELEGATION.md` — `38b0da721b74` — ~2,316t
 - `specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md` — `386f8e1ac659` — ~3,888t
 - `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` — `56804c3fa5ee` — ~6,153t

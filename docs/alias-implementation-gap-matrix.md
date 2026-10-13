@@ -17,8 +17,8 @@ level instead of silently redefining it. The handoff's v1.0, current protocol
 1.1.0 (`VERSION`), feature level, schema version and individual alias revision
 are distinct version axes. The Go gateway is a conformant site
 gateway under D-001. D-002 currently permits its embedded operator UI for
-runtime-family views only, so alias administration needs an explicit, narrow
-decision amendment before Go UI work.
+runtime-family views only at this audit baseline; the merged contract follow-up below
+records the subsequent narrow alias administration amendment.
 
 | Requirement | State | Source evidence | Planned change / proof owed |
 |---|---|---|---|
@@ -106,3 +106,27 @@ Master acceptance 3, 5, 6, 11–17, 19, 20 and 23 now link to this contract; non
 
 These rows describe contract closure only. Offline conformance is not a running alias engine,
 production authentication, shared transactional admission or rollout evidence.
+
+## Merged progress register — pagination follow-up
+
+The table above preserves the original source audit. This register links merged changes
+verified through repository PR metadata on 2026-10-13; a merge proves source integration,
+not activation or a passed master acceptance scenario. Unmerged Rust core and Go console
+work remains **partial/inactive** and is deliberately not represented as a completed feature.
+
+| Area | Merged source evidence | Current proof boundary |
+|---|---|---|
+| Audit, level-2 contract and D-002 alias UI amendment | Specs [#248](https://github.com/InferWeave/inferweave-specs/pull/248), [#249](https://github.com/InferWeave/inferweave-specs/pull/249) | Contract artifacts implemented; runtime acceptance remains owed. |
+| Signed management query and current grant/UI mode contracts | Specs [#252](https://github.com/InferWeave/inferweave-specs/pull/252), [#253](https://github.com/InferWeave/inferweave-specs/pull/253) | Contract artifacts implemented; production identity, permissions and activation remain owed. |
+| Generation-bound runtime producer contract | Specs [#254](https://github.com/InferWeave/inferweave-specs/pull/254) | Contract artifacts implemented; live qualification, owner policy and admission remain partial/inactive. |
+| Separate inference identity and exclusive execution claims | Specs [#256](https://github.com/InferWeave/inferweave-specs/pull/256) | Contract artifacts implemented; runtime concurrency, fencing and fault injection remain owed. |
+| Existing alias behavior characterization | Rust [#866](https://github.com/InferWeave/inferweave/pull/866), Go [#466](https://github.com/metabolomics-us/inferweave-gateway/pull/466) | Existing behavior tests merged; they do not prove new dynamic alias dispatch. |
+| Go typed signed client and management adapter | Go [#468](https://github.com/metabolomics-us/inferweave-gateway/pull/468), [#469](https://github.com/metabolomics-us/inferweave-gateway/pull/469) | Partial: client/adapter source merged; full console, live Rust integration and production activation remain owed. |
+
+Spec 54 now makes empty filtered pages with a continuation explicit. The existing
+`schemas/v1/aliases/contract.json` list schema already permits zero items and an optional
+nonempty `next_cursor`, so this correction adds no schema version or alternate response
+shape. Runtime proof is **owed**: an empty intermediate page must reach a later matching
+alias, each scan must advance under a bounded budget, and changed authorization/snapshot
+must invalidate continuation. Acceptance 20 and 27 and tasks A-T02/A-T06/A-T07/A-T08
+retain their existing owed status.
