@@ -69,6 +69,10 @@
     "native_link_responses": {
       "type": "string",
       "description": "Level \"1\" names capability iw.link-native-response/1. Together with iw.link-native-request/1 on the same exact binding, it requires end-frame status/header/body proof and forbids deriving HTTP status from response JSON fields (specs/45 and specs/49)."
+    },
+    "owner_execution_permits": {
+      "type": "string",
+      "description": "Level \"1\" names iw.owner-execution-permit/1 (spec57). A separately trusted owner envelope and durable claim-wide node fence are required on the exact negotiated Link incarnation. Direct/proxy level-2 alias execution remains unsupported until independently qualified."
     }
   }
 }

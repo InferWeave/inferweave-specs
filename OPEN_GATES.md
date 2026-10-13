@@ -481,3 +481,21 @@ acceptance/rejection boundaries. Their fixture bytes agree with the canonical fi
 This component parity does not prove live cross-process HTTP interoperability or shared
 execution-claim enforcement; those proofs remain **owed**. No deployed interoperability or
 alias traffic activation gate is established by this evidence.
+
+### Owner-to-node execution permit fence remains owed
+
+Spec57's purpose-separated owner envelope and hostile serial oracle define authentication and
+ordering only. A-T04/A-T05/A-T08 still owe actual durable node INTENT/SPENT fences across restart,
+authenticated shared ConsumeDispatch and lost-acknowledgement fault injection, exact runtime
+generation pinning through backend start, key/owner-incarnation revocation and negotiated Link
+interoperability. Direct/client and node-proxy level-2 execution remain unsupported until separately
+qualified against the same central claim fence. No production execution or activation is proven
+by these schemas, public-seed signatures or offline scenarios.
+
+PR #259 review correction: the earlier permit text incorrectly assumed native Link metadata
+could preserve spec57 compatibility targets and semantic headers. The protected Request and
+separate asynchronous consume control schemas now specify those missing bytes and bindings.
+Running Link request/ack multiplexing, continued heartbeat/cancellation while awaiting consume,
+late/wrong acknowledgement rejection, and post-fsync expiry/deadline/cancellation revalidation
+remain **owed**. JSON-only bounded fixture success does not qualify multipart, chunking,
+OpenAI SSE/tool streams, direct execution or node HTTP proxying.

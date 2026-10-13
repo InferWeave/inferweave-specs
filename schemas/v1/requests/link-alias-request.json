@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-alias-request.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "request_id",
+    "payload",
+    "deployment",
+    "meta"
+  ],
+  "properties": {
+    "kind": {
+      "const": "request"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "payload": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 16777216
+    },
+    "deployment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ownerExecutionPermit",
+        "executable"
+      ],
+      "properties": {
+        "ownerExecutionPermit": {
+          "$ref": "../aliases/owner-execution-permit.json"
+        },
+        "executable": {
+          "$ref": "link-alias-executable.json"
+        }
+      }
+    }
+  }
+}

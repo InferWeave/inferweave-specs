@@ -2316,6 +2316,10 @@ Rules:
 - partial stream never replays and cancellation releases leases
 - shared operation/idempotency claim prevents two-parent double admission; reservation acquisition crash reconciles before takeover
 - fenced DISPATCHED intent precedes bytes/direct permit; ambiguous and partial streams never auto-replay
+- purpose-bound owner permit, exact node audience and negotiated Link capability; direct/proxy unsupported until qualified
+- durably synced node INTENT before central ConsumeDispatch and SPENT before backend; duplicate/timeout/lost acknowledgement never starts
+- one claim fence across permit IDs/transports/restarts; runtime instance/generation pinned through backend start
+- protected Link executable bytes and asynchronous consume request/ack preserve exact bindings; heartbeat/cancellation continue during waits and post-fsync expiry/cancellation prevents start
 
 ### A-T05 — Runtime and federation alias integration
 **Context:** `C80`
@@ -2335,6 +2339,10 @@ Rules:
 - generation-bound verifier and owner policy references cannot grant capability or capacity
 - multi-GPU group loss and source reconnect prevent stale READY resurrection
 - claim-bound owner/node reservation fencing and one-use direct permits; holder expiry never reclaims progressing GPU work
+- purpose-bound owner permit, exact node audience and negotiated Link capability; direct/proxy unsupported until qualified
+- durably synced node INTENT before central ConsumeDispatch and SPENT before backend; duplicate/timeout/lost acknowledgement never starts
+- one claim fence across permit IDs/transports/restarts; runtime instance/generation pinned through backend start
+- protected Link executable bytes and asynchronous consume request/ack preserve exact bindings; heartbeat/cancellation continue during waits and post-fsync expiry/cancellation prevents start
 
 ### A-T06 — Go typed alias client and transparent relay
 **Context:** `C80`

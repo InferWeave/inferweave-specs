@@ -54,7 +54,8 @@
       "evidence": [],
       "gate": "Must run against implementation; contract fixture checks are insufficient.",
       "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md",
-      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md"
+      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md",
+      "owner_execution_permit_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md#51-owner-to-node-envelope-and-one-use-execution-fence"
     },
     {
       "id": 7,
@@ -72,7 +73,8 @@
       "proof_status": "owed",
       "evidence": [],
       "gate": "Must run against implementation; contract fixture checks are insufficient.",
-      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md"
+      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md",
+      "owner_execution_permit_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md#51-owner-to-node-envelope-and-one-use-execution-fence"
     },
     {
       "id": 9,
@@ -81,7 +83,8 @@
       "proof_status": "owed",
       "evidence": [],
       "gate": "Must run against implementation; contract fixture checks are insufficient.",
-      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md"
+      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md",
+      "owner_execution_permit_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md#51-owner-to-node-envelope-and-one-use-execution-fence"
     },
     {
       "id": 10,
@@ -120,7 +123,8 @@
       "evidence": [],
       "gate": "Must run against implementation; contract fixture checks are insufficient.",
       "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md",
-      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md"
+      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md",
+      "owner_execution_permit_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md#51-owner-to-node-envelope-and-one-use-execution-fence"
     },
     {
       "id": 14,
@@ -140,7 +144,8 @@
       "evidence": [],
       "gate": "Must run against implementation; contract fixture checks are insufficient.",
       "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md",
-      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md"
+      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md",
+      "owner_execution_permit_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md#51-owner-to-node-envelope-and-one-use-execution-fence"
     },
     {
       "id": 16,
@@ -168,7 +173,8 @@
       "proof_status": "owed",
       "evidence": [],
       "gate": "Must run against implementation; contract fixture checks are insufficient.",
-      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md"
+      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md",
+      "owner_execution_permit_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md#51-owner-to-node-envelope-and-one-use-execution-fence"
     },
     {
       "id": 19,
@@ -215,7 +221,8 @@
       "evidence": [],
       "gate": "Must run against implementation; contract fixture checks are insufficient.",
       "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md",
-      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md"
+      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md",
+      "owner_execution_permit_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md#51-owner-to-node-envelope-and-one-use-execution-fence"
     },
     {
       "id": 24,
@@ -264,7 +271,8 @@
       "proof_status": "owed",
       "evidence": [],
       "gate": "Must run against implementation; contract fixture checks are insufficient.",
-      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md"
+      "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md",
+      "owner_execution_permit_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md#51-owner-to-node-envelope-and-one-use-execution-fence"
     }
   ]
 }
