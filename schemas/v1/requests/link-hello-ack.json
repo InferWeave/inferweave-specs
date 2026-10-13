@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/requests/link-hello-ack.json",
   "title": "Native Link Hello acknowledgement",
-  "description": "Gateway acknowledgement sent only in response to a native Link v1 Hello on the same authenticated socket. Echoed identities prevent an acknowledgement from enabling another registration or Link incarnation.",
+  "description": "Gateway acknowledgement sent only in response to a native Link v1 Hello on the same authenticated socket. Echoed identities prevent an acknowledgement from enabling another registration or Link incarnation; negotiated_features lists only the independently intersected capabilities for this exact binding.",
   "type": "object",
   "additionalProperties": true,
   "required": ["kind", "native_link_version", "registration_connection_id", "link_incarnation_id", "binding_status", "negotiated_features"],

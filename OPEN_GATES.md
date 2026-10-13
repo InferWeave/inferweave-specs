@@ -381,10 +381,12 @@ implementation work:
 - no mixed-version gateway/node pair has exercised additive family fields, legacy jobs without
   `family`, or `completed` normalization to canonical `succeeded`;
 - no mixed-version link has exercised the `/v1/node/register` capability-array intersection,
-  negotiated `iw.link-native-request/1` dispatch, rejection on an older peer, exact `connectionId`
+  negotiated `iw.link-native-request/1` dispatch, independently negotiated
+  `iw.link-native-response/1` end-frame proof with exact 201/4xx/5xx relay, rejection on an older
+  or request-only peer, exact `connectionId`
   plus Link-incarnation Hello/ack binding, or atomic dispatch across re-registration, replacement,
-  credential expiry, or socket close; the family/endpoint and artifact-reference bounds have also
-  not been exercised against a production node;
+  credential expiry, or socket close; the family/endpoint, artifact-reference, response-byte/digest
+  and canonical response-header bounds have also not been exercised against a production node;
 - no real end-to-end demonstrations have loaded and served the required runtime families through
   native endpoints under production admission, owner priority and telemetry controls.
 

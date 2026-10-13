@@ -22,6 +22,11 @@ negotiation, Link acknowledgement, and credential/socket revocation cases for th
 registration plus Link-incarnation binding required by
 `iw.link-native-request/1`. These are fixture semantics; production atomicity remains open-gated.
 
+`native-link-response-vectors.json` covers the separately negotiated
+`iw.link-native-response/1` end-frame proof: exact 201/400/503 relay, a successful body that uses a
+top-level `code` extension, request-only peer ineligibility, missing proof and byte/digest mismatch.
+These vectors do not qualify a production Link implementation.
+
 The conformance suite and fixtures are delivered (feature `IW-PROTO-002`, task `P5-T28`);
 production conformance by a running component remains `owed` until the reference implementation
 ships.

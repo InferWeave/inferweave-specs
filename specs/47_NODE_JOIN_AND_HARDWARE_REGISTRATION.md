@@ -99,6 +99,9 @@ producer of the schema. Unknown well-formed capabilities are ignored unless supp
 
 A node that wants native Link v1 includes `iw.link-native-request/1` in the request array and may
 send the native Link v1 Hello fields only when that exact string is present in the response array.
+For exact HTTP response relay it additionally offers `iw.link-native-response/1` and may rely on
+end-frame response proof only when that exact second string is also returned. Neither capability
+implies the other, and the response capability never makes a request capability eligible by itself.
 The response `connectionId` is copied byte-for-byte into Hello `registration_connection_id`. A
 legacy registration without `capabilities` succeeds as before, receives an empty response array
 from a new gateway, and cannot enable native dispatch. No feature is inferred from protocol

@@ -313,6 +313,63 @@ _NATIVE_ENDPOINTS = {
 }
 
 _NATIVE_LINK_CAPABILITY = "iw.link-native-request/1"
+_NATIVE_LINK_RESPONSE_CAPABILITY = "iw.link-native-response/1"
+
+
+def validate_native_link_response(body, response, negotiated_features):
+    """Validate one buffered native Link response without inferring HTTP semantics from its body."""
+    features = set(negotiated_features or ())
+    if not {_NATIVE_LINK_CAPABILITY, _NATIVE_LINK_RESPONSE_CAPABILITY} <= features:
+        return {"allowed": False, "code": "FEATURE_UNSUPPORTED"}
+    if not isinstance(body, bytes) or not isinstance(response, dict):
+        return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    if set(response) != {"status", "headers", "body_bytes", "body_sha256"}:
+        return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    status = response.get("status")
+    headers = response.get("headers")
+    body_bytes = response.get("body_bytes")
+    digest = response.get("body_sha256")
+    valid_status = (
+        isinstance(status, int)
+        and not isinstance(status, bool)
+        and (200 <= status <= 299 or 400 <= status <= 599)
+    )
+    valid_headers = isinstance(headers, dict) and set(headers) <= {
+        "content-type", "retry-after", "location"
+    }
+    if not valid_status or not valid_headers:
+        return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    if "content-type" in headers and headers["content-type"] != "application/json":
+        return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    if not isinstance(body_bytes, int) or isinstance(body_bytes, bool) or not 0 <= body_bytes <= 16_777_216:
+        return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    actual_digest = "sha256:" + hashlib.sha256(body).hexdigest()
+    if body_bytes != len(body) or digest != actual_digest:
+        return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    if body:
+        if headers.get("content-type") != "application/json":
+            return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+        try:
+            json.loads(body.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    if status == 204 and body:
+        return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    retry_after = headers.get("retry-after")
+    if retry_after is not None and (
+        status not in {429, 503}
+        or not isinstance(retry_after, str)
+        or re.fullmatch(r"0|[1-9][0-9]{0,9}", retry_after) is None
+    ):
+        return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    location = headers.get("location")
+    if location is not None and (
+        status not in {201, 202}
+        or not isinstance(location, str)
+        or re.fullmatch(r"/inferweave/v1/jobs/[A-Za-z0-9._:-]{1,256}", location) is None
+    ):
+        return {"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}
+    return {"allowed": True, "status": status, "headers": deepcopy(headers), "body": body}
 
 
 def negotiate_registration_capabilities(offered, supported):
@@ -333,14 +390,14 @@ def negotiate_registration_capabilities(offered, supported):
     return negotiated
 
 
-def _native_link_ack(hello, status, reason=None):
+def _native_link_ack(hello, status, negotiated_features=None, reason=None):
     ack = {
         "kind": "hello_ack",
         "native_link_version": 1,
         "registration_connection_id": hello.get("registration_connection_id", ""),
         "link_incarnation_id": hello.get("link_incarnation_id", ""),
         "binding_status": status,
-        "negotiated_features": [_NATIVE_LINK_CAPABILITY] if status == "bound" else [],
+        "negotiated_features": list(negotiated_features or ()) if status == "bound" else [],
     }
     if reason is not None:
         ack["reason"] = reason
@@ -352,18 +409,28 @@ def negotiate_native_link(registration, hello, local_features):
     if hello.get("native_link_version") != 1:
         return None
     if not registration or not registration.get("fresh"):
-        return _native_link_ack(hello, "unbound", "registration_not_current")
+        return _native_link_ack(hello, "unbound", reason="registration_not_current")
     if not registration.get("credential_valid"):
-        return _native_link_ack(hello, "unbound", "credential_invalid")
+        return _native_link_ack(hello, "unbound", reason="credential_invalid")
     if hello.get("registration_connection_id") != registration.get("connection_id"):
-        return _native_link_ack(hello, "unbound", "registration_mismatch")
+        return _native_link_ack(hello, "unbound", reason="registration_mismatch")
     if _NATIVE_LINK_CAPABILITY not in registration.get("capabilities", set()):
-        return _native_link_ack(hello, "unbound", "feature_not_registered")
+        return _native_link_ack(hello, "unbound", reason="feature_not_registered")
     if _NATIVE_LINK_CAPABILITY not in hello.get("native_link_features", []):
-        return _native_link_ack(hello, "unbound", "feature_not_offered")
+        return _native_link_ack(hello, "unbound", reason="feature_not_offered")
     if _NATIVE_LINK_CAPABILITY not in local_features:
-        return _native_link_ack(hello, "unbound", "feature_not_supported")
-    return _native_link_ack(hello, "bound")
+        return _native_link_ack(hello, "unbound", reason="feature_not_supported")
+    registration_features = set(registration.get("capabilities", ()))
+    hello_features = set(hello.get("native_link_features", ()))
+    local_features = set(local_features)
+    negotiated = [
+        capability
+        for capability in (_NATIVE_LINK_CAPABILITY, _NATIVE_LINK_RESPONSE_CAPABILITY)
+        if capability in registration_features
+        and capability in hello_features
+        and capability in local_features
+    ]
+    return _native_link_ack(hello, "bound", negotiated)
 
 
 def accept_native_link_ack(hello, ack):
@@ -377,6 +444,15 @@ def accept_native_link_ack(hello, ack):
         and ack.get("link_incarnation_id") == hello.get("link_incarnation_id")
         and _NATIVE_LINK_CAPABILITY in hello.get("native_link_features", [])
         and _NATIVE_LINK_CAPABILITY in ack.get("negotiated_features", [])
+    )
+
+
+def accept_native_link_response_ack(hello, ack):
+    """Response proof is usable only when its separate capability is in the exact accepted ack."""
+    return bool(
+        accept_native_link_ack(hello, ack)
+        and _NATIVE_LINK_RESPONSE_CAPABILITY in hello.get("native_link_features", [])
+        and _NATIVE_LINK_RESPONSE_CAPABILITY in ack.get("negotiated_features", [])
     )
 
 

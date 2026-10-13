@@ -80,6 +80,8 @@ MAP = {
     "link-hello-ack": "requests/link-hello-ack.json",
     "link-hello": "requests/link-hello.json",
     "link-request-meta": "requests/link-request-meta.json",
+    "link-end": "requests/link-end.json",
+    "link-response-meta": "requests/link-response-meta.json",
     "deployment": "deployments/deployment.json",
     "request": "requests/request.json",
     "registration": "requests/registration.json",
@@ -307,6 +309,37 @@ def check_native_link_binding_vectors():
     return True
 
 
+def check_native_link_response_vectors():
+    """Exercise exact HTTP response proof without deriving status from response JSON fields."""
+    doc = json.loads((ROOT / "conformance" / "native-link-response-vectors.json").read_text())
+    failures = []
+    negotiated = runtime_protocol.negotiate_native_link(
+        doc["registration"], doc["hello"], set(doc["capabilities"])
+    )
+    if negotiated != doc["ack"]:
+        failures.append("response-capability-negotiation")
+    if not runtime_protocol.accept_native_link_response_ack(doc["hello"], doc["ack"]):
+        failures.append("response-capability-acknowledgement")
+    for case in doc["cases"]:
+        response = None
+        if case.get("responseFixture"):
+            response = json.loads((ROOT / case["responseFixture"]).read_text())
+        got = runtime_protocol.validate_native_link_response(
+            case["body"].encode("utf-8"), response, case.get("negotiatedFeatures", [])
+        )
+        if got["allowed"] != case["expectAllowed"]:
+            failures.append(case["id"])
+        elif got["allowed"] and got["status"] != case["expectStatus"]:
+            failures.append(case["id"])
+        elif not got["allowed"] and got["code"] != case["expectCode"]:
+            failures.append(case["id"])
+    if failures:
+        print("FAIL  native-link response vectors: " + ", ".join(failures))
+        return False
+    print("PASS  native-link response vectors (status and exact body proof)")
+    return True
+
+
 def check_node_join_vectors():
     """Spec 47: the register vectors agree with the reference model; the known answers recompute."""
     doc = json.loads((ROOT / "conformance" / "node-join-vectors.json").read_text())
@@ -512,6 +545,7 @@ def main():
     failures += 0 if check_node_join_vectors() else 1
     failures += 0 if check_deployment_key_vectors() else 1
     failures += 0 if check_native_link_binding_vectors() else 1
+    failures += 0 if check_native_link_response_vectors() else 1
     failures += 0 if report_runtime_family_vectors(args.runtime_family_vectors) else 1
     if args.live_base_url:
         failures += 0 if run_live_runtime_family_cases(args.live_base_url, args.runtime_family_vectors) else 1

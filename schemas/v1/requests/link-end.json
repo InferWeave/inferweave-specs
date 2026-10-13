@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-end.json",
+  "title": "Link end frame",
+  "description": "Existing end frame with optional native HTTP response proof. Legacy and metadata-free streams omit response. After iw.link-native-response/1 negotiation, a native request requires response and the receiver validates it before emitting HTTP bytes.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["kind", "request_id"],
+  "properties": {
+    "kind": {"const": "end"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[!-~]+$"},
+    "response": {"$ref": "link-response-meta.json"}
+  }
+}

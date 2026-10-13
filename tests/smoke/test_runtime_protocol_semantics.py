@@ -8,6 +8,7 @@ from pathlib import Path
 
 import yaml
 from jsonschema import Draft7Validator, RefResolver
+from conformance import runtime_protocol as runtime_semantics
 
 from conformance.runtime_protocol import (
     IdempotencyConflict,
@@ -306,6 +307,102 @@ class DeploymentAndLoadSemantics(unittest.TestCase):
 
 
 class NativeLinkDispatchSemantics(unittest.TestCase):
+    def test_native_response_metadata_contract_exists(self):
+        response_schema = SCHEMA_ROOT / "requests" / "link-response-meta.json"
+        self.assertTrue(
+            response_schema.is_file(),
+            "native Link HTTP responses need a canonical end-frame metadata schema",
+        )
+        end_schema = SCHEMA_ROOT / "requests" / "link-end.json"
+        self.assertTrue(end_schema.is_file(), "the existing end frame needs an additive response member schema")
+
+    def test_native_response_metadata_fixtures_cover_status_headers_and_body_proof(self):
+        response_validator = validator("requests/link-response-meta.json")
+        end_validator = validator("requests/link-end.json")
+        for name in ("link-end-legacy.json", "link-end-native-response.json"):
+            self.assertEqual([], list(end_validator.iter_errors(load_json("fixtures/valid/" + name))), name)
+        for name in (
+            "link-response-meta-201.json",
+            "link-response-meta-400.json",
+            "link-response-meta-503.json",
+            "link-response-meta-success-extension.json",
+        ):
+            payload = load_json("fixtures/valid/" + name)
+            self.assertEqual([], list(response_validator.iter_errors(payload)), name)
+        for name in (
+            "link-response-meta-redirect.json",
+            "link-response-meta-unapproved-header.json",
+            "link-response-meta-retry-after-on-400.json",
+            "link-response-meta-location-on-200.json",
+            "link-response-meta-nonempty-without-content-type.json",
+            "link-response-meta-204-with-body.json",
+        ):
+            payload = load_json("fixtures/invalid/" + name)
+            self.assertTrue(list(response_validator.iter_errors(payload)), name)
+
+    def test_response_proof_capability_is_negotiated_independently(self):
+        hello_validator = validator("requests/link-hello.json")
+        ack_validator = validator("requests/link-hello-ack.json")
+        hello = load_json("fixtures/valid/link-hello-native-response-v1.json")
+        ack = load_json("fixtures/valid/link-hello-ack-native-response-v1.json")
+        self.assertEqual([], list(hello_validator.iter_errors(hello)))
+        self.assertEqual([], list(ack_validator.iter_errors(ack)))
+        response_capability = "iw.link-native-response/1"
+        offered = ["iw.link-native-request/1", response_capability]
+        self.assertEqual(
+            negotiate_registration_capabilities(offered, [response_capability, "iw.link-native-request/1"]),
+            [response_capability, "iw.link-native-request/1"],
+        )
+        registration = {
+            "connection_id": hello["registration_connection_id"],
+            "capabilities": set(offered),
+            "fresh": True,
+            "credential_valid": True,
+        }
+        negotiated = negotiate_native_link(registration, hello, set(offered))
+        self.assertEqual(ack, negotiated)
+        self.assertTrue(hasattr(runtime_semantics, "accept_native_link_response_ack"))
+        self.assertTrue(runtime_semantics.accept_native_link_response_ack(hello, ack))
+        request_only_hello = load_json("fixtures/valid/link-hello-native-v1.json")
+        request_only_ack = load_json("fixtures/valid/link-hello-ack-native-v1.json")
+        self.assertFalse(runtime_semantics.accept_native_link_response_ack(request_only_hello, request_only_ack))
+        self.assertFalse(
+            runtime_semantics.accept_native_link_response_ack(
+                hello,
+                dict(ack, negotiated_features=["iw.link-native-request/1"]),
+            )
+        )
+
+    def test_native_response_proof_semantics_are_executable(self):
+        self.assertTrue(
+            hasattr(runtime_semantics, "validate_native_link_response"),
+            "the canonical response proof needs an implementation-neutral validator",
+        )
+        vectors = load_json("conformance/native-link-response-vectors.json")
+        for case in vectors["cases"]:
+            response = None
+            if case.get("responseFixture"):
+                response = load_json(case["responseFixture"])
+            got = runtime_semantics.validate_native_link_response(
+                case["body"].encode("utf-8"), response, case.get("negotiatedFeatures", [])
+            )
+            self.assertEqual(case["expectAllowed"], got["allowed"], case["id"])
+            if case["expectAllowed"]:
+                self.assertEqual(case["expectStatus"], got["status"], case["id"])
+                self.assertEqual(case["body"].encode("utf-8"), got["body"], case["id"])
+            else:
+                self.assertEqual(case["expectCode"], got["code"], case["id"])
+        empty_with_wrong_content_type = {
+            "status": 200,
+            "headers": {"content-type": "text/plain"},
+            "body_bytes": 0,
+            "body_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        }
+        got = runtime_semantics.validate_native_link_response(
+            b"", empty_with_wrong_content_type, ["iw.link-native-request/1", "iw.link-native-response/1"]
+        )
+        self.assertEqual({"allowed": False, "code": "INVALID_NATIVE_RESPONSE"}, got)
+
     def test_native_negotiation_is_bound_to_registration_and_link_incarnation(self):
         hello = load_json("fixtures/valid/link-hello-native-v1.json")
         registration = {
@@ -386,9 +483,13 @@ class NativeLinkDispatchSemantics(unittest.TestCase):
     def test_node_register_offer_and_negotiated_response_are_exact_arrays(self):
         request_validator = validator("requests/node-register.json")
         response_validator = validator("requests/node-register-response.json")
-        for name in ("node-register-legacy.json", "node-register-native.json"):
+        for name in ("node-register-legacy.json", "node-register-native.json", "node-register-native-response.json"):
             self.assertEqual([], list(request_validator.iter_errors(load_json("fixtures/valid/" + name))), name)
-        for name in ("node-register-response-legacy.json", "node-register-response-native.json"):
+        for name in (
+            "node-register-response-legacy.json",
+            "node-register-response-native.json",
+            "node-register-response-native-response.json",
+        ):
             self.assertEqual([], list(response_validator.iter_errors(load_json("fixtures/valid/" + name))), name)
         duplicate_response = load_json("fixtures/invalid/node-register-response-duplicate-capability.json")
         self.assertTrue(list(response_validator.iter_errors(duplicate_response)))
@@ -455,9 +556,18 @@ class FullOpenApiParity(unittest.TestCase):
                 {"deployment_id": "", "deployment_key": "sha256:" + "0" * 64, "manifest": {}},
                 {"deployment_id": "d", "deployment_key": "not-a-digest", "manifest": {}},
             ],
-            "RerankRequest": [{"family": "reranking", "model": "m", "query": "q", "documents": []}],
-            "PredictionRequest": [{"family": "prediction", "model": "m", "inputs": []}],
-            "EmbeddingRequest": [{"family": "embeddings", "model": "m", "input": []}],
+            "RerankRequest": [
+                {"family": "reranking", "model": "m", "query": "q", "documents": []},
+                {"family": "reranking", "model": "", "query": "q", "documents": ["d"]},
+            ],
+            "PredictionRequest": [
+                {"family": "prediction", "model": "m", "inputs": []},
+                {"family": "prediction", "model": "", "inputs": [{}]},
+            ],
+            "EmbeddingRequest": [
+                {"family": "embeddings", "model": "m", "input": []},
+                {"family": "embeddings", "model": "", "input": ["x"]},
+            ],
         }
         for component, relative in pairs.items():
             standalone = validator(relative)
@@ -465,6 +575,28 @@ class FullOpenApiParity(unittest.TestCase):
             for payload in invalid_cases[component]:
                 self.assertEqual(bool(list(standalone.iter_errors(payload))), bool(list(inline.iter_errors(payload))), component)
                 self.assertTrue(list(standalone.iter_errors(payload)), component)
+
+    def test_family_models_are_nonempty_and_json_integer_spellings_remain_valid(self):
+        for relative in ("requests/rerank.json", "requests/prediction.json", "requests/embeddings.json"):
+            schema = validator(relative)
+            family = {
+                "requests/rerank.json": {"family": "reranking", "model": "", "query": "q", "documents": ["d"]},
+                "requests/prediction.json": {"family": "prediction", "model": "", "inputs": [{}]},
+                "requests/embeddings.json": {"family": "embeddings", "model": "", "input": ["x"]},
+            }[relative]
+            self.assertTrue(list(schema.iter_errors(family)), relative)
+
+        rerank = validator("requests/rerank.json")
+        openapi = yaml.safe_load((ROOT / "openapi/inferweave-v1.yaml").read_text())
+        inline = Draft7Validator(openapi["components"]["schemas"]["RerankRequest"])
+        for spelling in ("1.0", "1e0"):
+            payload = json.loads(
+                '{"family":"reranking","model":"m","query":"q","documents":["d"],"top_n":'
+                + spelling
+                + "}"
+            )
+            self.assertEqual([], list(rerank.iter_errors(payload)), spelling)
+            self.assertEqual([], list(inline.iter_errors(payload)), spelling)
 
 
 if __name__ == "__main__":

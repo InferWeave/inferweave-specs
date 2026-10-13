@@ -2189,7 +2189,7 @@ Rules:
 **Features:** IW-RT-002
 **Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md, specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md
 
-**Outcome:** Extend `openapi/inferweave-v1.yaml` with native runtime-family endpoints, publish standalone deployment and family-request JSON Schemas reconciled against the full inline constraints, and define negotiated bounded native link dispatch bound to the exact authenticated registration and Link incarnation without arbitrary URI or proxy behavior.
+**Outcome:** Extend `openapi/inferweave-v1.yaml` with native runtime-family endpoints, publish standalone deployment and family-request JSON Schemas reconciled against the full inline constraints, and define independently negotiated bounded native Link request plus exact HTTP response proof bound to the current authenticated registration and Link incarnation without arbitrary URI, proxy behavior or body-derived status.
 
 **Required tests:**
 - openapi-validation
@@ -2198,6 +2198,8 @@ Rules:
 - standalone/OpenAPI schema parity
 - node-register hardware-only conditional-schema parity and de-duplicated capability intersection; registration/Link-incarnation Hello/ack negotiation and re-registration/credential/socket revocation vectors
 - negotiated native link family/endpoint whitelist and hostile URI/content/size fixtures
+- native Link response proof vectors for exact 201/4xx/5xx status, bounded canonical headers, exact UTF-8 body bytes/digest, success code extensions, missing proof and request-only peers
+- family model minLength 1 and JSON integer spelling parity (1, 1.0, 1e0)
 
 ### B-T03 — Transactional runtime hot-swap lifecycle
 **Context:** `C75`

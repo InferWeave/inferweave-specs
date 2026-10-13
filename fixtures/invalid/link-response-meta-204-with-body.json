@@ -1,0 +1,8 @@
+{
+  "status": 204,
+  "headers": {
+    "content-type": "application/json"
+  },
+  "body_bytes": 2,
+  "body_sha256": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+}

@@ -180,11 +180,13 @@ component supports is negotiated down, never assumed.
 
 Protocol 1.1.0 also defines additive runtime-family features `runtime_families`,
 `runtime_lifecycle`, `runtime_reservations`, `transactional_caches`, and
-`native_link_requests` at level `"1"`
+`native_link_requests` and `native_link_responses` at level `"1"`
 (`specs/48`–`specs/53`). Each is negotiated independently. When absent, the sender uses the legacy
 Protocol v1 shape and omits its additive fields; it never infers a runtime family or treats version
 alone as proof that lifecycle, reservation, cache, or native link-dispatch behavior is present.
 `native_link_requests: "1"` names `iw.link-native-request/1` in the generic feature vocabulary.
+`native_link_responses: "1"` names `iw.link-native-response/1`; it is independently negotiated
+and never follows from request support.
 On the actual camelCase `/v1/node/register` wire, the node offers that exact string in the optional
 `capabilities` array and the gateway returns the negotiated intersection in the response
 `capabilities` array (`specs/47` section 2.1). The generic `features` map is not sent in its place.
@@ -199,19 +201,32 @@ Large media travels through content-addressed artifact references rather than in
 The sender omits `native` for an older or unbound peer; receiving an unnegotiated `native` field
 returns `FEATURE_UNSUPPORTED` and does not dispatch it.
 
+Native HTTP relay requires both `iw.link-native-request/1` and
+`iw.link-native-response/1` on the exact current binding. The node adds `response` metadata from
+`schemas/v1/requests/link-response-meta.json` to the existing `end` frame; no new frame kind is
+introduced. That metadata carries the explicit status, a closed header allow-list, the exact UTF-8
+body byte count, and its SHA-256 digest. The consumer buffers at most 16 MiB and validates this
+proof before emitting HTTP bytes. It never derives status from a JSON `code`, `error`, `retryable`,
+or any other body field. Missing or invalid proof after negotiation is
+`502 invalid_upstream_response`. A peer that did not negotiate response proof is ineligible for
+native Link HTTP relay and uses another eligible transport or returns `FEATURE_UNSUPPORTED`.
+
 ### Native Link v1 incarnation binding
 
 The node copies the current registration response `connectionId` into the Hello
 `registration_connection_id`, creates a fresh unpredictable `link_incarnation_id` for every
 socket/dial (including reconnects by the same process `session`), sets `native_link_version: 1`,
-and offers `iw.link-native-request/1` in `native_link_features`. `session` remains process identity
+and offers `iw.link-native-request/1` plus each separately supported native feature in
+`native_link_features`. `session` remains process identity
 and MUST NOT be used as the Link incarnation. If any native Link v1 field is present, all are
 required. Legacy Hello frames remain valid and receive no `hello_ack`.
 
 After authenticating the Hello credential, the accepting gateway performs one negotiation against
 the current registration: the Hello registration id must equal its current, fresh registration id;
 the registration credential must still be valid and the socket must still be live;
-the registration, Hello, and gateway must all include `iw.link-native-request/1`. It sends a
+the registration, Hello, and gateway must all include `iw.link-native-request/1`. Each other
+native feature, including `iw.link-native-response/1`, enters the bound acknowledgement only when
+it appears in those same three sets. It sends a
 `hello_ack` only because the sender advertised native Link v1, and sends it on the same socket. A
 bound acknowledgement echoes both ids and lists the negotiated capability. An unbound
 acknowledgement echoes both ids, has no negotiated feature, and gives one of the frozen reasons in

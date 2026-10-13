@@ -1,0 +1,9 @@
+{
+  "status": 201,
+  "headers": {
+    "content-type": "application/json",
+    "location": "/inferweave/v1/jobs/job-1"
+  },
+  "body_bytes": 55,
+  "body_sha256": "sha256:c4bc50b8d02444e17cf6f05db75e0b2c3cf27d4cc301242475b6a669599521c4"
+}

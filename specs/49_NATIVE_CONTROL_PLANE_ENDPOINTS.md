@@ -53,6 +53,44 @@ all under `/inferweave/v1`:
   uses content-addressed `artifact_refs`. Senders omit this additive metadata for older or unbound
   nodes. Missing/revoked binding returns `FEATURE_UNSUPPORTED`; the error envelope and retry fields
   are unchanged.
+- HTTP-facing native Link relay additionally requires independently negotiated
+  `native_link_responses: "1"` / `iw.link-native-response/1` on that same registration and Link
+  incarnation. A node sends body fragments as the existing ordered `token.payload` strings, then
+  adds a `response` member to the existing `end` frame:
+
+  ```json
+  {
+    "kind": "end",
+    "request_id": "request-1",
+    "response": {
+      "status": 201,
+      "headers": {
+        "content-type": "application/json",
+        "location": "/inferweave/v1/jobs/job-1"
+      },
+      "body_bytes": 55,
+      "body_sha256": "sha256:c4bc50b8d02444e17cf6f05db75e0b2c3cf27d4cc301242475b6a669599521c4"
+    }
+  }
+  ```
+
+  The authoritative metadata schema is
+  `schemas/v1/requests/link-response-meta.json`. Status is an integer in 200–299 or 400–599;
+  redirects are not relayed. Headers are a closed lower-case object containing only
+  `content-type: application/json`, decimal-seconds `retry-after` for 429/503, and a relative
+  `/inferweave/v1/jobs/{id}` `location` for 201/202. The body is the byte-for-byte UTF-8 encoding
+  of the concatenated token payloads in sequence order, capped at 16 MiB; `body_bytes` and
+  `body_sha256` bind those exact bytes. Status 204 binds the empty body and its SHA-256 digest. A
+  non-empty body is valid JSON.
+
+  The receiving gateway emits no upstream status, headers, or body until the `end` proof validates.
+  It uses the metadata status verbatim and never interprets a top-level body member such as `code`
+  as an error signal. Missing metadata, a byte or digest mismatch, invalid JSON/UTF-8, a disallowed
+  header/status combination, or an oversized body is `502 invalid_upstream_response`. A
+  request-only peer remains valid for its prior negotiated Link behavior, but is ineligible for
+  native HTTP relay that needs response semantics; selection uses direct HTTP or another eligible
+  deployment, otherwise returns `FEATURE_UNSUPPORTED` before dispatch. Legacy Hello frames,
+  metadata-free chat streams, and older peers remain unchanged.
 - Family-specific endpoints reject requests whose family does not match their
   contract (e.g. `POST /rerank` rejects a non-reranking request) with a typed
   error from `schemas/v1/errors/`.
@@ -78,4 +116,5 @@ all under `/inferweave/v1`:
 - link-native-dispatch: exact registration/Link-incarnation negotiation, acknowledgement echo,
   replacement/re-registration/withdrawal revocation, family/path whitelist, method/content-type
   bounds, payload limit and artifact-reference grammar have executable positive and hostile
-  fixtures.
+  fixtures; response-proof fixtures cover exact 201/4xx/5xx relay, success bodies with a top-level
+  `code`, missing proof, tampered bytes, invalid metadata and request-only legacy peers.
