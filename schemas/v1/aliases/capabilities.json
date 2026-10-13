@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/aliases/capabilities.json",
+  "title": "Current principal alias capabilities",
+  "description": "Current Rust grant projection for the authenticated principal and one owner scope; UI hints never replace per-operation authorization.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "api_version",
+    "observed_at",
+    "grant_revision",
+    "owner_scope",
+    "role",
+    "can_read",
+    "can_preview",
+    "can_draft",
+    "can_publish",
+    "can_rollback",
+    "can_share"
+  ],
+  "properties": {
+    "api_version": {"const": "inferweave/v1"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "grant_revision": {"type": "string", "minLength": 1, "maxLength": 128},
+    "owner_scope": {"type": "string", "minLength": 1, "maxLength": 256},
+    "role": {"type": "string", "enum": ["VIEWER", "OPERATOR", "ADMINISTRATOR"]},
+    "can_read": {"type": "boolean"},
+    "can_preview": {"type": "boolean"},
+    "can_draft": {"type": "boolean"},
+    "can_publish": {"type": "boolean"},
+    "can_rollback": {"type": "boolean"},
+    "can_share": {"type": "boolean"}
+  }
+}

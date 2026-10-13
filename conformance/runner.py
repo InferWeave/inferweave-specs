@@ -35,6 +35,7 @@ SCHEMA_DIR = ROOT / "schemas" / "v1"
 # fixture basename -> schema rel path (relative to schemas/v1)
 MAP = {
     "dynamic-alias-edge-assertion": "aliases/edge-assertion.json",
+    "dynamic-alias-capabilities": "aliases/capabilities.json",
     "dynamic-alias-routing-trace": "aliases/routing-trace.json",
     "dynamic-alias-advertisement-page": "aliases/advertisement-page.json",
     "dynamic-alias-catalog": "aliases/catalog.json",

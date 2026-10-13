@@ -2351,6 +2351,7 @@ Rules:
 **Required tests:**
 - create preview publish trace rollback journey
 - permission stale offline conflict empty and pagination states
+- default-off/read-only/full UI modes, current Rust grant projection, and no dependence on stale Go operator groups
 - desktop tablet keyboard accessibility and screenshots
 
 ### A-T08 — Alias migration load and measured rollout

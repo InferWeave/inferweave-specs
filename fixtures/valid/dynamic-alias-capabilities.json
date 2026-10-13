@@ -1,0 +1,13 @@
+{
+  "api_version": "inferweave/v1",
+  "observed_at": "2026-10-12T20:00:00Z",
+  "grant_revision": "grant-0123456789abcdef",
+  "owner_scope": "tenant/example",
+  "role": "OPERATOR",
+  "can_read": true,
+  "can_preview": true,
+  "can_draft": true,
+  "can_publish": false,
+  "can_rollback": false,
+  "can_share": false
+}
