@@ -34,3 +34,10 @@ Read it in this order: `00-overview-and-architecture.md`, then
 Where the two disagree: the numbered specification governs the **contract**;
 this bundle governs the **mechanism**, and its `12-acceptance-criteria.md` is the
 thing a reviewer should be able to run.
+
+## model-intelligence-kit
+
+[`MASTER_SPEC.md`](model-intelligence-kit/MASTER_SPEC.md) preserves the operator's
+v1.0 implementation kit unchanged. Numbered spec 58 normalizes its repository,
+existing embedded UI, authorization and Rust ownership boundaries. Acceptance
+remains owed until implementation and runtime evidence are recorded.

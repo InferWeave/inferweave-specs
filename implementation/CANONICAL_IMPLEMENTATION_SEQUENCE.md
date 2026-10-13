@@ -634,7 +634,7 @@ Rules:
 **Context:** `C75`
 **Depends on:** P1-T05, P1-T10, P1-T12
 **Features:** IW-OBS-001, IW-TEL-001
-**Read:** specs/09_OBSERVABILITY_RECEIPTS.md, specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md
+**Read:** specs/09_OBSERVABILITY_RECEIPTS.md, specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md
 
 **Outcome:** Persist request attempt facts linked prompt→route→deployment→GPU with TTFT/prefill/decode/cache/resource/power outcome.
 
@@ -642,6 +642,8 @@ Rules:
 - correlation completeness
 - cancel/preemption facts
 - no prompt body in metrics
+- MI-01 separate transport/attempt/logical/task outcomes and denominators through retries, cancellation and missing data
+- MI-03 SLO-qualified observed capacity bins reject sparse, mismatched and extrapolated load; unknown users remain unknown
 
 ### P1-T20A — GPU/runtime watchdog detection and incident classification
 **Context:** `C75`
@@ -694,7 +696,7 @@ Rules:
 **Context:** `C75`
 **Depends on:** P0-T09, P1-T09, P1-T20
 **Features:** IW-UI-001
-**Read:** specs/10_DASHBOARD_PORTAL.md
+**Read:** specs/10_DASHBOARD_PORTAL.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md, openapi/model-intelligence.yaml
 
 **Outcome:** Display live nodes, GPUs, models, seats/context/KV, requests, route state and freshness.
 
@@ -702,6 +704,8 @@ Rules:
 - UI E2E with deterministic fixtures
 - stale telemetry visible
 - no misleading pooled VRAM totals
+- MI-06 existing routes/actions/permissions and pause/focus preferences survive desktop/tablet/mobile and theme checks
+- MI-06 live/empty/error/unsupported provenance, accessible filters/exports and source/dist parity
 
 ### P1-T21A — Machine-checked presentation policy
 **Context:** `C65`
@@ -812,7 +816,7 @@ Rules:
 **Context:** `C75`
 **Depends on:** P2-T02
 **Features:** IW-BENCH-002
-**Read:** specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md
+**Read:** specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md, openapi/model-intelligence.yaml
 
 **Outcome:** Persist raw samples and dimensioned rollups by exact GPU/runtime/model/context/concurrency/settings fingerprint.
 
@@ -820,6 +824,8 @@ Rules:
 - partition/rollup correctness
 - no universal TPS aggregation
 - retention test
+- MI-05 additive nullable facts and bounded query/rollup coverage preserve unknown historical values
+- MI-05 every analytics route rejects missing/invalid operator identity and tenant-header escalation; shared reports redact private data
 
 ### P2-T04 — Model candidate registry and feasibility filter
 **Context:** `C70`
@@ -838,7 +844,7 @@ Rules:
 **Context:** `C75`
 **Depends on:** P2-T04
 **Features:** IW-REC-001
-**Read:** specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md
+**Read:** specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md
 
 **Outcome:** Versioned adapters record dataset/task/scorer versions and quality results without conflating performance.
 
@@ -846,6 +852,7 @@ Rules:
 - deterministic fixture scorer
 - dataset revision persistence
 - failure classification
+- MI-04 versioned task-family evaluation retains direction, provenance, sample confidence and separate production feedback
 
 ### P2-T06 — Pi/AutoSpec real-workflow replay benchmark
 **Context:** `C90`
@@ -864,7 +871,7 @@ Rules:
 **Context:** `C85`
 **Depends on:** P2-T03, P2-T05, P2-T06
 **Features:** IW-REC-001, IW-REC-002
-**Read:** specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md
+**Read:** specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md
 
 **Outcome:** Produce workload-specific recommendations with measured_exact/equivalent/observed/predicted confidence and reproducible evidence.
 
@@ -872,12 +879,13 @@ Rules:
 - predicted never labeled measured
 - exact evidence reconstruction
 - confidence downgrade
+- MI-04 recommendation-only default and evidence-gated shadow/canary/opt-in promotion/rollback reject skipped stages
 
 ### P2-T08 — Pareto frontier and next-experiment selection
 **Context:** `C75`
 **Depends on:** P2-T07
 **Features:** IW-REC-002
-**Read:** specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md
+**Read:** specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md
 
 **Outcome:** Maintain multi-objective Pareto frontier and select high-value uncertain benchmark experiments.
 
@@ -885,6 +893,7 @@ Rules:
 - domination tests
 - missing evidence priority
 - no single-score hidden override
+- MI-04 Pareto filtering rejects unknown/unavailable owned hardware and compares equal task/workload/SLO evidence
 
 ### P2-T09 — Requalification and regression gates
 **Context:** `C75`
@@ -904,7 +913,7 @@ Rules:
 **Context:** `C65`
 **Depends on:** P2-T01, P1-T20
 **Features:** IW-EVENT-001
-**Read:** specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md
+**Read:** specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md
 
 **Outcome:** Persist append-oriented resource/allocation/deployment/health lifecycle events with correlation IDs.
 
@@ -912,6 +921,7 @@ Rules:
 - state transition history
 - append/idempotency
 - query timeline
+- MI-01 time-weighted availability preserves unknown/no-demand intervals and links preemption/recovery to logical requests and GPU hours
 
 ### P2-T11 — Owner priority/reclaim/preemption
 **Context:** `C80`
@@ -984,7 +994,7 @@ Rules:
 **Context:** `C70`
 **Depends on:** P1-T20, P2-T12
 **Features:** IW-ECON-001
-**Read:** specs/09_OBSERVABILITY_RECEIPTS.md, specs/18_SOLANA_DEV_ACCOUNTING.md
+**Read:** specs/09_OBSERVABILITY_RECEIPTS.md, specs/18_SOLANA_DEV_ACCOUNTING.md, specs/58_MODEL_INTELLIGENCE_UI_COHESION.md
 
 **Outcome:** Record verified useful-work facts independent of any blockchain; no prompt bodies in receipts.
 
@@ -992,6 +1002,8 @@ Rules:
 - reconciliation
 - duplicate prevention
 - content-free records
+- MI-02 nested cache/reasoning usage, overlap, zero/missing fields and retries preserve exclusive/logical/billed/physical accounting
+- MI-02 versioned fixed-point rates and unique GPU allocation conserve attribution; missing rates and zero successes remain unknown
 
 ### P2-T17 — Public-safe signed snapshot builder
 **Context:** `C70`

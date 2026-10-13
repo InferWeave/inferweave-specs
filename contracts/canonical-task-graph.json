@@ -1111,7 +1111,8 @@
       ],
       "specs": [
         "09_OBSERVABILITY_RECEIPTS",
-        "23_GLOBAL_TELEMETRY_BENCHMARKS"
+        "23_GLOBAL_TELEMETRY_BENCHMARKS",
+        "58_MODEL_INTELLIGENCE_UI_COHESION"
       ],
       "features": [
         "IW-OBS-001",
@@ -1122,9 +1123,15 @@
       "required_tests": [
         "correlation completeness",
         "cancel/preemption facts",
-        "no prompt body in metrics"
+        "no prompt body in metrics",
+        "MI-01 separate transport/attempt/logical/task outcomes and denominators through retries, cancellation and missing data",
+        "MI-03 SLO-qualified observed capacity bins reject sparse, mismatched and extrapolated load; unknown users remain unknown"
       ],
-      "notes": ""
+      "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P1-T20"
+      ]
     },
     {
       "id": "P1-T20A",
@@ -1214,7 +1221,8 @@
         "P1-T20"
       ],
       "specs": [
-        "10_DASHBOARD_PORTAL"
+        "10_DASHBOARD_PORTAL",
+        "58_MODEL_INTELLIGENCE_UI_COHESION"
       ],
       "features": [
         "IW-UI-001"
@@ -1224,9 +1232,15 @@
       "required_tests": [
         "UI E2E with deterministic fixtures",
         "stale telemetry visible",
-        "no misleading pooled VRAM totals"
+        "no misleading pooled VRAM totals",
+        "MI-06 existing routes/actions/permissions and pause/focus preferences survive desktop/tablet/mobile and theme checks",
+        "MI-06 live/empty/error/unsupported provenance, accessible filters/exports and source/dist parity"
       ],
-      "notes": ""
+      "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES. Read contract: openapi/model-intelligence.yaml; bounded evidence: evidence/model-intelligence-2026-10-12/README.md.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P1-T21"
+      ]
     },
     {
       "id": "P1-T21A",
@@ -1438,7 +1452,8 @@
         "P2-T02"
       ],
       "specs": [
-        "23_GLOBAL_TELEMETRY_BENCHMARKS"
+        "23_GLOBAL_TELEMETRY_BENCHMARKS",
+        "58_MODEL_INTELLIGENCE_UI_COHESION"
       ],
       "features": [
         "IW-BENCH-002"
@@ -1448,9 +1463,15 @@
       "required_tests": [
         "partition/rollup correctness",
         "no universal TPS aggregation",
-        "retention test"
+        "retention test",
+        "MI-05 additive nullable facts and bounded query/rollup coverage preserve unknown historical values",
+        "MI-05 every analytics route rejects missing/invalid operator identity and tenant-header escalation; shared reports redact private data"
       ],
-      "notes": ""
+      "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES. Read contract: openapi/model-intelligence.yaml; bounded evidence: evidence/model-intelligence-2026-10-12/README.md.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P2-T03"
+      ]
     },
     {
       "id": "P2-T04",
@@ -1482,7 +1503,8 @@
         "P2-T04"
       ],
       "specs": [
-        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE"
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE",
+        "58_MODEL_INTELLIGENCE_UI_COHESION"
       ],
       "features": [
         "IW-REC-001"
@@ -1492,9 +1514,14 @@
       "required_tests": [
         "deterministic fixture scorer",
         "dataset revision persistence",
-        "failure classification"
+        "failure classification",
+        "MI-04 versioned task-family evaluation retains direction, provenance, sample confidence and separate production feedback"
       ],
-      "notes": ""
+      "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P2-T05"
+      ]
     },
     {
       "id": "P2-T06",
@@ -1530,7 +1557,8 @@
         "P2-T06"
       ],
       "specs": [
-        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE"
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE",
+        "58_MODEL_INTELLIGENCE_UI_COHESION"
       ],
       "features": [
         "IW-REC-001",
@@ -1541,9 +1569,14 @@
       "required_tests": [
         "predicted never labeled measured",
         "exact evidence reconstruction",
-        "confidence downgrade"
+        "confidence downgrade",
+        "MI-04 recommendation-only default and evidence-gated shadow/canary/opt-in promotion/rollback reject skipped stages"
       ],
-      "notes": ""
+      "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P2-T07"
+      ]
     },
     {
       "id": "P2-T08",
@@ -1553,7 +1586,8 @@
         "P2-T07"
       ],
       "specs": [
-        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE"
+        "24_MODEL_RECOMMENDATION_BENCHMARK_SUITE",
+        "58_MODEL_INTELLIGENCE_UI_COHESION"
       ],
       "features": [
         "IW-REC-002"
@@ -1563,9 +1597,14 @@
       "required_tests": [
         "domination tests",
         "missing evidence priority",
-        "no single-score hidden override"
+        "no single-score hidden override",
+        "MI-04 Pareto filtering rejects unknown/unavailable owned hardware and compares equal task/workload/SLO evidence"
       ],
-      "notes": ""
+      "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P2-T08"
+      ]
     },
     {
       "id": "P2-T09",
@@ -1602,7 +1641,8 @@
         "P1-T20"
       ],
       "specs": [
-        "30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS"
+        "30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS",
+        "58_MODEL_INTELLIGENCE_UI_COHESION"
       ],
       "features": [
         "IW-EVENT-001"
@@ -1612,9 +1652,14 @@
       "required_tests": [
         "state transition history",
         "append/idempotency",
-        "query timeline"
+        "query timeline",
+        "MI-01 time-weighted availability preserves unknown/no-demand intervals and links preemption/recovery to logical requests and GPU hours"
       ],
-      "notes": ""
+      "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P2-T10"
+      ]
     },
     {
       "id": "P2-T11",
@@ -1747,7 +1792,8 @@
       ],
       "specs": [
         "09_OBSERVABILITY_RECEIPTS",
-        "18_SOLANA_DEV_ACCOUNTING"
+        "18_SOLANA_DEV_ACCOUNTING",
+        "58_MODEL_INTELLIGENCE_UI_COHESION"
       ],
       "features": [
         "IW-ECON-001"
@@ -1757,9 +1803,15 @@
       "required_tests": [
         "reconciliation",
         "duplicate prevention",
-        "content-free records"
+        "content-free records",
+        "MI-02 nested cache/reasoning usage, overlap, zero/missing fields and retries preserve exclusive/logical/billed/physical accounting",
+        "MI-02 versioned fixed-point rates and unique GPU allocation conserve attribution; missing rates and zero successes remain unknown"
       ],
-      "notes": ""
+      "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES.",
+      "proof_status": "owed",
+      "proof_owed_by": [
+        "P2-T16"
+      ]
     },
     {
       "id": "P2-T17",

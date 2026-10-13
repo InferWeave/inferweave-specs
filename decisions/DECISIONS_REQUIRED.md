@@ -42,6 +42,14 @@ resolution and admission authority. This exception does not authorize a standalo
 or Go scheduling, discovery or backend integrations. See
 `decisions/2026-10-12-dynamic-alias-authority.md`.
 
+**Model-intelligence extension, amended 2026-10-12.** The same existing embedded
+operator UI may add spec 58 analytics within existing pages and optional shared
+system/light/dark parity while preserving current workflows and default styling.
+Rust remains the metric, accounting, evaluation, capacity and recommendation
+owner; Go adapts authorized reads and TypeScript presents them. No replacement
+or second frontend, standalone Go browser product, or production gate approval
+is implied. See `decisions/2026-10-12-model-intelligence-ui-cohesion.md`.
+
 ## D-003 Owner priority — RESOLVED
 The physical owner/provider of a GPU always has priority over shared/network workloads on that GPU.
 
