@@ -1,0 +1,16 @@
+{
+  "request_id": "request-1",
+  "alias_id": "coding-fast",
+  "alias_revision": 2,
+  "catalog_revision": "cat-42",
+  "routing_policy_version": "alias-policy-1",
+  "stages": [
+    {
+      "sequence": 1,
+      "stage": "resolve",
+      "timestamp": "2026-10-12T20:00:00Z",
+      "response_started": false
+    }
+  ],
+  "truncated": false
+}

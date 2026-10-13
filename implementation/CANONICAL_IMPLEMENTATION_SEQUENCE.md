@@ -2256,3 +2256,110 @@ Rules:
 - executable negative fixtures and optional live HTTP replay
 - registry-traceable
 - self-test-green
+
+## Dynamic aliases — protocol before implementation
+
+### A-T01 — Contracts and compatibility
+**Context:** `C80`
+**Depends on:** none
+**Features:** IW-ALIAS-001
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+
+**Outcome:** Canonical schemas, frozen vocabularies, compatibility fixtures and independently reviewed alias authority boundaries.
+
+**Required tests:**
+- artifact schema and vocabulary guard rejects deliberate drift
+- legacy level-1 fixture unchanged and validates
+
+### A-T02 — Rust alias persistence and authorization
+**Context:** `C80`
+**Depends on:** A-T01
+**Features:** IW-ALIAS-001
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+
+**Outcome:** Durable tenant-scoped drafts, immutable publication, optimistic concurrency, idempotency and audit/rollback under Rust authorization.
+
+**Required tests:**
+- concurrent CAS and idempotency survive restart
+- cross-tenant CRUD and forged identity rejected
+- publish and rollback append immutable history
+- independently reviewed request-bound Ed25519 edge delegation, Rust-owned identity grants and cross-language replay vectors
+
+### A-T03 — Rust alias preview and deterministic matching
+**Context:** `C80`
+**Depends on:** A-T01, A-T02
+**Features:** IW-ALIAS-001
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+
+**Outcome:** Instance-level hard filtering and deterministic ranking reuse current router facts with read-only preview and bounded redacted explanations.
+
+**Required tests:**
+- hard constraints and evidence confidence cannot be bypassed by scores
+- preview leaves demand, leases and allocations unchanged
+- stable ties and snapshot/cache invalidation
+
+### A-T04 — Rust admission and stream integration
+**Context:** `C80`
+**Depends on:** A-T03
+**Features:** IW-ALIAS-001
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+
+**Outcome:** Aliases and exact requests use the existing owner admission path with generation revalidation, bounded retries and stream-safe cancellation.
+
+**Required tests:**
+- exact identity and legacy precedence preserved
+- admission races are atomic and retry budgets bounded
+- partial stream never replays and cancellation releases leases
+
+### A-T05 — Runtime and federation alias integration
+**Context:** `C80`
+**Depends on:** A-T01, A-T03, A-T04
+**Features:** IW-ALIAS-001
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+
+**Outcome:** Consume existing lifecycle, GPU placement and owner federation authority with conservative profiles and exclusive reservations.
+
+**Required tests:**
+- multi-GPU loss invalidates entire placement
+- shared supply and retry leases deduplicate across parents
+- stale cyclic offers and unauthorized provisioning rejected
+- owner preemption and policy-authorized provisioning exercised
+
+### A-T06 — Go typed alias client and transparent relay
+**Context:** `C80`
+**Depends on:** A-T01, A-T02, A-T04
+**Features:** IW-ALIAS-001
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+
+**Outcome:** Go consumes Rust alias contracts with validated identity and lossless compatible relay; no local alias authority.
+
+**Required tests:**
+- schema parity and mixed-version negotiation
+- status bytes headers SSE cancellation and trusted identity survive relay
+- code audit finds no new Go alias resolver or database
+
+### A-T07 — Go alias administration and observability
+**Context:** `C80`
+**Depends on:** A-T06, A-T03, A-T05
+**Features:** IW-ALIAS-001
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+
+**Outcome:** Existing operator UI provides alias drafts, preview, publication, history, routing, simulation and federation views backed by Rust APIs.
+
+**Required tests:**
+- create preview publish trace rollback journey
+- permission stale offline conflict empty and pagination states
+- desktop tablet keyboard accessibility and screenshots
+
+### A-T08 — Alias migration load and measured rollout
+**Context:** `C80`
+**Depends on:** A-T02, A-T03, A-T04, A-T05, A-T06, A-T07
+**Features:** IW-ALIAS-001
+**Read:** specs/00_INVARIANTS.md, specs/45_PROTOCOL_V1.md, specs/54_DYNAMIC_MODEL_ALIASES.md
+
+**Outcome:** Run all master acceptance scenarios, characterize migration, shadow compare, canary and verify rollback before removing duplicate behavior.
+
+**Required tests:**
+- all 29 acceptance IDs have reproducible evidence
+- measured baseline and canary overhead under saturation/failure
+- legacy exact traffic and feature-flag rollback preserved

@@ -1,0 +1,6 @@
+{
+  "code": "NO_READY_INSTANCE",
+  "message": "No authorized ready instance satisfies policy",
+  "retryable": true,
+  "correlation_id": "request-1"
+}

@@ -1,6 +1,6 @@
 # Canonical Task Index
 
-Total tasks: **159**
+Total tasks: **167**
 
 | Task | Phase | Context | Depends | Title |
 |---|---:|---:|---|---|
@@ -163,3 +163,11 @@ Total tasks: **159**
 | `B-T04` | B | C75 | B-T01, B-T02 | Typed inference pipelines |
 | `B-T05` | B | C75 | B-T02, B-T04 | Durable inference jobs |
 | `B-T06` | B | C75 | B-T01, B-T02, B-T03, B-T04, B-T05 | Runtime-family conformance and traceability |
+| `A-T01` | A | C80 | — | Contracts and compatibility |
+| `A-T02` | A | C80 | A-T01 | Rust alias persistence and authorization |
+| `A-T03` | A | C80 | A-T01, A-T02 | Rust alias preview and deterministic matching |
+| `A-T04` | A | C80 | A-T03 | Rust admission and stream integration |
+| `A-T05` | A | C80 | A-T01, A-T03, A-T04 | Runtime and federation alias integration |
+| `A-T06` | A | C80 | A-T01, A-T02, A-T04 | Go typed alias client and transparent relay |
+| `A-T07` | A | C80 | A-T06, A-T03, A-T05 | Go alias administration and observability |
+| `A-T08` | A | C80 | A-T02, A-T03, A-T04, A-T05, A-T06, A-T07 | Alias migration load and measured rollout |

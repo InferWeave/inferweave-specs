@@ -1,0 +1,12 @@
+{
+  "schema_version": "inferweave.alias-event/v1",
+  "event_id": "ev-42",
+  "event_type": "alias.published",
+  "source_id": "gw-a",
+  "source_generation": "epoch-1",
+  "sequence": 42,
+  "cursor": "opaque-cursor",
+  "occurred_at": "2026-10-12T20:00:00Z",
+  "alias_id": "coding-fast",
+  "alias_revision": 1
+}

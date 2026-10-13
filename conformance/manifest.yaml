@@ -37,3 +37,12 @@ profiles:
     required_scenarios: [schema_validation, feature_negotiation, capability_advertisement, gpu_memory_accounting]
   IW-FULL:
     required_scenarios: [schema_validation, protocol_discovery, feature_negotiation, registration, heartbeat, topology, events, retries, errors, aliases, federation, capability_advertisement, snapshot_consistency, backwards_compatibility, node_enrollment, hardware_registration]
+
+negotiated_profiles:
+  IW-DYNAMIC-ALIASES-2:
+    feature: dynamic_aliases
+    level: "2"
+    artifact_runner: tests/smoke/test_dynamic_alias_contract.py
+    implementation_acceptance: contracts/dynamic-alias-acceptance.json
+    proof_status: owed
+    required_scenarios: [aliases, schema_validation, feature_negotiation, errors, retries, federation, events, snapshot_consistency, backwards_compatibility]

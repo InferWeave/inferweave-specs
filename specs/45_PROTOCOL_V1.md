@@ -867,3 +867,10 @@ no upstream system may rely on Protocol v1 being a deployed capability.
 Feature `IW-PROTO-002` maps to canonical tasks `P5-T24`, `P5-T25`, `P5-T26`, `P5-T27`, `P5-T28`,
 `P5-T29`. See `contracts/feature-registry.json`, `contracts/canonical-task-graph.json`, and
 `implementation/`.
+
+## Negotiated dynamic aliases level 2
+
+Spec 54 adds `dynamic_aliases: "2"` with explicit native HTTP selection, revisioned Rust-owned
+policy, instance-level capability evidence, read-only preview and owner admission revalidation.
+The existing level-1 alias shape and default list response remain unchanged. See
+`54_DYNAMIC_MODEL_ALIASES.md` for schema, reason/event vocabulary, API and mixed-version rules.

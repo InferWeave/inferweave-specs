@@ -803,6 +803,15 @@ def _gpu_memory_fixtures_match_generator(root, fixtures):
             errors.append(f"contracts/gpu-memory/{missing}: generated but not committed")
         return errors
 
+def guard_dynamic_alias_contracts(root):
+    import importlib.util
+    path = root / "conformance/dynamic_aliases.py"
+    spec = importlib.util.spec_from_file_location("dynamic_alias_contract_guard", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.contract_errors(root)
+
+
 # --------------------------------------------------------------------- driver
 
 def load():
@@ -827,6 +836,7 @@ def validate():
     errors.extend(guard_backpressure_contracts(ROOT, features, tasks))
     errors.extend(guard_protocol_vocab(ROOT, features, tasks))
     errors.extend(guard_gpu_memory_contracts(ROOT))
+    errors.extend(guard_dynamic_alias_contracts(ROOT))
     return features, tasks, errors
 
 
@@ -985,6 +995,12 @@ def self_test():
         print("GUARD SELF-TEST FAILED")
         for f in failures:
             print(f"- {f}")
+        return 1
+    # Run alias guards against isolated mutations; this cannot mutate live contract files.
+    import subprocess
+    alias_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_dynamic_alias_contract.py")], capture_output=True, text=True)
+    if alias_test.returncode:
+        print(alias_test.stdout + alias_test.stderr)
         return 1
     file_mutations = 1 + len(gpu_breaks) + len(semantic)
     print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "

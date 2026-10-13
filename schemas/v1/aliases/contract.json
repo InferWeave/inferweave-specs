@@ -1,0 +1,1707 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/aliases/contract.json",
+  "title": "Dynamic aliases level 2 contract",
+  "description": "Negotiated level 2 definitions; level 1 remains model/alias.json. Closed writes reject unknown policy fields. Read extensions require future negotiated schema. Semantic checks in spec 54 apply in addition to shape validation.",
+  "definitions": {
+    "alias_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 63,
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "ALIAS_NOT_FOUND",
+        "ALIAS_DISABLED",
+        "ALIAS_CYCLE",
+        "ALIAS_DEPTH_EXCEEDED",
+        "ALIAS_NAMESPACE_CONFLICT",
+        "INVALID_CAPABILITY",
+        "FEATURE_UNVERIFIED",
+        "CONTEXT_TOO_SMALL",
+        "MODALITY_UNSUPPORTED",
+        "POLICY_DENIED",
+        "TENANT_DENIED",
+        "TRUST_DENIED",
+        "RESIDENCY_DENIED",
+        "NO_READY_INSTANCE",
+        "NO_ADMISSION_CAPACITY",
+        "QUEUE_DEADLINE",
+        "PROVISIONING_UNAVAILABLE",
+        "COLD_START_DISALLOWED",
+        "STALE_ADVERTISEMENT",
+        "FEDERATION_UNAVAILABLE",
+        "LEASE_CONFLICT",
+        "MODEL_DRAINING",
+        "MODEL_PREEMPTED",
+        "INSTANCE_GENERATION_STALE",
+        "BACKEND_UNHEALTHY",
+        "BACKEND_UNREACHABLE",
+        "UPSTREAM_RATE_LIMITED",
+        "RETRY_BUDGET_EXHAUSTED",
+        "PARTIAL_STREAM_FAILURE",
+        "CLIENT_CANCELLED",
+        "REVISION_CONFLICT",
+        "PRECONDITION_REQUIRED",
+        "IDEMPOTENCY_CONFLICT",
+        "UNSUPPORTED_ALIAS_LEVEL"
+      ]
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "alias.created",
+        "alias.published",
+        "alias.disabled",
+        "alias.state_changed",
+        "alias.resolved",
+        "request.candidate_excluded",
+        "request.admission_failed",
+        "request.routed",
+        "request.fallback",
+        "request.completed",
+        "deployment.ready",
+        "deployment.draining",
+        "deployment.lost",
+        "offer.updated",
+        "offer.revoked",
+        "lease.preempted",
+        "capacity.changed"
+      ]
+    },
+    "health": {
+      "type": "string",
+      "enum": [
+        "READY",
+        "DEGRADED",
+        "QUEUE_ONLY",
+        "PROVISIONABLE",
+        "UNAVAILABLE",
+        "DISABLED"
+      ]
+    },
+    "family": {
+      "$ref": "../model/capabilities.json#/properties/family"
+    },
+    "modality": {
+      "type": "string",
+      "enum": [
+        "text",
+        "image",
+        "audio",
+        "video",
+        "vector",
+        "score",
+        "numeric",
+        "label",
+        "typed"
+      ]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "advertised",
+        "probed",
+        "verified",
+        "degraded",
+        "disabled",
+        "unknown"
+      ]
+    },
+    "fidelity": {
+      "type": "string",
+      "enum": [
+        "native",
+        "translated",
+        "emulated",
+        "unsupported",
+        "unknown"
+      ]
+    },
+    "feature_requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "type": "string",
+          "enum": [
+            "advertised",
+            "probed",
+            "verified"
+          ]
+        },
+        "fidelity": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "native",
+              "translated",
+              "emulated"
+            ]
+          }
+        }
+      },
+      "required": [
+        "confidence"
+      ]
+    },
+    "requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "runtime_families": {
+          "type": "array",
+          "maxItems": 13,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "contract.json#/definitions/family"
+          }
+        },
+        "input_modalities": {
+          "type": "array",
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "contract.json#/definitions/modality"
+          }
+        },
+        "output_modalities": {
+          "type": "array",
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "contract.json#/definitions/modality"
+          }
+        },
+        "features": {
+          "type": "object",
+          "maxProperties": 32,
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          },
+          "additionalProperties": {
+            "$ref": "contract.json#/definitions/feature_requirement"
+          }
+        },
+        "min_context_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "min_output_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "embedding_dimensions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "output_schema_digest": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "privacy": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "residency": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "trusted_origins": {
+          "type": "array",
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "allowed_tenants": {
+          "type": "array",
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "profile_confidence": {
+          "type": "string",
+          "enum": [
+            "advertised",
+            "probed",
+            "verified"
+          ],
+          "description": "Alias omission means verified; request omission inherits alias minimum. An explicit request may strengthen but never weaken the alias minimum."
+        }
+      },
+      "required": []
+    },
+    "preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "latency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "quality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "availability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "cost_efficiency": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "throughput": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "cache_locality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "reliability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": []
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allow_cold_start": {
+          "type": "boolean"
+        },
+        "allow_federation": {
+          "type": "boolean"
+        },
+        "fallback_policy": {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "COMPATIBLE_ONLY"
+          ]
+        },
+        "max_admission_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "queue_deadline_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300000
+        }
+      },
+      "required": [
+        "allow_cold_start",
+        "allow_federation",
+        "fallback_policy",
+        "max_admission_attempts",
+        "queue_deadline_ms"
+      ]
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "MANAGED",
+            "DYNAMIC"
+          ]
+        },
+        "families_allow": {
+          "type": "array",
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "model_ids_allow": {
+          "type": "array",
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        },
+        "model_ids_deny": {
+          "type": "array",
+          "maxItems": 128,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        },
+        "required": {
+          "$ref": "contract.json#/definitions/requirements"
+        },
+        "preferred": {
+          "$ref": "contract.json#/definitions/preferences"
+        }
+      },
+      "required": [
+        "type",
+        "required",
+        "preferred"
+      ]
+    },
+    "definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "api_version": {
+          "const": "inferweave/v1"
+        },
+        "kind": {
+          "const": "ModelAlias"
+        },
+        "id": {
+          "$ref": "contract.json#/definitions/alias_id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ACTIVE",
+            "DISABLED"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "PRIVATE",
+            "TENANT",
+            "PUBLIC"
+          ]
+        },
+        "owner_scope": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "selection": {
+          "$ref": "contract.json#/definitions/selection"
+        },
+        "execution": {
+          "$ref": "contract.json#/definitions/execution"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tags": {
+              "type": "array",
+              "maxItems": 32,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64
+              }
+            }
+          },
+          "required": []
+        }
+      },
+      "required": [
+        "api_version",
+        "kind",
+        "id",
+        "revision",
+        "status",
+        "description",
+        "visibility",
+        "owner_scope",
+        "selection",
+        "execution",
+        "metadata"
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "source_generation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "protocol_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "build_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "verification_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "source_id",
+        "source_generation",
+        "sequence",
+        "observed_at",
+        "expires_at",
+        "protocol_version",
+        "build_version",
+        "verification_id"
+      ]
+    },
+    "feature_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fidelity": {
+          "$ref": "contract.json#/definitions/fidelity"
+        },
+        "confidence": {
+          "$ref": "contract.json#/definitions/confidence"
+        },
+        "provenance": {
+          "$ref": "contract.json#/definitions/provenance"
+        }
+      },
+      "required": [
+        "fidelity",
+        "confidence",
+        "provenance"
+      ]
+    },
+    "capability_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "runtime_family": {
+          "$ref": "contract.json#/definitions/family"
+        },
+        "input_modalities": {
+          "type": "array",
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "contract.json#/definitions/modality"
+          }
+        },
+        "output_modalities": {
+          "type": "array",
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "contract.json#/definitions/modality"
+          }
+        },
+        "features": {
+          "type": "object",
+          "maxProperties": 32,
+          "additionalProperties": {
+            "$ref": "contract.json#/definitions/feature_evidence"
+          }
+        },
+        "max_context_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "policy_evidence_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "provenance": {
+          "$ref": "contract.json#/definitions/provenance"
+        },
+        "max_output_tokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2147483647
+        },
+        "embedding_dimensions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "output_schema_digest": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "privacy": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "residency": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "trusted_origin": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "instance_generation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "confidence": {
+          "$ref": "contract.json#/definitions/confidence"
+        }
+      },
+      "required": [
+        "profile_id",
+        "runtime_family",
+        "input_modalities",
+        "output_modalities",
+        "features",
+        "policy_evidence_id",
+        "provenance",
+        "instance_generation",
+        "confidence"
+      ]
+    },
+    "instance_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "instance_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "instance_generation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "deployment_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "owner_gateway_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "resource_group_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "READY",
+            "BUSY",
+            "COLD",
+            "PROVISIONABLE",
+            "DRAINING",
+            "LOST",
+            "UNHEALTHY",
+            "UNKNOWN"
+          ]
+        }
+      },
+      "required": [
+        "model_id",
+        "instance_id",
+        "instance_generation",
+        "deployment_key",
+        "owner_gateway_id",
+        "resource_group_id",
+        "state"
+      ]
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "instance_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "instance_generation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "deployment_key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "owner_gateway_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "resource_group_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "READY",
+            "BUSY",
+            "COLD",
+            "PROVISIONABLE",
+            "DRAINING",
+            "LOST",
+            "UNHEALTHY",
+            "UNKNOWN"
+          ]
+        },
+        "eligibility": {
+          "type": "string",
+          "enum": [
+            "ELIGIBLE",
+            "QUEUEABLE",
+            "COLD_START_POSSIBLE",
+            "PROVISIONABLE",
+            "EXCLUDED"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "maxItems": 36,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "contract.json#/definitions/reason"
+          }
+        },
+        "route_kind": {
+          "type": "string",
+          "enum": [
+            "LOCAL",
+            "FEDERATED"
+          ]
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "factors": {
+          "type": "object",
+          "maxProperties": 16,
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "capability_profile": {
+          "$ref": "contract.json#/definitions/capability_profile"
+        },
+        "owner_admission_required": {
+          "const": true
+        },
+        "metric_evidence": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9_]{0,63}$"
+          },
+          "additionalProperties": {
+            "$ref": "contract.json#/definitions/metric_evidence"
+          }
+        }
+      },
+      "required": [
+        "model_id",
+        "instance_id",
+        "instance_generation",
+        "deployment_key",
+        "owner_gateway_id",
+        "resource_group_id",
+        "state",
+        "eligibility",
+        "reasons",
+        "route_kind",
+        "capability_profile",
+        "owner_admission_required"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "eligibility": {
+                "const": "ELIGIBLE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "state": {
+                "const": "READY"
+              }
+            },
+            "required": [
+              "score",
+              "factors"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "eligibility": {
+                "const": "EXCLUDED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reasons": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "resolve_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "alias_id": {
+          "$ref": "contract.json#/definitions/alias_id"
+        },
+        "request_context": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tenant": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "runtime_family": {
+              "$ref": "contract.json#/definitions/family"
+            },
+            "required": {
+              "$ref": "contract.json#/definitions/requirements"
+            },
+            "preferred": {
+              "$ref": "contract.json#/definitions/preferences"
+            },
+            "allow_federation": {
+              "type": "boolean"
+            },
+            "allow_cold_start": {
+              "type": "boolean"
+            },
+            "deadline_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300000
+            }
+          },
+          "required": []
+        },
+        "include_explanations": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "alias_id",
+        "request_context"
+      ]
+    },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resolution_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "alias_id": {
+          "$ref": "contract.json#/definitions/alias_id"
+        },
+        "alias_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "catalog_revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "routing_policy_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "evaluated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "contract.json#/definitions/health"
+        },
+        "selected": {
+          "$ref": "contract.json#/definitions/instance_identity"
+        },
+        "candidates": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "$ref": "contract.json#/definitions/candidate"
+          }
+        },
+        "admission_reserved": {
+          "const": false
+        },
+        "warnings": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "PREVIEW_ONLY_REVALIDATE_ON_DISPATCH",
+              "CANDIDATES_TRUNCATED",
+              "METRICS_UNAVAILABLE"
+            ]
+          }
+        }
+      },
+      "required": [
+        "resolution_id",
+        "alias_id",
+        "alias_revision",
+        "catalog_revision",
+        "routing_policy_version",
+        "evaluated_at",
+        "expires_at",
+        "status",
+        "candidates",
+        "admission_reserved",
+        "warnings"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "selected"
+            ]
+          },
+          "then": {
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "READY",
+                  "DEGRADED"
+                ]
+              },
+              "selected": {
+                "properties": {
+                  "state": {
+                    "const": "READY"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "draft_write": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "contract.json#/definitions/definition"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        }
+      },
+      "required": [
+        "definition",
+        "reason"
+      ]
+    },
+    "publish": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "draft_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "approval_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "draft_revision",
+        "reason"
+      ]
+    },
+    "rollback": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "approval_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "source_revision",
+        "reason"
+      ]
+    },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "actor_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "approval_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "rollback_source_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "definition": {
+          "$ref": "contract.json#/definitions/definition"
+        }
+      },
+      "required": [
+        "revision",
+        "actor_id",
+        "timestamp",
+        "reason",
+        "content_hash",
+        "definition"
+      ]
+    },
+    "detail": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "alias_id": {
+          "$ref": "contract.json#/definitions/alias_id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "published": {
+          "$ref": "contract.json#/definitions/definition"
+        },
+        "draft": {
+          "$ref": "contract.json#/definitions/definition"
+        },
+        "effective_status": {
+          "$ref": "contract.json#/definitions/health"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "catalog_revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "alias_id",
+        "revision",
+        "effective_status",
+        "observed_at",
+        "catalog_revision"
+      ]
+    },
+    "list": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "contract.json#/definitions/detail"
+          }
+        },
+        "catalog_revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "next_cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "items",
+        "catalog_revision",
+        "observed_at"
+      ]
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array",
+          "maxItems": 36,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "contract.json#/definitions/reason"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          }
+        },
+        "catalog_revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "admission_reserved": {
+          "const": false
+        }
+      },
+      "required": [
+        "valid",
+        "errors",
+        "warnings",
+        "catalog_revision",
+        "admission_reserved"
+      ]
+    },
+    "history": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "contract.json#/definitions/audit"
+          }
+        },
+        "next_cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "items"
+      ]
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "$ref": "contract.json#/definitions/reason"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "retry_after_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 300000
+        },
+        "correlation_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "retryable",
+        "correlation_id"
+      ]
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "inferweave.alias-event/v1"
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "event_type": {
+          "$ref": "contract.json#/definitions/event_type"
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "source_generation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "alias_id": {
+          "$ref": "contract.json#/definitions/alias_id"
+        },
+        "alias_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "reason": {
+          "$ref": "contract.json#/definitions/reason"
+        }
+      },
+      "required": [
+        "schema_version",
+        "event_id",
+        "event_type",
+        "source_id",
+        "source_generation",
+        "sequence",
+        "cursor",
+        "occurred_at"
+      ]
+    },
+    "advertisement": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "inferweave.alias-advertisement/v1"
+        },
+        "alias_id": {
+          "$ref": "contract.json#/definitions/alias_id"
+        },
+        "alias_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "owner_gateway_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "resource_group_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "owner_policy_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "profiles": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "contract.json#/definitions/capability_profile"
+          }
+        },
+        "availability": {
+          "type": "string",
+          "enum": [
+            "READY",
+            "WARM",
+            "PROVISIONABLE",
+            "UNAVAILABLE"
+          ]
+        },
+        "provenance": {
+          "$ref": "contract.json#/definitions/provenance"
+        },
+        "path": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "tombstone": {
+          "type": "boolean"
+        },
+        "allocation_entitlement": {
+          "const": false
+        }
+      },
+      "required": [
+        "schema_version",
+        "alias_id",
+        "alias_revision",
+        "owner_gateway_id",
+        "resource_group_id",
+        "owner_policy_id",
+        "profiles",
+        "availability",
+        "provenance",
+        "path",
+        "tombstone",
+        "allocation_entitlement"
+      ]
+    },
+    "simulate_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "contract.json#/definitions/definition"
+        },
+        "request_context": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tenant": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "runtime_family": {
+              "$ref": "contract.json#/definitions/family"
+            },
+            "required": {
+              "$ref": "contract.json#/definitions/requirements"
+            },
+            "preferred": {
+              "$ref": "contract.json#/definitions/preferences"
+            },
+            "allow_federation": {
+              "type": "boolean"
+            },
+            "allow_cold_start": {
+              "type": "boolean"
+            },
+            "deadline_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300000
+            }
+          },
+          "required": []
+        },
+        "include_explanations": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "definition",
+        "request_context"
+      ]
+    },
+    "validate_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "draft_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "draft_revision"
+      ]
+    },
+    "catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "contract.json#/definitions/candidate"
+          }
+        },
+        "catalog_revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "next_cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "items",
+        "catalog_revision",
+        "observed_at"
+      ]
+    },
+    "advertisement_page": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "contract.json#/definitions/advertisement"
+          }
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "next_cursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      },
+      "required": [
+        "items",
+        "observed_at"
+      ]
+    },
+    "trace_stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "stage": {
+          "type": "string",
+          "enum": [
+            "resolve",
+            "filter",
+            "rank",
+            "admission",
+            "queue",
+            "provision",
+            "route",
+            "stream",
+            "complete",
+            "fallback",
+            "error",
+            "cancel"
+          ]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "$ref": "contract.json#/definitions/reason"
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "response_started": {
+          "type": "boolean"
+        },
+        "instance": {
+          "$ref": "contract.json#/definitions/instance_identity"
+        }
+      },
+      "required": [
+        "sequence",
+        "stage",
+        "timestamp",
+        "response_started"
+      ]
+    },
+    "routing_trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "alias_id": {
+          "$ref": "contract.json#/definitions/alias_id"
+        },
+        "alias_revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "catalog_revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "routing_policy_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "stages": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "$ref": "contract.json#/definitions/trace_stage"
+          }
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "request_id",
+        "alias_id",
+        "alias_revision",
+        "catalog_revision",
+        "routing_policy_version",
+        "stages",
+        "truncated"
+      ]
+    },
+    "metric_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "unit",
+        "sample_size",
+        "confidence",
+        "provenance"
+      ],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "sample_size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "confidence": {
+          "$ref": "contract.json#/definitions/confidence"
+        },
+        "provenance": {
+          "$ref": "contract.json#/definitions/provenance"
+        }
+      }
+    }
+  }
+}

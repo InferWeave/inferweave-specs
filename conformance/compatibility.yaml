@@ -27,3 +27,19 @@ runtimeProtocol:
     - A legacy /v1/node/register request omits capabilities, still registers, and negotiates no native Link capability; capabilities is an array offer/response intersection, not the generic features map.
     - Native link dispatch requires iw.link-native-request/1 on the current registration plus a bound v1 Hello/ack for the exact registration_connection_id and link_incarnation_id.
     - Re-registration, replacement, withdrawal, staleness, credential expiry or socket close revokes the old native binding before another native frame can be enqueued.
+
+dynamicAliases:
+  introduced: 1.1.0
+  feature: dynamic_aliases
+  offeredLevel: "2"
+  httpSelection: "InferWeave-Alias-Level: 2"
+  legacyLevel: "1"
+  legacySchema: schemas/v1/model/alias.json
+  level2Schema: schemas/v1/aliases/contract.json
+  implementationMinimum: unknown
+  rules:
+    - Absent header preserves the existing GET /aliases array and exact inference behavior.
+    - Unsupported explicit levels fail UNSUPPORTED_ALIAS_LEVEL; no silent policy downgrade.
+    - Level 2 offer includes level 1 support; absence means new operations cannot be used.
+    - Policies not representable at level 1 must not be advertised as weaker level 1 hints.
+    - Unknown write policy fields fail validation; tenant identity never comes from body claims.

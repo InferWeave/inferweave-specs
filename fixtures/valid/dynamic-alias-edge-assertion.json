@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "edge_id": "edge-fry",
+  "key_id": "alias-key-1",
+  "audience": "rust-gateway-test",
+  "idp_issuer": "https://idp.example.test/pool",
+  "subject": "user-17",
+  "issued_at_unix_ms": 1791849600000,
+  "expires_at_unix_ms": 1791849630000,
+  "nonce": "AAECAwQFBgcICQoLDA0ODw",
+  "method": "POST",
+  "request_target": "/inferweave/v1/aliases/resolve",
+  "body_sha256": "5d72e6117d08394216f537704dec2df37d6f1aad9f63760c6d33cec0cb4d51d0",
+  "if_match": "",
+  "if_none_match": "",
+  "idempotency_key": "",
+  "alias_level": "2",
+  "deadline_unix_ms": 1791849660000,
+  "signature": "JunnOwaucCgUSWk-6Fehv-zAt2AAM1i-2LUHNQs6tAZM_Ofg-dSjLgCTbv5EO_oXLVGHGhzgAOqV8OcgkIlBCQ"
+}

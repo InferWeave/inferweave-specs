@@ -1,0 +1,379 @@
+{
+  "feature": "dynamic_aliases",
+  "level": "2",
+  "protocol_introduced": "1.1.0",
+  "schema_version": "inferweave/v1",
+  "reason_codes": [
+    {
+      "code": "ALIAS_NOT_FOUND",
+      "retryable": false,
+      "http_status": 404
+    },
+    {
+      "code": "ALIAS_DISABLED",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "ALIAS_CYCLE",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "ALIAS_DEPTH_EXCEEDED",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "ALIAS_NAMESPACE_CONFLICT",
+      "retryable": false,
+      "http_status": 409
+    },
+    {
+      "code": "INVALID_CAPABILITY",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "FEATURE_UNVERIFIED",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "CONTEXT_TOO_SMALL",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "MODALITY_UNSUPPORTED",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "POLICY_DENIED",
+      "retryable": false,
+      "http_status": 403
+    },
+    {
+      "code": "TENANT_DENIED",
+      "retryable": false,
+      "http_status": 403
+    },
+    {
+      "code": "TRUST_DENIED",
+      "retryable": false,
+      "http_status": 403
+    },
+    {
+      "code": "RESIDENCY_DENIED",
+      "retryable": false,
+      "http_status": 403
+    },
+    {
+      "code": "NO_READY_INSTANCE",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "NO_ADMISSION_CAPACITY",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "QUEUE_DEADLINE",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "PROVISIONING_UNAVAILABLE",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "COLD_START_DISALLOWED",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "STALE_ADVERTISEMENT",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "FEDERATION_UNAVAILABLE",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "LEASE_CONFLICT",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "MODEL_DRAINING",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "MODEL_PREEMPTED",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "INSTANCE_GENERATION_STALE",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "BACKEND_UNHEALTHY",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "BACKEND_UNREACHABLE",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "UPSTREAM_RATE_LIMITED",
+      "retryable": true,
+      "http_status": 429
+    },
+    {
+      "code": "RETRY_BUDGET_EXHAUSTED",
+      "retryable": true,
+      "http_status": 503
+    },
+    {
+      "code": "PARTIAL_STREAM_FAILURE",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "CLIENT_CANCELLED",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "REVISION_CONFLICT",
+      "retryable": false,
+      "http_status": 412
+    },
+    {
+      "code": "PRECONDITION_REQUIRED",
+      "retryable": false,
+      "http_status": 428
+    },
+    {
+      "code": "IDEMPOTENCY_CONFLICT",
+      "retryable": false,
+      "http_status": 409
+    },
+    {
+      "code": "UNSUPPORTED_ALIAS_LEVEL",
+      "retryable": false,
+      "http_status": 400
+    }
+  ],
+  "events": [
+    "alias.created",
+    "alias.published",
+    "alias.disabled",
+    "alias.state_changed",
+    "alias.resolved",
+    "request.candidate_excluded",
+    "request.admission_failed",
+    "request.routed",
+    "request.fallback",
+    "request.completed",
+    "deployment.ready",
+    "deployment.draining",
+    "deployment.lost",
+    "offer.updated",
+    "offer.revoked",
+    "lease.preempted",
+    "capacity.changed"
+  ],
+  "health_states": [
+    "READY",
+    "DEGRADED",
+    "QUEUE_ONLY",
+    "PROVISIONABLE",
+    "UNAVAILABLE",
+    "DISABLED"
+  ],
+  "proof_status": "owed",
+  "vocabularies": {
+    "confidence": {
+      "schema_path": [
+        "definitions",
+        "confidence"
+      ],
+      "values": [
+        "advertised",
+        "probed",
+        "verified",
+        "degraded",
+        "disabled",
+        "unknown"
+      ]
+    },
+    "fidelity": {
+      "schema_path": [
+        "definitions",
+        "fidelity"
+      ],
+      "values": [
+        "native",
+        "translated",
+        "emulated",
+        "unsupported",
+        "unknown"
+      ]
+    },
+    "visibility": {
+      "schema_path": [
+        "definitions",
+        "definition",
+        "properties",
+        "visibility"
+      ],
+      "values": [
+        "PRIVATE",
+        "TENANT",
+        "PUBLIC"
+      ]
+    },
+    "desired_status": {
+      "schema_path": [
+        "definitions",
+        "definition",
+        "properties",
+        "status"
+      ],
+      "values": [
+        "ACTIVE",
+        "DISABLED"
+      ]
+    },
+    "selection_type": {
+      "schema_path": [
+        "definitions",
+        "selection",
+        "properties",
+        "type"
+      ],
+      "values": [
+        "MANAGED",
+        "DYNAMIC"
+      ]
+    },
+    "fallback_policy": {
+      "schema_path": [
+        "definitions",
+        "execution",
+        "properties",
+        "fallback_policy"
+      ],
+      "values": [
+        "NONE",
+        "COMPATIBLE_ONLY"
+      ]
+    },
+    "eligibility": {
+      "schema_path": [
+        "definitions",
+        "candidate",
+        "properties",
+        "eligibility"
+      ],
+      "values": [
+        "ELIGIBLE",
+        "QUEUEABLE",
+        "COLD_START_POSSIBLE",
+        "PROVISIONABLE",
+        "EXCLUDED"
+      ]
+    },
+    "route_kind": {
+      "schema_path": [
+        "definitions",
+        "candidate",
+        "properties",
+        "route_kind"
+      ],
+      "values": [
+        "LOCAL",
+        "FEDERATED"
+      ]
+    },
+    "instance_state": {
+      "schema_path": [
+        "definitions",
+        "instance_identity",
+        "properties",
+        "state"
+      ],
+      "values": [
+        "READY",
+        "BUSY",
+        "COLD",
+        "PROVISIONABLE",
+        "DRAINING",
+        "LOST",
+        "UNHEALTHY",
+        "UNKNOWN"
+      ]
+    },
+    "advertised_availability": {
+      "schema_path": [
+        "definitions",
+        "advertisement",
+        "properties",
+        "availability"
+      ],
+      "values": [
+        "READY",
+        "WARM",
+        "PROVISIONABLE",
+        "UNAVAILABLE"
+      ]
+    },
+    "trace_stage": {
+      "schema_path": [
+        "definitions",
+        "trace_stage",
+        "properties",
+        "stage"
+      ],
+      "values": [
+        "resolve",
+        "filter",
+        "rank",
+        "admission",
+        "queue",
+        "provision",
+        "route",
+        "stream",
+        "complete",
+        "fallback",
+        "error",
+        "cancel"
+      ]
+    },
+    "preview_warning": {
+      "schema_path": [
+        "definitions",
+        "resolution",
+        "properties",
+        "warnings",
+        "items"
+      ],
+      "values": [
+        "PREVIEW_ONLY_REVALIDATE_ON_DISPATCH",
+        "CANDIDATES_TRUNCATED",
+        "METRICS_UNAVAILABLE"
+      ]
+    }
+  }
+}

@@ -28,10 +28,31 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "conformance"))
 import node_join  # noqa: E402
 import runtime_protocol  # noqa: E402
+import dynamic_aliases  # noqa: E402
+import alias_edge_delegation  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
 # fixture basename -> schema rel path (relative to schemas/v1)
 MAP = {
+    "dynamic-alias-edge-assertion": "aliases/edge-assertion.json",
+    "dynamic-alias-routing-trace": "aliases/routing-trace.json",
+    "dynamic-alias-advertisement-page": "aliases/advertisement-page.json",
+    "dynamic-alias-catalog": "aliases/catalog.json",
+    "dynamic-alias-validate-request": "aliases/validate-request.json",
+    "dynamic-alias-simulate-request": "aliases/simulate-request.json",
+    "dynamic-alias-error": "aliases/error.json",
+    "dynamic-alias-history": "aliases/history.json",
+    "dynamic-alias-validation": "aliases/validation.json",
+    "dynamic-alias-list": "aliases/list.json",
+    "dynamic-alias-detail": "aliases/detail.json",
+    "dynamic-alias-rollback": "aliases/rollback.json",
+    "dynamic-alias-publish": "aliases/publish.json",
+    "dynamic-alias-draft-write": "aliases/draft-write.json",
+    "dynamic-alias-advertisement": "aliases/advertisement.json",
+    "dynamic-alias-event": "aliases/event.json",
+    "dynamic-alias-resolve-request": "aliases/resolve-request.json",
+    "dynamic-alias-resolution": "aliases/resolution.json",
+    "dynamic-alias-definition": "aliases/definition.json",
     "protocol": "common/protocol.json",
     "identity": "common/identity.json",
     "features": "common/features.json",
@@ -149,6 +170,8 @@ def validate_fixture(path, must_pass, schema_rel=None):
                 semantic_errors.append("requestIdentity disagrees with duplicated reservation fields")
         except (KeyError, TypeError, ValueError) as error:
             semantic_errors.append(f"reservation request identity binding failed: {error}")
+    if schema_rel.startswith("aliases/") and not errors:
+        semantic_errors.extend(dynamic_aliases.semantic_errors(fixture, Path(schema_rel).stem))
     ok = not errors and not semantic_errors
     if ok == must_pass:
         return True
@@ -482,6 +505,10 @@ def main():
     )
     args = parser.parse_args()
     failures = 0
+    edge_errors = alias_edge_delegation.check_vectors(ROOT)
+    for error in edge_errors:
+        print("FAIL  " + error)
+    failures += len(edge_errors)
     failures += 0 if check_node_join_vectors() else 1
     failures += 0 if check_deployment_key_vectors() else 1
     failures += 0 if check_native_link_binding_vectors() else 1

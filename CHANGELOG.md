@@ -6,6 +6,13 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Additive, explicitly negotiated `dynamic_aliases: "2"` (spec 54) preserves level 1.
+  Adds strict alias policies/revisions, instance-level preview and evidence, frozen reasons/events,
+  native management schemas and bounded fixtures. D-002 extends only the existing Go operator UI;
+  Rust retains policy/admission authority. Artifact validation is not production conformance;
+  tasks A-T01–A-T08 and all runtime acceptance gates remain owed until separately evidenced.
+
+
 **Compatibility classification: minor, backwards-compatible, with one specification
 correction.** Adds new capability-gated surfaces; no existing enum value or endpoint changes, and
 older peers keep working unchanged (`specs/46_GPU_MEMORY_INTELLIGENCE.md` §10). The correction:
