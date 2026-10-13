@@ -11,6 +11,7 @@ from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'conformance'))
 import alias_execution as execution
+import alias_inference_transport as transport
 import alias_edge_delegation as edge
 import node_join
 
@@ -24,6 +25,35 @@ class ExecutionContractTests(unittest.TestCase):
     def test_all_known_answers_hostile_vectors_and_claim_transitions(self):
         self.assertEqual([],execution.check_vectors(ROOT))
         self.assertGreaterEqual(len(self.vectors['claim_cases']),12)
+
+    def test_shared_transport_vectors_and_removed_control_detection(self):
+        vectors=json.loads((ROOT/'conformance/alias-inference-transport-vectors.json').read_text())
+        self.assertEqual(36,len(vectors['mime_cases']))
+        self.assertEqual(12,len(vectors['header_cases']))
+        self.assertEqual([],transport.check_vectors(ROOT))
+        with patch.object(transport,'accepts_mime',lambda *args:True):
+            self.assertTrue(transport.check_vectors(ROOT))
+        with patch.object(transport,'accepts_headers',lambda *args:True):
+            self.assertTrue(transport.check_vectors(ROOT))
+
+    def test_correlation_byte_limit_and_unicode_controls(self):
+        bound=json.loads((ROOT/'contracts/protocol-v1/alias-execution.json').read_text())['bound_headers']
+        for value,expected in [('€'*2730+'ab',True),('€'*2731,False),('a\u0085b',False)]:
+            case={'headers':[['x-inferweave-request-id',value]],'empty_fields':[]}
+            self.assertEqual(expected,transport.accepts_headers(case,bound))
+
+    def test_equivalent_mime_classification_never_normalizes_signed_bytes(self):
+        base=self.vectors['known_answers'][0]['envelope']
+        first=dict(base,content_type='application/json; charset=utf-8; note="x"')
+        second=dict(base,content_type='Application/JSON; note="x"; CHARSET="utf-8"')
+        for request in [first,second]:
+            self.assertTrue(transport.accepts_mime(request['content_type'],'/v1/chat'))
+        self.assertNotEqual(execution.fingerprint(first),execution.fingerprint(second))
+        self.assertNotEqual(execution.transcript(first),execution.transcript(second))
+        for correlation in ['first','second']:
+            augmented=dict(first,**{'x-inferweave-request-id':correlation})
+            self.assertEqual(execution.fingerprint(first),execution.fingerprint(augmented))
+            self.assertEqual(execution.transcript(first),execution.transcript(augmented))
 
     def test_signature_domain_cannot_be_reused_from_management(self):
         v=self.vectors['known_answers'][0]
