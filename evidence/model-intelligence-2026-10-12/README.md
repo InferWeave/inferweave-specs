@@ -54,3 +54,58 @@ because a synthetic fixture has it. Final root gate was still running at handoff
 
 The master kit bytes are unchanged. Evidence supplements its requirements; it does
 not lower acceptance, close OPEN_GATES, or claim the whole MASTER_SPEC complete.
+
+## Final logical/task/day contract checkpoint
+
+Approved backend implementation: `be8ce4055f57d4498218176920d13b5ed38f2c92`.
+This checkpoint supersedes the initial response-shape snapshot above for the
+current additive OpenAPI. Earlier `report.demo.json`/`schema-validation.json`
+remain historical evidence for `35ac81e`; they are not current-schema fixtures.
+`backend-final-integration-report.md` preserves the final integration handoff.
+
+Current actual PostgreSQL HTTP DEMO captures are
+`rust-report-logical-task.demo.json`,
+`rust-report-logical-task-unavailable.demo.json`, and
+`rust-report-token-days.demo.json`. The checked logical/task fixture keeps three
+physical attempts in cost, but one authoritative logical projection in token
+counts: task amount is the exact decimal string `330`; cost per million logical
+tokens is `2750000` with denominator 120. These are controlled fixture facts,
+not live rate, workload, capacity or billing claims. Missing logical projection
+keeps its usage and per-million cost null even if task cost is separately known.
+
+Actual response fields are `logical_tokens`, `logical_token_coverage`,
+`token_days`, `token_day_coverage`, `costs.per_successful_task` and
+`costs.per_million_logical_tokens`. The old always-unavailable
+`successful_task_cost` placeholder is removed. Cost wrappers preserve closed
+cohort counts, source, basis, feedback/attempt coverage, nullable amounts and
+exact decimal-string money. Private producer identities and warehouse proof
+objects are absent from responses. Optional internal UsageEvidence projections,
+explicit projection timestamps and closed task evidence add no public POST API.
+
+Physical days use actual attempt-start UTC days; logical days use explicit
+projection timestamps. Windows are clipped, days sparse, historical record time
+is not guessed as attempt time, and absent/estimated totals yield unknown/partial
+coverage. Recorder snapshot counts and live timing provenance now accompany full
+reports; loss or changing snapshots prevents complete-cohort claims.
+
+Additional AC-MI-01/02/06 regressions map to
+`crates/iw-gateway/src/server_logical_economics.rs`,
+`crates/iw-storage/src/model_intelligence.rs`, and
+`crates/iw-gateway/tests/model_intelligence_logical.rs`:
+
+- `closed_task_cost_includes_two_retries_but_logical_projection_counts_once`;
+- `private_projection_and_task_binding_is_rejected_on_ingest`;
+- `self_hosted_task_cost_uses_explicit_attempt_allocations_once`;
+- `daily_physical_buckets_are_sparse_and_logical_projection_uses_its_own_utc_time`;
+- `historical_record_time_does_not_become_actual_attempt_day`;
+- `contradictory_timestamps_for_one_logical_projection_fail_closed`;
+- `another_model_retry_cannot_be_hidden_by_model_filter_or_pagination`;
+- `dated_logical_measurements_preserve_missing_and_estimated_status`;
+- `pending_recorder_suppresses_closed_costs_but_retains_physical_subtotals`.
+
+See `logical-schema-validation.json` for exact final capture hashes and schema
+negative cases. Controls retain their full acceptance status **owed**: synthetic
+closed-cohort/projection producers and schema checks do not establish real
+end-user grants, complete logical/task feedback, billing/GPU attribution sources,
+live availability, sustained hardware qualification or production approval.
+The master kit is unchanged; final broad root/P5 gates are recorded separately.

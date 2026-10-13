@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~926,560 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~976,869 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -149,10 +149,15 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/specs/model-intelligence-kit/MASTER_SPEC.md` — `d2f8c9a01d3e` — ~4,594t
 - `docs/superpowers/plans/2026-09-23-backpressure-actions-load-report.md` — `906fed45439c` — ~6,262t
 - `docs/superpowers/plans/2026-10-08-node-hardware-registration.md` — `f22c7646d2ee` — ~947t
-- `evidence/model-intelligence-2026-10-12/README.md` — `f7b7b0b53097` — ~1,550t
+- `evidence/model-intelligence-2026-10-12/README.md` — `c0aa7f2bfefb` — ~2,391t
+- `evidence/model-intelligence-2026-10-12/backend-final-integration-report.md` — `0db0987f4bc3` — ~2,996t
 - `evidence/model-intelligence-2026-10-12/backend-integration-report.md` — `7be2670da317` — ~1,825t
+- `evidence/model-intelligence-2026-10-12/logical-schema-validation.json` — `ca7eb4cde938` — ~289t
 - `evidence/model-intelligence-2026-10-12/report.demo.json` — `7d6789e7d849` — ~11,970t
 - `evidence/model-intelligence-2026-10-12/reported-test-results.json` — `10e1011a61b7` — ~409t
+- `evidence/model-intelligence-2026-10-12/rust-report-logical-task-unavailable.demo.json` — `ab9cea7013c3` — ~12,119t
+- `evidence/model-intelligence-2026-10-12/rust-report-logical-task.demo.json` — `323a383675cc` — ~12,928t
+- `evidence/model-intelligence-2026-10-12/rust-report-token-days.demo.json` — `fca6a772e3aa` — ~16,749t
 - `evidence/model-intelligence-2026-10-12/schema-validation.json` — `9078ee9558d6` — ~233t
 - `evidence/model-intelligence-2026-10-12/theme-after-report.json` — `104469520e78` — ~3,079t
 - `evidence/model-intelligence-2026-10-12/ui-before-report.json` — `71493699dbc7` — ~2,685t
@@ -410,7 +415,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `openapi/README.md` — `2cec122d644f` — ~207t
 - `openapi/inferweave-v1.yaml` — `364453281a7f` — ~14,509t
 - `openapi/model-intelligence.md` — `fd95b4a09c56` — ~1,809t
-- `openapi/model-intelligence.yaml` — `a84882b00520` — ~12,031t
+- `openapi/model-intelligence.yaml` — `ef5983db9e38` — ~16,418t
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
 - `pi/CONTEXT_PACK_CHECKLIST.md` — `8a9c95b7ec3d` — ~200t
 - `pi/FIRST_TASKS.md` — `674dbf07c4f5` — ~462t

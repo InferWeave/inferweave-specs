@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: InferWeave Model Intelligence Read API
   version: 1.0.0
-  description: Additive spec 58 API, pinned to Rust integration 35ac81e7b0a0c3cba23390c1adae092ea392ca0d. Independent
+  description: Additive spec 58 API, pinned to Rust integration be8ce4055f57d4498218176920d13b5ed38f2c92. Independent
     of Protocol v1 /inferweave/v1 base path. All eight Rust routes are authenticated read-only operator reports.
     Unknown/duplicate scalar parameters, tenant/user filters and GET bodies are rejected. Headers never manufacture
     grants. See model-intelligence.md for current capability gaps and evidence.
@@ -593,6 +593,10 @@ components:
       - candidates
       - costs
       - tokens
+      - logical_tokens
+      - logical_token_coverage
+      - token_days
+      - token_day_coverage
       properties:
         model_id:
           type: string
@@ -629,8 +633,68 @@ components:
           - $ref: '#/components/schemas/UnavailableSection'
         tokens:
           $ref: '#/components/schemas/UsageTotals'
+        logical_tokens:
+          type: object
+          required:
+          - samples
+          - input_total
+          - input_uncached
+          - input_cache_read
+          - input_cache_write
+          - unknown_input
+          - output_total
+          - output_visible
+          - output_reasoning
+          - unknown_output
+          - overlap_cache_write
+          - overlap_output_reasoning
+          - cache_hit_ratio
+          properties:
+            samples:
+              type: integer
+              minimum: 0
+              maximum: 18446744073709551615
+              format: uint64
+            input_total:
+              $ref: '#/components/schemas/CountAggregate'
+            input_uncached:
+              $ref: '#/components/schemas/CountAggregate'
+            input_cache_read:
+              $ref: '#/components/schemas/CountAggregate'
+            input_cache_write:
+              $ref: '#/components/schemas/CountAggregate'
+            unknown_input:
+              $ref: '#/components/schemas/CountAggregate'
+            output_total:
+              $ref: '#/components/schemas/CountAggregate'
+            output_visible:
+              $ref: '#/components/schemas/CountAggregate'
+            output_reasoning:
+              $ref: '#/components/schemas/CountAggregate'
+            unknown_output:
+              $ref: '#/components/schemas/CountAggregate'
+            overlap_cache_write:
+              $ref: '#/components/schemas/CountAggregate'
+            overlap_output_reasoning:
+              $ref: '#/components/schemas/CountAggregate'
+            cache_hit_ratio:
+              $ref: '#/components/schemas/CacheHitRatio'
+          description: Attempt-level physical usage, never implicit logical/billed usage. overlap_cache_write and
+            overlap_output_reasoning are annotations outside exclusive stacks; never add them to totals.
+          nullable: true
+        logical_token_coverage:
+          $ref: '#/components/schemas/LogicalTokenCoverage'
+        token_days:
+          type: array
+          maxItems: 31
+          items:
+            $ref: '#/components/schemas/DailyTokenBucket'
+        token_day_coverage:
+          $ref: '#/components/schemas/TokenDayCoverage'
       description: Per-model aggregate plus typed economics/capacity/qualification. Detail may be explicitly unavailable
-        when evidence is absent or the response-size limit is reached.
+        when evidence is absent or the response-size limit is reached. Logical projections, closed task costs and
+        UTC token days are separate typed fields, with explicit unknown coverage. Their private producer identities
+        are never public response fields.
     CountAggregate:
       type: object
       required:
@@ -1431,7 +1495,8 @@ components:
       - amount
       - provider
       - self_hosted
-      - successful_task_cost
+      - per_successful_task
+      - per_million_logical_tokens
       properties:
         status:
           type: string
@@ -1454,8 +1519,14 @@ components:
             $ref: '#/components/schemas/CostResult'
         self_hosted:
           $ref: '#/components/schemas/CostResult'
-        successful_task_cost:
-          $ref: '#/components/schemas/UnavailableSection'
+        per_successful_task:
+          oneOf:
+          - $ref: '#/components/schemas/SuccessfulTaskCost'
+          - $ref: '#/components/schemas/UnknownClosedCost'
+        per_million_logical_tokens:
+          oneOf:
+          - $ref: '#/components/schemas/LogicalTokenCost'
+          - $ref: '#/components/schemas/UnknownClosedCost'
     MultipleCapacityReports:
       type: object
       required:
@@ -1500,6 +1571,9 @@ components:
       - observed_source
       - retention_limited
       - effective_start_inclusive
+      - recording
+      - recording_snapshot_changed
+      - live_timing_basis
       properties:
         observed_attempts:
           type: integer
@@ -1530,6 +1604,12 @@ components:
         display_truncated:
           type: boolean
           description: Response detail was reduced to stay within the bounded transport budget.
+        recording:
+          $ref: '#/components/schemas/RecordingCoverage'
+        recording_snapshot_changed:
+          type: boolean
+        live_timing_basis:
+          $ref: '#/components/schemas/LiveTimingBasis'
     WarehouseReport:
       type: object
       required:
@@ -1648,9 +1728,16 @@ components:
           maxItems: 0
           items:
             $ref: '#/components/schemas/ModelReport'
-      description: Explicit capability absence. Current unsupported branches omit coverage and bucket/page metadata.
-        They are not empty successful WarehouseReports. Rust adds metrics and next_cursor; an unconfigured Go bridge
-        omits them.
+        coverage:
+          type: object
+          required:
+          - recording
+          properties:
+            recording:
+              $ref: '#/components/schemas/RecordingCoverage'
+      description: Explicit capability absence. Required basic envelope remains, but bucket/page metadata is not
+        manufactured. Rust includes recorder-only coverage, metrics and next_cursor; an unconfigured Go bridge omits
+        them.
     Report:
       oneOf:
       - $ref: '#/components/schemas/WarehouseReport'
@@ -1687,3 +1774,474 @@ components:
         exact JSON u64 integers (not the response string format). Missing arrays default empty. Semantic validation
         additionally rejects immutable-ID conflicts, overlapping effective/context tiers, mixed currencies and invalid
         allocations. See model-intelligence.md.
+    ClosedCostCohort:
+      type: object
+      required:
+      - closed_tasks
+      - expected_attempts
+      - matched_attempts
+      - observed_attempts
+      - expected_logical_requests
+      properties:
+        closed_tasks:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        expected_attempts:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        matched_attempts:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        observed_attempts:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        expected_logical_requests:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+          nullable: true
+      description: Content-free counts from explicitly closed task evidence. Closure also requires warehouse-wide
+        attempt/logical identity checks across model filters and pages. No private task, attempt, tenant or logical
+        request IDs are returned.
+    SuccessfulTaskCost:
+      type: object
+      required:
+      - amount_nanos
+      - currency
+      - status
+      - known_subtotal_nanos
+      - successful_tasks
+      - cohort_tasks
+      - priced_attempts
+      - all_attempts
+      - tasks_with_feedback
+      - source
+      - cost_basis
+      - cohort
+      - cohort_closed
+      - unsupported_reason
+      properties:
+        amount_nanos:
+          type: string
+          pattern: ^(0|[1-9][0-9]{0,19})$
+          description: Exact decimal unsigned u64 nano-currency amount (maximum 18446744073709551615); never a JSON
+            number. One unit is 1e-9 of the named currency.
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/CostStatus'
+        known_subtotal_nanos:
+          $ref: '#/components/schemas/NanoCurrency'
+        successful_tasks:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        cohort_tasks:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        priced_attempts:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        all_attempts:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        tasks_with_feedback:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        source:
+          type: string
+          enum:
+          - closed_task_cohort
+        cost_basis:
+          type: string
+          enum:
+          - provider
+          - self_hosted
+          nullable: true
+        cohort:
+          $ref: '#/components/schemas/ClosedCostCohort'
+        cohort_closed:
+          type: boolean
+          enum:
+          - true
+        unsupported_reason:
+          type: string
+          nullable: true
+      description: Exact configured cost across all attempts (including failures/retries) in a verified closed cohort
+        divided by explicitly successful tasks. Missing feedback, zero successes or missing rates retain null amount
+        and a reason; known_subtotal_nanos remains only the known numerator.
+    LogicalTokenCost:
+      type: object
+      required:
+      - amount_nanos
+      - currency
+      - status
+      - logical_tokens
+      - token_mix
+      - source
+      - cost_basis
+      - cohort
+      - cohort_closed
+      - unsupported_reason
+      properties:
+        amount_nanos:
+          type: string
+          pattern: ^(0|[1-9][0-9]{0,19})$
+          description: Exact decimal unsigned u64 nano-currency amount (maximum 18446744073709551615); never a JSON
+            number. One unit is 1e-9 of the named currency.
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/CostStatus'
+        logical_tokens:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+          nullable: true
+        token_mix:
+          $ref: '#/components/schemas/UsageTotals'
+        source:
+          type: string
+          enum:
+          - closed_task_cohort
+        cost_basis:
+          type: string
+          enum:
+          - provider
+          - self_hosted
+          nullable: true
+        cohort:
+          $ref: '#/components/schemas/ClosedCostCohort'
+        cohort_closed:
+          type: boolean
+          enum:
+          - true
+        unsupported_reason:
+          type: string
+          nullable: true
+      description: Cost per million logical tokens from the same verified closed task cohort. All physical attempt
+        cost remains in the numerator; each authoritative logical projection enters the exclusive token-mix denominator
+        once. Missing composition/cost leaves amount null.
+    UnknownClosedCost:
+      type: object
+      required:
+      - status
+      - amount_nanos
+      - source
+      - cost_basis
+      - cohort
+      - cohort_closed
+      - unsupported_reason
+      properties:
+        status:
+          type: string
+          enum:
+          - unknown
+        amount_nanos:
+          type: string
+          pattern: ^(0|[1-9][0-9]{0,19})$
+          description: Exact decimal unsigned u64 nano-currency amount (maximum 18446744073709551615); never a JSON
+            number. One unit is 1e-9 of the named currency.
+          nullable: true
+          enum:
+          - null
+        source:
+          type: string
+          enum:
+          - closed_task_cohort
+        cost_basis:
+          type: string
+          enum:
+          - provider
+          - self_hosted
+          nullable: true
+        cohort:
+          $ref: '#/components/schemas/ClosedCostCohort'
+        cohort_closed:
+          type: boolean
+        unsupported_reason:
+          type: string
+      additionalProperties: false
+      description: Explicit closed-cohort or authoritative projection absence. No denominator or amount is synthesized.
+        A cohort may be closed yet lack the logical projection required for the per-million calculation.
+    LogicalTokenCoverage:
+      type: object
+      required:
+      - status
+      - source
+      - observed_attempts
+      - identified_attempts
+      - projected_logical_requests
+      - unsupported_reason
+      properties:
+        status:
+          type: string
+          enum:
+          - measured
+          - partial
+          - unknown
+        source:
+          type: string
+          enum:
+          - authoritative_logical_projection
+        observed_attempts:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        identified_attempts:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        projected_logical_requests:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        unsupported_reason:
+          type: string
+          nullable: true
+      description: Window-level projection/identity coverage. Nullable logical_tokens requires all observations
+        identified and every expected logical projection present in a complete cohort. Estimated or absent token
+        measurements cannot be labeled measured.
+    DailyLogicalCoverage:
+      type: object
+      required:
+      - status
+      - source
+      - projected_logical_requests
+      - unsupported_reason
+      properties:
+        status:
+          type: string
+          enum:
+          - measured
+          - partial
+          - unknown
+        source:
+          type: string
+          enum:
+          - logical_projection_at
+        projected_logical_requests:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        unsupported_reason:
+          type: string
+          nullable: true
+    DailyTokenBucket:
+      type: object
+      required:
+      - day_start
+      - window
+      - tokens
+      - logical_tokens
+      - logical_token_coverage
+      properties:
+        day_start:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        window:
+          $ref: '#/components/schemas/TimeWindow'
+        tokens:
+          $ref: '#/components/schemas/UsageTotals'
+        logical_tokens:
+          type: object
+          required:
+          - samples
+          - input_total
+          - input_uncached
+          - input_cache_read
+          - input_cache_write
+          - unknown_input
+          - output_total
+          - output_visible
+          - output_reasoning
+          - unknown_output
+          - overlap_cache_write
+          - overlap_output_reasoning
+          - cache_hit_ratio
+          properties:
+            samples:
+              type: integer
+              minimum: 0
+              maximum: 18446744073709551615
+              format: uint64
+            input_total:
+              $ref: '#/components/schemas/CountAggregate'
+            input_uncached:
+              $ref: '#/components/schemas/CountAggregate'
+            input_cache_read:
+              $ref: '#/components/schemas/CountAggregate'
+            input_cache_write:
+              $ref: '#/components/schemas/CountAggregate'
+            unknown_input:
+              $ref: '#/components/schemas/CountAggregate'
+            output_total:
+              $ref: '#/components/schemas/CountAggregate'
+            output_visible:
+              $ref: '#/components/schemas/CountAggregate'
+            output_reasoning:
+              $ref: '#/components/schemas/CountAggregate'
+            unknown_output:
+              $ref: '#/components/schemas/CountAggregate'
+            overlap_cache_write:
+              $ref: '#/components/schemas/CountAggregate'
+            overlap_output_reasoning:
+              $ref: '#/components/schemas/CountAggregate'
+            cache_hit_ratio:
+              $ref: '#/components/schemas/CacheHitRatio'
+          description: Attempt-level physical usage, never implicit logical/billed usage. overlap_cache_write and
+            overlap_output_reasoning are annotations outside exclusive stacks; never add them to totals.
+          nullable: true
+        logical_token_coverage:
+          $ref: '#/components/schemas/DailyLogicalCoverage'
+      description: 'Sparse UTC day: day_start is midnight Unix milliseconds; window is clipped to the query. Physical
+        usage follows known actual attempt start, logical usage its explicit projection timestamp. No zero-fill
+        and no historical record timestamp substituted for attempt time.'
+    TokenDayCoverage:
+      type: object
+      required:
+      - status
+      - source
+      - observed_attempts
+      - assigned_attempts
+      - excluded_historical_attempts
+      - logical_projections
+      - dated_logical_projections
+      - unsupported_reason
+      properties:
+        status:
+          type: string
+          enum:
+          - measured
+          - partial
+          - unknown
+        source:
+          type: string
+          enum:
+          - attempt_start_utc_day;logical_projection_at_utc_day
+        observed_attempts:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        assigned_attempts:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        excluded_historical_attempts:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        logical_projections:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        dated_logical_projections:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        unsupported_reason:
+          type: string
+          nullable: true
+      description: Physical assignment and logical timestamp coverage are separate. Missing/out-of-window projection
+        timestamps keep logical day totals unknown; legacy facts without actual attempt start are excluded. A response-size
+        truncation clears token_days with an explicit partial reason.
+    RecordingCoverage:
+      type: object
+      required:
+      - pending
+      - recorded
+      - dropped
+      - failures
+      - unsupported
+      properties:
+        pending:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        recorded:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        dropped:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        failures:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+        unsupported:
+          type: integer
+          format: uint64
+          minimum: 0
+          maximum: 18446744073709551615
+      description: Process recorder counters, not per-query cohort counts. Pending work, loss/failure/unsupported
+        persistence or changed snapshots conservatively marks reports incomplete; no continuous durable coverage
+        claim.
+    LiveTimingBasis:
+      type: object
+      required:
+      - start
+      - ttft
+      - end_to_end
+      - queue_wait
+      - historical_ttft
+      properties:
+        start:
+          type: string
+          enum:
+          - per_dispatch_wall_clock
+        ttft:
+          type: string
+          enum:
+          - first_received_complete_sse_inference_delta_from_dispatch
+        end_to_end:
+          type: string
+          enum:
+          - dispatch_to_proxy_completion
+        queue_wait:
+          type: string
+          enum:
+          - measured_gateway_queue_wait_when_reported
+        historical_ttft:
+          type: string
+          enum:
+          - unknown_legacy_first_byte_semantics

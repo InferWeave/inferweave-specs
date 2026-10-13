@@ -1,0 +1,33 @@
+{
+  "schema": "openapi/model-intelligence.yaml",
+  "schema_sha256": "ef5983db9e38f63b3807c79dce1a83701358520cfb244d36fd7d64d091d0f067",
+  "fixtures": [
+    {
+      "path": "rust-report-logical-task.demo.json",
+      "source_sha256": "6fd9047da5d0599b104aa5731e1c5794ade47e48227b6fa5efd2c0d5dd501b03",
+      "result": "pass"
+    },
+    {
+      "path": "rust-report-logical-task-unavailable.demo.json",
+      "source_sha256": "4462ce489892c85d0912329af54f8e6671516431758e8cc54e2962eee1fac74a",
+      "result": "pass"
+    },
+    {
+      "path": "rust-report-token-days.demo.json",
+      "source_sha256": "78c501d8c6c58c5ef236f8eb101c693d311e934f7b94e1348cacb9a6b43e2a96",
+      "result": "pass"
+    }
+  ],
+  "negative_cases_rejected": [
+    "numeric_task_money",
+    "numeric_logical_money",
+    "unknown_amount_zero",
+    "missing_closed_cohort",
+    "false_closed_cohort",
+    "missing_logical_coverage",
+    "missing_day_window",
+    "invalid_day_count"
+  ],
+  "scope": "Schema and synthetic fixture facts only. No live logical/task/availability/hardware/tenant qualification is claimed.",
+  "backend_commit": "be8ce4055f57d4498218176920d13b5ed38f2c92"
+}
