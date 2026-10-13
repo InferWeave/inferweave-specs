@@ -1,6 +1,6 @@
 # InferWeave Federated Model Provisioning — Phase 0 Audit & Gap Matrix
 
-Status: **Phase 1 delivered & merged** (`inferweave/inferweave` PR #863, merge commit `75a6ee94`, squash of 11 commits on `feat/federated-provisioning-phase1`). The observe-only slice (gate, capacity signal, dry-run planner, `provision.*` message family, controller core, wire transport, durable persistence, parent client, HTTP wiring, live-server registration) is on `main`. Items 1–4 and workstreams B, C, D, E are done; item 5 (GUI) and activation remain later-phase.
+Status: **Phase 2 (approval-required activation) implemented** on branch `feat/provisioning-phase2` (commit `c1cc40d3`, based on `main` @ `3d00cf77`). Phase 1 (observe-only slice: gate, capacity signal, dry-run planner, `provision.*` message family, controller core, wire transport, durable persistence, parent client, HTTP wiring, live-server registration) is already merged on `main` (`inferweave/inferweave` PR #863, merge commit `75a6ee94`). Phase 2 adds operator `approve()`/`reject()` to the controller and enables end-to-end approval-required activation: a parent can request → offer → reserve → (operator approve) → activate → Ready, staying disabled by default until an owner explicitly sets policy. Items 1–4 and workstreams B, C, D, E done; item 5 (GUI/API owner-policy controls) and autonomous mode remain later-phase.
 Date: 2026-10-12
 Author: pi agent (in-session, mission pipeline unavailable due to orchestration store lock).
 Scope: `inferweave/inferweave`, `inferweave/inferweave-specs`, `metabolomics-us/inferweave-gateway`.
@@ -320,9 +320,50 @@ request→offer over the wire (200); a parent outside the allowlist refused
 (403) on request, fail closed.
 
 Remaining (later workstreams): item 5 (GUI owner-policy controls, gated on
-a persisted owner-policy store + gateway API). Activation remains refused
-by the Phase 1 gate in every mode by design (observe-only is a hard Phase
-1 invariant); enabling it is a later phase.
+a persisted owner-policy store + gateway API) and autonomous mode.
+
+### Status — Phase 2: approval-required activation (2026-10-11)
+
+Implemented on `feat/provisioning-phase2` (`c1cc40d3`), the approval-required
+slice that closes the observe-only gap: a parent can now bring an approved
+reservation live. The gate stays stateless (policy-level); the approval is a
+per-reservation controller concern.
+
+- `crates/iw-core/src/provisioning.rs` — `ApprovalRequired + Action::Activate`
+  now returns `Allowed` at the policy level (the mode *does* permit
+  activation); `Disabled`/`AdvertiseOnly`/`Autonomous` remain refused (fail
+  closed). `Refusal::ApprovalRequired` is retained, now emitted by the
+  controller when a specific reservation is not yet `Approved`.
+- `crates/iw-gateway/src/provision_controller.rs` — new `Controller::approve`
+  (`Reserved → Approved`, grants budget, binds request digest + policy
+  revision + fencing epoch, returns a `provision.approval::Approved` message)
+  and `Controller::reject` (`Reserved → Revoked → Released`, returns
+  `provision.approval::Rejected`). These are local operator actions and are
+  **not** gated by `permits` (the owner authorizes its own reservation; the
+  gate still governs the parent's later `activate`). `request_digest` is
+  threaded request → offer → reservation so the approval binds to the
+  original request; `approved_budget_vram_bytes` and `policy_revision` are
+  recorded on the reservation. `activate()` now requires `state == Approved`
+  (per-reservation approval gate) before `Approved → Activating → Ready`;
+  observe-only activation is still refused by the gate. Snapshot format
+  bumped to `iw.provisioning.controller/2` (restore refuses the old marker,
+  fail closed).
+- `crates/iw-gateway/src/provision_client.rs` — new `AttemptState::Approved`
+  and `on_approval()`: the parent records the granted budget/policy revision
+  and may activate from `Reserved` or `Approved`; a `Rejected` approval ends
+  the attempt (`ClientError::Rejected`).
+- `crates/iw-gateway/src/provision_http.rs` — inbound `provision.approval`
+  routed to the client; full approve → activate HTTP round-trip test.
+- The transport's inbound refusal of `Approval` stays correct: approval is an
+  owner → parent (outbound) message, never inbound to the owner.
+
+Tests: controller approve→activate and reject flows, transport
+approval-required activation, HTTP round-trip, client approval/rejection;
+updated gate and `may_activate` tests. Full `iw-gateway` lib (315) and
+`gateway_e2e` (29) suites green; clippy clean on the changed modules.
+
+Remaining (later workstreams): item 5 (GUI/API owner-policy controls, gated
+  on a persisted owner-policy store + gateway API) and autonomous mode.
 
 ---
 
