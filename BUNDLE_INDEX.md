@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~717,677 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~717,863 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -192,7 +192,8 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/cache-state-published-unverified.json` — `38025af6d9fc` — ~117t
 - `fixtures/invalid/deployment-key-mismatch.json` — `eca7c712dc01` — ~264t
 - `fixtures/invalid/device-bad-enum.json` — `8cff0b010519` — ~15t
-- `fixtures/invalid/dynamic-alias-capabilities-extra-role.json` — `09382fafbb21` — ~66t
+- `fixtures/invalid/dynamic-alias-capabilities-extra-role.json` — `f8b5df4e650f` — ~87t
+- `fixtures/invalid/dynamic-alias-capabilities-missing-revision.json` — `6ffaaacf4eed` — ~68t
 - `fixtures/invalid/dynamic-alias-definition-unbounded-retries.json` — `2a128e633470` — ~256t
 - `fixtures/invalid/dynamic-alias-definition-unknown-policy.json` — `61379a4eb4c0` — ~263t
 - `fixtures/invalid/dynamic-alias-definition-uppercase.json` — `f3bec96219cb` — ~256t
@@ -271,7 +272,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/dynamic-alias-advertisement-embedding.json` — `148efdbed502` — ~390t
 - `fixtures/valid/dynamic-alias-advertisement-page.json` — `f1fb246e8f38` — ~578t
 - `fixtures/valid/dynamic-alias-advertisement.json` — `6fe49847c179` — ~490t
-- `fixtures/valid/dynamic-alias-capabilities.json` — `98b7d7e454f7` — ~58t
+- `fixtures/valid/dynamic-alias-capabilities.json` — `d826473e687c` — ~79t
 - `fixtures/valid/dynamic-alias-catalog.json` — `79ddf1f6953f` — ~502t
 - `fixtures/valid/dynamic-alias-definition-empty-allowlists.json` — `ed2acbd3ec9e` — ~264t
 - `fixtures/valid/dynamic-alias-definition.json` — `1da6fb035aaf` — ~256t
@@ -378,7 +379,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/README.md` — `d0192d8bb85d` — ~616t
 - `schemas/v1/aliases/advertisement-page.json` — `0e22e98c15e3` — ~49t
 - `schemas/v1/aliases/advertisement.json` — `a248a77490cd` — ~47t
-- `schemas/v1/aliases/capabilities.json` — `e3e71c58e2d7` — ~257t
+- `schemas/v1/aliases/capabilities.json` — `4ec5d57b6d73` — ~301t
 - `schemas/v1/aliases/catalog.json` — `291bebdacbb9` — ~44t
 - `schemas/v1/aliases/contract.json` — `e29b3a7110a5` — ~10,135t
 - `schemas/v1/aliases/definition.json` — `223305508427` — ~45t
@@ -518,7 +519,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/51_PIPELINES_AND_DURABLE_JOBS.md` — `ab9f8df6a816` — ~624t
 - `specs/52_DURABLE_INFERENCE_JOBS.md` — `ed268f3478d8` — ~785t
 - `specs/53_RUNTIME_FAMILY_CONFORMANCE.md` — `d1c8172161f8` — ~923t
-- `specs/54_DYNAMIC_MODEL_ALIASES.md` — `741f61df41cc` — ~7,151t
+- `specs/54_DYNAMIC_MODEL_ALIASES.md` — `8bf4d1c5db0e` — ~7,183t
 - `specs/55_ALIAS_EDGE_DELEGATION.md` — `38b0da721b74` — ~2,316t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t

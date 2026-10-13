@@ -227,7 +227,9 @@ The server applies authorization before filtering/counts; cursor tampering canno
 `GET /alias-capabilities` requires the same signed level-2 authorization and durable nonce check
 as alias reads. It returns only the current Rust grant's `owner_scope`, role and boolean
 `can_read`, `can_preview`, `can_draft`, `can_publish`, `can_rollback`, `can_share` flags; it
-exposes no candidate names or credentials. Every subsequent action is authorized again in Rust.
+also includes authoritative `observed_at` and an opaque `grant_revision` so clients can
+recognize stale permission displays. It exposes no candidate names or credentials. Every
+subsequent action is authorized again in Rust.
 The Go edge may display these flags but may not derive them from its operator group snapshot.
 Every response identifies authoritative observed time/revision. Never expose forbidden model IDs,
 internal addresses, peer secrets, lease tokens or cross-tenant metrics in catalog/preview/errors.

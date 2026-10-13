@@ -7,6 +7,8 @@
   "additionalProperties": false,
   "required": [
     "api_version",
+    "observed_at",
+    "grant_revision",
     "owner_scope",
     "role",
     "can_read",
@@ -18,6 +20,8 @@
   ],
   "properties": {
     "api_version": {"const": "inferweave/v1"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "grant_revision": {"type": "string", "minLength": 1, "maxLength": 128},
     "owner_scope": {"type": "string", "minLength": 1, "maxLength": 256},
     "role": {"type": "string", "enum": ["VIEWER", "OPERATOR", "ADMINISTRATOR"]},
     "can_read": {"type": "boolean"},
