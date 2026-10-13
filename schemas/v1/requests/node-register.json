@@ -59,6 +59,16 @@
         "models": {"type": "array", "minItems": 1, "maxItems": 4096},
         "deployment": {"type": "string", "minLength": 1, "maxLength": 512}
       }
+    },
+    {
+      "description": "Operator-enrolled gateway control-plane presence with no serving models. Held-link and credential-origin checks are semantic, not JSON shape claims.",
+      "required": ["deployment", "vramBytes", "kvBytes", "kvBytesPerToken", "gpuIds"],
+      "properties": {
+        "role": {"const": "gateway"},
+        "endpoint": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "models": {"maxItems": 0},
+        "deployment": {"type": "string", "minLength": 1, "maxLength": 512}
+      }
     }
   ]
 }

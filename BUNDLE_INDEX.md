@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~704,252 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~705,881 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `e325c8cab07c` — ~6,766t
+- `OPEN_GATES.md` — `a3ade7784093` — ~6,909t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -100,6 +100,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-07-gpu-memory-accounting.md` — `4d308b939760` — ~1,408t
 - `decisions/2026-10-08-open-proof-enrollment-and-hardware-registration.md` — `bc7f9361bf52` — ~1,596t
 - `decisions/2026-10-12-dynamic-alias-authority.md` — `da2d9267f07f` — ~520t
+- `decisions/2026-10-12-farm-gateway-zero-capacity-registration.md` — `c0b69f82d5c9` — ~598t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `d6eb9f752efc` — ~4,054t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
@@ -233,8 +234,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/node-hardware-report-negative-vram.json` — `05ad3281363a` — ~212t
 - `fixtures/invalid/node-hardware-version-string.json` — `6072ed618bf3` — ~214t
 - `fixtures/invalid/node-missing-id.json` — `6df7ff2a4a7d` — ~13t
+- `fixtures/invalid/node-register-gateway-missing-deployment.json` — `4ca4d194d2ff` — ~59t
 - `fixtures/invalid/node-register-mixed-hardware-only.json` — `d3706dd29296` — ~33t
 - `fixtures/invalid/node-register-native-capability-map.json` — `17f7c6deb67a` — ~139t
+- `fixtures/invalid/node-register-node-empty-endpoint.json` — `c343350edec3` — ~65t
 - `fixtures/invalid/node-register-response-duplicate-capability.json` — `79b9e39a0f95` — ~50t
 - `fixtures/invalid/node-register-routable-missing-capacity.json` — `96b1d6acaa80` — ~92t
 - `fixtures/invalid/protocol-bad-version.json` — `56625bd802e2` — ~25t
@@ -298,6 +301,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/model.json` — `73854ced3bff` — ~14t
 - `fixtures/valid/node-hardware-report.json` — `11e6cfa1e2d9` — ~214t
 - `fixtures/valid/node-hardware.json` — `3e127be088c8` — ~245t
+- `fixtures/valid/node-register-gateway-empty.json` — `f2d139705070` — ~67t
 - `fixtures/valid/node-register-legacy.json` — `e7860cdb79fa` — ~31t
 - `fixtures/valid/node-register-native.json` — `2ac2fa6533bd` — ~139t
 - `fixtures/valid/node-register-response-legacy.json` — `900d6239ef6d` — ~36t
@@ -397,7 +401,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/requests/node-hardware-report.json` — `3b00c4fae6d6` — ~577t
 - `schemas/v1/requests/node-hardware.json` — `9d1413d86adb` — ~255t
 - `schemas/v1/requests/node-register-response.json` — `404762552103` — ~270t
-- `schemas/v1/requests/node-register.json` — `c8c2a9022cca` — ~743t
+- `schemas/v1/requests/node-register.json` — `8ab1c9c1dc43` — ~874t
 - `schemas/v1/requests/prediction.json` — `2c8599634086` — ~120t
 - `schemas/v1/requests/registration.json` — `52a9e052a087` — ~250t
 - `schemas/v1/requests/request.json` — `2c893254aae6` — ~426t
@@ -471,14 +475,14 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/37_CONTAINER_DEPLOYMENT_STANDARD.md` — `d8a2dfbfa660` — ~1,687t
 - `specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md` — `3be309a25553` — ~1,179t
 - `specs/39_INFERENCE_RUNTIME_TUNING.md` — `3da89d20da5e` — ~1,485t
-- `specs/40_NETWORK_TOPOLOGY_GRAPH.md` — `c51e495b58a6` — ~6,320t
+- `specs/40_NETWORK_TOPOLOGY_GRAPH.md` — `88e71ca252dc` — ~6,475t
 - `specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md` — `c2f00ea9bf1d` — ~1,820t
-- `specs/42_SITE_GATEWAY_CONFORMANCE.md` — `81972665368b` — ~2,564t
+- `specs/42_SITE_GATEWAY_CONFORMANCE.md` — `b8b4da0060c3` — ~2,730t
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `c8c57b73aa55` — ~3,492t
 - `specs/44_CORE_PROTOCOL.md` — `a77e1007ee09` — ~12,088t
 - `specs/45_PROTOCOL_V1.md` — `2f0636a00cd5` — ~10,623t
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `4ef07f017b84` — ~13,331t
-- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `f274414e8356` — ~9,303t
+- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `5784525a3bb2` — ~9,548t
 - `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `5c95652f58bb` — ~1,761t
 - `specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md` — `53c00be313e7` — ~1,267t
 - `specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md` — `24d9f61452a1` — ~3,315t

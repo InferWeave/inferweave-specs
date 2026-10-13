@@ -51,6 +51,16 @@ A role set is a property of a vertex, not a separate vertex: spec 21 permits one
 process to be several roles at once, and modelling that as multiple vertices
 would double-count capacity in every view built on this graph.
 
+Gateway membership is observed independently of serving capacity. A live,
+authenticated gateway may have zero advertised models and zero registered GPU
+children; it still has a gateway vertex and `registered_with` edge. Its child
+horizon reports the actual observation (`complete`, `partial`, or `unknown`),
+not a fabricated zero-GPU conclusion. A successful empty model catalogue
+withdraws prior serving claims without deleting the gateway vertex. Only a
+valid READY model/instance report can establish routeable capacity. This
+distinguishes control-plane registration from the C4 GPU-worker admission rule
+in spec 42.
+
 GPU vertices reference the inventory and telemetry defined in
 `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md`. A bounded, display-only `configuration`
 projection may carry existing authenticated registration and telemetry facts

@@ -78,6 +78,16 @@ chain (B1–B5).
   `probe_budget_secs` extends it, clamped at 300 s. The probe is always a
   real generation; a worker that cannot complete it within its budget is
   refused (422), never admitted unverified.
+
+  A **gateway-role peer** is a control-plane identity, not a GPU worker. Its
+  authenticated registration MAY carry `models: []` when it has no READY serving
+  capacity, provided its endpoint, deployment identity and held link remain
+  valid. This does not qualify any model, create slots, or bypass the worker
+  rule above. A successful empty model snapshot withdraws earlier model
+  advertisements while preserving the live gateway identity. A failed snapshot
+  read does not assert emptiness; failed registration updates must retry the
+  last unacknowledged change. This correction is required to show an idle Farm
+  gateway in topology without inventing supply.
 - **C5 Warm pool** — maintain ≥1 live worker per keep-warm model; reconcile
   desired-vs-actual **idempotently** on a repeating interval.
 - **C6 Capacity acquisition** — request/release/list GPU capacity; workers connect
