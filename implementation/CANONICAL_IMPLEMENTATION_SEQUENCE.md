@@ -2283,6 +2283,7 @@ Rules:
 - concurrent CAS and idempotency survive restart
 - cross-tenant CRUD and forged identity rejected
 - publish and rollback append immutable history
+- independently reviewed request-bound Ed25519 edge delegation, Rust-owned identity grants and cross-language replay vectors
 
 ### A-T03 — Rust alias preview and deterministic matching
 **Context:** `C80`

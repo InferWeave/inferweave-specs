@@ -398,3 +398,12 @@ GPU-loss/preemption/runtime integration; owner sharing/de-duplication/expiry; re
 snapshots/events; complete UI journeys/visual/accessibility evidence; migration shadow parity,
 measured p95 baseline/canary and feature-flag rollback. Existing exact-model paths must continue.
 D-002's narrow Go UI exception supplies architecture authority, not proof of security or function.
+
+Security follow-up: A-T02 requires a separately purposed edge Ed25519 delegation assertion,
+request binding (method, target, body, preconditions, deadline, nonce), Rust-owned IdP
+issuer/subject-to-tenant/role grants, replay protection and cross-language hostile vectors.
+Spec 55 now specifies the exact signing transcript, key trust and PostgreSQL replay rules;
+offline golden vectors prove only transcript consistency. The running authentication/grant/replay
+boundary is unverified. No usable existing delegation mechanism was found; no OIDC forwarding, shared registration
+credential or caller-provided identity shortcut is authorized. Alias API/traffic remains disabled
+until independent security review and executable evidence close this gate.

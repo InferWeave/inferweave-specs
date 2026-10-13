@@ -39,6 +39,8 @@ def contract_errors(root):
                        'owner_admission_required'}
     if not required_fields <= set(definitions['candidate']['required']):
         errors.append('alias candidate lost required instance-level evidence')
+    if not {'instance_generation', 'confidence'} <= set(definitions['capability_profile']['required']):
+        errors.append('alias profile lost generation or confidence binding')
     if definitions['resolution']['properties']['admission_reserved'] != {'const': False}:
         errors.append('alias preview may reserve admission')
     if definitions['advertisement']['properties']['allocation_entitlement'] != {'const': False}:
@@ -51,6 +53,11 @@ def contract_errors(root):
             errors.append('invalid alias acceptance proof status')
         if entry['proof_status'] == 'proven' and not entry['evidence']:
             errors.append(f"alias acceptance {entry['id']} has no evidence")
+    # Security transcript is frozen separately and must reproduce known answers.
+    import sys
+    sys.path.insert(0, str(root / 'conformance'))
+    import alias_edge_delegation
+    errors.extend(alias_edge_delegation.check_vectors(root))
     return errors
 
 
@@ -61,6 +68,37 @@ def semantic_errors(document, kind):
     Schema validation runs first. Runtime freshness compares trusted owner time in implementation.
     """
     errors = []
+    if kind == 'edge-assertion':
+        import alias_edge_delegation
+        try:
+            alias_edge_delegation.decode_header(alias_edge_delegation.b64url(json.dumps(document).encode()))
+        except (ValueError, KeyError, TypeError) as error:
+            errors.append(str(error))
+    if kind in {'draft-write', 'simulate-request'}:
+        errors.extend(semantic_errors(document['definition'], 'definition'))
+    if kind == 'detail':
+        for field in ['draft', 'published']:
+            if field in document:
+                errors.extend(semantic_errors(document[field], 'definition'))
+    if kind in {'list', 'history'}:
+        for item in document['items']:
+            if kind == 'list':
+                errors.extend(semantic_errors(item, 'detail'))
+            else:
+                errors.extend(semantic_errors(item['definition'], 'definition'))
+    if kind == 'error':
+        vocab = _load(Path(__file__).resolve().parents[1], 'contracts/protocol-v1/dynamic-aliases.json')
+        retryable = {r['code']: r['retryable'] for r in vocab['reason_codes']}
+        if document['retryable'] != retryable[document['code']]:
+            errors.append('error retryability disagrees with frozen reason')
+    if kind in {'resolution', 'catalog'}:
+        candidates = document['candidates'] if kind == 'resolution' else document['items']
+        for candidate in candidates:
+            if candidate['instance_generation'] != candidate['capability_profile']['instance_generation']:
+                errors.append('candidate and profile instance generations disagree')
+            profile = candidate['capability_profile']
+            if profile.get('max_context_tokens') is not None and profile.get('max_output_tokens', 0) > profile['max_context_tokens']:
+                errors.append('profile output ceiling exceeds total context ceiling')
     if kind == 'definition':
         selection = document['selection']
         weights = selection['preferred']

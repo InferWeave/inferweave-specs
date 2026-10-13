@@ -1,0 +1,57 @@
+{
+  "schema_version": "inferweave.alias-advertisement/v1",
+  "alias_id": "embedding",
+  "alias_revision": 1,
+  "owner_gateway_id": "gw-a",
+  "resource_group_id": "gpu-group-a",
+  "owner_policy_id": "sharing-1",
+  "profiles": [
+    {
+      "profile_id": "profile-42",
+      "runtime_family": "embeddings",
+      "input_modalities": [
+        "text"
+      ],
+      "output_modalities": [
+        "vector"
+      ],
+      "features": {},
+      "policy_evidence_id": "policy-42",
+      "provenance": {
+        "source_id": "gw-a",
+        "source_generation": "epoch-1",
+        "sequence": 42,
+        "observed_at": "2026-10-12T20:00:00Z",
+        "expires_at": "2026-10-12T20:00:02Z",
+        "protocol_version": "1.1.0",
+        "build_version": "fixture-only",
+        "verification_id": "probe-42"
+      },
+      "privacy": [
+        "no-training"
+      ],
+      "residency": "us-west",
+      "trusted_origin": "owner-a",
+      "embedding_dimensions": 1024,
+      "output_schema_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "instance_generation": "generation-3",
+      "confidence": "verified"
+    }
+  ],
+  "availability": "READY",
+  "provenance": {
+    "source_id": "gw-a",
+    "source_generation": "epoch-1",
+    "sequence": 42,
+    "observed_at": "2026-10-12T20:00:00Z",
+    "expires_at": "2026-10-12T20:00:02Z",
+    "protocol_version": "1.1.0",
+    "build_version": "fixture-only",
+    "verification_id": "probe-42"
+  },
+  "path": [
+    "gw-a"
+  ],
+  "tombstone": false,
+  "allocation_entitlement": false
+}

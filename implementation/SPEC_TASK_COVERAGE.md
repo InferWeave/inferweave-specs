@@ -58,3 +58,4 @@
 | `specs/53_RUNTIME_FAMILY_CONFORMANCE.md` | `B-T06` |
 
 | `specs/54_DYNAMIC_MODEL_ALIASES.md` | `A-T01`, `A-T02`, `A-T03`, `A-T04`, `A-T05`, `A-T06`, `A-T07`, `A-T08` |
+| `specs/55_ALIAS_EDGE_DELEGATION.md` | `A-T02`, `A-T06` |

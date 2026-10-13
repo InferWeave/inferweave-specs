@@ -153,11 +153,18 @@ paths:
       operationId: listAliases
       summary: List aliases (default level 1; explicit header negotiates level 2)
       description: Spec 54. Without InferWeave-Alias-Level returns the original level-1 array. Level 2 requires Rust authorization and returns the bounded page. Cursor expiry is 410.
-      security: [{AliasBearer: []}]
+      security: [{AliasBearer: []}, {AliasEdgeDelegation: []}]
       parameters:
         - {name: InferWeave-Alias-Level, in: header, schema: {type: string, enum: ["1", "2"]}}
         - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100, default: 50}}
         - {name: cursor, in: query, schema: {type: string, maxLength: 2048}}
+        - {name: query, in: query, description: Level-2 case-insensitive alias id/description search, schema: {type: string, maxLength: 256}}
+        - {name: runtime_family, in: query, description: Level-2 required runtime family filter, schema: {$ref: "../schemas/v1/aliases/contract.json#/definitions/family"}}
+        - {name: owner_scope, in: query, description: Level-2 visible owner scope filter, schema: {type: string, maxLength: 256}}
+        - {name: status, in: query, description: Level-2 effective alias health, schema: {$ref: "../schemas/v1/aliases/contract.json#/definitions/health"}}
+        - {name: visibility, in: query, description: Level-2 visible scope filter, schema: {type: string, enum: [PRIVATE, TENANT, PUBLIC]}}
+        - {name: route_kind, in: query, description: Level-2 qualified candidate route filter, schema: {type: string, enum: [LOCAL, FEDERATED]}}
+        - {name: family, in: query, description: Level-2 structured model family filter, schema: {type: string, maxLength: 64}}
       responses:
         "200":
           description: Existing level-1 array or explicitly negotiated level-2 page
@@ -174,6 +181,7 @@ paths:
         authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - name: InferWeave-Alias-Level
         in: header
@@ -224,6 +232,7 @@ paths:
         tenant/owner authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - &id001
         name: InferWeave-Alias-Level
@@ -262,6 +271,7 @@ paths:
         tenant/owner authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - *id001
       - *id002
@@ -308,6 +318,7 @@ paths:
         tenant/owner authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - *id001
       - *id002
@@ -339,6 +350,7 @@ paths:
         tenant/owner authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - *id001
       - *id002
@@ -372,6 +384,7 @@ paths:
         tenant/owner authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - *id001
       - *id002
@@ -405,6 +418,7 @@ paths:
         tenant/owner authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - *id001
       responses:
@@ -435,6 +449,7 @@ paths:
         tenant/owner authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - *id001
       responses:
@@ -465,6 +480,7 @@ paths:
         tenant/owner authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - *id001
       - *id002
@@ -504,6 +520,7 @@ paths:
         tenant/owner authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - *id001
       - *id005
@@ -530,6 +547,7 @@ paths:
         tenant/owner authorization. Preview/validation/simulation are read-only.
       security:
       - AliasBearer: []
+      - AliasEdgeDelegation: []
       parameters:
       - *id001
       - *id005
@@ -891,6 +909,11 @@ paths:
               schema: { $ref: "#/components/schemas/PipelineValidationError" }
 components:
   securitySchemes:
+    AliasEdgeDelegation:
+      type: apiKey
+      in: header
+      name: InferWeave-Edge-Assertion
+      description: Spec 55 request-bound Ed25519 assertion with Rust-owned principal grants and durable replay protection; request deadline header required.
     AliasBearer:
       type: http
       scheme: bearer

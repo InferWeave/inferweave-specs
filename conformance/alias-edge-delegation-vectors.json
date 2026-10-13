@@ -1,0 +1,331 @@
+{
+  "schema_version": 1,
+  "purpose": "inferweave.edge-alias-delegation/v1",
+  "domain_hex": "696e66657277656176652e656467652d616c6961732d64656c65676174696f6e2f763100",
+  "fields": [
+    "edge_id",
+    "key_id",
+    "audience",
+    "idp_issuer",
+    "subject",
+    "issued_at_unix_ms",
+    "expires_at_unix_ms",
+    "nonce",
+    "method",
+    "request_target",
+    "body_sha256",
+    "if_match",
+    "if_none_match",
+    "idempotency_key",
+    "alias_level",
+    "deadline_unix_ms"
+  ],
+  "known_answers": [
+    {
+      "id": "ascii-subject",
+      "test_seed_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "public_key_hex": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+      "body_utf8": "{\"alias_id\":\"coding-fast\",\"request_context\":{}}",
+      "envelope": {
+        "version": 1,
+        "edge_id": "edge-fry",
+        "key_id": "alias-key-1",
+        "audience": "rust-gateway-test",
+        "idp_issuer": "https://idp.example.test/pool",
+        "subject": "user-17",
+        "issued_at_unix_ms": 1791849600000,
+        "expires_at_unix_ms": 1791849630000,
+        "nonce": "AAECAwQFBgcICQoLDA0ODw",
+        "method": "POST",
+        "request_target": "/inferweave/v1/aliases/resolve",
+        "body_sha256": "5d72e6117d08394216f537704dec2df37d6f1aad9f63760c6d33cec0cb4d51d0",
+        "if_match": "",
+        "if_none_match": "",
+        "idempotency_key": "",
+        "alias_level": "2",
+        "deadline_unix_ms": 1791849660000,
+        "signature": "JunnOwaucCgUSWk-6Fehv-zAt2AAM1i-2LUHNQs6tAZM_Ofg-dSjLgCTbv5EO_oXLVGHGhzgAOqV8OcgkIlBCQ"
+      },
+      "transcript_hex": "696e66657277656176652e656467652d616c6961732d64656c65676174696f6e2f76310000000008656467652d6672790000000b616c6961732d6b65792d3100000011727573742d676174657761792d746573740000001d68747470733a2f2f6964702e6578616d706c652e746573742f706f6f6c00000007757365722d31370000000d313739313834393630303030300000000d313739313834393633303030300000001641414543417751464267634943516f4c4441304f447700000004504f53540000001e2f696e66657277656176652f76312f616c69617365732f7265736f6c7665000000403564373265363131376430383339343231366635333737303464656332646633376436663161616439663633373630633664333363656330636234643531643000000000000000000000000000000001320000000d31373931383439363630303030",
+      "header": "eyJ2ZXJzaW9uIjoxLCJlZGdlX2lkIjoiZWRnZS1mcnkiLCJrZXlfaWQiOiJhbGlhcy1rZXktMSIsImF1ZGllbmNlIjoicnVzdC1nYXRld2F5LXRlc3QiLCJpZHBfaXNzdWVyIjoiaHR0cHM6Ly9pZHAuZXhhbXBsZS50ZXN0L3Bvb2wiLCJzdWJqZWN0IjoidXNlci0xNyIsImlzc3VlZF9hdF91bml4X21zIjoxNzkxODQ5NjAwMDAwLCJleHBpcmVzX2F0X3VuaXhfbXMiOjE3OTE4NDk2MzAwMDAsIm5vbmNlIjoiQUFFQ0F3UUZCZ2NJQ1FvTERBME9EdyIsIm1ldGhvZCI6IlBPU1QiLCJyZXF1ZXN0X3RhcmdldCI6Ii9pbmZlcndlYXZlL3YxL2FsaWFzZXMvcmVzb2x2ZSIsImJvZHlfc2hhMjU2IjoiNWQ3MmU2MTE3ZDA4Mzk0MjE2ZjUzNzcwNGRlYzJkZjM3ZDZmMWFhZDlmNjM3NjBjNmQzM2NlYzBjYjRkNTFkMCIsImlmX21hdGNoIjoiIiwiaWZfbm9uZV9tYXRjaCI6IiIsImlkZW1wb3RlbmN5X2tleSI6IiIsImFsaWFzX2xldmVsIjoiMiIsImRlYWRsaW5lX3VuaXhfbXMiOjE3OTE4NDk2NjAwMDAsInNpZ25hdHVyZSI6Ikp1bm5Pd2F1Y0NnVVNXay02RmVodi16QXQyQUFNMWktMkxVSE5RczZ0QVpNX09mZy1kU2pMZ0NUYnY1RU9fb1hMVkdIR2h6Z0FPcVY4T2Nna0lsQkNRIn0"
+    },
+    {
+      "id": "unicode-subject-byte-length",
+      "test_seed_hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "public_key_hex": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+      "body_utf8": "{\"alias_id\":\"coding-fast\",\"request_context\":{}}",
+      "envelope": {
+        "version": 1,
+        "edge_id": "edge-fry",
+        "key_id": "alias-key-1",
+        "audience": "rust-gateway-test",
+        "idp_issuer": "https://idp.example.test/pool",
+        "subject": "subject-\u00e9-\u96ea",
+        "issued_at_unix_ms": 1791849600000,
+        "expires_at_unix_ms": 1791849630000,
+        "nonce": "AQIDBAUGBwgJCgsMDQ4PEA",
+        "method": "POST",
+        "request_target": "/inferweave/v1/aliases/resolve",
+        "body_sha256": "5d72e6117d08394216f537704dec2df37d6f1aad9f63760c6d33cec0cb4d51d0",
+        "if_match": "",
+        "if_none_match": "",
+        "idempotency_key": "",
+        "alias_level": "2",
+        "deadline_unix_ms": 1791849660000,
+        "signature": "rZBWgcibRO71m7Qv7RssomZYBhOOzuMp4lgHyFSygw8m42JQBy6Zo855Dx1hulQpcf0ff1OqU5GHAtOxffoKBw"
+      },
+      "transcript_hex": "696e66657277656176652e656467652d616c6961732d64656c65676174696f6e2f76310000000008656467652d6672790000000b616c6961732d6b65792d3100000011727573742d676174657761792d746573740000001d68747470733a2f2f6964702e6578616d706c652e746573742f706f6f6c0000000e7375626a6563742dc3a92de99baa0000000d313739313834393630303030300000000d313739313834393633303030300000001641514944424155474277674a4367734d44513450454100000004504f53540000001e2f696e66657277656176652f76312f616c69617365732f7265736f6c7665000000403564373265363131376430383339343231366635333737303464656332646633376436663161616439663633373630633664333363656330636234643531643000000000000000000000000000000001320000000d31373931383439363630303030",
+      "header": "eyJ2ZXJzaW9uIjoxLCJlZGdlX2lkIjoiZWRnZS1mcnkiLCJrZXlfaWQiOiJhbGlhcy1rZXktMSIsImF1ZGllbmNlIjoicnVzdC1nYXRld2F5LXRlc3QiLCJpZHBfaXNzdWVyIjoiaHR0cHM6Ly9pZHAuZXhhbXBsZS50ZXN0L3Bvb2wiLCJzdWJqZWN0Ijoic3ViamVjdC3DqS3pm6oiLCJpc3N1ZWRfYXRfdW5peF9tcyI6MTc5MTg0OTYwMDAwMCwiZXhwaXJlc19hdF91bml4X21zIjoxNzkxODQ5NjMwMDAwLCJub25jZSI6IkFRSURCQVVHQndnSkNnc01EUTRQRUEiLCJtZXRob2QiOiJQT1NUIiwicmVxdWVzdF90YXJnZXQiOiIvaW5mZXJ3ZWF2ZS92MS9hbGlhc2VzL3Jlc29sdmUiLCJib2R5X3NoYTI1NiI6IjVkNzJlNjExN2QwODM5NDIxNmY1Mzc3MDRkZWMyZGYzN2Q2ZjFhYWQ5ZjYzNzYwYzZkMzNjZWMwY2I0ZDUxZDAiLCJpZl9tYXRjaCI6IiIsImlmX25vbmVfbWF0Y2giOiIiLCJpZGVtcG90ZW5jeV9rZXkiOiIiLCJhbGlhc19sZXZlbCI6IjIiLCJkZWFkbGluZV91bml4X21zIjoxNzkxODQ5NjYwMDAwLCJzaWduYXR1cmUiOiJyWkJXZ2NpYlJPNzFtN1F2N1Jzc29tWllCaE9PenVNcDRsZ0h5RlN5Z3c4bTQySlFCeTZabzg1NUR4MWh1bFFwY2YwZmYxT3FVNUdIQXRPeGZmb0tCdyJ9"
+    }
+  ],
+  "negative_cases": [
+    {
+      "id": "signed-field-tamper-edge_id",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "edge_id",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-key_id",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "key_id",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-audience",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "audience",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-idp_issuer",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "idp_issuer",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-subject",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "subject",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-issued_at_unix_ms",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "issued_at_unix_ms",
+      "replacement": 1791849600001,
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-expires_at_unix_ms",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "expires_at_unix_ms",
+      "replacement": 1791849600001,
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-nonce",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "nonce",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-method",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "method",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-request_target",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "request_target",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-body_sha256",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "body_sha256",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-if_match",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "if_match",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-if_none_match",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "if_none_match",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-idempotency_key",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "idempotency_key",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-alias_level",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "alias_level",
+      "replacement": "tampered",
+      "expected": "reject"
+    },
+    {
+      "id": "signed-field-tamper-deadline_unix_ms",
+      "base": "ascii-subject",
+      "operation": "mutate_without_resigning",
+      "field": "deadline_unix_ms",
+      "replacement": 1791849600001,
+      "expected": "reject"
+    },
+    {
+      "id": "wrong-key-purpose",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "wrong-audience",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "revoked-key",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "revoked-principal-grant",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "body-digest-mismatch",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "target-mismatch",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "precondition-mismatch",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "duplicate-header",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "duplicate-json-key",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "duplicate-query-key",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "padded-base64url",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "expired",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "future-issuance",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "nonce-replay",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "concurrent-nonce-replay",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "database-unavailable",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    },
+    {
+      "id": "operation-failure-still-consumes-nonce",
+      "base": "ascii-subject",
+      "operation": "implementation_boundary",
+      "expected": "reject",
+      "proof_status": "owed"
+    }
+  ],
+  "operational_proof_status": "owed"
+}

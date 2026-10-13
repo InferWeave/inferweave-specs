@@ -54,7 +54,13 @@ rejects canonical IDs, reserved `alias:`/`cap:` syntax and ambiguous existing le
 
 `selection.type` is MANAGED or DYNAMIC. MANAGED requires nonempty `model_ids_allow`; DYNAMIC
 queries typed capabilities, optionally constrained by allowed model families and immutable IDs.
-Deny takes precedence. Family allowlists denote model family metadata, never substring parsing.
+Deny takes precedence. For DYNAMIC selection, omitted or empty `families_allow` and
+`model_ids_allow` mean no family/model pinning; an empty `model_ids_deny` has no denials.
+MANAGED still requires a nonempty concrete-model allowlist. These selection conveniences do not
+apply to `required.allowed_tenants`, `required.trusted_origins` or `required.residency`: an explicit
+empty authorization/acceptable-origin set admits nobody. Owner authorization and trust checks
+always fail closed independently of selection lists. Family allowlists denote model family
+metadata, never substring parsing.
 Alias-to-alias targets are prohibited at level 2; model allowlists contain concrete IDs only.
 Legacy import detects cycles and depth >4 and rejects them before publication. No recursive runtime
 resolution chain is introduced. Weights must be finite, nonnegative, nonempty and sum to 1 within
@@ -72,8 +78,16 @@ All writes run in Rust under tenant/owner RBAC. Viewer reads; operator drafts/si
 administrator publishes/rolls back/shares. Edge authentication is additional. A tenant in a request
 body is an assertion to validate against trusted principal claims, never a source of authority.
 Native `/inferweave/v1/aliases*` must enter the canonical Rust authentication gate; protecting only
-`/v1/*` is insufficient. Go must forward identity through the existing validated trust mechanism;
-stripping claims or accepting unsigned caller-supplied identity is a rollout blocker.
+`/v1/*` is insufficient. The source audit found no currently usable Go-to-Rust end-user delegation mechanism. Alias
+API/traffic activation therefore remains disabled until A-T02 proves a separate request-bound
+edge Ed25519 assertion purpose. Rust must resolve validated `(identity-provider issuer, subject)`
+into its own tenant/role grants. The assertion binds method, canonical target, body digest,
+preconditions, deadline and nonce; Rust verifies audience/purpose/key trust, expiry and replay
+protection. Cross-language positive and hostile vectors are required before rollout. The exact transcript, transport, key trust and PostgreSQL replay contract is
+`55_ALIAS_EDGE_DELEGATION.md`; it must receive independent security review before implementation
+claims conformance. Forwarding an OIDC token, a shared registration token, arbitrary tenant/role
+headers or unsigned caller identity cannot substitute for this gate. Existing service credentials
+do not confer end-user publish authority.
 
 POST creation uses `If-None-Match: *`; all mutation calls use an `Idempotency-Key` scoped to actor,
 tenant, method and resource. Repeated same key/body returns the original result; changed body is
@@ -108,7 +122,20 @@ preserve one current published revision and complete audit atomicity using the e
    Catalog revision is an owner snapshot/vector token, not a fictional global atomic cut (spec 40).
 6. Evaluate individual model/instance/generation/deployment/owner/resource-group tuples. Each
    candidate includes one jointly satisfiable `capability_profile`, timestamped expiring evidence,
-   verification ID, policy evidence and resource ownership. Advertised/unknown is not verified;
+   verification ID, policy evidence and resource ownership. Capability-profile `instance_generation` is required and must match the candidate instance
+   generation. Provenance `source_generation` remains the source/owner stream epoch and can differ
+   from the instance generation; never compare these separate identities. Required profile
+   `confidence` records qualification of runtime/modality/limit/policy facts; requirements may
+   specify `profile_confidence` as advertised/probed/verified. Alias omission defaults to verified;
+   request omission inherits the alias minimum. Explicit request minimums can only strengthen it; unknown/degraded/disabled never satisfy a hard qualified profile.
+   A nonempty verification ID alone does not upgrade confidence. A profile may also carry
+   `max_output_tokens`, `embedding_dimensions`, `output_schema_digest`, `privacy`, `residency`
+   and `trusted_origin`. These facts are jointly true for that profile and share its evidence
+   expiry; absence is unknown and cannot satisfy a corresponding hard requirement. Profile
+   `privacy` is a set of guarantees; `residency` and `trusted_origin` are single observed labels
+   matched against request acceptable sets. Owner policy authorizes disclosure per receiving
+   principal; never publish tenant allowlists or private policy details upstream. Omit a protected
+   claim and mark the required match unqualified rather than fabricate compatibility. Advertised/unknown is not verified;
    degraded/disabled/stale evidence cannot satisfy a verified requirement. Probed/advertised
    confidence is accepted only when the hard policy explicitly permits it. Federation cannot
    promote confidence or trust.
@@ -118,7 +145,13 @@ preserve one current published revision and complete audit atomicity using the e
    warming, draining and lost placements provide no immediately available route.
 8. Rank eligible instances using a versioned deterministic policy. Scores are normalized per
    candidate set with contributions, units, metric freshness/sample counts and missing evidence
-   treatment. Low-confidence quality cannot beat qualified evidence without separately permitted
+   treatment. Optional candidate `metric_evidence` maps at most 16 bounded metric names to
+   `{value, unit, sample_size, confidence, provenance}`. Provenance carries observed/expiry times,
+   source identity/generation, build/protocol and verification ID. Names such as `latency_p50`,
+   `latency_p95`, `throughput` and `quality` identify measured quantities; `factors` remains the
+   normalized scoring contribution. Evidence is visible only within authorized tenant/workload
+   scope; omitted evidence is unknown, never an invented zero or a measured percentile.
+   Low-confidence quality cannot beat qualified evidence without separately permitted
    exploration. Stable instance identity breaks ties. Smallest sufficient resources is a bias
    only after hard constraints and qualified quality floors. No fixed-slot scheduler is added.
 9. Admit through the existing owner router with idempotency key, alias/catalog revision, instance
@@ -185,7 +218,10 @@ existing `{request_id}` route parameter. OpenAPI operations reference the standa
 
 Lists use opaque cursors bound to principal, filters and snapshot, limit 1–100 (default 50).
 Expired cursor returns 410 and requires new snapshot; malformed cursor returns 400. Filters are
-server-side: query, runtime_family, owner_scope, status, visibility, route_kind and model family.
+server-side: `query` (case-insensitive alias ID/description), `runtime_family`, `owner_scope`,
+`status` (effective health), `visibility`, `route_kind` and `family` (structured model family).
+Filters are conjunctive; omitted filters are unrestricted only within the authorized view.
+An unsupported or malformed filter returns 400, never an unfiltered page.
 The server applies authorization before filtering/counts; cursor tampering cannot widen access.
 Every response identifies authoritative observed time/revision. Never expose forbidden model IDs,
 internal addresses, peer secrets, lease tokens or cross-tenant metrics in catalog/preview/errors.

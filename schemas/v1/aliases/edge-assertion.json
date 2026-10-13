@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/aliases/edge-assertion.json",
+  "title": "Request-bound edge alias identity v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "edge_id",
+    "key_id",
+    "audience",
+    "idp_issuer",
+    "subject",
+    "issued_at_unix_ms",
+    "expires_at_unix_ms",
+    "nonce",
+    "method",
+    "request_target",
+    "body_sha256",
+    "if_match",
+    "if_none_match",
+    "idempotency_key",
+    "alias_level",
+    "deadline_unix_ms",
+    "signature"
+  ],
+  "properties": {
+    "edge_id": {
+      "type": "string",
+      "maxLength": 256,
+      "minLength": 1
+    },
+    "key_id": {
+      "type": "string",
+      "maxLength": 256,
+      "minLength": 1
+    },
+    "audience": {
+      "type": "string",
+      "maxLength": 256,
+      "minLength": 1
+    },
+    "idp_issuer": {
+      "type": "string",
+      "maxLength": 2048,
+      "minLength": 1
+    },
+    "subject": {
+      "type": "string",
+      "maxLength": 256,
+      "minLength": 1
+    },
+    "issued_at_unix_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "expires_at_unix_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{22}$"
+    },
+    "method": {
+      "type": "string",
+      "enum": [
+        "GET",
+        "POST",
+        "PATCH"
+      ]
+    },
+    "request_target": {
+      "type": "string",
+      "maxLength": 4096,
+      "minLength": 1
+    },
+    "body_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "if_match": {
+      "type": "string",
+      "pattern": "^(|\"[1-9][0-9]*\")$",
+      "maxLength": 32
+    },
+    "if_none_match": {
+      "type": "string",
+      "enum": [
+        "",
+        "*"
+      ]
+    },
+    "idempotency_key": {
+      "type": "string",
+      "maxLength": 256
+    },
+    "alias_level": {
+      "const": "2"
+    },
+    "deadline_unix_ms": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "version": {
+      "const": 1
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+  }
+}

@@ -29,10 +29,12 @@ sys.path.insert(0, str(ROOT / "conformance"))
 import node_join  # noqa: E402
 import runtime_protocol  # noqa: E402
 import dynamic_aliases  # noqa: E402
+import alias_edge_delegation  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
 # fixture basename -> schema rel path (relative to schemas/v1)
 MAP = {
+    "dynamic-alias-edge-assertion": "aliases/edge-assertion.json",
     "dynamic-alias-routing-trace": "aliases/routing-trace.json",
     "dynamic-alias-advertisement-page": "aliases/advertisement-page.json",
     "dynamic-alias-catalog": "aliases/catalog.json",
@@ -503,6 +505,10 @@ def main():
     )
     args = parser.parse_args()
     failures = 0
+    edge_errors = alias_edge_delegation.check_vectors(ROOT)
+    for error in edge_errors:
+        print("FAIL  " + error)
+    failures += len(edge_errors)
     failures += 0 if check_node_join_vectors() else 1
     failures += 0 if check_deployment_key_vectors() else 1
     failures += 0 if check_native_link_binding_vectors() else 1
