@@ -429,22 +429,27 @@ def negotiate_native_link(registration, hello, local_features):
         return _native_link_ack(hello, "unbound", reason="credential_invalid")
     if hello.get("registration_connection_id") != registration.get("connection_id"):
         return _native_link_ack(hello, "unbound", reason="registration_mismatch")
-    if _NATIVE_LINK_CAPABILITY not in registration.get("capabilities", set()):
+    base_capabilities = {_NATIVE_LINK_CAPABILITY, "iw.link-http-json/1"}
+    if not base_capabilities.intersection(registration.get("capabilities", set())):
         return _native_link_ack(hello, "unbound", reason="feature_not_registered")
-    if _NATIVE_LINK_CAPABILITY not in hello.get("native_link_features", []):
+    if not base_capabilities.intersection(hello.get("native_link_features", [])):
         return _native_link_ack(hello, "unbound", reason="feature_not_offered")
-    if _NATIVE_LINK_CAPABILITY not in local_features:
+    if not base_capabilities.intersection(local_features):
         return _native_link_ack(hello, "unbound", reason="feature_not_supported")
     registration_features = set(registration.get("capabilities", ()))
     hello_features = set(hello.get("native_link_features", ()))
     local_features = set(local_features)
     negotiated = [
         capability
-        for capability in (_NATIVE_LINK_CAPABILITY, _NATIVE_LINK_RESPONSE_CAPABILITY)
+        for capability in (_NATIVE_LINK_CAPABILITY, _NATIVE_LINK_RESPONSE_CAPABILITY, "iw.link-http-json/1")
         if capability in registration_features
         and capability in hello_features
         and capability in local_features
     ]
+    if _NATIVE_LINK_CAPABILITY not in negotiated:
+        negotiated = [item for item in negotiated if item != _NATIVE_LINK_RESPONSE_CAPABILITY]
+    if not base_capabilities.intersection(negotiated):
+        return _native_link_ack(hello, "unbound", reason="feature_not_supported")
     return _native_link_ack(hello, "bound", negotiated)
 
 

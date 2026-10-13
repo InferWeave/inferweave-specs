@@ -10,6 +10,7 @@
     "via": {"type": "array", "maxItems": 64, "items": {"type": "string", "minLength": 1, "maxLength": 128}},
     "queue": {"type": "boolean"},
     "probe": {"type": "boolean"},
+    "http": {"$ref": "link-http-meta.json"},
     "native": {
       "type": "object",
       "additionalProperties": false,
@@ -29,5 +30,10 @@
         {"properties": {"family": {"enum": ["llm", "reasoning", "stt", "tts", "audio", "image", "video", "multimodal", "scientific", "rag"]}, "endpoint": {"const": "/jobs"}}}
       ]
     }
-  }
+  },
+  "allOf": [
+    {"not": {"required": ["http", "native"]}},
+    {"not": {"required": ["http", "ownerExecutionPermit"]}},
+    {"not": {"required": ["http", "executable"]}}
+  ]
 }

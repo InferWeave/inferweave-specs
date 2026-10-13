@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-http-request.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "request_id",
+    "payload",
+    "meta"
+  ],
+  "properties": {
+    "kind": {
+      "const": "request"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*(?![\\s\\S])"
+    },
+    "payload": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 9007199254740991
+    },
+    "deployment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*(?![\\s\\S])"
+    },
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "http"
+      ],
+      "properties": {
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400000
+        },
+        "via": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "queue": {
+          "type": "boolean"
+        },
+        "probe": {
+          "type": "boolean"
+        },
+        "http": {
+          "$ref": "link-http-meta.json"
+        }
+      }
+    }
+  }
+}

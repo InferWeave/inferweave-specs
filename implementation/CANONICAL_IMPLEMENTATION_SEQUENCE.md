@@ -606,14 +606,15 @@ Rules:
 **Context:** `C75`
 **Depends on:** P1-T17
 **Features:** IW-DP-001, IW-DP-002
-**Read:** specs/08_CONNECTIVITY_DATA_PLANE.md
+**Read:** specs/08_CONNECTIVITY_DATA_PLANE.md, specs/59_LINK_HTTP_JSON.md
 
-**Outcome:** Fallback order is direct → site/regional relay → gateway relay last resort with byte accounting/circuit breakers.
+**Outcome:** Fallback order is direct → site/regional relay → gateway relay last resort with byte accounting/circuit breakers. Negotiated exact-model Held Link HTTP JSON preserves target, status, MIME and bytes with terminal failure and no replay (spec59).
 
 **Required tests:**
 - forced NAT failure
 - fallback ordering
 - gateway relay bandwidth circuit breaker
+- spec59 exact-registration/Link negotiation, HTTP byte fidelity and hostile response vectors; production mixed-version, cancellation/backpressure and no-replay proof owed
 
 ### P1-T19 — Canonical 503/429 backpressure and bounded retries
 **Context:** `C65`

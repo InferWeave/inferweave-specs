@@ -101,6 +101,9 @@
       "canonical_tasks": [
         "P1-T03",
         "P1-T18"
+      ],
+      "contracts": [
+        "contracts/protocol-v1/link-http-json.json"
       ]
     },
     {

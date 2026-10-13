@@ -54,3 +54,11 @@ negotiated_profiles:
     implementation_acceptance: contracts/dynamic-alias-acceptance.json
     proof_status: owed
     required_scenarios: [aliases, schema_validation, retries, errors, federation, backwards_compatibility]
+
+# Spec59 independent transport profile; production conformance remains owed.
+link_http_json_profile:
+  feature: link_http_json
+  level: "1"
+  capability: iw.link-http-json/1
+  artifact_runner: tests/smoke/test_link_http_json.py
+  production_proof: owed

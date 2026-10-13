@@ -552,3 +552,11 @@ sources, complete task/logical linkage, sustained current hardware capacity and
 qualified production evaluation imports remain **owed**. Before/theme-after
 reports are bounded slices; final integrated route/browser/screenshots and
 source/dist evidence are still owed at this checkpoint. No production gate closes.
+
+## Exact-model HTTP JSON Held Link (spec59)
+
+**BLOCKED / production proof owed.** Closed schemas and offline golden/hostile
+stream and binding vectors are executable contract evidence only. Rust/Go mixed-version
+path/status/MIME/body parity, current registration/socket atomic dispatch, cancellation,
+credit starvation, terminal failure and no backend replay remain owed. This extension
+opens no alias execution gate and cannot replace spec57 permits.
