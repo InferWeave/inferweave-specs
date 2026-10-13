@@ -38,21 +38,23 @@ def transcript(value, fields):
     return bytes(result)
 
 
-def decode(raw, root):
-    if len(raw) > MAX_BYTES:
+def decode(raw, root, schema_name="aliases/owner-execution-permit.json", maximum_bytes=MAX_BYTES):
+    if len(raw) > maximum_bytes:
         raise ValueError('POLICY_DENIED')
     value = json.loads(raw.decode('utf-8'), object_pairs_hook=edge._unique_members)
-    schema_path = root / 'schemas/v1/aliases/owner-execution-permit.json'
+    schema_path = root / 'schemas/v1' / schema_name
     schema = json.loads(schema_path.read_text())
     store = {}
-    for path in schema_path.parent.glob("*.json"):
+    for path in (root / "schemas/v1").rglob("*.json"):
         item = json.loads(path.read_text())
         store[item["$id"]] = item
     resolver = RefResolver(schema["$id"], schema, store=store,
                            handlers={"https": lambda uri: (_ for _ in ()).throw(ValueError("unknown schema"))})
     if list(Draft7Validator(schema, resolver=resolver).iter_errors(value)):
         raise ValueError('POLICY_DENIED')
-    if len(edge.decode_base64(value['signature'])) != 64:
+    if 'invocation_id' in value and len(edge.decode_base64(value['invocation_id'])) != 16:
+        raise ValueError('POLICY_DENIED')
+    if 'signature' in value and len(edge.decode_base64(value['signature'])) != 64:
         raise ValueError('POLICY_DENIED')
     return value
 
@@ -72,7 +74,7 @@ def verify(value, actual, trusted, current, fields, now):
     permit, selection = value['permit'], value['selection']
     if (permit != current['permit'] or selection != current['selection']
             or value['issuer'] != permit['resource_owner_id'] or current['state'] != 'DISPATCHED'
-            or not current['reservation_valid'] or current['retired']):
+            or not current['reservation_valid'] or current['retired'] or current.get('cancelled', False)):
         raise ValueError('LEASE_CONFLICT')
     for name in ['instance_id', 'instance_generation', 'resource_owner_id']:
         if permit[name] != selection[name]:
@@ -93,6 +95,55 @@ def verify(value, actual, trusted, current, fields, now):
         raise ValueError('POLICY_DENIED')
 
 
+def consume_correlation(envelope, fields):
+    permit = envelope['permit']
+    return dict(invocation_id='AAAAAAAAAAAAAAAAAAAAAQ', node_id=envelope['audience'],
+                link_incarnation_id='fixture-current-link-incarnation',
+                claim_authority_id=envelope['claim_authority_id'], claim_id=permit['claim_id'],
+                owner_incarnation=envelope['owner_incarnation'], holder_id=envelope['holder_id'],
+                fencing_token=permit['fencing_token'], admission_attempt=permit['admission_attempt'],
+                reservation_id=permit['reservation_id'],
+                permit_transcript_sha256=hashlib.sha256(transcript(envelope, fields)).hexdigest())
+
+
+def accepts_ack(ack, expected, *, authenticated, invocation_open):
+    # Authentication and receive-loop binding are modeled inputs, not a network proof.
+    return (authenticated and invocation_open and
+            ack == dict(kind='consume_dispatch_ack', version=1,
+                        **expected, outcome='NEWLY_CONSUMED'))
+
+
+def final_start(envelope, actual, trusted, current, fields, now):
+    # Called after SPENT fsync; each changed input represents fresh guarded state.
+    if now >= min(envelope['expires_at_unix_ms'], envelope['permit']['deadline_unix_ms'],
+                  current.get('effective_deadline_unix_ms', envelope['permit']['deadline_unix_ms'])):
+        return 'START_AUTHORIZATION_EXPIRED'
+    if current.get('cancelled', False):
+        return 'CLIENT_CANCELLED'
+    verify(envelope, actual, trusted, current, fields, now)
+    return None
+
+
+def verify_request_frame(frame, root):
+    import alias_execution as execution
+    import alias_inference_transport as transport
+    frame = decode(json.dumps(frame).encode(), root, 'requests/link-alias-request.json', 16777216)
+    value = frame['meta']['executable']
+    permit = frame['meta']['ownerExecutionPermit']['permit']
+    actual = dict(value, body=frame['payload'])
+    if (frame['deployment'] != permit['execution_binding']['model_id']
+            or len(actual['body'].encode()) != value['payload_bytes']
+            or hashlib.sha256(actual['body'].encode()).hexdigest() != value['body_sha256']
+            or execution.fingerprint(actual) != permit['execution_binding']['executable_request_fingerprint']
+            or not transport.accepts_mime(value['content_type'], value['request_target'])
+            or value['content_type'].split(';')[0].strip().lower() != 'application/json'):
+        raise ValueError('POLICY_DENIED')
+    body = json.loads(actual['body'], object_pairs_hook=edge._unique_members)
+    if body['model'] != frame['deployment']:
+        raise ValueError('POLICY_DENIED')
+    return actual
+
+
 class NodeOracle:
     """Explicit durable-step model, not an fsync/DB/RPC implementation."""
     def __init__(self, consumed=None):
@@ -103,7 +154,8 @@ class NodeOracle:
 
     def execute(self, envelope, actual, trusted, current, fields, now, *, transport='LINK',
                 negotiated=True, intent_synced=True, ack='NEWLY_CONSUMED', spent_synced=True,
-                generation_at_start=None):
+                generation_at_start=None, ack_changes=None, ack_authenticated=True,
+                invocation_open=True, start_now=None, final_changes=None):
         # Other transport implementations remain unqualified. Central uniqueness is shared
         # even by independently instantiated node oracles, representing another future path.
         if transport != 'LINK' or not negotiated:
@@ -114,19 +166,27 @@ class NodeOracle:
             return 'RECONCILE'
         if not intent_synced:
             return 'LOCAL_STORAGE_FAILED'
-        self.local[key] = 'INTENT'
+        expected_ack = consume_correlation(envelope, fields)
+        self.local[key] = dict(state='INTENT', **expected_ack)
         self.consume_calls += 1
         if key in self.central:
             return 'ALREADY_CONSUMED'
         self.central.add(key)
-        if ack != 'NEWLY_CONSUMED':
+        acknowledgement = dict(kind='consume_dispatch_ack', version=1, **expected_ack, outcome=ack)
+        acknowledgement.update(ack_changes or {})
+        if not accepts_ack(acknowledgement, expected_ack, authenticated=ack_authenticated,
+                           invocation_open=invocation_open):
             return 'RECONCILE'
-        # The current generation is held through this final start boundary in real code.
-        if generation_at_start is not None and generation_at_start != current['runtime_generation']:
-            return 'INSTANCE_GENERATION_STALE'
         if not spent_synced:
             return 'LOCAL_STORAGE_FAILED'
-        self.local[key] = 'SPENT'
+        self.local[key]['state'] = 'SPENT'
+        final_current = dict(current, **(final_changes or {}))
+        if generation_at_start is not None:
+            final_current['runtime_generation'] = generation_at_start
+        failure = final_start(envelope, actual, trusted, final_current, fields,
+                              now if start_now is None else start_now)
+        if failure:
+            return failure
         self.starts += 1
         return 'STARTED'
 
@@ -180,6 +240,13 @@ def check_vectors(root):
             or vectors['operational_proof_status'] != 'owed'):
         errors.append('owner permit frozen vocabulary/proof status drift')
     base = vectors['known_answer']
+    expected_correlation = list(consume_correlation(base['envelope'], fields))
+    if contract['consume_correlation_fields'] != expected_correlation:
+        errors.append('consume correlation field drift')
+    for suffix, extra in [('dispatch', 'ownerExecutionPermit'), ('dispatch-ack', 'outcome')]:
+        schema = json.loads((root / ('schemas/v1/requests/link-consume-' + suffix + '.json')).read_text())
+        if set(schema['required']) != set(expected_correlation) | {'kind', 'version', extra}:
+            errors.append('consume control schema correlation drift')
     wire = transcript(base['envelope'], fields)
     if wire.hex() != base['transcript_hex']:
         errors.append('owner permit transcript known answer mismatch')
@@ -187,4 +254,18 @@ def check_vectors(root):
         errors.append('owner permit signature known answer mismatch')
     for case in vectors['cases']:
         errors.extend(run_case(case, base, fields, root))
+    for case in vectors['frame_cases']:
+        frame = copy.deepcopy(vectors['request_frame'])
+        for change in case.get('changes', []):
+            target = frame
+            parts = change['field'].split('.')
+            for part in parts[:-1]: target = target[part]
+            target[parts[-1]] = change['value']
+        try:
+            verify_request_frame(frame, root)
+            accepted = True
+        except (ValueError, KeyError, TypeError):
+            accepted = False
+        if accepted != case['accepted']:
+            errors.append(case['id'] + ': protected request frame decision mismatch')
     return errors

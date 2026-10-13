@@ -2319,6 +2319,7 @@ Rules:
 - purpose-bound owner permit, exact node audience and negotiated Link capability; direct/proxy unsupported until qualified
 - durably synced node INTENT before central ConsumeDispatch and SPENT before backend; duplicate/timeout/lost acknowledgement never starts
 - one claim fence across permit IDs/transports/restarts; runtime instance/generation pinned through backend start
+- protected Link executable bytes and asynchronous consume request/ack preserve exact bindings; heartbeat/cancellation continue during waits and post-fsync expiry/cancellation prevents start
 
 ### A-T05 — Runtime and federation alias integration
 **Context:** `C80`
@@ -2341,6 +2342,7 @@ Rules:
 - purpose-bound owner permit, exact node audience and negotiated Link capability; direct/proxy unsupported until qualified
 - durably synced node INTENT before central ConsumeDispatch and SPENT before backend; duplicate/timeout/lost acknowledgement never starts
 - one claim fence across permit IDs/transports/restarts; runtime instance/generation pinned through backend start
+- protected Link executable bytes and asynchronous consume request/ack preserve exact bindings; heartbeat/cancellation continue during waits and post-fsync expiry/cancellation prevents start
 
 ### A-T06 — Go typed alias client and transparent relay
 **Context:** `C80`

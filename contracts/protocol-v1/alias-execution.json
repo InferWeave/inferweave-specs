@@ -183,6 +183,33 @@
     ],
     "local_intent_before_consume": true,
     "local_spent_before_backend": true,
-    "operational_proof_status": "owed"
+    "operational_proof_status": "owed",
+    "consume_correlation_fields": [
+      "invocation_id",
+      "node_id",
+      "link_incarnation_id",
+      "claim_authority_id",
+      "claim_id",
+      "owner_incarnation",
+      "holder_id",
+      "fencing_token",
+      "admission_attempt",
+      "reservation_id",
+      "permit_transcript_sha256"
+    ],
+    "request_frame_schema": "requests/link-alias-request.json",
+    "consume_request_schema": "requests/link-consume-dispatch.json",
+    "consume_ack_schema": "requests/link-consume-dispatch-ack.json",
+    "final_start_rechecks": [
+      "permit_expiry",
+      "operation_deadline",
+      "cancellation",
+      "reservation",
+      "claim_state",
+      "runtime_generation",
+      "owner_incarnation",
+      "holder_fence",
+      "key_revocation"
+    ]
   }
 }

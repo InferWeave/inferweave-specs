@@ -72,6 +72,36 @@ class ExecutionContractTests(unittest.TestCase):
         with patch.object(owner.NodeOracle,'execute',unsafe_ack):
             self.assertTrue(owner.run_case(case,vectors['known_answer'],fields,ROOT))
 
+    def test_consumption_ack_freshness_guard_detects_removed_binding(self):
+        with patch.object(owner,'accepts_ack',lambda *args,**kwargs:True):
+            self.assertTrue(owner.check_vectors(ROOT))
+
+    def test_final_start_guard_detects_removed_expiry_and_cancellation(self):
+        with patch.object(owner,'final_start',lambda *args:None):
+            self.assertTrue(owner.check_vectors(ROOT))
+
+    def test_consume_control_frames_bind_complete_correlation(self):
+        for name,schema in [('alias-consume-dispatch','link-consume-dispatch'),
+                            ('alias-consume-dispatch-ack','link-consume-dispatch-ack')]:
+            value=json.loads((ROOT/('fixtures/valid/'+name+'.json')).read_text())
+            path='requests/'+schema+'.json'
+            self.assertEqual(value,owner.decode(json.dumps(value).encode(),ROOT,path,32768))
+            for field in ['invocation_id','node_id','link_incarnation_id','claim_id','fencing_token',
+                          'admission_attempt','reservation_id','permit_transcript_sha256']:
+                wrong=dict(value);del wrong[field]
+                with self.assertRaises(ValueError):owner.decode(json.dumps(wrong).encode(),ROOT,path,32768)
+            wrong=dict(value,invocation_id='AAAAAAAAAAAAAAAAAAAAAR')
+            with self.assertRaises(ValueError):owner.decode(json.dumps(wrong).encode(),ROOT,path,32768)
+
+    def test_protected_link_frame_preserves_exact_executable_bytes(self):
+        vectors=json.loads((ROOT/'conformance/owner-execution-permit-vectors.json').read_text())
+        frame=vectors['request_frame'];actual=owner.verify_request_frame(frame,ROOT)
+        self.assertEqual(vectors['known_answer']['actual']['body'].encode(),actual['body'].encode())
+        self.assertEqual('/v1/chat',actual['request_target'])
+        for changes in [{'native':{}},{'timeout_ms':100},{'queue':True}]:
+            changed=copy.deepcopy(frame);changed['meta'].update(changes)
+            with self.assertRaises(ValueError):owner.verify_request_frame(changed,ROOT)
+
     def test_all_known_answers_hostile_vectors_and_claim_transitions(self):
         self.assertEqual([],execution.check_vectors(ROOT))
         self.assertGreaterEqual(len(self.vectors['claim_cases']),12)

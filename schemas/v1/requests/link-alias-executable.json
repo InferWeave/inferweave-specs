@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-alias-executable.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "method",
+    "request_target",
+    "body_sha256",
+    "content_type",
+    "alias_level",
+    "session_id",
+    "timeout_ms",
+    "capabilities",
+    "min_context",
+    "prefer_family",
+    "queue",
+    "tenant_selector",
+    "payload_bytes"
+  ],
+  "properties": {
+    "method": {
+      "const": "POST"
+    },
+    "request_target": {
+      "enum": [
+        "/v1/chat",
+        "/v1/chat/completions",
+        "/v1/completions",
+        "/v1/responses",
+        "/v1/embeddings",
+        "/v1/audio/transcriptions",
+        "/v1/audio/speech",
+        "/v1/rerank"
+      ]
+    },
+    "body_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "content_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "alias_level": {
+      "const": "2"
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "timeout_ms": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^(|[1-9][0-9]*)$"
+    },
+    "capabilities": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 1024,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "min_context": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^(|[1-9][0-9]*)$"
+    },
+    "prefer_family": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "queue": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "tenant_selector": {
+      "type": "string",
+      "minLength": 0,
+      "maxLength": 256,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "payload_bytes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 16777216
+    }
+  }
+}

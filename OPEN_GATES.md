@@ -491,3 +491,11 @@ generation pinning through backend start, key/owner-incarnation revocation and n
 interoperability. Direct/client and node-proxy level-2 execution remain unsupported until separately
 qualified against the same central claim fence. No production execution or activation is proven
 by these schemas, public-seed signatures or offline scenarios.
+
+PR #259 review correction: the earlier permit text incorrectly assumed native Link metadata
+could preserve spec57 compatibility targets and semantic headers. The protected Request and
+separate asynchronous consume control schemas now specify those missing bytes and bindings.
+Running Link request/ack multiplexing, continued heartbeat/cancellation while awaiting consume,
+late/wrong acknowledgement rejection, and post-fsync expiry/deadline/cancellation revalidation
+remain **owed**. JSON-only bounded fixture success does not qualify multipart, chunking,
+OpenAI SSE/tool streams, direct execution or node HTTP proxying.

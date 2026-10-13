@@ -338,15 +338,70 @@ executable binding and unretired selection. A valid signature alone grants no ex
 
 Feature `owner_execution_permits: "1"` names capability `iw.owner-execution-permit/1`.
 Negotiate it through the existing registration and exact Link
-incarnation capability intersection. The existing native-request Link frame gains optional
-`ownerExecutionPermit` containing this envelope. Level-2 alias execution requires the field and
-capability in addition to the applicable native request/response negotiation; legacy exact-model
-frames retain their contract. Link frame/request IDs are correlation only. Unsupported or
-unnegotiated peers fail closed before dispatch, without stripping the envelope or retrying legacy
-frames. This version initially qualifies only that protected Link path. Direct client permits,
-node HTTP proxy and other relay variants remain unsupported for level-2 aliases until they
-implement and independently qualify the identical central and node fence. D-005 remains the
+incarnation capability intersection. This capability independently authorizes the protected
+request and asynchronous consume control frames below; native-request negotiation alone cannot
+carry them. The existing native metadata only supports relative `/embeddings`, `/rerank`,
+`/predictions`, `/jobs` and fixed JSON Content-Type. It cannot reconstruct spec57's `/v1/*`
+fingerprint. Treating it as a ready transport was a contract defect, corrected by this explicit
+shape; no new native endpoint mapping or silent transform is introduced.
+
+**Protected Request frame.** `schemas/v1/requests/link-alias-request.json` is the closed level-2
+variant of the existing `kind: "request"` frame. It carries correlation-only `request_id`,
+`deployment` equal to the admitted exact model ID, the original string `payload` holding the
+**materialized** UTF-8 request bytes, and `meta` with exactly `ownerExecutionPermit` (the signed
+envelope) and `executable` (schema `link-alias-executable.json`). The executable object contains
+all twelve spec57 fingerprint fields, including exact method, `/v1/*` target, Content-Type,
+body digest and each semantic header value, plus `payload_bytes`. The node hashes the UTF-8
+encoding of the decoded payload string, checks its exact byte count/digest, reconstructs the
+fingerprint, and compares the signed binding. JSON transport escaping changes no decoded bytes;
+re-serializing the inference payload or normalizing MIME/headers before verification is forbidden.
+Reject duplicate JSON members, unknown fields, missing metadata and conflicting deployment/model.
+
+`meta.native`, launch/probe/queue/timeout overrides, chunk fields and a second permit location
+are forbidden in this variant. Queue/timeout semantics come solely from the bound executable
+fields and absolute claim deadline. Targets are the existing spec57 allowlist, never arbitrary
+URLs. Initial bodies must be valid UTF-8 JSON with an application/json Content-Type under the
+section 3 grammar; multipart/binary and inline bulk media remain unsupported. Both decoded body
+and complete encoded frame are capped at 16 MiB, further reduced by the existing Link frame cap;
+a frame that cannot fit fails before consumption. Chunking needs separate qualification. Exact
+selected runtime adapters must implement the given compatibility target and preserve its semantics;
+this metadata does not authorize generic backend proxying or mapping `/v1/*` to native endpoints.
+
+A level-2 sender checks this capability on the exact current registration and held Link before
+enqueueing; a receiver rejects a protected frame without it. Never strip metadata or retry a
+legacy frame after failure. The response format must be independently qualified for the requested
+endpoint: native-response v1 covers its bounded JSON response contract only, and is not proof of
+OpenAI SSE/tool-stream fidelity. Streaming, other response content types and unsupported endpoint
+pairs remain unavailable until their byte/status/cancellation contract is qualified. Direct client
+permits, node HTTP proxy and other relay variants remain unsupported for level-2 aliases until
+they implement and independently qualify the identical central and node fence. D-005 remains the
 target data path; this bounded extension does not approve general gateway proxy activation.
+
+**Consume control exchange.** The same negotiated capability authorizes separate node→owner
+`kind: "consume_dispatch"` and owner→node `kind: "consume_dispatch_ack"` frames, version 1,
+matching `link-consume-dispatch.json` and `link-consume-dispatch-ack.json`. These are control frames,
+never inference Request payloads or in-process storage calls disguised as network RPC. The request
+carries the complete owner envelope and explicit `invocation_id`, `node_id`, `link_incarnation_id`,
+`claim_authority_id`, `claim_id`, `owner_incarnation`, `holder_id`, `fencing_token`,
+`admission_attempt`, `reservation_id` and `permit_transcript_sha256`. The invocation ID is fresh
+128-bit randomness encoded as canonical unpadded base64url; persist it with the node INTENT.
+All repeated fields must match the signed envelope, authenticated node/current Link and stored
+claim. The owner resolves the configured claim authority, performs the authenticated central CAS,
+and returns the exact correlation fields with `outcome` of NEWLY_CONSUMED, ALREADY_CONSUMED or
+REJECTED. A response from another owner, Link incarnation, closed invocation or status API cannot
+authorize a start. Reject malformed/oversized control frames before parsing; the complete encoded
+request is capped at 32768 bytes and acknowledgement at 8192 bytes, reduced by Link limits.
+
+The node keeps a bounded outstanding-invocation table keyed by invocation plus exact Link
+incarnation. Dispatch processing must yield to the shared receive loop while awaiting the ack,
+so cancellation, heartbeat and flow-control processing continue. Deadline, disconnect, cancel or
+owner revocation closes the invocation and leaves durable INTENT for reconciliation. A late ack
+for that invocation is discarded even if correctly authenticated. Cancellation is a monotonic
+local latch associated with the claim, not merely the inference frame correlation ID. Owner
+cancellation must invalidate pending control waits. No timeout, reconnect or fresh invocation
+may clear the durable fence. Authenticated status/reconciliation is separate from this exchange
+and must never emit a newly-consumed start permission. Runtime implementation and fault-injected
+proof of these asynchronous behaviors remain owed.
 
 The one-execution key is **`(claim_authority_id, claim_id)`**, persistent across permit IDs,
 holders, attempts, Link reconnects and any future qualified direct/relay path. Stable authority
@@ -373,8 +428,13 @@ ID never define an execution namespace. The node must:
    A cached original acknowledgement, status response or `dispatch_consumed=true` is never a fresh
    permission to execute. Authenticated responses must match the outstanding live invocation.
 4. Only after receiving this definitive fresh `NEWLY_CONSUMED` response, revalidate the pinned
-   runtime and durably sync `SPENT` before calling the backend exactly once. If revalidation or
-   syncing fails, record/reconcile the nonexecution and fail closed; consumption is not undone.
+   runtime and durably sync `SPENT`. **After that sync and immediately at the atomic backend-start
+   boundary**, recheck trusted current time against both permit expiry and the original/effective
+   operation deadline; the cancellation latch, current claim/reservation validity, holder/fence,
+   owner incarnation/key revocation and exact runtime generation must still permit starting.
+   A delayed acknowledgement or slow fsync cannot extend authorization. If cancellation, expiry,
+   revocation, generation change, state uncertainty or syncing failure prevents the start,
+   record/reconcile nonexecution and fail closed; the spent central claim is never reset.
    A crash between SPENT and backend is conservatively ambiguous and cannot trigger replay.
    Backend setup/start failure also cannot reopen the claim or spend another permit.
 

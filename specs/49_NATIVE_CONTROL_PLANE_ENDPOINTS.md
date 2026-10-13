@@ -97,6 +97,10 @@ all under `/inferweave/v1`:
   native HTTP relay that needs response semantics; selection uses direct HTTP or another eligible
   deployment, otherwise returns `FEATURE_UNSUPPORTED` before dispatch. Legacy Hello frames,
   metadata-free chat streams, and older peers remain unchanged.
+- Spec57 level-2 owner permits use the separately negotiated closed protected Request schema
+  `schemas/v1/requests/link-alias-request.json` and distinct consume control frames. They do not
+  extend `meta.native` endpoint mappings or imply compatible SSE/tool-stream responses. See
+  spec57 section 5.1; activation proof remains owed.
 - Family-specific endpoints reject requests whose family does not match their
   contract (e.g. `POST /rerank` rejects a non-reranking request) with a typed
   error from `schemas/v1/errors/`.

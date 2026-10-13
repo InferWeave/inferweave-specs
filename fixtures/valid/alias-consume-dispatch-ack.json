@@ -1,0 +1,16 @@
+{
+  "kind": "consume_dispatch_ack",
+  "version": 1,
+  "invocation_id": "AAAAAAAAAAAAAAAAAAAAAQ",
+  "node_id": "node-fixture",
+  "link_incarnation_id": "fixture-current-link-incarnation",
+  "claim_authority_id": "authority-fixture",
+  "claim_id": "claim-fixture",
+  "owner_incarnation": "owner-epoch-fixture",
+  "holder_id": "holder-fixture",
+  "fencing_token": 1,
+  "admission_attempt": 1,
+  "reservation_id": "reservation-fixture",
+  "permit_transcript_sha256": "3ca37675a3f21a2a91faec98c1689cb6a3eb8626ab95bb6b2dc6a578296bec0e",
+  "outcome": "NEWLY_CONSUMED"
+}

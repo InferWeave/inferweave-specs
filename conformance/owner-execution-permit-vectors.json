@@ -587,6 +587,596 @@
       ],
       "expected_starts": 0,
       "expected_consume_calls": 0
+    },
+    {
+      "id": "ack-wrong-invocation_id",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "invocation_id": "wrong-AAAAAAAAAAAAAAAAAAAAAQ"
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-wrong-node_id",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "node_id": "wrong-node-fixture"
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-wrong-link_incarnation_id",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "link_incarnation_id": "wrong-fixture-current-link-incarnation"
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-wrong-claim_authority_id",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "claim_authority_id": "wrong-authority-fixture"
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-wrong-claim_id",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "claim_id": "wrong-claim-fixture"
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-wrong-owner_incarnation",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "owner_incarnation": "wrong-owner-epoch-fixture"
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-wrong-holder_id",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "holder_id": "wrong-holder-fixture"
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-wrong-fencing_token",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "fencing_token": 2
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-wrong-admission_attempt",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "admission_attempt": 2
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-wrong-reservation_id",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "reservation_id": "wrong-reservation-fixture"
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-wrong-permit_transcript_sha256",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "permit_transcript_sha256": "wrong-3ca37675a3f21a2a91faec98c1689cb6a3eb8626ab95bb6b2dc6a578296bec0e"
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-unauthenticated",
+      "steps": [
+        {
+          "options": {
+            "ack_authenticated": false
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "ack-late-closed-invocation",
+      "steps": [
+        {
+          "options": {
+            "invocation_open": false
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "status-is-not-consume-ack",
+      "steps": [
+        {
+          "options": {
+            "ack_changes": {
+              "kind": "status"
+            }
+          },
+          "expected": "RECONCILE"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "expires-during-fsync",
+      "steps": [
+        {
+          "options": {
+            "start_now": 1800000010000
+          },
+          "expected": "START_AUTHORIZATION_EXPIRED"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "original-deadline-passed",
+      "steps": [
+        {
+          "options": {
+            "start_now": 1800000012000
+          },
+          "expected": "START_AUTHORIZATION_EXPIRED"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "shortened-deadline",
+      "steps": [
+        {
+          "options": {
+            "start_now": 1800000005000,
+            "final_changes": {
+              "effective_deadline_unix_ms": 1800000005000
+            }
+          },
+          "expected": "START_AUTHORIZATION_EXPIRED"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "cancel-during-fsync",
+      "steps": [
+        {
+          "options": {
+            "final_changes": {
+              "cancelled": true
+            }
+          },
+          "expected": "CLIENT_CANCELLED"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "reservation-revoked-at-start",
+      "steps": [
+        {
+          "options": {
+            "final_changes": {
+              "reservation_valid": false
+            }
+          },
+          "expected": "LEASE_CONFLICT"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "claim-terminal-at-start",
+      "steps": [
+        {
+          "options": {
+            "final_changes": {
+              "state": "TERMINAL"
+            }
+          },
+          "expected": "LEASE_CONFLICT"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    },
+    {
+      "id": "owner-replaced-at-start",
+      "steps": [
+        {
+          "options": {
+            "final_changes": {
+              "owner_incarnation": "new-owner"
+            }
+          },
+          "expected": "POLICY_DENIED"
+        },
+        {
+          "restart": true,
+          "expected": "RECONCILE"
+        }
+      ],
+      "expected_starts": 0,
+      "expected_consume_calls": 1
+    }
+  ],
+  "request_frame": {
+    "kind": "request",
+    "request_id": "request-correlation-only",
+    "deployment": "fixture/model@1",
+    "payload": "{\"model\":\"fixture/model@1\",\"messages\":[{\"role\":\"user\",\"content\":\"fixture only\"}]}",
+    "meta": {
+      "ownerExecutionPermit": {
+        "version": 1,
+        "purpose": "inferweave.owner-execution-permit/v1",
+        "issuer": "fixture-owner",
+        "key_id": "owner-key-fixture",
+        "audience": "node-fixture",
+        "owner_incarnation": "owner-epoch-fixture",
+        "holder_id": "holder-fixture",
+        "claim_authority_id": "authority-fixture",
+        "issued_at_unix_ms": 1800000000000,
+        "expires_at_unix_ms": 1800000010000,
+        "permit": {
+          "schema_version": 1,
+          "permit_id": "permit-fixture",
+          "claim_id": "claim-fixture",
+          "fencing_token": 1,
+          "admission_attempt": 1,
+          "tenant_id": "fixture-tenant",
+          "principal_id": "principal-fixture",
+          "instance_id": "fixture-instance",
+          "instance_generation": "fixture-generation",
+          "resource_owner_id": "fixture-owner",
+          "reservation_id": "reservation-fixture",
+          "deadline_unix_ms": 1800000012000,
+          "execution_binding": {
+            "request_fingerprint": "bf9d7119901e207e42b6f08a74d7db66b9829f5152d204aa8116220eb29b7322",
+            "executable_request_fingerprint": "0ea63285dc0fda258fa000dd993434f2efa402baeccc052f0e19005196564955",
+            "executable_body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+            "transformation_version": "inferweave.alias-materialization/v1",
+            "model_id": "fixture/model@1"
+          }
+        },
+        "selection": {
+          "alias_id": "coding-fast",
+          "alias_revision": 2,
+          "catalog_revision": "catalog-fixture",
+          "routing_policy_version": "fixture-policy-1",
+          "model_id": "fixture/model@1",
+          "deployment_key": "fixture-deployment",
+          "instance_id": "fixture-instance",
+          "instance_generation": "fixture-generation",
+          "capability_profile_id": "fixture-profile",
+          "policy_evidence_id": "fixture-policy",
+          "resource_owner_id": "fixture-owner",
+          "resource_group_id": "fixture-group",
+          "requirement_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "signature": "P0ytFUUQ7Tr9tJYObuuIC6samZJNZuYAG684ZfCK9_Ofge9EwfxgN3IdHKMBrd5HTH3X4yy3fPPjtBOqQnnaCQ"
+      },
+      "executable": {
+        "method": "POST",
+        "request_target": "/v1/chat",
+        "body_sha256": "1c68adf919394092a811f0d796fbeb6d454d1cf659bf6ccfc8c563ff19fd79b7",
+        "content_type": "application/json",
+        "alias_level": "2",
+        "session_id": "session-fixture",
+        "timeout_ms": "12000",
+        "capabilities": "tools",
+        "min_context": "32768",
+        "prefer_family": "qwen",
+        "queue": "true",
+        "tenant_selector": "fixture-tenant",
+        "payload_bytes": 81
+      }
+    }
+  },
+  "frame_cases": [
+    {
+      "id": "protected-request-roundtrip",
+      "accepted": true
+    },
+    {
+      "id": "changed-target",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "meta.executable.request_target",
+          "value": "/v1/completions"
+        }
+      ]
+    },
+    {
+      "id": "native-target-forbidden",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "meta.executable.request_target",
+          "value": "/embeddings"
+        }
+      ]
+    },
+    {
+      "id": "absolute-target-forbidden",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "meta.executable.request_target",
+          "value": "https://forbidden.invalid/"
+        }
+      ]
+    },
+    {
+      "id": "changed-content-type",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "meta.executable.content_type",
+          "value": "Application/JSON"
+        }
+      ]
+    },
+    {
+      "id": "changed-semantic-header",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "meta.executable.session_id",
+          "value": "different"
+        }
+      ]
+    },
+    {
+      "id": "changed-body",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "payload",
+          "value": "{}"
+        }
+      ]
+    },
+    {
+      "id": "conflicting-deployment",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "deployment",
+          "value": "wrong"
+        }
+      ]
+    },
+    {
+      "id": "conflicting-native",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "meta.native",
+          "value": {}
+        }
+      ]
+    },
+    {
+      "id": "unbound-timeout",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "meta.timeout_ms",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "id": "unexpected-chunk",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "chunk",
+          "value": {}
+        }
+      ]
+    },
+    {
+      "id": "wrong-payload-length",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "meta.executable.payload_bytes",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "unknown-executable-field",
+      "accepted": false,
+      "changes": [
+        {
+          "field": "meta.executable.unbound",
+          "value": "unsafe"
+        }
+      ]
     }
   ]
 }
