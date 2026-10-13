@@ -1,0 +1,26 @@
+{
+  "nodeId": "node-a",
+  "role": "node",
+  "credential": "credential-example",
+  "endpoint": "127.0.0.1:9101",
+  "models": [
+    {
+      "model": "qwen3-8b-modality-text-quant-q4_k_m",
+      "contextSupported": 131072,
+      "maxContextTokens": 32768,
+      "engine": "llama.cpp",
+      "backend": "cuda",
+      "slots": 1,
+      "vramBytes": 100000000
+    }
+  ],
+  "deployment": "dep_9f8e7d6c",
+  "vramBytes": 100000000,
+  "kvBytes": 10000000,
+  "kvBytesPerToken": 10,
+  "gpuIds": ["iw-gpu-0"],
+  "capabilities": [
+    "iw.link-native-request/1",
+    "iw.link-native-response/1"
+  ]
+}

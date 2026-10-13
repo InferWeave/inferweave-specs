@@ -7,7 +7,7 @@
   "required": ["family", "model", "input"],
   "properties": {
     "family": {"type": "string", "enum": ["embeddings"]},
-    "model": {"type": "string"},
+    "model": {"type": "string", "minLength": 1},
     "input": {"type": "array", "minItems": 1, "items": {"type": "string"}}
   }
 }

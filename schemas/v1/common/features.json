@@ -65,6 +65,10 @@
     "native_link_requests": {
       "type": "string",
       "description": "Level \"1\" names capability iw.link-native-request/1. It permits bounded typed native dispatch only after the exact current registration and exact Link incarnation complete the native Link v1 Hello/ack binding (specs/45 and specs/49); node-id-wide inference is forbidden."
+    },
+    "native_link_responses": {
+      "type": "string",
+      "description": "Level \"1\" names capability iw.link-native-response/1. Together with iw.link-native-request/1 on the same exact binding, it requires end-frame status/header/body proof and forbids deriving HTTP status from response JSON fields (specs/45 and specs/49)."
     }
   }
 }

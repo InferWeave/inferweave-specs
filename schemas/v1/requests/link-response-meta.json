@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-response-meta.json",
+  "title": "NativeLinkResponseMeta",
+  "description": "HTTP result proof carried on the existing Link end frame only when iw.link-native-response/1 is negotiated. It binds the exact buffered UTF-8 JSON response bytes to an explicit non-redirect HTTP status and a small canonical header allow-list.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "headers", "body_bytes", "body_sha256"],
+  "properties": {
+    "status": {
+      "type": "integer",
+      "description": "Draft 7 integer-valued JSON number, normalized to an integer before HTTP relay.",
+      "anyOf": [
+        {"minimum": 200, "maximum": 299},
+        {"minimum": 400, "maximum": 599}
+      ]
+    },
+    "headers": {
+      "type": "object",
+      "additionalProperties": false,
+      "maxProperties": 3,
+      "properties": {
+        "content-type": {"const": "application/json"},
+        "retry-after": {"type": "string", "pattern": "^(0|[1-9][0-9]{0,9})$"},
+        "location": {"type": "string", "minLength": 1, "maxLength": 320, "pattern": "^/inferweave/v1/jobs/[A-Za-z0-9._:-]{1,256}$"}
+      }
+    },
+    "body_bytes": {
+      "type": "integer",
+      "description": "Draft 7 integer-valued JSON number equal to the actual buffered UTF-8 byte length.",
+      "minimum": 0,
+      "maximum": 16777216
+    },
+    "body_sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"body_bytes": {"minimum": 1}}},
+      "then": {"properties": {"headers": {"required": ["content-type"]}}}
+    },
+    {
+      "if": {"properties": {"headers": {"required": ["retry-after"]}}},
+      "then": {"properties": {"status": {"enum": [429, 503]}}}
+    },
+    {
+      "if": {"properties": {"headers": {"required": ["location"]}}},
+      "then": {"properties": {"status": {"enum": [201, 202]}}}
+    },
+    {
+      "if": {"properties": {"status": {"const": 204}}},
+      "then": {
+        "properties": {
+          "body_bytes": {"const": 0},
+          "body_sha256": {"const": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+        }
+      }
+    }
+  ]
+}

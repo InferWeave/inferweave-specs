@@ -3934,14 +3934,16 @@
         "IW-RT-002"
       ],
       "context_class": "C75",
-      "outcome": "Extend `openapi/inferweave-v1.yaml` with native runtime-family endpoints, publish standalone deployment and family-request JSON Schemas reconciled against the full inline constraints, and define negotiated bounded native link dispatch bound to the exact authenticated registration and Link incarnation without arbitrary URI or proxy behavior.",
+      "outcome": "Extend `openapi/inferweave-v1.yaml` with native runtime-family endpoints, publish standalone deployment and family-request JSON Schemas reconciled against the full inline constraints, and define independently negotiated bounded native Link request plus exact HTTP response proof bound to the current authenticated registration and Link incarnation without arbitrary URI, proxy behavior or body-derived status.",
       "required_tests": [
         "openapi-validation",
         "family-routing (e.g. `POST /rerank` only for `reranking`)",
         "parity (native endpoints honour admission/fairshare like `/v1/chat/completions`)",
         "standalone/OpenAPI schema parity",
         "node-register hardware-only conditional-schema parity and de-duplicated capability intersection; registration/Link-incarnation Hello/ack negotiation and re-registration/credential/socket revocation vectors",
-        "negotiated native link family/endpoint whitelist and hostile URI/content/size fixtures"
+        "negotiated native link family/endpoint whitelist and hostile URI/content/size fixtures",
+        "native Link response proof vectors for exact 201/4xx/5xx status, bounded canonical headers, exact UTF-8 body bytes/digest, success code extensions, missing proof and request-only peers",
+        "family model minLength 1 and JSON integer spelling parity (1, 1.0, 1e0)"
       ],
       "notes": ""
     },

@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/requests/link-hello.json",
   "title": "Link Hello",
-  "description": "Authenticated Link handshake. Legacy peers omit all native_link_* fields. A v1 native sender binds its offer to the exact current control registration and generates a fresh link_incarnation_id for every socket/dial.",
+  "description": "Authenticated Link handshake. Legacy peers omit all native_link_* fields. A v1 native sender binds its independently offered request and response capabilities to the exact current control registration and generates a fresh link_incarnation_id for every socket/dial.",
   "type": "object",
   "additionalProperties": true,
   "required": ["kind", "node_id", "role", "credential"],

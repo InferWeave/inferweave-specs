@@ -1,0 +1,137 @@
+{
+  "schemaVersion": "inferweave.native-link-response-v1",
+  "capabilities": [
+    "iw.link-native-request/1",
+    "iw.link-native-response/1"
+  ],
+  "registration": {
+    "connection_id": "c-0123456789abcdef",
+    "capabilities": ["iw.link-native-request/1", "iw.link-native-response/1"],
+    "fresh": true,
+    "credential_valid": true
+  },
+  "hello": {
+    "kind": "hello",
+    "node_id": "node-a",
+    "role": "node",
+    "credential": "credential-example",
+    "session": "process-session-node-a",
+    "native_link_version": 1,
+    "registration_connection_id": "c-0123456789abcdef",
+    "link_incarnation_id": "link-incarnation-first-0001",
+    "native_link_features": ["iw.link-native-request/1", "iw.link-native-response/1"]
+  },
+  "ack": {
+    "kind": "hello_ack",
+    "native_link_version": 1,
+    "registration_connection_id": "c-0123456789abcdef",
+    "link_incarnation_id": "link-incarnation-first-0001",
+    "binding_status": "bound",
+    "negotiated_features": ["iw.link-native-request/1", "iw.link-native-response/1"]
+  },
+  "cases": [
+    {
+      "id": "job-created-201",
+      "body": "{\"family\":\"audio\",\"job_id\":\"job-1\",\"state\":\"submitted\"}",
+      "responseFixture": "fixtures/valid/link-response-meta-201.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": true,
+      "expectStatus": 201
+    },
+    {
+      "id": "typed-client-error-400",
+      "body": "{\"code\":\"invalid_request\",\"category\":\"protocol\",\"message\":\"invalid request\",\"retryable\":false}",
+      "responseFixture": "fixtures/valid/link-response-meta-400.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": true,
+      "expectStatus": 400
+    },
+    {
+      "id": "typed-upstream-error-503",
+      "body": "{\"code\":\"capacity_unavailable\",\"category\":\"capacity\",\"message\":\"busy\",\"retryable\":true}",
+      "responseFixture": "fixtures/valid/link-response-meta-503.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": true,
+      "expectStatus": 503
+    },
+    {
+      "id": "success-body-code-is-not-an-error-signal",
+      "body": "{\"code\":\"snapshot_accepted\",\"result\":{\"id\":\"snapshot-1\"}}",
+      "responseFixture": "fixtures/valid/link-response-meta-success-extension.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": true,
+      "expectStatus": 200
+    },
+    {
+      "id": "draft7-integral-decimal-response-proof",
+      "body": "{\"code\":\"snapshot_accepted\",\"result\":{\"id\":\"snapshot-1\"}}",
+      "responseFixture": "fixtures/valid/link-response-meta-integral-decimal.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": true,
+      "expectStatus": 200
+    },
+    {
+      "id": "draft7-integral-exponent-response-proof",
+      "body": "{\"code\":\"snapshot_accepted\",\"result\":{\"id\":\"snapshot-1\"}}",
+      "responseFixture": "fixtures/valid/link-response-meta-integral-exponent.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": true,
+      "expectStatus": 200
+    },
+    {
+      "id": "python-nan-extension-is-not-json",
+      "body": "NaN",
+      "responseFixture": "fixtures/valid/link-response-meta-nan-body-proof.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": false,
+      "expectCode": "INVALID_NATIVE_RESPONSE"
+    },
+    {
+      "id": "python-positive-infinity-extension-is-not-json",
+      "body": "Infinity",
+      "responseFixture": "fixtures/valid/link-response-meta-positive-infinity-body-proof.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": false,
+      "expectCode": "INVALID_NATIVE_RESPONSE"
+    },
+    {
+      "id": "python-negative-infinity-extension-is-not-json",
+      "body": "-Infinity",
+      "responseFixture": "fixtures/valid/link-response-meta-negative-infinity-body-proof.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": false,
+      "expectCode": "INVALID_NATIVE_RESPONSE"
+    },
+    {
+      "id": "request-capability-alone-is-ineligible",
+      "body": "{\"code\":\"snapshot_accepted\",\"result\":{\"id\":\"snapshot-1\"}}",
+      "responseFixture": "fixtures/valid/link-response-meta-success-extension.json",
+      "negotiatedFeatures": ["iw.link-native-request/1"],
+      "expectAllowed": false,
+      "expectCode": "FEATURE_UNSUPPORTED"
+    },
+    {
+      "id": "response-capability-alone-is-ineligible",
+      "body": "{\"code\":\"snapshot_accepted\",\"result\":{\"id\":\"snapshot-1\"}}",
+      "responseFixture": "fixtures/valid/link-response-meta-success-extension.json",
+      "negotiatedFeatures": ["iw.link-native-response/1"],
+      "expectAllowed": false,
+      "expectCode": "FEATURE_UNSUPPORTED"
+    },
+    {
+      "id": "negotiated-response-missing-end-proof",
+      "body": "{\"code\":\"snapshot_accepted\",\"result\":{\"id\":\"snapshot-1\"}}",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": false,
+      "expectCode": "INVALID_NATIVE_RESPONSE"
+    },
+    {
+      "id": "body-does-not-match-proof",
+      "body": "{\"code\":\"snapshot_accepted\",\"result\":{\"id\":\"tampered\"}}",
+      "responseFixture": "fixtures/valid/link-response-meta-success-extension.json",
+      "negotiatedFeatures": ["iw.link-native-request/1", "iw.link-native-response/1"],
+      "expectAllowed": false,
+      "expectCode": "INVALID_NATIVE_RESPONSE"
+    }
+  ]
+}
