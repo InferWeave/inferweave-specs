@@ -24,7 +24,8 @@
       "owner_task": "A-T03",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 4,
@@ -40,7 +41,8 @@
       "owner_task": "A-T03",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 6,
@@ -48,7 +50,8 @@
       "owner_task": "A-T05",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 7,
@@ -88,7 +91,8 @@
       "owner_task": "A-T03",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 12,
@@ -96,7 +100,8 @@
       "owner_task": "A-T05",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 13,
@@ -104,7 +109,8 @@
       "owner_task": "A-T05",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 14,
@@ -112,7 +118,8 @@
       "owner_task": "A-T05",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 15,
@@ -120,7 +127,8 @@
       "owner_task": "A-T05",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 16,
@@ -128,7 +136,8 @@
       "owner_task": "A-T05",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 17,
@@ -136,7 +145,8 @@
       "owner_task": "A-T05",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 18,
@@ -152,7 +162,8 @@
       "owner_task": "A-T06",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 20,
@@ -160,7 +171,8 @@
       "owner_task": "A-T02",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 21,
@@ -184,7 +196,8 @@
       "owner_task": "A-T06",
       "proof_status": "owed",
       "evidence": [],
-      "gate": "Must run against implementation; contract fixture checks are insufficient."
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "runtime_observation_contract": "specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md"
     },
     {
       "id": 24,

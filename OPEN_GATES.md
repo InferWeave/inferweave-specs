@@ -417,3 +417,16 @@ offline golden vectors prove only transcript consistency. The running authentica
 boundary is unverified. No usable existing delegation mechanism was found; no OIDC forwarding, shared registration
 credential or caller-provided identity shortcut is authorized. Alias API/traffic remains disabled
 until independent security review and executable evidence close this gate.
+
+## Runtime instance observation producer and ingestion (spec 56)
+
+**BLOCKED for production use; implementation proofs owed.** The additive optional
+`iw.runtime-observations/1` report and offline hostile vectors specify producer-to-owner
+binding. They do not prove authenticated registration ingestion or runtime readiness. A-T05
+still owes durable actual-load generation production, registration-incarnation/epoch replay
+fencing, profile qualification by an approved verifier, independently authorized owner policy,
+complete-snapshot expiry/tombstone invalidation, durable per-item sequence/content replay
+fences, actual encoded-byte report bounds before parsing, physical resource-group de-duplication,
+multi-GPU-loss propagation and atomic admission revalidation. A-T08 owes mixed-version live
+rollout, latency/parity and failure/recovery evidence. Working Rust observation helpers and
+local fixture success cannot close these gates or promote probes into verified tools/privacy.

@@ -116,3 +116,10 @@ separately negotiated as `runtime_lifecycle`, `runtime_reservations`, and
   isolation.
 - mixed-version: a legacy peer omits additive fields and continues to validate without family
   inference.
+
+## Generation-bound node producer input
+
+Spec [56](56_RUNTIME_INSTANCE_OBSERVATIONS.md) defines the optional negotiated runtime
+observation report, full-snapshot replay/expiry/tombstone rules, independent qualification and
+owner policy references. Runtime probes do not verify unspecified feature fidelity or grant
+capacity. Older or unqualified observations remain UNKNOWN for level-2 aliases.
