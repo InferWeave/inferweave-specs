@@ -43,9 +43,11 @@ cryptographic implementation; the offline Python reference is for fixtures only.
 
 `method` is the actual uppercase HTTP method. `request_target` is the exact ASCII origin-form
 raw path plus optional `?query` sent on the wire, captured before route normalization. It begins
-`/inferweave/v1/`; no authority/scheme/fragment, backslash, control characters, repeated slash,
-dot path segment, percent-encoded dot/slash/backslash or malformed percent escapes are permitted.
-Query parameter order is preserved and signed. Duplicate decoded query keys are rejected.
+`/inferweave/v1/`; no authority/scheme/fragment, backslash or control characters are permitted.
+In the **path component**, repeated slash, dot path segments, and percent-encoded
+dot/slash/backslash are forbidden. In query keys and values those characters are data;
+malformed percent escapes, invalid decoded UTF-8 and decoded control characters are rejected. Query parameter order
+and original encoding are preserved and signed. Duplicate decoded query keys are rejected.
 Canonicalization means rejecting ambiguous forms, not silently rewriting the signed target.
 
 The actual signed header inputs are `If-Match`, `If-None-Match`, `Idempotency-Key`,
