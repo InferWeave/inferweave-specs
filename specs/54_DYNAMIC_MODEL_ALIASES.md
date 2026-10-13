@@ -85,7 +85,10 @@ A resource revision increases on every successful mutation. Drafts have revision
 routable. Publish creates a new immutable revision atomically from the named validated draft;
 rollback publishes a new revision copied from an earlier published definition. Neither edits old
 history. Audit records actor, timestamp, reason, SHA-256 content hash, approval if required and
-rollback source. Hash is SHA-256 of RFC 8785 canonical JSON of the definition. Owner scope/id are
+rollback source. Hash is SHA-256 of the authoritative Rust store's deterministic JSON serialization of the
+definition. The immutable revision records that hash; clients treat it as an opaque integrity
+token and retrieve the authoritative revision for audit. A serialization change must preserve
+verification of previously published hashes. Owner scope/id are
 immutable. Disabled is a published desired status; no delete erases history. Empty/impossible
 policies fail publication unless owner policy has a separately audited privileged override.
 The level-2 API in this revision exposes no bypass field. Crash/restart and concurrent writes must
