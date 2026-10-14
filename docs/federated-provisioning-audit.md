@@ -1,6 +1,6 @@
 # InferWeave Federated Model Provisioning — Phase 0 Audit & Gap Matrix
 
-Status: **Autonomous bounded admission (Item 6) delivered & merged** (`inferweave/inferweave` PR #919, branch `feat/provisioning-autonomous`). This closes the admission gap: under an `autonomous` owner policy with explicit bounds, a reservation that fits is auto-approved on reserve (no operator action), and one that doesn't fit defers to the operator queue (fail closed, never auto-refused). Prior milestones: Item 5 (operator API + persisted owner-policy store, PR #916) gave the owner the management half of Phase 2's approval flow (owner-gated `/iw/v1/provision/operator/...` API + durable policy store); Phase 2 (approval-required activation) merged as PR #881 (merge `6a227e09`); Phase 1 (observe-only slice) merged as PR #863 (merge `75a6ee94`). Items 1-5 + autonomous mode done; the GUI (WS H) remains later-phase.
+Status: **Autonomous bounded admission (Item 6) delivered & merged** (`inferweave/inferweave` PR #918, branch `feat/provisioning-autonomous`). This closes the admission gap: under an `autonomous` owner policy with explicit bounds, a reservation that fits is auto-approved on reserve (no operator action), and one that doesn't fit defers to the operator queue (fail closed, never auto-refused). Prior milestones: Item 5 (operator API + persisted owner-policy store, PR #916) gave the owner the management half of Phase 2's approval flow (owner-gated `/iw/v1/provision/operator/...` API + durable policy store); Phase 2 (approval-required activation) merged as PR #881 (merge `6a227e09`); Phase 1 (observe-only slice) merged as PR #863 (merge `75a6ee94`). Items 1-5 + autonomous mode done; the GUI (WS H) remains later-phase.
 Date: 2026-10-12
 Author: pi agent (in-session, mission pipeline unavailable due to orchestration store lock).
 Scope: `inferweave/inferweave`, `inferweave/inferweave-specs`, `metabolomics-us/inferweave-gateway`.
@@ -319,7 +319,7 @@ gateway prove: endpoint absent (404) without a transport; negotiate→
 request→offer over the wire (200); a parent outside the allowlist refused
 (403) on request, fail closed.
 
-Item 5 (operator API + persisted owner-policy store) delivered in PR #916; autonomous bounded admission delivered in PR #919 — see the Item 6 status section below. Remaining (later workstream): the GUI that calls the operator API (WS H).
+Item 5 (operator API + persisted owner-policy store) delivered in PR #916; autonomous bounded admission delivered in PR #918 — see the Item 6 status section below. Remaining (later workstream): the GUI that calls the operator API (WS H).
 
 ### Status — Phase 2: approval-required activation (2026-10-11)
 
@@ -361,7 +361,7 @@ approval-required activation, HTTP round-trip, client approval/rejection;
 updated gate and `may_activate` tests. Full `iw-gateway` lib (315) and
 `gateway_e2e` (29) suites green; clippy clean on the changed modules.
 
-Item 5 (operator API + persisted owner-policy store) delivered in PR #916; autonomous bounded admission delivered in PR #919 — see the Item 6 status section below. Remaining (later workstream): the GUI that calls the operator API (WS H).
+Item 5 (operator API + persisted owner-policy store) delivered in PR #916; autonomous bounded admission delivered in PR #918 — see the Item 6 status section below. Remaining (later workstream): the GUI that calls the operator API (WS H).
 
 ---
 
@@ -427,7 +427,7 @@ the GUI that calls this API (WS H).
 
 ## 7. Status — Item 6: autonomous bounded admission (2026-10-13)
 
-Implemented on `feat/provisioning-autonomous` and merged via PR #919. This
+Implemented on `feat/provisioning-autonomous` and merged via PR #918. This
 closes the admission gap identified in the §2 gap matrix (autonomous bounded
 admission was previously **Missing**). Under an `autonomous` owner policy with
 explicit bounds, the controller auto-approves a reservation on reserve when it
