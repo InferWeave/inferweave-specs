@@ -651,3 +651,34 @@ decisions** (`decisions/2026-10-15-link-upstream-role.md`): whether the Go site 
 acceptor side (touches the D-002 amendment), and whether this needs its own feature ID. The only
 measurement is one unreproduced observation that the public HTTPS API accepted a key on a read. No
 production gate opens.
+
+## Implementation status of specs 61-63 (2026-10-15)
+
+Nothing here opens a production gate.
+
+* **Spec 61 (Rust, InferWeave/inferweave #1021 merged, #1029):** precision tokens/classes, ad-hoc
+  `POST /inferweave/v1/aliases/resolve|simulate` with an inline `selection`, the resolution tree and
+  `unmet` are implemented and deployed to the bender lab gateway (management/preview only). A signed
+  edge request against it returned 200. **UNSATISFIED / owed:** rate limiting and audit of ad-hoc
+  calls (no preview audit sink exists); the table-version pin; the schema/contract additions listed in
+  spec 61 (`contract.json`, `precision-classes.json`, `selection` on the request schemas); a measured
+  memory report in the production inventory (so `capacity` never appears); the Go console test 5 is
+  covered by metabolomics-us/inferweave-gateway #549 against fixtures only. **Defect found by running
+  it:** an ad-hoc selection with no stated preferences was rejected because stored-alias preference
+  weights must sum to one; fixed in #1029 (neutral even weighting for ad-hoc only).
+  The lab catalog is **empty** because legacy capability evidence is unverified, so resolve returns
+  UNAVAILABLE with no `unmet` until nodes report verified capability profiles.
+* **Spec 62 (pure slice, #1022):** types, sizing evidence, `fit`, redaction and feature-skipping are
+  implemented behind no caller. **UNSATISFIED / owed:** required tests 2, 5, 6, 7, 9; the controller
+  changes (progress-based lease, asynchronous ACTIVATING, autonomous activation); approval-digest
+  recomputation; the `acquirable` capacity member; rate limiting of planning.
+* **Spec 63 (acceptor slice, #1024):** default-off (`IW_LINK_UPSTREAM_V1`), refuses the role in
+  production because no channel-binding exporter and no executor exist. **UNSATISFIED / owed:** the
+  dialer, execution through admission and accounting, reuse of the existing principal-key file, the
+  catalog frame, byte accounting and the relay circuit breaker, durable dedupe across restarts, the
+  declared traffic class on the wire (every request is `private` today), and the Hello/ack schemas.
+  **Spec defects found while implementing:** channel binding gives no proof of possession for a bearer
+  key (TLS is the real protection); one Hello carries one credential so "both roles on one link" is not
+  expressible; "optional allow-list" vs "absent bound denies"; the hop limit "8" vs "no default"; a
+  refused Hello gets no acknowledgement.
+
