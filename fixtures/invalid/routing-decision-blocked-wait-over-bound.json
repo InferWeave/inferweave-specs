@@ -1,0 +1,14 @@
+{
+  "schema_version": "1",
+  "status": "BLOCKED",
+  "retry_after_ms": 300001,
+  "route_reasons": [
+    {
+      "code": "NO_ELIGIBLE_CAPACITY"
+    },
+    {
+      "code": "QUALITY_FLOOR_UNMET",
+      "subject_id": "llm.tool_use_quality"
+    }
+  ]
+}

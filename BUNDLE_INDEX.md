@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,059,800 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,062,670 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -237,6 +237,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/cache-state-offline-unverified.json` — `53de5a1556ce` — ~99t
 - `fixtures/invalid/cache-state-pinned-flag-false.json` — `91e83304b808` — ~98t
 - `fixtures/invalid/cache-state-published-unverified.json` — `38025af6d9fc` — ~117t
+- `fixtures/invalid/capability-request-missing-deadline.json` — `d52e0eea7534` — ~70t
+- `fixtures/invalid/capability-request-missing-quality-floor.json` — `ea701f920883` — ~58t
+- `fixtures/invalid/capability-request-unknown-field.json` — `a9a6ea6546f6` — ~86t
+- `fixtures/invalid/capability-request-zero-context.json` — `a423c6afa978` — ~78t
 - `fixtures/invalid/deployment-key-mismatch.json` — `eca7c712dc01` — ~264t
 - `fixtures/invalid/device-bad-enum.json` — `8cff0b010519` — ~15t
 - `fixtures/invalid/dynamic-alias-capabilities-extra-role.json` — `f8b5df4e650f` — ~87t
@@ -305,6 +309,14 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/reservation-runtime-multi-gpu-row.json` — `f89867d743a1` — ~847t
 - `fixtures/invalid/reservation-runtime-payload-digest-mismatch.json` — `a302651fe48f` — ~842t
 - `fixtures/invalid/reservation-runtime-request-identity-mismatch.json` — `520e9d6f7fac` — ~834t
+- `fixtures/invalid/routing-decision-blocked-missing-retry-after.json` — `a8c629cb96e9` — ~55t
+- `fixtures/invalid/routing-decision-blocked-wait-over-bound.json` — `980371809bcd` — ~62t
+- `fixtures/invalid/routing-decision-blocked-with-model.json` — `5cf8e8886778` — ~69t
+- `fixtures/invalid/routing-decision-routed-empty-reasons.json` — `6399875e3248` — ~41t
+- `fixtures/invalid/routing-decision-routed-missing-wait.json` — `e39d2dd0695e` — ~76t
+- `fixtures/invalid/routing-decision-routed-wait-over-bound.json` — `cc3cba3110d3` — ~83t
+- `fixtures/invalid/routing-decision-routed-with-retry-after.json` — `058cf9b414e6` — ~89t
+- `fixtures/invalid/routing-decision-unknown-field.json` — `fcc146f2bd5a` — ~87t
 - `fixtures/invalid/runtime-observation-report-capacity-entitlement.json` — `c09bcb5d9064` — ~288t
 - `fixtures/invalid/runtime-observation-report-delta.json` — `48d9d5b9de49` — ~281t
 - `fixtures/invalid/runtime-observation-report-endpoint.json` — `6b047cb27afe` — ~290t
@@ -797,6 +809,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_alias_edge_delegation.py` — `e8f8df50ee53` — ~869t
 - `tests/smoke/test_alias_execution_contract.py` — `6af0f772c0e2` — ~3,848t
 - `tests/smoke/test_bundle_self_test.py` — `f0115f5e0f1a` — ~281t
+- `tests/smoke/test_capability_routing_contract.py` — `3c5f3ece070a` — ~2,016t
 - `tests/smoke/test_conformance.py` — `40dd0543b1e5` — ~1,230t
 - `tests/smoke/test_dynamic_alias_contract.py` — `bc7c6423c81d` — ~2,474t
 - `tests/smoke/test_family_routing.py` — `d44eef95e64a` — ~457t

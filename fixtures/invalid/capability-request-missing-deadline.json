@@ -1,0 +1,14 @@
+{
+  "schema_version": "1",
+  "capability": "llm.tool_use",
+  "quality_floor": {
+    "metric_id": "llm.tool_use_quality",
+    "minimum": 0.8
+  },
+  "min_context_tokens": 32768,
+  "modality": "text",
+  "affinity": {
+    "session_id": "sess-7f3a"
+  },
+  "open_weight_only": true
+}
