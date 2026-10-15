@@ -17,7 +17,7 @@ Features: **92**
 | `IW-TUNE-001` Node benchmark/tuning and qualified profiles | P0 | 2 | node | `P2-T02`, `P2-T09` |
 | `IW-QOS-001` Hierarchical FairShare and anti-gaming | P1 | 2 | control-plane | `P2-T12` |
 | `IW-QOS-002` Owner reserve/reclaim | P1 | 2 | control-plane+node | `P2-T11` |
-| `IW-DP-002` Regional relay/direct path/rendezvous (link consume role: spec 63) | P1 | 3 | control-plane+node | `P1-T16`, `P1-T18`, `P3-T08`, `P5-T03` |
+| `IW-DP-002` Regional relay/direct path/rendezvous (link upstream role: spec 63) | P1 | 3 | control-plane+node | `P1-T16`, `P1-T18`, `P3-T08`, `P5-T03` |
 | `IW-PROXY-001` Local edge proxy/cache | P1 | 3 | autospec-client | `P1-T17` |
 | `IW-WB-001` Workbench persistent sessions/fork/files/rendering | P1 | 3 | web/workbench | `P4-T03`, `P4-T04`, `P4-T05` |
 | `IW-PUBLIC-001` Anonymous bounded playground | P2 | 4 | control-plane | `P4-T13` |

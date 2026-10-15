@@ -637,14 +637,17 @@ closed-object rejection of new members is new behaviour; `FITS` is unreachable f
 model; first-fetch digest verification needs operator-approved digests; `shortfall` must not leak
 free resources. No production gate opens.
 
-## Link consume role and upstream gateways (spec63)
+## Link upstream role and authenticated gateways (spec63)
 
-**UNSATISFIED / owed.** `specs/63_LINK_CONSUME_ROLE_AND_UPSTREAM_GATEWAYS.md` proposes the link role
-`consume` (capability `iw.link-consume/1`): a gateway holding an API key dials an upstream gateway
-and submits exact-model requests up the held link, with N upstreams, no transit by default, loop
-prevention by federation path and one accounting lineage. No schema, fixture, sender, acceptor,
-dialer or test exists; every required test is **owed**. Bounds (catalog size, drain window, rate
-and concurrency defaults, transit) are unspecified because none is measured. **Open decision:**
-whether the Go site gateway implements the acceptor side (spec 54 limits it to consume, render and
-relay). The only measurement is that the public HTTPS API accepts a key on a read. No production
-gate opens.
+**UNSATISFIED / owed.** `specs/63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS.md` proposes the link
+role `upstream` (capability `iw.link-upstream/1`): a gateway holding a typed `api_key` credential dials
+an upstream gateway and submits exact-model requests up the held link, with its own acceptor-created
+binding (no registration), N upstreams, no transit by default, an acceptor-appended federation path with
+a hop limit, request-id idempotency and one charge per boundary. It is gateway byte relay, so invariant
+11 limits it to where direct transport is unavailable or forbidden. No schema, fixture, sender, acceptor,
+dialer or test exists; every required test is **owed**. Bounds (catalog size, drain window, rate and
+concurrency defaults, hop limit beyond 8, transit) are unspecified because none is measured. **Open
+decisions** (`decisions/2026-10-15-link-upstream-role.md`): whether the Go site gateway implements the
+acceptor side (touches the D-002 amendment), and whether this needs its own feature ID. The only
+measurement is one unreproduced observation that the public HTTPS API accepted a key on a read. No
+production gate opens.
