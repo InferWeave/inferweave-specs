@@ -98,3 +98,75 @@ Commit: de43764afd20d6fb465e194e78f0d937f6bd5bd5
 337:            available_vram: Quantity {
 416:        let big = vec![b'x'; MAX_PROVISION_BODY + 1];
 ```
+## de43764a provision_transport.rs lines 260,280
+```
+                    Err(e) => return Err(TransportError::Controller(e)),
+                }
+            }
+            ProvisionMessage::Revoke { body, .. } => {
+                match self.controller.revoke(&body.reservation, now) {
+                    Ok(ev) => events.push(ev),
+                    Err(e) => return Err(TransportError::Controller(e)),
+                }
+            }
+            ProvisionMessage::Heartbeat { body, .. } => {
+                // A heartbeat is a liveness + lease-renewal signal. In Phase 1
+                // there is no renewable lease beyond the reservation's own
+                // `tick`; a heartbeat is acknowledged as a no-op (its value is
+                // freshness, which the transport's caller records).
+                let _ = body;
+            }
+            // A request/offer that is not expected on the owner's inbound
+            // half (offers travel owner -> parent) is refused.
+            ProvisionMessage::Offer { .. }
+            | ProvisionMessage::Approval { .. }
+            | ProvisionMessage::Capabilities { .. } => {
+```
+## de43764a provision_controller.rs lines 605,620
+```
+            if reservation.state != ProvisionState::Approved {
+                return Err(ControllerError::Refused(Refusal::ApprovalRequired));
+            }
+            reservation.token_consumed = true;
+        }
+        let mut events = Vec::new();
+        events.extend(self._transition(
+            reservation_id,
+            ProvisionState::Activating,
+            "activate",
+            now,
+        ));
+        events.extend(self._transition(reservation_id, ProvisionState::Ready, "ready", now));
+        Ok(events.pop().expect("at least the ready event"))
+    }
+
+```
+## de43764a provision.rs lines 160,185
+```
+    /// released (fencing: an old controller cannot renew it).
+    pub fn transition(self, to: ProvisionState) -> Result<ProvisionState, InvalidTransition> {
+        use ProvisionState::*;
+        let legal = match (self, to) {
+            // Forward progress.
+            (Desired, Offered) | (Desired, Revoked) | (Desired, Failed) => true,
+            (Offered, Reserved) | (Offered, Revoked) | (Offered, Failed) => true,
+            (Reserved, Approved)
+            | (Reserved, Revoked)
+            | (Reserved, Expired)
+            | (Reserved, Failed) => true,
+            (Approved, Activating)
+            | (Approved, Revoked)
+            | (Approved, Expired)
+            | (Approved, Failed) => true,
+            (Activating, Ready)
+            | (Activating, Revoked)
+            | (Activating, Expired)
+            | (Activating, Failed) => true,
+            (Ready, Revoked) | (Ready, Expired) | (Ready, Failed) => true,
+            // Cleanup to Released from any non-Released, non-terminal state.
+            (Revoked, Released) | (Expired, Released) | (Failed, Released) => true,
+            // Released is absorbing; Ready releases back to the owner.
+            (Ready, Released) => true,
+            _ => false,
+        };
+```

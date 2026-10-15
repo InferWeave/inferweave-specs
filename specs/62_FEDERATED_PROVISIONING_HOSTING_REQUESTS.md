@@ -30,14 +30,14 @@ code differs, the code is the fact and this text is the defect.
 * **Messages.** A closed family tagged by kind: `capabilities`, `request`, `offer`, `reserve`,
   `approval`, `activate`, `revoke`, `heartbeat`. Every message is enveloped (id, idempotency key,
   actor origin token, provenance hop list bounded at 8, expiry, trace id). A message larger than
-    1 MiB is refused before decoding (`MAX_PROVISION_BYTES` in the protocol crate; the transport
+  1 MiB is refused before decoding (`MAX_PROVISION_BYTES` in the protocol crate; the transport
   enforces its own duplicate `MAX_PROVISION_BODY`). Unknown versions and unknown kinds fail closed; the
   compatibility rule is same major, any minor.
 * **States.** `DESIRED`, `OFFERED`, `RESERVED`, `APPROVED`, `ACTIVATING`, `READY`, `REVOKED`,
   `EXPIRED`, `FAILED`, `RELEASED`. Forward progress is `DESIRED → OFFERED → RESERVED → APPROVED →
   ACTIVATING → READY`; any non-terminal state may move to `REVOKED` or `FAILED`; `EXPIRED` is
   reachable only from `RESERVED`, `APPROVED`, `ACTIVATING` and `READY` (a `DESIRED` or `OFFERED`
-  request cannot expire); those three move only to `RELEASED`; `READY → RELEASED` is also legal;
+  request cannot expire); `REVOKED`, `EXPIRED` and `FAILED` move only to `RELEASED`; `READY → RELEASED` is also legal;
   `RELEASED` is absorbing and a released reservation is never reactivated.
 * **Owner policy modes.** `disabled` (the default; serves nothing), `advertise_only`,
   `approval_required`, `autonomous`. In observe-only operation an activation is refused. In
@@ -83,12 +83,11 @@ advertises. That is the gap this text closes.
 
 ## Hosting extension
 
-Negotiated as the additional provisioning **feature `acquisition`** within `iw.provisioning/1`
+Negotiated as the additional provisioning **feature `acquisition`**, carried by a new major (`iw.provisioning/2`, `schema_version` major 2; the delivered transport refuses a different major with `IncompatibleVersion`, so a delivered peer never receives it; `model` stays a required request field)
 (beside `approvals`, `leases`, `revocation`). Because the delivered `ProvisionFeature` enum is closed
 (see above), negotiation is **not** additive on delivered consumers. Two things are therefore
 required of the controller task: (a) unknown feature names in `capabilities` are skipped, not
-fatal; (b) the feature is negotiated by the protocol token `iw.provisioning/2` so a delivered
-peer never receives it. A negotiation test against the delivered decoder is owed. A producer
+fatal; (b) the major-2 token above is the negotiation. A negotiation test against the delivered decoder is owed. A producer
 that did not negotiate the feature MUST NOT send the members below; the **new** consumer rule is
 that such members from a non-negotiating peer are rejected (a closed-object rule that does not
 exist today and is owed). A delivered consumer drops them silently.
@@ -175,7 +174,7 @@ bound fails the activation (`SIZE_BOUND_EXCEEDED`).
 | `model_ref` | the reference the plan is for, echoed with `revision` and resolved `artifacts` |
 | `fit` | `FITS`, `FITS_AFTER_EVICTION`, `DOES_NOT_FIT` or `UNKNOWN` |
 | `shortfall` | for `DOES_NOT_FIT`: per resource (`disk`, `vram`, `network`, `license`, `source`, `runtime`) the required figure and a boolean or coarse bucket of what is available, never the observed free disk, VRAM or bandwidth (an exact figure would let a requester probe the owner; it may be shown to an authorized operator only) |
-| `evicts` | for `FITS_AFTER_EVICTION`: the count of models the owner would have to unload, as opaque handles to the owner's operator only; the owner decides, local clients outrank upstream. The distinction `FITS` versus `FITS_AFTER_EVICTION` itself reveals other tenants' load; a requester without authorization receives the plan as if no other tenant's model existed (spec 61 rule) |
+| `evicts` | for `FITS_AFTER_EVICTION`: the models the owner would have to unload, as opaque handles to the owner's operator only (the requester receives only the redacted verdict); the owner decides, local clients outrank upstream. The distinction `FITS` versus `FITS_AFTER_EVICTION` itself reveals other tenants' load; a requester without authorization receives the plan as if no other tenant's model existed (spec 61 rule) |
 | `needs` | sized quantities: `download_bytes`, `disk_bytes`, `vram_bytes` (weights, KV at the requested context, overhead as separate members, spec 46 categories), `egress_hosts` |
 | `phases` | the ordered phases and, for each, whether it is required and a duration **estimate** with its basis |
 | `profile` | what profile generation will produce: the capability profile facts of spec 54 step 6 and the measured limits the owner will record |
@@ -185,8 +184,7 @@ bound fails the activation (`SIZE_BOUND_EXCEEDED`).
 requested context plus overhead), and spec 46 §2.1 makes arithmetic over an estimate
 `estimated`. Therefore **`FITS` is not reachable for an unprofiled model**: before profiling
 `fit` is `UNKNOWN` unless the owner applies an explicit conservative upper bound with a measured
-safety margin, in which case the bound is reported as `derived` and named as a bound. Disk and
-download needs from `measured` or `derived` figures may reach `FITS` on their own. The plan's
+safety margin, in which case the bound is reported as `derived` and named as a bound. `fit` is the conjunction over every resource: it is `FITS` or `FITS_AFTER_EVICTION` only when every resource is, and both appear only under the conservative-bound clause or after profiling. A `declared` (Hugging Face) download size can never reach `FITS` alone; it counts as `UNKNOWN` until measured or bounded by the larger-figure rule. The plan's
 `egress_hosts` and `phases` are shown to the requester only to the extent the owner's policy
 allows; the owner's network policy is not otherwise disclosed.
 `FITS_AFTER_EVICTION` never evicts anything by itself.
@@ -217,7 +215,7 @@ are progress; a `phase` heartbeat with no change in `done` is not. Spec 50 allow
 progress to sustain an arbitrarily long load, so invariant 37 is kept; to stop a trickle
 download from holding disk and bandwidth indefinitely the owner policy MAY set a minimum rate or
 per-phase cap, and this text states that none exists unless the owner sets one.
-`READY` and its advertisement are one event with the spec 54 advertisement generation, so an
+A `READY` lease is sustained by a heartbeat whose state changes (or by an explicit owner exemption); the delivered `tick` also expires `READY`, so this is owed. `READY` and its advertisement are one event with the spec 54 advertisement generation, so an
 alias never sees `READY` before the profile facts are recorded.
 
 ## Authority
@@ -272,9 +270,10 @@ alias never sees `READY` before the profile facts are recorded.
 * **Local priority.** Local clients outrank upstream. A reservation in any phase before `READY`
   may be preempted by a local need; its partial resources are released.
 * **Privacy.** A plan's `shortfall` and `evicts` are disclosed to the requester only as required
-  figures, coarse availability and counts (see Offer additions): no node identity, no
+  figures, coarse availability and redacted verdicts (see Offer additions): no node identity, no
   topology, no free-resource figures, no other tenant's model names (spec 61 redaction rules
   apply).
+* **Approval digest.** The owner recomputes the request digest over `model_ref`, `acquire` and `size_budget`; a requester-supplied digest is never trusted.
 * **Spec 41.** Inter-gateway capacity requests (spec 41) are a different mechanism; this text
   does not alter grants.
 
@@ -310,7 +309,7 @@ All **owed**; none is `proven`. Each must fail if its control is removed.
    allowlist stop a plan, an acquisition and each phase; period caps survive a restart.
 3. Sizing: the largest-figure rule; `FITS` unreachable for an unprofiled model; `unknown` never produces `FITS`; measured
    replacement after acquisition re-checks bounds and fails with `SIZE_BOUND_EXCEEDED`; an
-      estimate names its inputs; the VRAM re-check precedes `loading`; the budget is checked over
+  estimate names its inputs; the VRAM re-check precedes `loading`; the budget is checked over
    the resolved artifact list.
 4. Fit: `FITS`, `FITS_AFTER_EVICTION` and `DOES_NOT_FIT` against owner reports with `shortfall`
    per resource; `FITS_AFTER_EVICTION` evicts nothing.
