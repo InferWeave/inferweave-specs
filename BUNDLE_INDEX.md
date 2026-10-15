@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,062,653 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,068,157 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -291,6 +291,19 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/link-response-meta-redirect.json` — `0fd05116f74c` — ~37t
 - `fixtures/invalid/link-response-meta-retry-after-on-400.json` — `7db7597b2334` — ~54t
 - `fixtures/invalid/link-response-meta-unapproved-header.json` — `d99b0fa8494a` — ~56t
+- `fixtures/invalid/mission-event-causation-id.json` — `cf8db0daf2f5` — ~247t
+- `fixtures/invalid/mission-event-fractional-sequence.json` — `9833f169beb2` — ~239t
+- `fixtures/invalid/mission-event-missing-event-id.json` — `3f58f0f89cc1` — ~232t
+- `fixtures/invalid/mission-event-missing-mission-id.json` — `a75bb74b65a8` — ~228t
+- `fixtures/invalid/mission-event-missing-state.json` — `4ef3f32d6a90` — ~232t
+- `fixtures/invalid/mission-event-negative-resource-usage.json` — `38ea4271b945` — ~239t
+- `fixtures/invalid/mission-event-negative-sequence.json` — `766aa6620b9f` — ~238t
+- `fixtures/invalid/mission-event-payload.json` — `06d0524d0885` — ~250t
+- `fixtures/invalid/mission-event-short-commit-sha.json` — `52c3406d3d4d` — ~230t
+- `fixtures/invalid/mission-event-string-sequence.json` — `777d04f6b09d` — ~239t
+- `fixtures/invalid/mission-event-summary-too-long.json` — `437bac0447f1` — ~305t
+- `fixtures/invalid/mission-event-unknown-field.json` — `2b67ba03022b` — ~243t
+- `fixtures/invalid/mission-event-unknown-progress-kind.json` — `b001309c8813` — ~239t
 - `fixtures/invalid/node-hardware-missing-version.json` — `f0094fe08aff` — ~210t
 - `fixtures/invalid/node-hardware-not-object.json` — `09bb4ed5ad6a` — ~8t
 - `fixtures/invalid/node-hardware-report-negative-vram.json` — `05ad3281363a` — ~212t
@@ -816,6 +829,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_jobs.py` — `a7c0900840ea` — ~400t
 - `tests/smoke/test_jobs_endpoint.py` — `36a80b52a28b` — ~348t
 - `tests/smoke/test_link_http_json.py` — `ac6cfa82cdf1` — ~2,311t
+- `tests/smoke/test_mission_event_contract.py` — `f6575d97c05d` — ~2,343t
 - `tests/smoke/test_native_inference.py` — `543c3f136b34` — ~805t
 - `tests/smoke/test_native_pipeline_job.py` — `05f6834e9671` — ~609t
 - `tests/smoke/test_pipelines.py` — `34e64210adfd` — ~901t
