@@ -1,0 +1,9 @@
+deepseek_v4-flash-modality-text-quant-mxfp4
+laya-english-modality-text-quant-fp16
+laya-multilingual-modality-text-quant-fp16
+laya-typed-decisions-modality-text-quant-fp16
+qwen3.8-27b-modality-text-quant-mxfp4
+qwen3.8-27b-modality-vision-ctx-c120k-quant-q4_k_m
+qwen3.8-27b-modality-vision-quant-q8_k_xl
+qwen3.8-flash_next-modality-text-quant-q4_k_xl
+z-image-turbo-modality-image-quant-fp8_e4m3fn

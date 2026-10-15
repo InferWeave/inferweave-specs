@@ -104,7 +104,7 @@ Features: **92**
 | `IW-RT-004` Typed inference pipelines | P1 | B | control-plane | `B-T04` |
 | `IW-RT-005` Durable inference jobs with additive legacy compatibility | P1 | B | control-plane | `B-T05` |
 | `IW-RT-006` Runtime-family contract/live conformance and traceability | P1 | B | control-plane | `B-T06` |
-| `IW-ALIAS-001` Dynamic model aliases (specs 54–57; inference identity, claims and node execution fence) | P0 | A | control-plane+gateway | `A-T01`, `A-T02`, `A-T03`, `A-T04`, `A-T05`, `A-T06`, `A-T07`, `A-T08` |
+| `IW-ALIAS-001` Dynamic model aliases (specs 54–57 and 61; inference identity, claims and node execution fence) | P0 | A | control-plane+gateway | `A-T01`, `A-T02`, `A-T03`, `A-T04`, `A-T05`, `A-T06`, `A-T07`, `A-T08` |
 
 
 ## Model-intelligence extension
