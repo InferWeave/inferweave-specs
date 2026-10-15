@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/routing/routing-decision.json",
+  "title": "Routing decision",
+  "description": "ROUTED or BLOCKED answer to a capability request (specs/60). Waits are bounded by MAX_WAIT_BOUND_MS (300000); reasons are codes and identifiers only. A BLOCKED decision names no model or slot.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "route_reasons"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "status": {
+      "enum": [
+        "ROUTED",
+        "BLOCKED"
+      ]
+    },
+    "model": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "slot": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "estimated_wait_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 300000
+    },
+    "retry_after_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 300000
+    },
+    "route_reasons": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]{2,63}$"
+          },
+          "subject_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+          }
+        }
+      }
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  },
+  "if": {
+    "properties": {
+      "status": {
+        "const": "ROUTED"
+      }
+    },
+    "required": [
+      "status"
+    ]
+  },
+  "then": {
+    "required": [
+      "model",
+      "slot",
+      "estimated_wait_ms"
+    ],
+    "properties": {
+      "retry_after_ms": false
+    }
+  },
+  "else": {
+    "required": [
+      "retry_after_ms"
+    ],
+    "properties": {
+      "model": false,
+      "slot": false,
+      "estimated_wait_ms": false
+    }
+  }
+}

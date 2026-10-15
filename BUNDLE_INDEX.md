@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,057,079 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,058,384 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -65,7 +65,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/owner-execution-permit-vectors.json` — `df73b72d7d7c` — ~7,772t
 - `conformance/owner_execution_permit.py` — `a40045c4d83b` — ~3,452t
 - `conformance/release-manifest.yaml` — `f1864185a739` — ~294t
-- `conformance/runner.py` — `419cf7568969` — ~7,545t
+- `conformance/runner.py` — `e9ef0283b37c` — ~7,574t
 - `conformance/runtime-family-vectors.json` — `e9182c76245d` — ~3,138t
 - `conformance/runtime-observation-vectors.json` — `199670cef5ac` — ~19,334t
 - `conformance/runtime_observations.py` — `d4b1c36d2a1f` — ~1,382t
@@ -329,6 +329,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/cache-state-runtime.json` — `3b4fe26c95c4` — ~115t
 - `fixtures/valid/cache-state.json` — `d1b524019ff2` — ~20t
 - `fixtures/valid/capabilities.json` — `5bc271bbf6fd` — ~31t
+- `fixtures/valid/capability-request-basic.json` — `583a7f2585f9` — ~79t
 - `fixtures/valid/capacity.json` — `48c441c6efc6` — ~16t
 - `fixtures/valid/deployment.json` — `4b98d805dbbf` — ~264t
 - `fixtures/valid/device.json` — `f38aabcb46f1` — ~41t
@@ -412,6 +413,8 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/reservation-runtime.json` — `8fdd18b298d1` — ~842t
 - `fixtures/valid/reservation.json` — `31910b6e657f` — ~165t
 - `fixtures/valid/residency.json` — `9cfc726b31ed` — ~23t
+- `fixtures/valid/routing-decision-blocked.json` — `10a01fa6d140` — ~62t
+- `fixtures/valid/routing-decision-routed.json` — `2b71c2d8ced4` — ~83t
 - `fixtures/valid/runtime-instance.json` — `af3c8a6fe8fa` — ~24t
 - `fixtures/valid/runtime-load-request.json` — `da7a4975f2a1` — ~56t
 - `fixtures/valid/runtime-observation-event.json` — `4c6cb2e9331e` — ~318t
@@ -443,7 +446,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `pi/REVIEW_PROMPT.md` — `0fca83a1dc7a` — ~191t
 - `pi/TASK_TEMPLATE.md` — `654c899dbb32` — ~280t
 - `requirements.txt` — `3804761804d1` — ~59t
-- `schemas/v1/README.md` — `d0192d8bb85d` — ~616t
+- `schemas/v1/README.md` — `ec6d89a7c737` — ~643t
 - `schemas/v1/aliases/advertisement-page.json` — `0e22e98c15e3` — ~49t
 - `schemas/v1/aliases/advertisement.json` — `a248a77490cd` — ~47t
 - `schemas/v1/aliases/capabilities.json` — `4ec5d57b6d73` — ~301t
@@ -537,6 +540,8 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/resources/rebalance-decision.json` — `e3bcc66f6e81` — ~3,282t
 - `schemas/v1/resources/reservation.json` — `25eb5216192f` — ~3,505t
 - `schemas/v1/resources/seat.json` — `127384acdb44` — ~216t
+- `schemas/v1/routing/capability-request.json` — `388caabd8052` — ~507t
+- `schemas/v1/routing/routing-decision.json` — `c9a8889277b1` — ~518t
 - `schemas/v1/runtime/adapter.json` — `98c6ee81905e` — ~646t
 - `schemas/v1/runtime/instance-observation.json` — `c8e54f7f5185` — ~878t
 - `schemas/v1/runtime/load-request.json` — `f09ef44f74ef` — ~266t
