@@ -44,11 +44,15 @@ a hard requirement.
 A **token** matches `[a-z0-9._]{1,32}` (the segment alphabet of the canonical model id in
 `iw-core` `ModelId`, bounded). Anything else is rejected, not truncated.
 
-`precision_class` is computed by the *producer* and advertised. A consumer **trusts the advertised
-class** and never reclassifies a token it received. A consumer that holds the same
-`precision_table_version` MAY verify the advertised class; a mismatch makes that candidate
-`EXCLUDED` with the frozen reason `precision_unverified`. A consumer with a different table
-version does not verify. A producer that does not know a token advertises `unknown`.
+`precision_class` is computed by the *producer* and advertised; a consumer never reclassifies a
+token it received. Precision facts carry the **confidence of spec 54 Resolution step 6** and
+satisfy a hard precision requirement only as that step permits: *advertised* is not *verified*,
+and federation cannot promote it. A consumer that holds the advertised `precision_table_version`
+MUST verify the class against its own table for any federated candidate; a mismatch makes the
+candidate `EXCLUDED` with the frozen reason `precision_unverified`. A consumer that does not hold
+that table version cannot verify, so the fact stays *advertised* and satisfies a hard precision
+requirement only where the hard policy explicitly permits advertised confidence. A producer that
+does not know a token advertises `unknown`.
 
 ### Frozen vocabulary
 
@@ -62,9 +66,10 @@ version does not verify. A producer that does not know a token advertises `unkno
 | `low` | 4 bits |
 | `very_low` | 3 bits or fewer |
 
-`full` > `high` > `medium` > `low` > `very_low`. `unknown` is not a band and not an ordinal
-position: it **never** satisfies `min_precision_class`, a non-empty `quantization_allow` or a
-non-empty `quantization_deny`, and it ranks below every band.
+`full` > `high` > `medium` > `low` > `very_low`. `unknown` is a class *value* only, not a band and
+not an ordinal position: it **never** satisfies `min_precision_class` and it ranks below every
+band. It has **no effect** on `quantization_allow` or `quantization_deny`, which look only at the
+token.
 
 A token is classified by its **nominal base width**, the width its name states. Mixed-precision
 or dynamic variants (names ending in `_xl`) are classified by that base width. The classes order
@@ -80,15 +85,16 @@ Initial membership (exact tokens, versioned table `schemas/v1/aliases/precision-
 | `full` | `fp32`, `bf16`, `fp16` |
 | `high` | `q8`, `q8_0`, `q8_k_xl`, `fp8`, `fp8_e4m3fn`, `int8` |
 | `medium` | `q6_k`, `q6_k_xl`, `q5_0`, `q5_1`, `q5_k_m` |
-| `low` | `q4_0`, `q4_1`, `q4_k_m`, `q4_k_xl`, `mxfp4`, `nvfp4`, `awq` |
+| `low` | `q4_0`, `q4_1`, `q4_k_m`, `q4_k_xl`, `mxfp4`, `nvfp4` |
 | `very_low` | `q3_k_m`, `q2_k` |
 
 Six of these tokens (`fp16`, `q8_k_xl`, `fp8_e4m3fn`, `q4_k_m`, `q4_k_xl`, `mxfp4`) are
 **observed**: they are the distinct `quant` qualifiers the reference lab gateway listed on
 2026-10-15, reproduced in `evidence/alias-precision-tokens-2026-10-15/`. Every other token in the
 table is **unobserved** there; its band is a classification of its nominal width by the authors
-of this change. `fp8`, `int8` and `awq` occur in the reference implementation's deployment
-vocabulary; `awq` is listed as 4-bit by its nominal weight width. A token not in the table is
+of this change. `fp8` and `int8` occur in the reference implementation's deployment vocabulary.
+`awq` is deliberately **not** in the table: it names a method, not a width (it can be 4 or 8 bits),
+so it is `unknown` until a width-bearing token exists in a later table version. A token not in the table is
 `unknown`, which is intentional and safe: it is hidden from precision-constrained selections
 until a later table version classifies it.
 
@@ -107,9 +113,9 @@ Rules:
 * `quantization_allow` and `quantization_deny` match **the token alone**, independent of class.
   Only `min_precision_class` depends on the class. A token outside the table is accepted in an
   allow or deny set.
-* Fail closed on absence: when any of the three members is set, a candidate with an absent or
-  `unknown` `quantization` (or, for `min_precision_class`, an `unknown` class) is `EXCLUDED`.
-  Absent is never treated as "not in the deny set".
+* Fail closed on absence: when any of the three members is set, a candidate whose `quantization`
+  is **absent** is `EXCLUDED`; for `min_precision_class` a candidate whose `precision_class` is
+  `unknown` is also `EXCLUDED`. Absent is never treated as "not in the deny set".
 * Spec 54 step 4 applies: a request may only *strengthen* (raise `min_precision_class`, shrink
   `quantization_allow`, grow `quantization_deny`); weakening is a safe failure.
 * **Conflict** is evaluated against the table version pinned in the alias revision (or, for an
@@ -175,9 +181,9 @@ mapping is a requirement on implementations, not a claim that the two schemas ar
 
 | Spec 60 member | Spec 54 / 61 member |
 |---|---|
-| `modality` | `required.input_modalities` |
+| `modality` (a single token) | `required.input_modalities` as a one-element set |
 | `min_context_tokens` | `required.min_context_tokens` |
-| `capability` | a `required.features` entry (feature and fidelity as spec 54 defines) |
+| `capability` (a spec 44 namespaced id) | the same id used as a `required.features` entry (feature and fidelity as spec 54 defines) |
 | `quality_floor` | a qualified quality requirement over the named metric; no ranking-only reading |
 | `open_weight_only` | **no equivalent**: owner policy, not a selection member; an implementation MUST NOT silently drop it when mapping |
 | `deadline`, `affinity` | request-level (spec 54 admission), not selection members |
@@ -193,9 +199,12 @@ Levels, root to leaf:
 
 1. `selection`: the alias revision, or `adhoc: true` with the normalized selection;
 2. `model`: one node per concrete model id that met every **model-level** constraint (runtime
-   family, modalities, ceilings, precision, model allow/deny) for the caller;
+   family, modalities, model allow/deny) for the caller;
 3. `instance`: one node per instance of that model, with its `instance_state`, `eligibility` and
-   the frozen reason codes of spec 54 (Additional frozen vocabularies);
+   the frozen reason codes of spec 54 (Additional frozen vocabularies). **Precision is an
+   instance-level fact** (it is evidence tied to the instance's profile and generation), so
+   `precision_unverified`, `min_precision_class` and `quantization` failures appear here, never as
+   a reason a model has no node;
 4. `owner`: the owner gateway and, for a federated candidate, the bounded **path vector** its
    advertisement carried (spec 54, Runtime, GPU and federation integration), never longer than
    that advertisement's own bound.
@@ -212,7 +221,7 @@ Rules:
 * **Counts and redaction.** Every count, `observed` value and omitted-node count is computed
   **only over candidates the caller is authorized to see**. Where an owner or path element is
   visible but its identifying detail is not, it is replaced by an opaque **handle derived per
-  principal and per response** (keyed with a server secret and the catalog snapshot token) and
+  principal and per response** (keyed with a server secret, the principal and a fresh per-response nonce) and
   stable only within that one response. A handle is never stable across callers or across
   responses, so two principals cannot correlate or enumerate private owners or instances. Private
   policy details, tenant allowlists and protected claims are never placed in a node.
@@ -220,8 +229,9 @@ Rules:
   later than the earliest expiry of any *selected* candidate; when nothing is selected, no later
   than the earliest expiry of any node in the tree, and in no case later than a fixed maximum TTL
   set by the owner.
-* **Consistency.** A candidate appears in the tree if and only if it appears in the flat list or
-  is counted in `truncated`. A node never contradicts the list.
+* **Consistency.** Every candidate of the flat list, **including EXCLUDED ones**, either appears
+  as a node or is counted in `truncated` or in an `unmet` entry. A node never contradicts the
+  list, and a node never exists for a candidate the caller is not authorized to see.
 
 ### Unmet requirements
 
@@ -234,24 +244,28 @@ entries explaining why the branch is not available *now*:
 | `required` | the bound value the selection demanded, as the contract already types it |
 | `observed` | the best value any **authorized** evaluated candidate showed; absent when none was observed |
 | `scope` | `selection` (no model qualified), `model` (a model qualified but no instance did), `instance` or `owner`: where the shortfall was found |
-| `count` | how many **authorized** evaluated candidates this entry eliminated |
+| `count` | how many **authorized** evaluated candidates failed this requirement; a candidate that fails several counts toward **each** of them, so counts may sum to more than the candidates evaluated |
 
 `requirement` tokens: `runtime_family`, `input_modality`, `output_modality`, `feature`,
-`min_context_tokens`, `min_output_tokens`, `min_precision_class`, `quantization`, `health`,
-`capacity`.
+`min_context_tokens`, `min_output_tokens`, `embedding_dimensions`, `output_schema`,
+`min_precision_class`, `quantization`, `privacy`, `residency`, `trusted_origin`, `license`,
+`health`, `capacity`.
 
-**Authorization-caused eliminations are never reported.** There are deliberately no `tenant`,
-`privacy`, `residency` or `trusted_origin` tokens. A candidate eliminated because the caller is
-not entitled to see or use it is **indistinguishable from absence**: it contributes to no entry,
-no `count`, no `observed` and no `truncated` figure (spec 54 Errors: authorization redacts reason
-detail when disclosure itself would leak). A request whose *own* privacy, residency or trust
-requirement removed every visible candidate reports that as `feature` or `health` only where the
-visible evidence shows it, and otherwise as an empty `unmet` with the node's status; it never
-reveals that a private candidate exists.
+A requirement the *caller itself stated* (privacy, residency, trusted origin, license, embedding
+dimensions, output schema) is reportable: a **visible** candidate that fails it on a label the
+caller can already see reveals nothing, and `observed` is taken from those visible labels (for
+example, the selection requires residency `eu` and every visible instance advertises `us`).
+
+**Entitlement is never reported.** There is deliberately no token for tenant entitlement or owner
+sharing policy. A candidate the caller is not entitled to see or use is **indistinguishable from
+absence**: it contributes to no entry, no `count`, no `observed` and no `truncated` figure (spec 54
+Errors: authorization redacts reason detail when disclosure itself would leak). When a branch is
+unavailable only because of candidates the caller cannot see, its `unmet` is empty and the node
+carries its status; it never reveals that a private candidate exists.
 
 `unmet` is bounded by 16 entries per node. When more would apply, the node sets
-`unmet_truncated: true` and the omitted count, keeping the entries that eliminated the most
-authorized candidates first (ties by token order). Truncation is never silent.
+`unmet_truncated: true` and the omitted count, keeping the entries with the highest `count`
+first (ties by token order in the list above). Truncation is never silent.
 
 `unmet` reports shortfalls; it never reports a *remedy*, a price, a duration or a promise. A
 reader MUST NOT treat `PROVISIONABLE` or an `unmet` list as an offer. Turning an `unmet` list into
