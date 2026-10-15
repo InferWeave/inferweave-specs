@@ -17,6 +17,7 @@ runtime/     runtime instance, isolated adapter contract, single-flight load req
 deployments/ standalone deployment manifest/live projection
 requests/    request metadata, deadlines, estimates, locality, workload class, family requests
 events/      event envelope, metric samples
+routing/     capability request and routing decision (`specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md`)
 errors/      error taxonomy and codes
 jobs/        async job states and progress
 artifacts/   artifact descriptor and cache state

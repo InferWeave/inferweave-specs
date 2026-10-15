@@ -615,6 +615,7 @@ Rules:
 - fallback ordering
 - gateway relay bandwidth circuit breaker
 - spec59 exact-registration/Link negotiation, HTTP byte fidelity and hostile response vectors; production mixed-version, cancellation/backpressure and no-replay proof owed
+- spec63 (proposed, owed): typed-credential upstream binding, acceptor-appended path and hop limit, no transit by default, request-id idempotency, per-key bounds, revocation drain, invariant-11 direct-path preference
 
 ### P1-T19 — Canonical 503/429 backpressure and bounded retries
 **Context:** `C65`

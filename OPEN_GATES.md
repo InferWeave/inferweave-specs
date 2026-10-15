@@ -630,3 +630,91 @@ chosen by the contract, not measured, and `quality_floor` is a `{metric_id, mini
 cross-deployment comparability is likewise unmeasured; its calibration against measured wait distributions is
 owed. That the router never relaxes `quality_floor` to win a slot is a runtime property no test
 exercises yet. Nothing in spec60 is `proven`, and no production gate opens.
+
+## Alias precision, ad-hoc selection and resolution trees (spec61)
+
+**UNSATISFIED / owed.** `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` is a
+proposed additive amendment of spec54 level 2: precision as a selection dimension, an ad-hoc
+evaluate-only selection, and a four-level resolution tree with typed unmet requirements. No
+schema, fixture, producer, consumer or test exists, so every required test is **owed** and
+nothing in spec61 is `proven`. The precision-class table is a classification: six of its tokens
+were observed in the reference lab gateway's model listings on 2026-10-14 and the rest are
+unobserved. The bounds (64 model nodes, 256 instance nodes, 16 `unmet` entries, 16 allowed
+tokens) are design limits, not measurements, and are owed a measured response-size check. The
+`capacity` shortfall depends on owner memory reporting (spec46) that is not universal. Hosting
+requests, offers, approval, download and profile generation are not specified here and no gate
+for them opens. Also owed: the schemas `schemas/v1/aliases/precision-classes.json`,
+`resolve-request.json` and `simulate-request.json` (the optional `selection` member), the response
+fields (`adhoc`, `resolution_tree`, `unmet`, `truncated`, `unmet_truncated`), the new frozen
+vocabularies in `contracts/protocol-v1/dynamic-aliases.json`, the acceptance-matrix entries in
+`contracts/dynamic-alias-acceptance.json`, and the six required tests of spec61. None exists.
+No production gate opens.
+
+## Federated provisioning: hosting requests (spec62)
+
+**UNSATISFIED / owed.** `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` records the delivered
+`provision.*` contract (code at `inferweave/inferweave` commit `de43764a`; the code's own tests are
+not run or counted by this change) and proposes an additive `acquisition` feature: a model
+reference, request and offer additions, sizing evidence, phases inside `ACTIVATING`, an authority
+model per owner mode, and safety rules. No schema, fixture, sender, consumer or test of the
+extension exists, so every required test of spec62 is **owed** and nothing in it is `proven`. The
+size estimator, phase duration estimates and every byte bound are deliberately unspecified because
+none has been measured; they are owed measurements, and an estimate may not drive an automatic
+decision until validated against measured sizes. Hugging Face metadata is a `declared` third-party
+statement and is owed a measured comparison with fetched sizes. Alias `PROVISIONABLE` marking from
+an advertised `acquirable` member is owed. No production gate opens.
+
+Review round 1 (independent) corrected the delivered-contract record and added requirements, all
+**owed**: the delivered lease is elapsed-time and violates invariant 37 (the extension changes
+it); `activate()` is synchronous and must stop emitting `READY`; `autonomous` + `activate` is
+refused today so autonomous acquisition has no activation path; the delivered `ProvisionFeature`
+enum is closed so negotiation needs unknown-feature skipping or `iw.provisioning/2`; the
+closed-object rejection of new members is new behaviour; `FITS` is unreachable for an unprofiled
+model; first-fetch digest verification needs operator-approved digests; `shortfall` must not leak
+free resources. No production gate opens.
+
+## Link upstream role and authenticated gateways (spec63)
+
+**UNSATISFIED / owed.** `specs/63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS.md` proposes the link
+role `upstream` (capability `iw.link-upstream/1`): a gateway holding a typed `api_key` credential dials
+an upstream gateway and submits exact-model requests up the held link, with its own acceptor-created
+binding (no registration), N upstreams, no transit by default, an acceptor-appended federation path with
+a hop limit, request-id idempotency and one charge per boundary. It is gateway byte relay, so invariant
+11 limits it to where direct transport is unavailable or forbidden. No schema, fixture, sender, acceptor,
+dialer or test exists; every required test is **owed**. Bounds (catalog size, drain window, rate and
+concurrency defaults, hop limit beyond 8, transit) are unspecified because none is measured. **Open
+decisions** (`decisions/2026-10-15-link-upstream-role.md`): whether the Go site gateway implements the
+acceptor side (touches the D-002 amendment), and whether this needs its own feature ID. The only
+measurement is one unreproduced observation that the public HTTPS API accepted a key on a read. No
+production gate opens.
+
+## Implementation status of specs 61-63 (2026-10-15)
+
+Nothing here opens a production gate.
+
+* **Spec 61 (Rust, InferWeave/inferweave #1021 merged, #1029):** precision tokens/classes, ad-hoc
+  `POST /inferweave/v1/aliases/resolve|simulate` with an inline `selection`, the resolution tree and
+  `unmet` are implemented and deployed to the bender lab gateway (management/preview only). A signed
+  edge request against it returned 200. **UNSATISFIED / owed:** rate limiting and audit of ad-hoc
+  calls (no preview audit sink exists); the table-version pin; the schema/contract additions listed in
+  spec 61 (`contract.json`, `precision-classes.json`, `selection` on the request schemas); a measured
+  memory report in the production inventory (so `capacity` never appears); the Go console test 5 is
+  covered by metabolomics-us/inferweave-gateway #549 against fixtures only. **Defect found by running
+  it:** an ad-hoc selection with no stated preferences was rejected because stored-alias preference
+  weights must sum to one; fixed in #1029 (neutral even weighting for ad-hoc only).
+  The lab catalog is **empty** because legacy capability evidence is unverified, so resolve returns
+  UNAVAILABLE with no `unmet` until nodes report verified capability profiles.
+* **Spec 62 (pure slice, #1022):** types, sizing evidence, `fit`, redaction and feature-skipping are
+  implemented behind no caller. **UNSATISFIED / owed:** required tests 2, 5, 6, 7, 9; the controller
+  changes (progress-based lease, asynchronous ACTIVATING, autonomous activation); approval-digest
+  recomputation; the `acquirable` capacity member; rate limiting of planning.
+* **Spec 63 (acceptor slice, #1024):** default-off (`IW_LINK_UPSTREAM_V1`), refuses the role in
+  production because no channel-binding exporter and no executor exist. **UNSATISFIED / owed:** the
+  dialer, execution through admission and accounting, reuse of the existing principal-key file, the
+  catalog frame, byte accounting and the relay circuit breaker, durable dedupe across restarts, the
+  declared traffic class on the wire (every request is `private` today), and the Hello/ack schemas.
+  **Spec defects found while implementing:** channel binding gives no proof of possession for a bearer
+  key (TLS is the real protection); one Hello carries one credential so "both roles on one link" is not
+  expressible; "optional allow-list" vs "absent bound denies"; the hop limit "8" vs "no default"; a
+  refused Hello gets no acknowledgement.
+

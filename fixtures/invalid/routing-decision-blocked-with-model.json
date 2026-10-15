@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "status": "BLOCKED",
+  "retry_after_ms": 30000,
+  "route_reasons": [
+    {
+      "code": "NO_ELIGIBLE_CAPACITY"
+    },
+    {
+      "code": "QUALITY_FLOOR_UNMET",
+      "subject_id": "llm.tool_use_quality"
+    }
+  ],
+  "model": "glm-5.3-flash"
+}

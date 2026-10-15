@@ -160,6 +160,8 @@ exists but the federated-provisioning behavior is absent. **Missing** = no sourc
 
 ### 2.10 Specs repo (§13/§17)
 
+> Historical audit. Spec 62 (`specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md`) now records the delivered contract and proposes the hosting extension.
+
 | Requirement | Status | Evidence / gap |
 |---|---|---|
 | Canonical wire format / schemas / state machines / authz model / threat model / conformance fixtures / migration notes for provisioning | **Missing** | Specs repo has `federation.md`, `scheduling.md`, `security.md`; no provisioning spec. |
