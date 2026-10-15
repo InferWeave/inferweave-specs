@@ -1744,7 +1744,8 @@
       ],
       "specs": [
         "05_ROUTING_AFFINITY",
-        "10_DASHBOARD_PORTAL"
+        "10_DASHBOARD_PORTAL",
+        "60_CAPABILITY_ROUTING_AND_MISSION_EVENTS"
       ],
       "features": [
         "IW-ROUTE-001",

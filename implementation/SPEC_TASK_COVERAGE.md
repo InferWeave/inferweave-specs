@@ -66,3 +66,4 @@
 
 
 | `specs/59_LINK_HTTP_JSON.md` | `P1-T18` |
+| `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` | `P2-T14` |

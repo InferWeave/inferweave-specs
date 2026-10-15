@@ -16,15 +16,13 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,049,803 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,049,585 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
 - `.github/workflows/protocol-ci.yml` — `4e4a8b44a516` — ~194t
 - `.gitignore` — `46f401dc200c` — ~33t
 - `.gitleaks.toml` — `61bce6cd69b3` — ~130t
-- `.omx/logs/omx-2026-10-15.jsonl` — `5b1e368fd175` — ~56t
-- `.omx/state/session.json` — `537b87d4ddd3` — ~205t
 - `.semgrepignore` — `81c5def09b50` — ~86t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
@@ -76,7 +74,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
-- `contracts/canonical-task-graph.json` — `8ff36bb01da2` — ~35,911t
+- `contracts/canonical-task-graph.json` — `ca6a3fb5b5e5` — ~35,924t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~167t
 - `contracts/deployment-manifest.image.example.yaml` — `94c2bd1e9061` — ~577t
@@ -428,7 +426,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `implementation/MILESTONES.md` — `84f77749cf80` — ~481t
 - `implementation/MONOREPO_BOOTSTRAP.md` — `7d729410dacd` — ~367t
 - `implementation/PHASE_GATES.md` — `b821ccf27648` — ~672t
-- `implementation/SPEC_TASK_COVERAGE.md` — `b832e73a89ba` — ~1,544t
+- `implementation/SPEC_TASK_COVERAGE.md` — `d56952aa8880` — ~1,561t
 - `implementation/TEST_STRATEGY.md` — `5ded1d51fb57` — ~1,301t
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `openapi/README.md` — `2cec122d644f` — ~207t
@@ -686,7 +684,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-2/P2-T11.md` — `f09c53860c35` — ~232t
 - `tasks/phase-2/P2-T12.md` — `783bc537d1ff` — ~215t
 - `tasks/phase-2/P2-T13.md` — `b9a350cc9c76` — ~218t
-- `tasks/phase-2/P2-T14.md` — `899b4bc2776f` — ~228t
+- `tasks/phase-2/P2-T14.md` — `4c42277eb441` — ~241t
 - `tasks/phase-2/P2-T15.md` — `94a72cc2009e` — ~223t
 - `tasks/phase-2/P2-T16.md` — `6d4c645cb15a` — ~329t
 - `tasks/phase-2/P2-T17.md` — `8b8a9947b84a` — ~212t
