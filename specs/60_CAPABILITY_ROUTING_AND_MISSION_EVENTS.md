@@ -32,8 +32,8 @@ A capability request is a closed object. Version 1 carries `schema_version: "1"`
 | Field | Type | Meaning |
 |---|---|---|
 | `schema_version` | const `"1"` | contract version; a reader that does not know the version rejects the request |
-| `capability` | token | task capability the model must hold, in the gateway vocabulary (for example `tool_use`); client-side names are mapped by the client |
-| `quality_floor` | number in [0, 1] | minimum qualified quality for the capability, as a normalised benchmark-profile score; unitless |
+| `capability` | capability id | task capability the model must hold, a namespaced extensible string id from `44_CORE_PROTOCOL.md` (for example `llm.tool_use`, `llm.code`); client-side names are mapped to these ids by the client |
+| `quality_floor` | object `{metric_id, minimum}` | minimum acceptable value of one generic quality metric of `44_CORE_PROTOCOL.md` (for example `metric_id: llm.tool_use_quality`); `minimum` is a number in the unit of that metric |
 | `min_context_tokens` | integer >= 1 | smallest acceptable hard context ceiling of the chosen deployment |
 | `modality` | token | input modality such as `text`, `image`, `audio` |
 | `deadline` | RFC 3339 date-time | latest time by which the work must have started being served |
@@ -43,6 +43,10 @@ A capability request is a closed object. Version 1 carries `schema_version: "1"`
 
 Required: `schema_version`, `capability`, `quality_floor`, `min_context_tokens`, `modality`,
 `deadline`, `open_weight_only`. `affinity` is optional.
+
+`44_CORE_PROTOCOL.md` transports quality measurements per metric and defines no universal
+intelligence score, so the floor names its metric instead of inventing a shared scale. A
+deployment with no sample for `metric_id` does not meet the floor.
 
 Unknown top-level fields are rejected, not ignored: a field a sender believes is a hard
 constraint must never be silently dropped. New constraints arrive by a new `schema_version` or,
@@ -112,7 +116,7 @@ Registered codes for ROUTED:
 | Code | Meaning |
 |---|---|
 | `CAPABILITY_MATCH` | the deployment holds the requested capability |
-| `QUALITY_FLOOR_MET` | qualified quality is at or above `quality_floor` |
+| `QUALITY_FLOOR_MET` | the metric named by `quality_floor` is at or above its minimum |
 | `CONTEXT_FITS` | hard context ceiling is at least `min_context_tokens` |
 | `MODALITY_MATCH` | the deployment accepts the requested modality |
 | `OPEN_WEIGHT_SATISFIED` | the deployment is self-hosted open-weight |
@@ -125,7 +129,7 @@ Registered codes for BLOCKED:
 | Code | Meaning |
 |---|---|
 | `NO_ELIGIBLE_CAPACITY` | eligible deployments exist but none has capacity inside the bound |
-| `QUALITY_FLOOR_UNMET` | only deployments below `quality_floor` have capacity |
+| `QUALITY_FLOOR_UNMET` | only deployments below `quality_floor` (or with no sample for its metric) have capacity |
 | `CAPABILITY_UNSUPPORTED` | no deployment holds the capability |
 | `CONTEXT_UNSATISFIABLE` | no deployment has a large enough hard context ceiling |
 | `MODALITY_UNSUPPORTED` | no deployment accepts the modality |
@@ -168,8 +172,9 @@ Rules:
    `{kind, id}` references, never inline content.
 7. `state` and `event_type` are non-empty strings whose vocabularies belong to the producing
    orchestrator; this contract fixes their shape, not their values.
-8. `causal_parent_id` names the event that caused this one. The envelope's `causation_id` is a
-   separate legacy field and is not an alias.
+8. `causal_parent_id` names the event that caused this one. The envelope also defines
+   `causation_id`; a mission event carries `causal_parent_id` only and **must not** carry
+   `causation_id`, so there is exactly one caused-by field.
 
 ## Compatibility
 
@@ -188,6 +193,7 @@ Rules:
 | Closed schemas for request, decision and mission event | owed | schemas and fixtures follow in later changes |
 | Invalid decisions and events are rejected | owed | contract tests follow; `proven` only once a test fails when a schema constraint is removed |
 | Gateway emits `estimated_wait_ms` and `route_reasons` | owed | recorded in `OPEN_GATES.md`; unsatisfied |
+| `quality_floor` metric ids and minimums comparable across deployments | owed | per-metric provenance and scale comparability unmeasured here |
 | `MAX_WAIT_BOUND_MS` calibrated against measured wait distributions | owed | unmeasured; chosen by contract |
 | Quality floor never relaxed at runtime | owed | a runtime property of the router; no test exists here |
 

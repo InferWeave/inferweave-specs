@@ -590,6 +590,7 @@ capability request, routing decision and mission event contracts. No gateway or 
 `estimated_wait_ms` or `route_reasons` today, so gateway emission of the estimated wait and the
 route reasons is **owed**. The schemas, fixtures and contract tests that would make the contract
 executable are also owed and are not part of this change. `MAX_WAIT_BOUND_MS` (300000) is a value
-chosen by the contract, not measured; its calibration against measured wait distributions is
+chosen by the contract, not measured, and `quality_floor` is a `{metric_id, minimum}` pair whose
+cross-deployment comparability is likewise unmeasured; its calibration against measured wait distributions is
 owed. That the router never relaxes `quality_floor` to win a slot is a runtime property no test
 exercises yet. Nothing in spec60 is `proven`, and no production gate opens.
