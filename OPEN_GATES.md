@@ -594,3 +594,17 @@ chosen by the contract, not measured, and `quality_floor` is a `{metric_id, mini
 cross-deployment comparability is likewise unmeasured; its calibration against measured wait distributions is
 owed. That the router never relaxes `quality_floor` to win a slot is a runtime property no test
 exercises yet. Nothing in spec60 is `proven`, and no production gate opens.
+
+## Alias precision, ad-hoc selection and resolution trees (spec61)
+
+**UNSATISFIED / owed.** `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` is a
+proposed additive amendment of spec54 level 2: precision as a selection dimension, an ad-hoc
+evaluate-only selection, and a four-level resolution tree with typed unmet requirements. No
+schema, fixture, producer, consumer or test exists, so every required test is **owed** and
+nothing in spec61 is `proven`. The precision-class table is a classification: six of its tokens
+were observed in the reference lab gateway's model listings on 2026-10-14 and the rest are
+unobserved. The bounds (64 model nodes, 256 instance nodes, 16 `unmet` entries, 16 allowed
+tokens) are design limits, not measurements, and are owed a measured response-size check. The
+`capacity` shortfall depends on owner memory reporting (spec46) that is not universal. Hosting
+requests, offers, approval, download and profile generation are not specified here and no gate
+for them opens. No production gate opens.
