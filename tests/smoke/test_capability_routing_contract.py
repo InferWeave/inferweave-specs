@@ -46,10 +46,6 @@ def put(key, value):
     return lambda doc: doc.__setitem__(key, value)
 
 
-def put_many(**items):
-    return lambda doc: doc.update(items)
-
-
 def remove_from(path, entry):
     """Schema break: delete `entry` from the list at `path`, or from the dict at `path`."""
     def apply(schema):

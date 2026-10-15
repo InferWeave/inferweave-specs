@@ -790,7 +790,7 @@
   "tests/smoke/test_alias_edge_delegation.py": "e8f8df50ee53b720778ae9a1bd54984a7bb1b9c96cd4aeb3b5a053c9e1e9c5bd",
   "tests/smoke/test_alias_execution_contract.py": "6af0f772c0e253f87a8f044de40dcb43f8e080ed2a34d82445236895fb8e2d4a",
   "tests/smoke/test_bundle_self_test.py": "f0115f5e0f1a0f099a30aac83d3eb8a6c3a045971d99dec33251d16cd0527e10",
-  "tests/smoke/test_capability_routing_contract.py": "3c5f3ece070a40313c2bb9584e64d49bd3128784d240ee266bf7f28e2e3c6c98",
+  "tests/smoke/test_capability_routing_contract.py": "c2dca75a583d58515686e83be2be5df5e11deb0072b921f35a404eb5ffd1101a",
   "tests/smoke/test_conformance.py": "40dd0543b1e5359c82e3a914829871b325f53576100f3980fdb5bba2a2893d9b",
   "tests/smoke/test_dynamic_alias_contract.py": "bc7c6423c81d8464a80f00c7d95f80d7bdcc14be5746d4530d29a994edbe2bba",
   "tests/smoke/test_family_routing.py": "d44eef95e64a679cb575bfb4501fc893658545de6eccbdd30315f86033bfd5d9",

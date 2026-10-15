@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,062,670 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,062,653 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -809,7 +809,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_alias_edge_delegation.py` — `e8f8df50ee53` — ~869t
 - `tests/smoke/test_alias_execution_contract.py` — `6af0f772c0e2` — ~3,848t
 - `tests/smoke/test_bundle_self_test.py` — `f0115f5e0f1a` — ~281t
-- `tests/smoke/test_capability_routing_contract.py` — `3c5f3ece070a` — ~2,016t
+- `tests/smoke/test_capability_routing_contract.py` — `c2dca75a583d` — ~1,999t
 - `tests/smoke/test_conformance.py` — `40dd0543b1e5` — ~1,230t
 - `tests/smoke/test_dynamic_alias_contract.py` — `bc7c6423c81d` — ~2,474t
 - `tests/smoke/test_family_routing.py` — `d44eef95e64a` — ~457t
