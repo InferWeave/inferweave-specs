@@ -613,3 +613,17 @@ fields (`adhoc`, `resolution_tree`, `unmet`, `truncated`, `unmet_truncated`), th
 vocabularies in `contracts/protocol-v1/dynamic-aliases.json`, the acceptance-matrix entries in
 `contracts/dynamic-alias-acceptance.json`, and the six required tests of spec61. None exists.
 No production gate opens.
+
+## Federated provisioning: hosting requests (spec62)
+
+**UNSATISFIED / owed.** `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` records the delivered
+`provision.*` contract (code at `inferweave/inferweave` commit `de43764a`; the code's own tests are
+not run or counted by this change) and proposes an additive `acquisition` feature: a model
+reference, request and offer additions, sizing evidence, phases inside `ACTIVATING`, an authority
+model per owner mode, and safety rules. No schema, fixture, sender, consumer or test of the
+extension exists, so every required test of spec62 is **owed** and nothing in it is `proven`. The
+size estimator, phase duration estimates and every byte bound are deliberately unspecified because
+none has been measured; they are owed measurements, and an estimate may not drive an automatic
+decision until validated against measured sizes. Hugging Face metadata is a `declared` third-party
+statement and is owed a measured comparison with fetched sizes. Alias `PROVISIONABLE` marking from
+an advertised `acquirable` member is owed. No production gate opens.
