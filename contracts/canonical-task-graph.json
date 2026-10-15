@@ -1056,7 +1056,8 @@
       ],
       "specs": [
         "08_CONNECTIVITY_DATA_PLANE",
-        "59_LINK_HTTP_JSON"
+        "59_LINK_HTTP_JSON",
+        "63_LINK_CONSUME_ROLE_AND_UPSTREAM_GATEWAYS"
       ],
       "features": [
         "IW-DP-001",

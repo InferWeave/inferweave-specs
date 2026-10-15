@@ -636,3 +636,15 @@ enum is closed so negotiation needs unknown-feature skipping or `iw.provisioning
 closed-object rejection of new members is new behaviour; `FITS` is unreachable for an unprofiled
 model; first-fetch digest verification needs operator-approved digests; `shortfall` must not leak
 free resources. No production gate opens.
+
+## Link consume role and upstream gateways (spec63)
+
+**UNSATISFIED / owed.** `specs/63_LINK_CONSUME_ROLE_AND_UPSTREAM_GATEWAYS.md` proposes the link role
+`consume` (capability `iw.link-consume/1`): a gateway holding an API key dials an upstream gateway
+and submits exact-model requests up the held link, with N upstreams, no transit by default, loop
+prevention by federation path and one accounting lineage. No schema, fixture, sender, acceptor,
+dialer or test exists; every required test is **owed**. Bounds (catalog size, drain window, rate
+and concurrency defaults, transit) are unspecified because none is measured. **Open decision:**
+whether the Go site gateway implements the acceptor side (spec 54 limits it to consume, render and
+relay). The only measurement is that the public HTTPS API accepts a key on a read. No production
+gate opens.
