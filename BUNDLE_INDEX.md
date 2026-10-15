@@ -1,7 +1,7 @@
 # InferWeave Specs Repository Index
 
 Version: **12.0**
-Specifications: **60**
+Specifications: **61**
 Tracked features: **101**
 Canonical tasks: **167**
 Deployment: **Docker Compose persistent / Apptainer Slurm**
@@ -16,13 +16,15 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,045,395 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,049,803 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
 - `.github/workflows/protocol-ci.yml` — `4e4a8b44a516` — ~194t
-- `.gitignore` — `c0a23c709708` — ~31t
+- `.gitignore` — `46f401dc200c` — ~33t
 - `.gitleaks.toml` — `61bce6cd69b3` — ~130t
+- `.omx/logs/omx-2026-10-15.jsonl` — `5b1e368fd175` — ~56t
+- `.omx/state/session.json` — `537b87d4ddd3` — ~205t
 - `.semgrepignore` — `81c5def09b50` — ~86t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
@@ -33,7 +35,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `bf0229f66392` — ~9,798t
+- `OPEN_GATES.md` — `3a1d5f683d5c` — ~10,026t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -126,7 +128,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/compatibility.md` — `8ceb21cb1933` — ~713t
 - `docs/events.md` — `a957e821624f` — ~481t
 - `docs/extensions.md` — `64c0b09b4dcb` — ~227t
-- `docs/federated-provisioning-audit.md` — `531b32d25737` — ~6,966t
+- `docs/federated-provisioning-audit.md` — `3d77e84f3192` — ~7,848t
 - `docs/federation.md` — `dfe0a66eaf91` — ~320t
 - `docs/lifecycle.md` — `d17f7ed1827f` — ~408t
 - `docs/scheduling.md` — `743fddcd8bda` — ~412t
@@ -609,6 +611,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` — `3659d1492b01` — ~10,487t
 - `specs/58_MODEL_INTELLIGENCE_UI_COHESION.md` — `3e42b409a63f` — ~3,385t
 - `specs/59_LINK_HTTP_JSON.md` — `8b8ce77691f2` — ~2,549t
+- `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` — `f432c7e36ef5` — ~3,035t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `99f922c820cb` — ~544t

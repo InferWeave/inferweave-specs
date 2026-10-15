@@ -582,3 +582,15 @@ stream and binding vectors are executable contract evidence only. Rust/Go mixed-
 path/status/MIME/body parity, current registration/socket atomic dispatch, cancellation,
 credit starvation, terminal failure and no backend replay remain owed. This extension
 opens no alias execution gate and cannot replace spec57 permits.
+
+## Capability routing decision and mission events (spec60)
+
+**UNSATISFIED / owed.** `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` defines the
+capability request, routing decision and mission event contracts. No gateway or router emits
+`estimated_wait_ms` or `route_reasons` today, so gateway emission of the estimated wait and the
+route reasons is **owed**. The schemas, fixtures and contract tests that would make the contract
+executable are also owed and are not part of this change. `MAX_WAIT_BOUND_MS` (300000) is a value
+chosen by the contract, not measured, and `quality_floor` is a `{metric_id, minimum}` pair whose
+cross-deployment comparability is likewise unmeasured; its calibration against measured wait distributions is
+owed. That the router never relaxes `quality_floor` to win a slot is a runtime property no test
+exercises yet. Nothing in spec60 is `proven`, and no production gate opens.
