@@ -607,4 +607,9 @@ unobserved. The bounds (64 model nodes, 256 instance nodes, 16 `unmet` entries, 
 tokens) are design limits, not measurements, and are owed a measured response-size check. The
 `capacity` shortfall depends on owner memory reporting (spec46) that is not universal. Hosting
 requests, offers, approval, download and profile generation are not specified here and no gate
-for them opens. No production gate opens.
+for them opens. Also owed: the schemas `schemas/v1/aliases/precision-classes.json`,
+`resolve-request.json` and `simulate-request.json` (the optional `selection` member), the response
+fields (`adhoc`, `resolution_tree`, `unmet`, `truncated`, `unmet_truncated`), the new frozen
+vocabularies in `contracts/protocol-v1/dynamic-aliases.json`, the acceptance-matrix entries in
+`contracts/dynamic-alias-acceptance.json`, and the six required tests of spec61. None exists.
+No production gate opens.
