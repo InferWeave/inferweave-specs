@@ -119,6 +119,30 @@ counted physical memory in `reserved` was following ambiguous text and must be c
   bodies, so no earlier text is changed.
 
 
+### Dynamic nodes and gateway-driven provisioning (added to 1.1.0, unreleased)
+
+**Compatibility classification: minor, backwards-compatible, with one specification
+correction.** Capability-gated: an older node never offers `iw.dynamic-node/1`, sends no
+`dynamic` and reads `assignments: []` as before; an older gateway lists nothing and a dynamic
+node registered to it stays hardware-only. The correction: spec 47 §5.1 said `assignments`
+"MUST be `[]`" in this version; that was the reservation, and the text now says it is `[]` for
+every registration that has not negotiated a capability that fills it.
+
+- `specs/61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` and decision record
+  `decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` (feature `IW-DYNNODE-001`, task
+  `P5-T35`, `owed`).
+- Capability `iw.dynamic-node/1`; register member `dynamic`
+  (`schemas/v1/requests/node-dynamic-facts.json`); `assignments` entries `serve`, `measure`,
+  `stop` on the register and heartbeat responses (`schemas/v1/requests/node-assignment.json`);
+  heartbeat member `provisioning` (`schemas/v1/requests/node-provisioning-status.json`);
+  `node-register-response.json` now allows up to 8 assignment entries.
+- Rules: desired state repeated until the node agrees, withdrawal explicit, unknown entries
+  skipped; a derived `dep_` deployment id; pinned, resumable, digest-verified artifacts; only
+  profiles with decode evidence at 90% of the context floor serve, unmeasured candidates are
+  measured first and drafted; every card of an engine on one node; a failed placement is not
+  retried into the same placement; a restarted gateway adopts what a node reports serving.
+- Fixtures under `fixtures/valid` and `fixtures/invalid`; operator view `GET /iw/v1/dynamic`.
+
 ## 1.0.0 — initial protocol (in progress)
 
 The first Protocol v1 wire contract. Formalizes the scheduler-neutral vocabulary of

@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/node-dynamic-facts.json",
+  "title": "Dynamic node facts (the `dynamic` member of POST /v1/node/register)",
+  "description": "What a dynamic node (inferweave join --model dynamic) says about itself on every registration (specs/61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 4): its host as the runtime-profile selector reads it, every card by stable id and launch serial, and its artifact root. Acted on only while iw.dynamic-node/1 is in force for the registration. The 65536-byte bound is a size rule the schema cannot express.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["version", "host", "gpus", "artifactRoot", "containerRuntime"],
+  "properties": {
+    "version": {"type": "integer", "const": 1},
+    "host": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["gpuVendor", "gpuModel", "ramGib", "shmGib", "pcieGen"],
+      "properties": {
+        "gpuVendor": {"type": "string", "enum": ["amd", "nvidia"]},
+        "gpuModel": {"type": "string", "minLength": 1, "maxLength": 256},
+        "ramGib": {"type": "integer", "minimum": 0},
+        "shmGib": {"type": "integer", "minimum": 0},
+        "pcieGen": {"type": "integer", "minimum": 0, "maximum": 255}
+      }
+    },
+    "gpus": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["gpuId", "serial", "vramMib"],
+        "properties": {
+          "gpuId": {"type": "string", "minLength": 1, "maxLength": 256},
+          "serial": {"type": "string", "minLength": 1, "maxLength": 256},
+          "vramMib": {"type": "integer", "minimum": 0},
+          "busy": {"type": "boolean"}
+        }
+      }
+    },
+    "artifactRoot": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "freeBytes": {"type": "integer", "minimum": 0},
+    "containerRuntime": {"type": "string", "minLength": 1, "maxLength": 64}
+  }
+}

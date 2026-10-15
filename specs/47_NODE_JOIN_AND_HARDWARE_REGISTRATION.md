@@ -208,11 +208,18 @@ never enforces it (section 3.1 rule 5).
 
 ### 5.1 `assignments`
 
-The register response gains an **always-present** member `assignments`: an array reserved for
-future gateway-to-node instructions (images to pull, a profile to run). In this version it MUST be
-`[]`. A node MUST ignore entries it does not understand and MUST NOT fail a registration because of
-one. No entry shape is defined yet; the first one will be added by a later minor release together
-with a capability name.
+The register response gains an **always-present** member `assignments`: an array of
+gateway-to-node instructions (images to pull, a profile to run). A node MUST ignore entries it does
+not understand and MUST NOT fail a registration because of one.
+
+It is `[]` for every registration that has not negotiated a capability that fills it. The first
+entry shapes, and the capability name that puts them in force (`iw.dynamic-node/1`, offered only
+by a node started with `--model dynamic`), are defined by
+`specs/61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` together with the heartbeat response's
+`assignments` and the heartbeat request's `provisioning` member. Earlier text said the array
+"MUST be `[]`" in this version; that was the reservation, not a rule against filling it, and a
+gateway that lists the capability fills it for that registration only. A registration that does
+not negotiate it, and an older gateway, still answer `[]`.
 
 ### 5.2 Endpoints
 

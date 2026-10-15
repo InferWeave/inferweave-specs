@@ -1,0 +1,469 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/node-assignment.json",
+  "title": "Node assignment (one entry of `assignments` on the register and heartbeat responses)",
+  "description": "What a gateway wants on a dynamic node's cards (specs/61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 5). Desired state, repeated on every answer until the node's status agrees; withdrawal is the explicit `stop` kind, never an absent entry. A node ignores an entry whose kind or version it does not know. `serve` carries the whole runtime profile (docs/specs/runtime-profile-autoselect.md section 3 in the implementation repository), so the node needs no profile library of its own.",
+  "type": "object",
+  "required": [
+    "kind",
+    "version",
+    "id"
+  ],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "serve",
+        "measure",
+        "stop"
+      ]
+    },
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9._-]+$"
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "kind": {
+          "const": "stop"
+        },
+        "version": {
+          "type": "integer",
+          "const": 1
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-z0-9._-]+$"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "version",
+        "id"
+      ]
+    },
+    {
+      "properties": {
+        "kind": {
+          "const": "serve"
+        },
+        "deployment": {
+          "$ref": "#/definitions/deployment"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "gpuIds": {
+          "$ref": "#/definitions/gpuIds"
+        },
+        "profile": {
+          "$ref": "#/definitions/profile"
+        },
+        "artifacts": {
+          "$ref": "#/definitions/artifacts"
+        },
+        "advert": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "slots",
+            "contextSupported",
+            "maxContextTokens",
+            "kvBytesPerToken"
+          ],
+          "properties": {
+            "slots": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "contextSupported": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxContextTokens": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "kvBytesPerToken": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "tools": {
+              "type": "boolean"
+            },
+            "structuredOutput": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "version",
+        "id",
+        "deployment",
+        "model",
+        "gpuIds",
+        "profile",
+        "artifacts",
+        "advert"
+      ]
+    },
+    {
+      "properties": {
+        "kind": {
+          "const": "measure"
+        },
+        "deployment": {
+          "$ref": "#/definitions/deployment"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "gpuIds": {
+          "$ref": "#/definitions/gpuIds"
+        },
+        "candidate": {
+          "$ref": "#/definitions/profile"
+        },
+        "artifacts": {
+          "$ref": "#/definitions/artifacts"
+        },
+        "matrix": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contexts",
+            "concurrency",
+            "maxTokens"
+          ],
+          "properties": {
+            "contexts": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 8,
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "concurrency": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 8,
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "maxTokens": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4096
+            }
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "version",
+        "id",
+        "deployment",
+        "model",
+        "gpuIds",
+        "candidate",
+        "artifacts",
+        "matrix"
+      ]
+    }
+  ],
+  "definitions": {
+    "deployment": {
+      "description": "dep_ and the SHA-256 over the model id, profile name and version, image, digest, command and every artifact's path and digest (section 5 rule 6).",
+      "type": "string",
+      "pattern": "^dep_[0-9a-f]{64}$"
+    },
+    "gpuIds": {
+      "description": "Cards of the receiving node only; as many as the profile's match.gpu.count.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "bytes",
+          "sha256",
+          "sources"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "pattern": "^(?!/)(?!.*(^|/)\\.\\.?(/|$))(?!.*//).*$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "pattern": "^(file|https?)://",
+              "maxLength": 4096
+            }
+          }
+        }
+      }
+    },
+    "profile": {
+      "description": "A RuntimeProfile document as the implementation repository's docs/specs/runtime-profiles/*.yaml defines it, in JSON. Only the members this contract depends on are constrained here.",
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "name",
+        "version",
+        "match",
+        "launch"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "match": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "gpu",
+            "model",
+            "serves"
+          ],
+          "properties": {
+            "gpu": {
+              "type": "object",
+              "additionalProperties": true,
+              "required": [
+                "vendor",
+                "model",
+                "count",
+                "vramMibMin"
+              ],
+              "properties": {
+                "vendor": {
+                  "type": "string",
+                  "enum": [
+                    "amd",
+                    "nvidia"
+                  ]
+                },
+                "model": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "vramMibMin": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "model": {
+              "type": "object",
+              "required": [
+                "family",
+                "name"
+              ],
+              "properties": {
+                "family": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "serves": {
+              "type": "object",
+              "required": [
+                "slots",
+                "contextPerSlotMin"
+              ],
+              "properties": {
+                "slots": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "contextPerSlotMin": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        },
+        "launch": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "label",
+            "engine",
+            "backend",
+            "image",
+            "digest"
+          ],
+          "properties": {
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "engine": {
+              "type": "string",
+              "enum": [
+                "vllm",
+                "llama.cpp",
+                "strata"
+              ]
+            },
+            "backend": {
+              "type": "string",
+              "minLength": 1
+            },
+            "image": {
+              "type": "string",
+              "minLength": 1
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "command": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "mounts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "host",
+                  "container"
+                ],
+                "properties": {
+                  "host": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "container": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "readOnly": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/evidence"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "description": "One measured cell, as a runtime profile's evidence row: decodeTps is the aggregate decode rate across the cell's concurrent streams at the named context depth (specs/39, invariant 42).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run",
+        "date",
+        "context",
+        "concurrency",
+        "decodeTps"
+      ],
+      "properties": {
+        "run": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "context": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "concurrency": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "decodeTps": {
+          "type": "number",
+          "minimum": 0
+        },
+        "prefillTps": {
+          "type": "number",
+          "minimum": 0
+        },
+        "ttftP50Ms": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

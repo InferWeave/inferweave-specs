@@ -3950,6 +3950,40 @@
       "proof_owed_by": "P5-T34"
     },
     {
+      "id": "P5-T35",
+      "phase": 5,
+      "title": "Dynamic nodes: capability-gated assignments, facts, status and gateway provisioning",
+      "depends_on": [
+        "P5-T33"
+      ],
+      "specs": [
+        "61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING",
+        "47_NODE_JOIN_AND_HARDWARE_REGISTRATION",
+        "25_SLURM_EPHEMERAL_PROVIDER_NODES",
+        "39_INFERENCE_RUNTIME_TUNING",
+        "43_GPU_PLACEMENT_HOT_SWAP"
+      ],
+      "features": [
+        "IW-DYNNODE-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Implement the specs/61 contract in the Rust gateway and node (InferWeave/inferweave): a node started with --model dynamic registers hardware-only with its dynamic facts and offers iw.dynamic-node/1; a gateway with desired models answers its register and every heartbeat with serve, measure and stop assignments chosen from measured runtime profiles with every card of an engine on one node; the node fetches pinned artifacts, launches the assigned profile, probes it, re-registers as a routable node and reports provisioning status; a measurement becomes a draft profile the next plan may select.",
+      "required_tests": [
+        "a dynamic node's register is hardware-only, carries the dynamic facts and the capability offer, and files no telemetry while idle",
+        "assignments on the register and heartbeat responses are acted on only while iw.dynamic-node/1 is in force, and provisioning rides the beat only then",
+        "malformed dynamic facts are refused with 400 bad_request before anything is minted",
+        "a serve assignment fetches artifacts with size and SHA-256 verified and a cut HTTP download resumed, launches the profile pinned to the assigned cards, probes it and reports serving with the engine endpoint and the derived dep_ id",
+        "a profile without decode evidence at 90 percent of the context floor at the serving slot count is never assigned to serve, and a required quality suite excludes unscored profiles",
+        "a measure assignment runs every matrix cell, reports one evidence row per cell, stops the engine, and the gateway drafts a profile the next plan selects",
+        "a failed placement is recorded and not retried on the same node, and a serving engine that stops answering is released after three beats",
+        "a model removed from the configuration is stopped explicitly, a restarted gateway adopts a serving engine instead of stopping it, and a stale node releases its placement",
+        "every card of one assignment is on one node and the deployment id differs between profiles"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T35"
+    },
+    {
       "id": "B-T01",
       "phase": "B",
       "title": "Runtime families and typed capabilities",
