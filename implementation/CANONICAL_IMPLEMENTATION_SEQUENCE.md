@@ -2186,9 +2186,9 @@ Rules:
 **Context:** `C85`
 **Depends on:** P5-T33
 **Features:** IW-DYNNODE-001
-**Read:** specs/61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md, specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md, specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md, specs/39_INFERENCE_RUNTIME_TUNING.md, specs/43_GPU_PLACEMENT_HOT_SWAP.md
+**Read:** specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md, specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md, specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md, specs/39_INFERENCE_RUNTIME_TUNING.md, specs/43_GPU_PLACEMENT_HOT_SWAP.md
 
-**Outcome:** Implement the specs/61 contract in the Rust gateway and node (InferWeave/inferweave): a node started with --model dynamic registers hardware-only with its dynamic facts and offers iw.dynamic-node/1; a gateway with desired models answers its register and every heartbeat with serve, measure and stop assignments chosen from measured runtime profiles with every card of an engine on one node; the node fetches pinned artifacts, launches the assigned profile, probes it, re-registers as a routable node and reports provisioning status; a measurement becomes a draft profile the next plan may select.
+**Outcome:** Implement the specs/64 contract in the Rust gateway and node (InferWeave/inferweave): a node started with --model dynamic registers hardware-only with its dynamic facts and offers iw.dynamic-node/1; a gateway with desired models answers its register and every heartbeat with serve, measure and stop assignments chosen from measured runtime profiles with every card of an engine on one node; the node fetches pinned artifacts, launches the assigned profile, probes it, re-registers as a routable node and reports provisioning status; a measurement becomes a draft profile the next plan may select.
 
 **Required tests:**
 - a dynamic node's register is hardware-only, carries the dynamic facts and the capability offer, and files no telemetry while idle

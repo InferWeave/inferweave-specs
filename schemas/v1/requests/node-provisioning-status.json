@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/requests/node-provisioning-status.json",
   "title": "Dynamic node provisioning status (the `provisioning` member of POST /v1/node/heartbeat)",
-  "description": "One entry per assignment a dynamic node has acted on (specs/61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 6). Read leniently by the gateway after the beat is accepted; a malformed entry is dropped, never a refused beat. The member is an array of these; the 65536-byte bound is a size rule the schema cannot express.",
+  "description": "One entry per assignment a dynamic node has acted on (specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 6). Read leniently by the gateway after the beat is accepted; a malformed entry is dropped, never a refused beat. The member is an array of these; the 65536-byte bound is a size rule the schema cannot express.",
   "type": "object",
   "additionalProperties": true,
   "required": ["id", "model", "gpuIds", "phase", "updatedAt"],

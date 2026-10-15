@@ -215,7 +215,7 @@ not understand and MUST NOT fail a registration because of one.
 It is `[]` for every registration that has not negotiated a capability that fills it. The first
 entry shapes, and the capability name that puts them in force (`iw.dynamic-node/1`, offered only
 by a node started with `--model dynamic`), are defined by
-`specs/61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` together with the heartbeat response's
+`specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` together with the heartbeat response's
 `assignments` and the heartbeat request's `provisioning` member. Earlier text said the array
 "MUST be `[]`" in this version; that was the reservation, not a rule against filling it, and a
 gateway that lists the capability fills it for that registration only. A registration that does

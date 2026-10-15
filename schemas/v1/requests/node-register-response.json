@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/requests/node-register-response.json",
   "title": "POST /v1/node/register response",
-  "description": "Canonical negotiated node registration response. capabilities is always an array containing only the exact intersection of the request offer and gateway support for this connectionId; assignments is always present, empty unless the registration negotiated iw.dynamic-node/1 and the gateway has work for the node (specs/61), and never longer than 8 entries.",
+  "description": "Canonical negotiated node registration response. capabilities is always an array containing only the exact intersection of the request offer and gateway support for this connectionId; assignments is always present, empty unless the registration negotiated iw.dynamic-node/1 and the gateway has work for the node (specs/64), and never longer than 8 entries.",
   "type": "object",
   "additionalProperties": true,
   "required": ["nodeId", "connectionId", "freshnessTtlSecs", "capabilities", "assignments"],

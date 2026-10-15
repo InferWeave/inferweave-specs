@@ -128,7 +128,7 @@ node registered to it stays hardware-only. The correction: spec 47 §5.1 said `a
 "MUST be `[]`" in this version; that was the reservation, and the text now says it is `[]` for
 every registration that has not negotiated a capability that fills it.
 
-- `specs/61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` and decision record
+- `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` and decision record
   `decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` (feature `IW-DYNNODE-001`, task
   `P5-T35`, `owed`).
 - Capability `iw.dynamic-node/1`; register member `dynamic`

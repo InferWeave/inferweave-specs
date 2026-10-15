@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/requests/node-assignment.json",
   "title": "Node assignment (one entry of `assignments` on the register and heartbeat responses)",
-  "description": "What a gateway wants on a dynamic node's cards (specs/61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 5). Desired state, repeated on every answer until the node's status agrees; withdrawal is the explicit `stop` kind, never an absent entry. A node ignores an entry whose kind or version it does not know. `serve` carries the whole runtime profile (docs/specs/runtime-profile-autoselect.md section 3 in the implementation repository), so the node needs no profile library of its own.",
+  "description": "What a gateway wants on a dynamic node's cards (specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 5). Desired state, repeated on every answer until the node's status agrees; withdrawal is the explicit `stop` kind, never an absent entry. A node ignores an entry whose kind or version it does not know. `serve` carries the whole runtime profile (docs/specs/runtime-profile-autoselect.md section 3 in the implementation repository), so the node needs no profile library of its own.",
   "type": "object",
   "required": [
     "kind",

@@ -4,7 +4,7 @@
 **Decision owner:** InferWeave operator  
 **Date:** 2026-10-15  
 **Authorizes:** On acceptance: the wire contract of
-`specs/61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` (the `iw.dynamic-node/1` capability, the
+`specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` (the `iw.dynamic-node/1` capability, the
 `dynamic` register member, the first `assignments` entry shapes, the heartbeat `provisioning`
 member) and the reference implementation of it in the Rust gateway and node. It does **not**
 authorize deploying it, enabling it on any production gateway, serving production traffic from a

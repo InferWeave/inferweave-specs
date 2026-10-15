@@ -3960,7 +3960,7 @@
         "P5-T33"
       ],
       "specs": [
-        "61_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING",
+        "64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING",
         "47_NODE_JOIN_AND_HARDWARE_REGISTRATION",
         "25_SLURM_EPHEMERAL_PROVIDER_NODES",
         "39_INFERENCE_RUNTIME_TUNING",
@@ -3970,7 +3970,7 @@
         "IW-DYNNODE-001"
       ],
       "context_class": "C85",
-      "outcome": "Implement the specs/61 contract in the Rust gateway and node (InferWeave/inferweave): a node started with --model dynamic registers hardware-only with its dynamic facts and offers iw.dynamic-node/1; a gateway with desired models answers its register and every heartbeat with serve, measure and stop assignments chosen from measured runtime profiles with every card of an engine on one node; the node fetches pinned artifacts, launches the assigned profile, probes it, re-registers as a routable node and reports provisioning status; a measurement becomes a draft profile the next plan may select.",
+      "outcome": "Implement the specs/64 contract in the Rust gateway and node (InferWeave/inferweave): a node started with --model dynamic registers hardware-only with its dynamic facts and offers iw.dynamic-node/1; a gateway with desired models answers its register and every heartbeat with serve, measure and stop assignments chosen from measured runtime profiles with every card of an engine on one node; the node fetches pinned artifacts, launches the assigned profile, probes it, re-registers as a routable node and reports provisioning status; a measurement becomes a draft profile the next plan may select.",
       "required_tests": [
         "a dynamic node's register is hardware-only, carries the dynamic facts and the capability offer, and files no telemetry while idle",
         "assignments on the register and heartbeat responses are acted on only while iw.dynamic-node/1 is in force, and provisioning rides the beat only then",
