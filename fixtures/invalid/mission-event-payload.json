@@ -1,0 +1,37 @@
+{
+  "schema_version": "1",
+  "event_id": "evt-000124",
+  "source_id": "pi-engineering-bender",
+  "mission_id": "mission-2026-10-14-001",
+  "event_type": "test.completed",
+  "state": "VALIDATING",
+  "timestamp": "2026-10-14T18:05:12Z",
+  "sequence": 124,
+  "trace_id": "trace-9c1e",
+  "task_id": "T27",
+  "worker_id": "worker-3",
+  "host_id": "bender",
+  "repository": "InferWeave/inferweave-specs",
+  "worktree_id": "wt-feat-spec60-capability-routing",
+  "commit_sha": "b97c777acaff92dcb29cee5d62aafe8a53a62761",
+  "operation_id": "op-test-17",
+  "causal_parent_id": "evt-000123",
+  "human_summary": "148 tests passed",
+  "progress_kind": "test",
+  "last_heartbeat_at": "2026-10-14T18:05:12Z",
+  "last_progress_at": "2026-10-14T18:05:12Z",
+  "deadline_at": "2026-10-14T19:00:00Z",
+  "resource_usage": {
+    "cpu_seconds": 41.5,
+    "rss_bytes": 268435456
+  },
+  "artifact_refs": [
+    {
+      "kind": "test_report",
+      "id": "report-124"
+    }
+  ],
+  "payload": {
+    "prompt": "redacted"
+  }
+}
