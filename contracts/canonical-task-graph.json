@@ -1056,7 +1056,8 @@
       ],
       "specs": [
         "08_CONNECTIVITY_DATA_PLANE",
-        "59_LINK_HTTP_JSON"
+        "59_LINK_HTTP_JSON",
+        "63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS"
       ],
       "features": [
         "IW-DP-001",
@@ -1068,7 +1069,8 @@
         "forced NAT failure",
         "fallback ordering",
         "gateway relay bandwidth circuit breaker",
-        "spec59 exact-registration/Link negotiation, HTTP byte fidelity and hostile response vectors; production mixed-version, cancellation/backpressure and no-replay proof owed"
+        "spec59 exact-registration/Link negotiation, HTTP byte fidelity and hostile response vectors; production mixed-version, cancellation/backpressure and no-replay proof owed",
+        "spec63 (proposed, owed): typed-credential upstream binding, acceptor-appended path and hop limit, no transit by default, request-id idempotency, per-key bounds, revocation drain, invariant-11 direct-path preference"
       ],
       "notes": ""
     },
