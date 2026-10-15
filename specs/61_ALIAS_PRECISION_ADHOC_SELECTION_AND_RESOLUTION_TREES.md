@@ -55,9 +55,15 @@ federated candidate, and a mismatch makes the candidate `EXCLUDED`. A consumer t
 that table version cannot verify, so the fact stays *advertised* and satisfies a hard precision
 requirement only where the hard policy explicitly permits advertised confidence; under the
 default verified minimum of spec 54 step 6 the candidate is `EXCLUDED`. Both exclusions carry the
-reason `precision_unverified`, which this text **adds to the frozen instance reason codes** of
-spec 54 (Additional frozen vocabularies) and which counts toward `min_precision_class` in
-`unmet`. A producer that
+reason `PRECISION_UNVERIFIED`. This text **adds three candidate reason codes to the frozen
+reason vocabulary** of spec 54 (`contracts/protocol-v1/dynamic-aliases.json` `reason_codes` and
+`schemas/v1/aliases/contract.json#/definitions/reason`, additions owed): `PRECISION_UNVERIFIED`
+(above), `QUANTIZATION_ABSENT` (a precision member is set and the candidate's `quantization` is
+absent) and `PRECISION_UNKNOWN` (`min_precision_class` is set and the candidate's
+`precision_class` is `unknown`). They are *candidate* exclusion reasons and are never an HTTP
+error. `PRECISION_UNVERIFIED` and `PRECISION_UNKNOWN` count toward `min_precision_class` in
+`unmet` only when `min_precision_class` is set; `QUANTIZATION_ABSENT` counts toward
+`quantization`. A producer that
 does not know a token advertises `unknown`.
 
 ### Frozen vocabulary
@@ -131,7 +137,10 @@ Rules:
   table version never changes the validity of an already-published revision.
 * `preferred` gains the member `precision`, a weight like the others (spec 54: finite,
   nonnegative, normalized to sum 1 within 1e-6 with the others). Its score is the candidate's
-  class ordinal only; ties within a class are not broken by token. It ranks after all hard
+  band ordinal only (`full`=4, `high`=3, `medium`=2, `low`=1, `very_low`=0, `unknown`=-1); ties
+  within a band are not broken by token. For `min_precision_class`, `observed` is the best band
+  *name* any authorized candidate showed (`unknown` is never observed), the same type as
+  `required`. It ranks after all hard
   constraints and never admits a candidate a hard requirement excluded.
 * With none of the new members present, behaviour is exactly spec 54.
 
@@ -207,10 +216,10 @@ Levels, root to leaf:
 2. `model`: one node per concrete model id that met every **model-level** constraint (runtime
    family, modalities, model allow/deny) for the caller;
 3. `instance`: one node per instance of that model, with its `instance_state`, `eligibility` and
-   the frozen reason codes of spec 54 (Additional frozen vocabularies). **Precision is an
+   the frozen reason codes of spec 54 (the `reason` vocabulary above). **Precision is an
    instance-level fact** (it is evidence tied to the instance's profile and generation), so
-   `precision_unverified`, `min_precision_class` and `quantization` failures appear here, never as
-   a reason a model has no node;
+   `PRECISION_UNVERIFIED`, `PRECISION_UNKNOWN`, `QUANTIZATION_ABSENT` and the `min_precision_class`
+   and `quantization` failures appear here, never as a reason a model has no node;
 4. `owner`: the owner gateway and, for a federated candidate, the bounded **path vector** its
    advertisement carried (spec 54, Runtime, GPU and federation integration), never longer than
    that advertisement's own bound.
@@ -235,7 +244,8 @@ Rules:
   later than the earliest expiry of any *selected* candidate; when nothing is selected, no later
   than the earliest expiry of any node in the tree, and in no case later than a fixed maximum TTL
   set by the owner.
-* **Consistency.** The flat list contains only candidates whose model has a `model` node. Every
+* **Consistency.** The flat list contains only candidates whose model has a `model` node or whose `model` node is
+  omitted and counted in `truncated`. Every
   candidate of the flat list, **including EXCLUDED ones**, appears as an `instance` node or is
   counted in `truncated`. A candidate whose model failed a model-level constraint is not in the
   flat list; it contributes only to an `unmet` entry at `selection` scope. A node never
@@ -251,7 +261,7 @@ entries explaining why the branch is not available *now*:
 |---|---|
 | `requirement` | frozen token (below) |
 | `required` | the bound value the selection demanded, as the contract already types it |
-| `observed` | for an *ordered* requirement (`min_context_tokens`, `min_output_tokens`, `embedding_dimensions`, `min_precision_class` as its class ordinal, `capacity`) the best value any **authorized** evaluated candidate showed; for a set-valued or label requirement (`runtime_family`, `input_modality`, `output_modality`, `feature`, `quantization`, `privacy`, `residency`, `trusted_origin`, `license`, `output_schema`, `health`) the sorted set of distinct visible labels, at most 8; absent when none was observed |
+| `observed` | for an *ordered* requirement (`min_context_tokens`, `min_output_tokens`, `embedding_dimensions`, `min_precision_class`, `capacity`) the best value any **authorized** evaluated candidate showed; for a set-valued or label requirement (`runtime_family`, `input_modality`, `output_modality`, `feature`, `quantization`, `privacy`, `residency`, `trusted_origin`, `license`, `output_schema`, `health`) the sorted set of distinct visible labels, at most 8; absent when none was observed |
 | `scope` | `selection` (no model qualified), `model` (a model qualified but no instance did), `instance` or `owner`: where the shortfall was found |
 | `count` | how many **authorized** evaluated candidates failed this requirement; a candidate that fails several counts toward **each** of them, so counts may sum to more than the candidates evaluated |
 
@@ -304,8 +314,9 @@ unknown is never zero. Where the owner reports no figure, the entry is absent, n
   caller's grant like any alias and fails closed on missing grants.
 * The tree and `unmet` entries disclose *shortfalls over the caller's authorized view*, never
   capacity beyond it. For a principal who is **not** authorized to see a candidate, every entry, `count`,
-  `observed` value, handle and `truncated` figure MUST be byte-identical to those of a world in
-  which that candidate does not exist; a principal who is authorized sees that candidate's
+  `observed` value and `truncated` figure MUST be identical to those of a world in which that
+  candidate does not exist, and the response MUST be identical once each handle is replaced by the
+  ordinal of its first occurrence (handle *values* differ by nonce, never their structure); a principal who is authorized sees that candidate's
   contribution and no more. Handles never allow correlation across principals or across calls.
 * Resolve and simulate with an ad-hoc selection are rate-limited and audited like alias previews
   (spec 54 Events, errors, cache and telemetry). The audit record stores the **bounded normalized
@@ -322,7 +333,7 @@ All are **owed**; none is `proven`. Each must fail if its control is removed.
    whenever any precision member is set; a token outside the table is accepted in a set; an
    unknown band value is rejected; a token outside `[a-z0-9._]{1,32}` is rejected; each conflict
    rule above fails `INVALID_CAPABILITY`; a request that weakens the alias is a safe failure;
-   a class mismatch under an identical `precision_table_version` yields `precision_unverified`, as
+   a class mismatch under an identical `precision_table_version` yields `PRECISION_UNVERIFIED`, as
    does an advertised class from an unheld table version under the default verified minimum;
    allow/deny never require verification.
 2. Ad-hoc: only the two routes accept `selection`, with the level-2 header and the right grant;
@@ -336,9 +347,9 @@ All are **owed**; none is `proven`. Each must fail if its control is removed.
    no count or `observed` includes an unauthorized candidate; expiry with and without a
    selected candidate; a path vector never longer than its advertisement's.
 4. Unmet: each token is produced by at least one fixture; there is no authorization-caused
-   token; for a caller not authorized to see a private instance, `unmet`, `count`, `observed`,
-   handles and `truncated` are byte-identical to those of a world in which the instance does not
-   exist, and an authorized caller's differ only by that instance's contribution;
+   token; for a caller not authorized to see a private instance, `unmet`, `count`, `observed` and
+   `truncated` are identical to those of a world in which the instance does not exist, and the
+   whole response is identical after replacing each handle with its first-occurrence ordinal, and an authorized caller's differ only by that instance's contribution;
    `unmet_truncated` is set and counts omissions; `observed` follows the ordered/label rule; a branch with no candidate never
    claims READY; `capacity` appears only with a reported measured shortfall.
 5. Cross-language: the Go console renders the tree and `unmet` from the schema without deriving
