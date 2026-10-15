@@ -68,6 +68,7 @@ MAP = {
     "dynamic-alias-resolve-request": "aliases/resolve-request.json",
     "dynamic-alias-resolution": "aliases/resolution.json",
     "dynamic-alias-definition": "aliases/definition.json",
+    "mission-event": "events/mission-event.json",
     "capability-request": "routing/capability-request.json",
     "routing-decision": "routing/routing-decision.json",
     "protocol": "common/protocol.json",

@@ -1,0 +1,166 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/events/mission-event.json",
+  "title": "Mission event",
+  "description": "Mission/worker/build/test/review/merge/cleanup/routing event (specs/60, R-EVENT). Extends the event envelope. Closed object: every allowed property is listed, causation_id and payload are forbidden (one caused-by field; no content). Liveness (last_heartbeat_at) and useful progress (last_progress_at) are separate fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "$ref": "event.json"
+    }
+  ],
+  "required": [
+    "schema_version",
+    "event_id",
+    "source_id",
+    "mission_id",
+    "event_type",
+    "state",
+    "timestamp",
+    "sequence"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "source_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "mission_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "event_type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "state": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sequence": {
+      "description": "Monotonic per mission_id; monotonicity is consumer behaviour (specs/60).",
+      "type": "integer",
+      "minimum": 0
+    },
+    "trace_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "correlation_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "worker_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "host_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$"
+    },
+    "worktree_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "commit_sha": {
+      "type": "string",
+      "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "operation_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "causal_parent_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+    },
+    "causation_id": false,
+    "payload": false,
+    "human_summary": {
+      "description": "Already-redacted summary; never prompt text, credentials or hidden reasoning.",
+      "type": "string",
+      "maxLength": 280
+    },
+    "progress_kind": {
+      "enum": [
+        "edit",
+        "build",
+        "test",
+        "review",
+        "merge",
+        "cleanup",
+        "routing",
+        "none"
+      ]
+    },
+    "last_heartbeat_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_progress_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "deadline_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "resource_usage": {
+      "type": "object",
+      "maxProperties": 16,
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_.]{0,63}$"
+      },
+      "additionalProperties": {
+        "type": "number",
+        "minimum": 0
+      }
+    },
+    "artifact_refs": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "id"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,31}$"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:/-]{1,128}$"
+          }
+        }
+      }
+    },
+    "extensions": {
+      "$ref": "../common/extensions.json"
+    }
+  }
+}
