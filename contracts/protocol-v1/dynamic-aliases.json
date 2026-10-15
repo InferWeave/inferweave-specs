@@ -140,6 +140,11 @@
       "http_status": 429
     },
     {
+      "code": "CALLER_RATE_LIMITED",
+      "retryable": true,
+      "http_status": 429
+    },
+    {
       "code": "RETRY_BUDGET_EXHAUSTED",
       "retryable": true,
       "http_status": 503
