@@ -1,0 +1,13 @@
+{
+  "schema_version": "1",
+  "event_id": "evt-000125",
+  "source_id": "pi-engineering-bender",
+  "mission_id": "mission-2026-10-14-001",
+  "event_type": "worker.heartbeat",
+  "state": "RUNNING",
+  "timestamp": "2026-10-14T18:06:12Z",
+  "sequence": 125,
+  "worker_id": "worker-3",
+  "progress_kind": "none",
+  "last_heartbeat_at": "2026-10-14T18:06:12Z"
+}

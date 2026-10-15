@@ -151,6 +151,10 @@ Optional and typed (a producer omits a field it does not have; it never invents 
 `operation_id`, `causal_parent_id`, `human_summary`, `progress_kind`, `last_heartbeat_at`,
 `last_progress_at`, `deadline_at`, `resource_usage`, `artifact_refs`.
 
+A mission event is a closed object: it lists every allowed property (the envelope's `event_id`,
+`source_id`, `timestamp`, `sequence`, `trace_id`, `correlation_id`, `extensions` and the fields
+above) and rejects any other, so a field a producer believes is binding is never silently dropped.
+
 Rules:
 
 1. `sequence` is a non-negative integer, monotonic per `mission_id`. Monotonicity across events is

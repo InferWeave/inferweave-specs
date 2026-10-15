@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "status": "ROUTED",
+  "model": "glm-5.3-flash",
+  "slot": "slot-hive-a100-02",
+  "estimated_wait_ms": 300001,
+  "route_reasons": [
+    {
+      "code": "CAPABILITY_MATCH",
+      "subject_id": "llm.tool_use"
+    },
+    {
+      "code": "QUALITY_FLOOR_MET"
+    },
+    {
+      "code": "BEST_FIT"
+    }
+  ]
+}

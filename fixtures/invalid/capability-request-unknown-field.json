@@ -1,0 +1,16 @@
+{
+  "schema_version": "1",
+  "capability": "llm.tool_use",
+  "quality_floor": {
+    "metric_id": "llm.tool_use_quality",
+    "minimum": 0.8
+  },
+  "min_context_tokens": 32768,
+  "modality": "text",
+  "deadline": "2026-10-14T18:30:00Z",
+  "affinity": {
+    "session_id": "sess-7f3a"
+  },
+  "open_weight_only": true,
+  "fallback_model": "any"
+}
