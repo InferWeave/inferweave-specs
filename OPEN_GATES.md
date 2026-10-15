@@ -627,3 +627,12 @@ none has been measured; they are owed measurements, and an estimate may not driv
 decision until validated against measured sizes. Hugging Face metadata is a `declared` third-party
 statement and is owed a measured comparison with fetched sizes. Alias `PROVISIONABLE` marking from
 an advertised `acquirable` member is owed. No production gate opens.
+
+Review round 1 (independent) corrected the delivered-contract record and added requirements, all
+**owed**: the delivered lease is elapsed-time and violates invariant 37 (the extension changes
+it); `activate()` is synchronous and must stop emitting `READY`; `autonomous` + `activate` is
+refused today so autonomous acquisition has no activation path; the delivered `ProvisionFeature`
+enum is closed so negotiation needs unknown-feature skipping or `iw.provisioning/2`; the
+closed-object rejection of new members is new behaviour; `FITS` is unreachable for an unprofiled
+model; first-fetch digest verification needs operator-approved digests; `shortfall` must not leak
+free resources. No production gate opens.

@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,061,868 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,065,351 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `8360c44e7524` — ~10,673t
+- `OPEN_GATES.md` — `fd2731fb0070` — ~10,851t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -126,7 +126,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/compatibility.md` — `8ceb21cb1933` — ~713t
 - `docs/events.md` — `a957e821624f` — ~481t
 - `docs/extensions.md` — `64c0b09b4dcb` — ~227t
-- `docs/federated-provisioning-audit.md` — `3d77e84f3192` — ~7,848t
+- `docs/federated-provisioning-audit.md` — `5c0cf168f8de` — ~7,887t
 - `docs/federation.md` — `dfe0a66eaf91` — ~320t
 - `docs/lifecycle.md` — `d17f7ed1827f` — ~408t
 - `docs/scheduling.md` — `743fddcd8bda` — ~412t
@@ -172,6 +172,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/model-intelligence-2026-10-12/schema-validation.json` — `9078ee9558d6` — ~233t
 - `evidence/model-intelligence-2026-10-12/theme-after-report.json` — `104469520e78` — ~3,079t
 - `evidence/model-intelligence-2026-10-12/ui-before-report.json` — `71493699dbc7` — ~2,685t
+- `evidence/provisioning-contract-2026-10-15/README.md` — `27cf1de1bf7f` — ~1,179t
 - `evidence/rtx4090-shared-context-2026-10-03/README.md` — `bfaec7e5b43c` — ~960t
 - `evidence/rtx4090-shared-context-2026-10-03/compose-candidate.yml` — `63c9d18d4685` — ~688t
 - `evidence/rtx4090-shared-context-2026-10-03/engine.log` — `4da44e95f913` — ~26,001t
@@ -423,7 +424,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
 - `implementation/ERROR_SEMANTICS.md` — `353b4a250389` — ~598t
-- `implementation/FEATURE_TASK_COVERAGE.md` — `01b1c115502d` — ~3,057t
+- `implementation/FEATURE_TASK_COVERAGE.md` — `1a451105677b` — ~3,068t
 - `implementation/IMPLEMENTATION_ORDER.md` — `1a48655f5ecc` — ~221t
 - `implementation/MILESTONES.md` — `84f77749cf80` — ~481t
 - `implementation/MONOREPO_BOOTSTRAP.md` — `7d729410dacd` — ~367t
@@ -613,7 +614,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/59_LINK_HTTP_JSON.md` — `8b8ce77691f2` — ~2,549t
 - `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` — `f432c7e36ef5` — ~3,035t
 - `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` — `daf4e6db8873` — ~6,241t
-- `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` — `cae732fe0c18` — ~4,406t
+- `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` — `a84f6c0fc464` — ~6,482t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `99f922c820cb` — ~544t

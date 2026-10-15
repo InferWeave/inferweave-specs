@@ -88,7 +88,7 @@ Features: **92**
 | `IW-TOPO-004` Per-viewer topology redaction | P0 | 2 | control-plane | `P2-T24` |
 | `IW-TOPO-005` Topology scale aggregation | P2 | 5 | control-plane | `P5-T12` |
 | `IW-TOPO-006` Whole-network visualization surface | P2 | 5 | web | `P5-T13` |
-| `IW-GRANT-004` Capacity grant receipts and forecast signals | P2 | 5 | control-plane | `P5-T17` |
+| `IW-GRANT-004` Capacity grant receipts and forecast signals (provisioning hosting requests: spec 62) | P2 | 5 | control-plane | `P5-T17` |
 | `IW-GRANT-001` Inter-gateway capacity request protocol | P1 | 5 | control-plane | `P5-T14` |
 | `IW-GRANT-002` Standby slot grants and lifecycle | P1 | 5 | control-plane | `P5-T15` |
 | `IW-GRANT-003` Capacity request loop and amplification control | P0 | 5 | control-plane | `P5-T16` |
@@ -104,7 +104,7 @@ Features: **92**
 | `IW-RT-004` Typed inference pipelines | P1 | B | control-plane | `B-T04` |
 | `IW-RT-005` Durable inference jobs with additive legacy compatibility | P1 | B | control-plane | `B-T05` |
 | `IW-RT-006` Runtime-family contract/live conformance and traceability | P1 | B | control-plane | `B-T06` |
-| `IW-ALIAS-001` Dynamic model aliases (specs 54–57 and 61; inference identity, claims and node execution fence) | P0 | A | control-plane+gateway | `A-T01`, `A-T02`, `A-T03`, `A-T04`, `A-T05`, `A-T06`, `A-T07`, `A-T08` |
+| `IW-ALIAS-001` Dynamic model aliases (specs 54–57, 61 and 62; inference identity, claims and node execution fence) | P0 | A | control-plane+gateway | `A-T01`, `A-T02`, `A-T03`, `A-T04`, `A-T05`, `A-T06`, `A-T07`, `A-T08` |
 
 
 ## Model-intelligence extension
