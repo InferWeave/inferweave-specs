@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,049,585 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,051,000 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -65,7 +65,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/owner-execution-permit-vectors.json` — `df73b72d7d7c` — ~7,772t
 - `conformance/owner_execution_permit.py` — `a40045c4d83b` — ~3,452t
 - `conformance/release-manifest.yaml` — `f1864185a739` — ~294t
-- `conformance/runner.py` — `419cf7568969` — ~7,545t
+- `conformance/runner.py` — `71b8d9ccb282` — ~7,557t
 - `conformance/runtime-family-vectors.json` — `e9182c76245d` — ~3,138t
 - `conformance/runtime-observation-vectors.json` — `199670cef5ac` — ~19,334t
 - `conformance/runtime_observations.py` — `d4b1c36d2a1f` — ~1,382t
@@ -383,6 +383,8 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/link-response-meta-success-extension.json` — `faa38aa09720` — ~48t
 - `fixtures/valid/memory.json` — `293b143fa85e` — ~26t
 - `fixtures/valid/metric.json` — `16cd977ae1be` — ~24t
+- `fixtures/valid/mission-event-heartbeat-only.json` — `b21d51ecd861` — ~89t
+- `fixtures/valid/mission-event-progress.json` — `7af7f368d514` — ~239t
 - `fixtures/valid/model-variant.json` — `913c5690bbbe` — ~33t
 - `fixtures/valid/model.json` — `73854ced3bff` — ~14t
 - `fixtures/valid/node-hardware-report.json` — `11e6cfa1e2d9` — ~214t
@@ -482,6 +484,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/events/event.json` — `b9dceb3eaee4` — ~259t
 - `schemas/v1/events/gpu-memory-event.json` — `5ee1409e1eba` — ~3,450t
 - `schemas/v1/events/metric.json` — `f0e7c4912328` — ~321t
+- `schemas/v1/events/mission-event.json` — `b1b5e970ccc5` — ~1,002t
 - `schemas/v1/events/runtime-observation-event.json` — `c2fccfb239c7` — ~120t
 - `schemas/v1/jobs/job.json` — `24b3b974eca4` — ~581t
 - `schemas/v1/jobs/progress.json` — `d35037a65603` — ~112t
@@ -609,7 +612,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` — `3659d1492b01` — ~10,487t
 - `specs/58_MODEL_INTELLIGENCE_UI_COHESION.md` — `3e42b409a63f` — ~3,385t
 - `specs/59_LINK_HTTP_JSON.md` — `8b8ce77691f2` — ~2,549t
-- `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` — `f432c7e36ef5` — ~3,035t
+- `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` — `7b7c75b158fd` — ~3,108t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `99f922c820cb` — ~544t
