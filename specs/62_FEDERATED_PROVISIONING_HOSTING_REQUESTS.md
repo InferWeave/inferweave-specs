@@ -184,7 +184,7 @@ bound fails the activation (`SIZE_BOUND_EXCEEDED`).
 requested context plus overhead), and spec 46 §2.1 makes arithmetic over an estimate
 `estimated`. Therefore **`FITS` is not reachable for an unprofiled model**: before profiling
 `fit` is `UNKNOWN` unless the owner applies an explicit conservative upper bound with a measured
-safety margin, in which case the bound is reported as `derived` and named as a bound. `fit` is the conjunction over every resource: it is `FITS` or `FITS_AFTER_EVICTION` only when every resource is, and both appear only under the conservative-bound clause or after profiling. A `declared` (Hugging Face) download size can never reach `FITS` alone; it counts as `UNKNOWN` until measured or bounded by the larger-figure rule. The plan's
+safety margin, in which case the bound is reported as `derived` and named as a bound. `fit` is the conjunction over every resource: it is `FITS` or `FITS_AFTER_EVICTION` only when every resource is, and both appear only under the conservative-bound clause or after profiling. A `declared` (Hugging Face) download size can never reach `FITS` alone; it counts as `UNKNOWN` until measured or bounded by an explicit conservative upper bound. The plan's
 `egress_hosts` and `phases` are shown to the requester only to the extent the owner's policy
 allows; the owner's network policy is not otherwise disclosed.
 `FITS_AFTER_EVICTION` never evicts anything by itself.
