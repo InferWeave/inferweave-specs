@@ -3978,7 +3978,7 @@
         "a serve assignment fetches artifacts with size and SHA-256 verified and a cut HTTP download resumed, launches the profile pinned to the assigned cards, probes it and reports serving with the engine endpoint and the derived dep_ id",
         "a profile without decode evidence at 90 percent of the context floor at the serving slot count is never assigned to serve, and a required quality suite excludes unscored profiles",
         "a measure assignment runs every matrix cell, reports one evidence row per cell, stops the engine, and the gateway drafts a profile the next plan selects",
-        "a failed placement is recorded and not retried on the same node, and a serving engine that stops answering is released after three beats",
+        "a failed placement is recorded and, for the permanent failure reasons, not retried on the same node until the gateway restarts (the transient reasons expire after 600 seconds and a refusal is never recorded), and a serving engine that stops answering is released after three beats",
         "a model removed from the configuration is stopped explicitly, a restarted gateway adopts a serving engine instead of stopping it, and a stale node releases its placement",
         "every card of one assignment is on one node and the deployment id differs between profiles"
       ],

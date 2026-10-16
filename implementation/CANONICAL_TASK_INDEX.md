@@ -1,6 +1,6 @@
 # Canonical Task Index
 
-Total tasks: **167**
+Total tasks: **168**
 
 | Task | Phase | Context | Depends | Title |
 |---|---:|---:|---|---|

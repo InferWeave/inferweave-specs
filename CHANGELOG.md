@@ -139,8 +139,13 @@ every registration that has not negotiated a capability that fills it.
 - Rules: desired state repeated until the node agrees, withdrawal explicit, unknown entries
   skipped; a derived `dep_` deployment id; pinned, resumable, digest-verified artifacts; only
   profiles with decode evidence at 90% of the context floor serve, unmeasured candidates are
-  measured first and drafted; every card of an engine on one node; a failed placement is not
-  retried into the same placement; a restarted gateway adopts what a node reports serving.
+  measured first and drafted; every card of an engine on one node; nothing is placed on a
+  registration before its first `provisioning` report; only operator-enrolled credentials are
+  provisioned; a permanent failure (`launch_failed`, `probe_failed`, `disk_full`,
+  `measure_failed`) is not retried into the same placement while the gateway runs, a transient
+  one (`engine_exited`, `artifact_unavailable`, `digest_mismatch`) expires after 600 seconds and
+  `refused` is never recorded; a restarted gateway adopts what a node reports; spec 47 §6.12
+  keeps `provisioning` on a hardware-only heartbeat when the capability is in force.
 - Fixtures under `fixtures/valid` and `fixtures/invalid`; operator view `GET /iw/v1/dynamic`.
 
 ## 1.0.0 — initial protocol (in progress)

@@ -40,7 +40,7 @@ file. None of the three let a node that joined with nothing be given something.
    node register something it does not serve in order to be told what to serve.
 2. **Desired state with explicit withdrawal.** Entries are repeated until the node's status
    agrees; `stop` is its own kind; absence means no change; a restarted gateway adopts what a
-   node reports serving. Alternative rejected: absence as withdrawal, which turns every restart of
+   node reports, and places nothing on a registration until its first `provisioning` report. Alternative rejected: absence as withdrawal, which turns every restart of
    a gateway into a fleet-wide unload (`docs/specs/node-unload-and-coresidency.md` NU-3 records
    the same choice for executor nodes).
 3. **The profile travels whole on the assignment**, and the node pins the cards by serial. The
@@ -49,21 +49,34 @@ file. None of the three let a node that joined with nothing be given something.
    things under one name.
 4. **Only measured profiles serve** (invariants 28 and 42): decode evidence at no less than 90%
    of the desired context floor at the serving slot count, and a quality block when the desired
-   model requires one. A candidate without evidence is measured first by a `measure` assignment
-   and the measurement becomes a draft profile the next plan may select. Alternative rejected:
-   serving from a candidate's published figures, which spec 39 records as assumptions.
+   model requires one; this is the qualification gate of this surface for invariant 28. A
+   candidate without evidence is measured first by a `measure` assignment and the measurement
+   becomes a draft profile the next plan may select; a model with measurement candidates cannot
+   require a quality suite, and a candidate whose matrix could not produce a qualified draft is
+   refused at load. A draft serves on measured throughput alone, so it is not authorized for
+   production traffic by this record. Alternative rejected: serving from a candidate's published
+   figures, which spec 39 records as assumptions.
 5. **All cards of an engine on one node**, by construction: an entry names one node's cards and
    as many as the profile's `match.gpu.count`. Alternative rejected: multi-node tensor
    parallelism, which the autoscaler's `--nodes=1` rule and spec 43 already exclude.
-6. **The deployment id is derived** from the model, the profile, the image digest, the command
-   and the artifact digests (invariant 15), never typed by an operator.
+6. **The deployment id is derived** from the model, the profile name and version, the image, its
+   digest, the command and the artifact paths and digests, as one length-prefixed SHA-256
+   (invariant 15; spec 64 section 5 rule 6), never typed by an operator.
 7. **Artifacts are fetched only on an assignment**, pinned by size and SHA-256, resumable, and
    never published under their path before the digest is verified (spec 20).
-8. **A failed placement is not retried into the same hole** on this gateway's lifetime (spec 43
-   failure handling); it is recorded and shown.
+8. **A failed placement is not retried into the same hole** for the permanent reasons
+   (`launch_failed`, `probe_failed`, `disk_full`, `measure_failed`) on this gateway's lifetime,
+   extending spec 43's never-retry rule for out-of-memory and no-fit loads; the reasons that say
+   nothing about the profile (`engine_exited`, `artifact_unavailable`, `digest_mismatch`) expire
+   after 600 s, and `refused` is never recorded. Failures are recorded and shown.
 9. **One engine per dynamic node** in this version, dialled at an operator-named address.
    Link-only dynamic nodes and co-residency are follow-ups, recorded in the specification's
    non-goals.
+10. **Only operator-enrolled credentials are provisioned.** An assignment carries a launch
+    command and the sources artifacts are fetched from; an identity that only proved a key
+    (spec 47 section 6) is never assigned anything and its `dynamic` and `provisioning` are not
+    stored or read. Alternative rejected: provisioning any registered node, which would let any
+    holder of a fresh key run the gateway's configured engines on its own host.
 
 ## Consequences
 
@@ -94,4 +107,7 @@ operator asked for, are **owed** by `P5-T35` and recorded in `OPEN_GATES.md`.
 A fleet where the same node must hold two engines (co-residency), or where dynamic nodes sit
 behind NAT, revisits decision 9. A measured case where a drafted profile without a quality score
 served worse than a rejected shipped one revisits decision 4's default of not requiring a
-quality suite.
+quality suite. The profile quantization gate compares a profile's `quantization` with the `quant`
+qualifier of the model id the operator configured; if spec 61's rule that a consumer never derives
+quantization from an id string is read to cover configuration, the desired model carries the token
+as its own member instead.
