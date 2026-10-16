@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,259,430 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,272,173 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `cc6763194c4a` — ~19,229t
+- `OPEN_GATES.md` — `b28c9ae29382` — ~20,372t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -121,7 +121,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-12-dynamic-alias-authority.md` — `da2d9267f07f` — ~520t
 - `decisions/2026-10-12-farm-gateway-zero-capacity-registration.md` — `dc2e67481da6` — ~638t
 - `decisions/2026-10-12-model-intelligence-ui-cohesion.md` — `aaa0263e7798` — ~660t
-- `decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` — `b9735ab20a83` — ~2,610t
+- `decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` — `520cdf86d20f` — ~2,646t
 - `decisions/2026-10-15-link-upstream-role.md` — `28b266c6f2e1` — ~497t
 - `decisions/2026-10-16-inferweave-storage.md` — `291a3eed2b04` — ~1,601t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
@@ -188,6 +188,15 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/superpowers/plans/2026-10-08-node-hardware-registration.md` — `f22c7646d2ee` — ~947t
 - `evidence/alias-precision-tokens-2026-10-15/README.md` — `b11af2d47390` — ~536t
 - `evidence/alias-precision-tokens-2026-10-15/models.txt` — `a99123809c19` — ~99t
+- `evidence/dynamic-nodes-r9700-2026-10-16/10-measuring.json` — `18dd812e526b` — ~540t
+- `evidence/dynamic-nodes-r9700-2026-10-16/20-serving.json` — `c56e92018988` — ~1,143t
+- `evidence/dynamic-nodes-r9700-2026-10-16/30-failure.json` — `9646b4b840d9` — ~976t
+- `evidence/dynamic-nodes-r9700-2026-10-16/40-retry.json` — `829b7741e424` — ~976t
+- `evidence/dynamic-nodes-r9700-2026-10-16/50-recovery.json` — `0da157045a78` — ~976t
+- `evidence/dynamic-nodes-r9700-2026-10-16/60-recovered.json` — `48a955e281e2` — ~989t
+- `evidence/dynamic-nodes-r9700-2026-10-16/70-final.json` — `05572534196b` — ~989t
+- `evidence/dynamic-nodes-r9700-2026-10-16/ADVERSARIAL_REVIEW.md` — `7780d885eaf4` — ~2,387t
+- `evidence/dynamic-nodes-r9700-2026-10-16/REPORT.md` — `66316fd98de2` — ~2,014t
 - `evidence/link-upstream-key-probe-2026-10-15/README.md` — `a1d5861d03c5` — ~169t
 - `evidence/model-intelligence-2026-10-12/README.md` — `c0aa7f2bfefb` — ~2,391t
 - `evidence/model-intelligence-2026-10-12/backend-final-integration-report.md` — `0db0987f4bc3` — ~2,996t
@@ -982,7 +991,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-5/P5-T32.md` — `e40ac49dd0c8` — ~483t
 - `tasks/phase-5/P5-T33.md` — `3b69e5031fde` — ~635t
 - `tasks/phase-5/P5-T34.md` — `7491e8f30dae` — ~642t
-- `tasks/phase-5/P5-T35.md` — `3cd16bd7894d` — ~1,240t
+- `tasks/phase-5/P5-T35.md` — `6076e31d01da` — ~1,814t
 - `tasks/phase-5/P5-T36.md` — `39c59cfa3901` — ~1,580t
 - `tasks/phase-5/P5-T37.md` — `bc6d5565fea4` — ~792t
 - `tasks/phase-A/A-T01.md` — `8300274295bc` — ~255t
