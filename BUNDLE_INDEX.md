@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,220,135 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,220,502 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -169,8 +169,8 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/07-UI-OBSERVABILITY.md` — `4c9847892248` — ~171t
 - `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/08-TEST-ROLLOUT.md` — `0657fb5f2617` — ~221t
 - `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/09-AGENT-PLAN.md` — `1a2153820300` — ~174t
-- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/10-AUDIT-SYNTHESIS.md` — `4c8975ef3542` — ~2,240t
-- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/11-WORKSTREAM-PROMPTS.md` — `fe1a2264310b` — ~1,337t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/10-AUDIT-SYNTHESIS.md` — `f7f1bfed4e3a` — ~2,506t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/11-WORKSTREAM-PROMPTS.md` — `d86ea4049d73` — ~1,438t
 - `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/README.md` — `820756c29f93` — ~147t
 - `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/START_HERE_PROMPT.md` — `3032c76256d8` — ~275t
 - `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/evidence/audit-parts/gateway-ui.md` — `d1144caed02e` — ~5,279t

@@ -11,8 +11,9 @@ no production deploys, no destructive migrations; do not touch paths outside "Al
 ## S0/S1 — Specs hygiene and contracts (start first)
 Repo: inferweave-specs. Allowed: schemas/, contracts/, openapi/, conformance/, fixtures/,
 specs/ (new numbered spec only for unified memory, energy, cache sharing), OPEN_GATES.md,
-tasks/, this package dir. Depends: none. Tasks: resolve spec 64/PR #279 overlap; refresh stale
-OPEN_GATES per inferweave PR #1041; fix validate_specs.py jsonschema env; add profile
+tasks/, this package dir. Depends: none. Tasks: (done: spec 64/#279 merged; OPEN_GATES already
+records spec 62 incl. inferweave #1041); fix the spec tooling on the pinned jsonschema (specs #287,
+#297); add profile
 `execution.*` fields, CPU/RAM/NUMA/unified-memory resource schema, provision release message,
 Slurm state + wait-reason vocabulary (frozen data, invariant 41), conformance vectors.
 Accept: validate_specs passes; vectors fail when a field is removed. PR: one per contract area.
@@ -21,9 +22,9 @@ Accept: validate_specs passes; vectors fail when a field is removed. PR: one per
 Repo: inferweave. Allowed: crates/iw-core/src/capacity.rs, node_advert.rs, reservation_policy*,
 crates/iw-gateway/src/provision_controller.rs (ledger/CAS only), related tests. Depends: S1.
 Tasks: accept zero-VRAM CPU-only nodes (capacity.rs:259, node_advert.rs:257); add CPU/RAM/NUMA
-and single-pool unified memory; subtract outstanding offers (multi-parent double-spend);
-owner-bound, epoch-fenced, idempotent revoke/renew/release; wire lease progress expiry into a
-production caller; crash-recovery reconcile. Accept: concurrent-admission and overcommit tests,
+and single-pool unified memory; ledger: DONE in inferweave #1056 (outstanding offers subtracted,
+commit-time recheck, revoke bound to the reservation's parent); still open: epoch fencing of
+renew/release, crash-recovery reconcile, and inferweave #1061. Lease expiry wiring is W4, not W1. Accept: concurrent-admission and overcommit tests,
 Apple-unified no-double-count test, stale-offer, node-loss, lease-expiry/fencing tests, each
 shown failing with the guard removed. PRs: (a)+(b) CPU-only and CPU/RAM/unified together, after S1
 (a zero-VRAM relaxation alone does not make a CPU-only node admit anything; see 10 section 7), (c) ledger
@@ -50,6 +51,10 @@ Slurm/Apptainer adapters. Depends: W1, S1. Tasks: production PhaseExecutor; rele
 real SchedulerAdapter (sinfo/sbatch/scancel) with queued/wait-reason/staging/downloading/
 loading/warming/draining/preempted states and real job IDs; fault tests (partition, duplicate
 commit, preemption, revocation, crash). Remote provisioning stays off by default.
+Also W4: attach the provisioning transport in production (today only tests/gateway_e2e.rs does) and
+give lease expiry a production caller of `tick`. Wire the PROGRESS path (invariant 37); the delivered
+`DEFAULT_LEASE_TTL` (300 s) expiry for v1 reservations is elapsed-time and non-conforming; see 10
+section 7.
 
 ## W5 — Benchmarking and optimization
 Repo: inferweave. Allowed: iw-runtime-bench, iw-cli bench code. Depends: W2, W3. Tasks: fold

@@ -13,9 +13,13 @@ Detail and file:line cites: `evidence/audit-parts/*.md` (four reports). Claims m
 - Oct 9 Architecture Consolidation and Oct 10 Federated Provisioning master specs are not in the
   repo; spec 62 + `docs/federated-provisioning-audit.md` stand in. Recorded, not invented.
 - Package 06 message names differ from the delivered `provision.*` wire; the wire wins.
-- Spec 64 (specs PR #279; inferweave PRs #1014-1016) is unmerged and overlaps. Resolve first.
+- Spec 64 (specs #279; inferweave #1014-1016) overlapped; #279 has since merged and its schemas are on `main`.
 
 ## 2. Existing-versus-missing matrix
+Rows or cells marked **verified** were re-checked against the code by the lead. Every other row is an
+unverified static finding from an audit agent: treat it as a lead to confirm, not a fact. Line numbers
+are as of the SHAs above and drift; the symbol is authoritative. Section 7 supersedes anything here that
+it contradicts (the reservation row below is partly fixed; see inferweave #1056).
 | Capability | Status | Decision |
 |---|---|---|
 | VRAM + KV accounting (iw-core/capacity.rs) | complete | reuse |
@@ -58,7 +62,7 @@ forecast / simulation are wire types or missing (`docs/gpu-memory-observation.md
 
 ## 5. Dependency DAG
 ```
-S0 specs hygiene (resolve spec 64/PR 279, OPEN_GATES stale, validate_specs jsonschema env)
+S0 specs hygiene (spec tooling on the pinned jsonschema: specs #287, #297; spec 64 merged; OPEN_GATES already records spec 62 incl. inferweave #1041)
  └─ S1 contracts: profile exec fields, resource/ledger, provision release msg, slurm states,
         unified-memory, wait reasons, conformance vectors      (specs repo)
      ├─ W1 resource accounting + reservations (fix CPU-only, CPU/RAM/NUMA, unified mem,
@@ -108,4 +112,10 @@ What changed after this audit was written, verified against the code or the PRs:
 - **Known flake, fixed upstream:** gateway tests failed intermittently with "TempDir RemoveAll
   cleanup: directory not empty" (a background key-usage write racing temp-dir removal); fixed on
   gateway `main` by #560.
-- **Still true and unstarted:** the memory-pool contract (spec 65), W2 to W5, and shadow mode.
+- **Invariant 37 conflict in the delivered lease code.** `provision_controller.rs` sets
+  `lease_expires_at = now + DEFAULT_LEASE_TTL` (300 s) on reserve, and its own comment on
+  `lease_lapsed` says the delivered (v1) reservation uses "the elapsed-time rule ... non-conforming
+  to invariant 37"; only acquisition reservations renew on observable progress. So the delivered
+  `tick` expires on elapsed time. Whoever wires lease expiry (W4) must wire the progress path, not
+  the TTL path, and must not describe the TTL path as invariant-37 compliant.
+- **Still true and unstarted:** the memory-pool contract (a new spec; number to be assigned, 64 and 65 are taken), W2 to W5, and shadow mode.
