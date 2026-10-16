@@ -718,3 +718,15 @@ Nothing here opens a production gate.
   expressible; "optional allow-list" vs "absent bound denies"; the hop limit "8" vs "no default"; a
   refused Hello gets no acknowledgement.
 
+### Update 2026-10-15 (later): spec 61 audit/rate limit and lab evidence
+
+* **Implemented (InferWeave/inferweave #1039):** per-principal rate limit and an append-only audit of ad-hoc
+  selection calls (`CALLER_RATE_LIMITED`, now recorded in spec 54's reason table and the alias contract JSON).
+  **Still UNSATISFIED / owed:** the limit default (30/min) is an unmeasured placeholder and is per process and in
+  memory; audit retention/partitioning is a documented runbook, not implemented; the audit table's append-only
+  guard is only as strong as the application database role.
+* **Implemented (InferWeave/inferweave #1037):** gateway-attested instance evidence plus an operator
+  `IW_ALIAS_OWNER_POLICY`, so registered instances can appear in previews. **Still UNSATISFIED / owed:** node-attested
+  lifecycle generation, `runtimeObservations` ingestion, qualification and privacy/residency/trust evidence
+  (every row is `Advertised`/`UNKNOWN`; none is selectable); an owner-canonical resource-group identity.
+

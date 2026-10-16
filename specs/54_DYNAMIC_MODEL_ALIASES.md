@@ -312,6 +312,7 @@ correlation ID; retry-after is optional and measured.
 | `BACKEND_UNHEALTHY` | true | 503 |
 | `BACKEND_UNREACHABLE` | true | 503 |
 | `UPSTREAM_RATE_LIMITED` | true | 429 |
+| `CALLER_RATE_LIMITED` | true | 429 |
 | `RETRY_BUDGET_EXHAUSTED` | true | 503 |
 | `PARTIAL_STREAM_FAILURE` | false | 400 |
 | `CLIENT_CANCELLED` | false | 400 |
