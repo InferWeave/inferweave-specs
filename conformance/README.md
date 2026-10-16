@@ -50,3 +50,15 @@ raw Content-Type binding is also checked; MIME equivalence does not normalize fi
 `link-http-json-vectors.json` stream fixtures plus registration/incarnation, legacy
 downgrade and existing resource limits. `runner.py` replays the stream vectors;
 `validate_specs.py --self-test` runs the smoke tests. Production proof remains owed.
+
+## Link upstream role frames (spec63)
+
+`python3 -B tests/smoke/test_link_upstream.py` verifies the closed schemas for the upstream-role Hello
+(`link-upstream-hello.json`), its acknowledgement, the catalog and its request, the `refused` frame and the
+request-`meta` member `traffic_class` (`link-http-request.json`, `link-request-meta.json`), the valid and invalid
+fixtures named `link-upstream-*` and `link-http-request-traffic-class-*`, and `link-upstream-vectors.json`
+(raw-wire cases decoded strictly so a duplicate member or a non-finite number is refused, the traffic-class order,
+the dialer's acknowledgement pairing and the reversible refusals). Rules a schema cannot express (a catalog that
+lists a model id twice) live in `link_upstream.py`. `runner.py` replays the vectors and the fixtures;
+`validate_specs.py --self-test` runs the smoke test. Production proof remains owed; no Rust or Go behaviour is
+claimed by these files.

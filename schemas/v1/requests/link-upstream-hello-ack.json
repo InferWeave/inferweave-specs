@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-upstream-hello-ack.json",
+  "title": "Link upstream acknowledgement",
+  "description": "Spec 63. Sent by the acceptor on the same socket only when it GRANTED the upstream role to an api_key Hello. A refused Hello gets no acknowledgement at all, so this schema has no refusal form. It echoes the Hello's link_incarnation_id beside the acceptor-created, unpredictable upstream_binding_id; the dialer enables upstream only on an acknowledgement that echoes both from the same socket. granted_roles is exactly [upstream]: an api_key never yields serve. records_prompt_content is conservative (true unless the acceptor positively asserts it records none). reads_traffic_class absent means false; a dialer sends meta.traffic_class only when it is true.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "native_link_version", "link_incarnation_id", "upstream_binding_id", "granted_roles", "negotiated_features", "principal_label", "records_prompt_content"],
+  "properties": {
+    "kind": {"const": "upstream_ack"},
+    "native_link_version": {"type": "integer", "const": 1},
+    "link_incarnation_id": {"type": "string", "minLength": 16, "maxLength": 128, "pattern": "^[!-~]+(?![\\s\\S])"},
+    "upstream_binding_id": {"type": "string", "pattern": "^ub-[0-9a-f]{32}(?![\\s\\S])"},
+    "granted_roles": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"const": "upstream"}},
+    "negotiated_features": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {"enum": ["iw.link-upstream/1", "iw.link-http-json/1"]},
+      "allOf": [
+        {"contains": {"const": "iw.link-upstream/1"}},
+        {"contains": {"const": "iw.link-http-json/1"}}
+      ]
+    },
+    "principal_label": {"type": "string", "minLength": 1, "maxLength": 64, "description": "Pseudonymous label of the key's principal; never the principal id."},
+    "records_prompt_content": {"type": "boolean"},
+    "reads_traffic_class": {"type": "boolean"}
+  }
+}

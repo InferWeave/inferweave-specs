@@ -1,0 +1,5 @@
+{
+  "kind": "refused",
+  "request_id": "up-0123456789abcdef",
+  "code": "quota_exhausted_for_tenant_acme"
+}

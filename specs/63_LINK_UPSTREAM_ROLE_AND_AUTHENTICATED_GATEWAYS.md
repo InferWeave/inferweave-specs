@@ -190,14 +190,36 @@ An `upstream` link has no registration, so it uses a **different, typed credenti
   spaces disjoint has nothing to separate. A request id is scoped to the binding and the principal
   (at most 256 bytes). A frame an acceptor never sends on this role (a request, a Hello) or a
   dialer never sends (tokens, a refusal, an acknowledgement) is a protocol violation that closes
-  the link. The closed schema of the Hello and acknowledgement members is owed.
+  the link. The frames are closed by the schemas in the next section.
+
+## Frames and schemas
+
+The role adds no frame beyond these, each described by a closed, bounded JSON Schema under
+`schemas/v1/requests/` and pinned by `contracts/protocol-v1/link-upstream.json`:
+
+| Frame (`kind`) | Direction | Schema |
+|---|---|---|
+| `hello` with `role: "upstream"`, `credential_type: "api_key"`, `link_roles: ["upstream"]`, exactly the two features `iw.link-upstream/1` and `iw.link-http-json/1`, a fresh `link_incarnation_id` and a `channel_binding` (64 lowercase hex characters) | dialer to acceptor | `link-upstream-hello.json` (the open `link-hello.json` also accepts it) |
+| `upstream_ack` (`granted_roles` exactly `["upstream"]`, `upstream_binding_id` `ub-` plus 32 lowercase hex, `principal_label` at most 64 characters, boolean `records_prompt_content`, optional boolean `reads_traffic_class`) | acceptor to dialer, only when the role was granted | `link-upstream-hello-ack.json` |
+| `upstream_catalog_request` | dialer to acceptor | `link-upstream-catalog-request.json` |
+| `upstream_catalog` (at most 256 closed entries) | acceptor to dialer | `link-upstream-catalog.json` |
+| `refused` (`request_id` and a `code` from the closed vocabulary above) | acceptor to dialer | `link-upstream-refused.json` |
+| `request` with `meta.http` and optional `meta.traffic_class` | dialer to acceptor | `link-http-request.json` |
+
+A schema cannot say that a catalog lists a model id only once, that a duplicate member is refused, or that the
+dialer enables the role only on an acknowledgement read from the socket that sent the Hello. Those rules are in the
+offline oracle `conformance/link_upstream.py` and `conformance/link-upstream-vectors.json`; the open meta schema
+`link-request-meta.json` and the closed request agree on the `traffic_class` bound. Where the reference
+implementation's decoder is more lenient than a schema (it ignores an unknown member of a Hello, an acknowledgement or a
+catalog frame), `OPEN_GATES.md` records it; the schema states the shape a conformant sender produces.
 
 ## Catalog and discovery
 
 The acceptor offers, over the link, the **bounded list of exact model ids the key may use**, each
 with the provenance of spec 45 (`reported`; passing through a gateway never makes it `verified`).
 Each entry is a closed object `{model_id, max_context_tokens, provenance}`: `model_id` is the exact
-id, `max_context_tokens` is a positive integer, the context the acceptor serves that model at (a
+id (1 to 256 printable ASCII characters, no space), `max_context_tokens` is a positive integer (at most 2^53 - 1, the
+interoperable JSON bound; a placeholder), the context the acceptor serves that model at (a
 dialer's router cannot place a request on a route that makes no context claim, so the entry
 carries one; an entry the acceptor cannot state a context for is omitted), and `provenance` is
 `reported`. A catalog holds at most 256 entries and a dialer drops one that breaks any bound. It
@@ -359,8 +381,9 @@ The Rust gateway implements the acceptor (InferWeave/inferweave #1024), the exec
 channel-binding exporter and the dialer (#1051) and success-response redaction (#1062), all
 default off; the tests that exercise them, and what each is shown to catch by removing the
 control, are recorded in `OPEN_GATES.md` (section "Link upstream role and authenticated
-gateways") with what is proven and what is owed. No schema or conformance fixture for the Hello,
-acknowledgement, catalog or `meta.traffic_class` members exists yet. Statements about behaviour
+gateways") with what is proven and what is owed. Closed schemas, valid and invalid fixtures and offline vectors for
+the Hello, acknowledgement, catalog, catalog request, `refused` frame and `meta.traffic_class` now exist (see Frames
+and schemas); they prove the shapes and the rules named there, not any behaviour of an implementation. Statements about behaviour
 other than that implementation come from specs 21, 40, 45 and 59 and a read of the Rust
 repository's `origin/main`, not from a code audit. The evidence note in
 `evidence/link-upstream-key-probe-2026-10-15/` is a single **unreproduced observation** (a key

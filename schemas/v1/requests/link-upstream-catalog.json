@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-upstream-catalog.json",
+  "title": "Link upstream catalog",
+  "description": "Spec 63. The bounded list of exact model ids the key may use, pushed once right after the acknowledgement and again in answer to each catalog request; a catalog replaces the previous one. Each entry is closed: nothing about the acceptor's topology, queue, tenants, nodes or free capacity can ride here, and provenance is only ever reported (passing through a gateway never makes a claim verified). At most 256 entries; a dialer drops a catalog that breaks any bound. A duplicate model_id is not expressible in a schema (uniqueItems compares whole entries) and is refused by the semantic rule in conformance/link_upstream.py. The 256 bound and the integer maximum are placeholders; a measured bound is owed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "models"],
+  "properties": {
+    "kind": {"const": "upstream_catalog"},
+    "models": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["model_id", "max_context_tokens", "provenance"],
+        "properties": {
+          "model_id": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[!-~]+(?![\\s\\S])", "description": "The exact model id, never an alias."},
+          "max_context_tokens": {"type": "integer", "minimum": 1, "maximum": 9007199254740991, "description": "The context the acceptor serves this model at. An entry the acceptor cannot state a context for is omitted, not zero."},
+          "provenance": {"const": "reported"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,559 @@
+{
+  "schema_version": 1,
+  "spec": "63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS",
+  "note": "Offline vectors for the upstream-role frames. wire_cases are raw JSON text decoded strictly (a duplicate member or a non-finite number is refused). Production conformance remains owed.",
+  "wire_cases": [
+    {
+      "name": "catalog_plain",
+      "wire": "{\"kind\":\"upstream_catalog\",\"models\":[{\"model_id\":\"m1\",\"max_context_tokens\":8,\"provenance\":\"reported\"}]}",
+      "valid": true
+    },
+    {
+      "name": "catalog_duplicate_top_member",
+      "wire": "{\"kind\":\"upstream_catalog\",\"models\":[],\"models\":[]}",
+      "valid": false
+    },
+    {
+      "name": "catalog_duplicate_entry_member",
+      "wire": "{\"kind\":\"upstream_catalog\",\"models\":[{\"model_id\":\"m1\",\"model_id\":\"m2\",\"max_context_tokens\":8,\"provenance\":\"reported\"}]}",
+      "valid": false
+    },
+    {
+      "name": "catalog_duplicate_kind",
+      "wire": "{\"kind\":\"upstream_catalog\",\"kind\":\"upstream_catalog\",\"models\":[]}",
+      "valid": false
+    },
+    {
+      "name": "catalog_duplicate_model_id",
+      "wire": "{\"kind\":\"upstream_catalog\",\"models\":[{\"model_id\":\"m1\",\"max_context_tokens\":8,\"provenance\":\"reported\"},{\"model_id\":\"m1\",\"max_context_tokens\":16,\"provenance\":\"reported\"}]}",
+      "valid": false
+    },
+    {
+      "name": "catalog_nan_context",
+      "wire": "{\"kind\":\"upstream_catalog\",\"models\":[{\"model_id\":\"m1\",\"max_context_tokens\":NaN,\"provenance\":\"reported\"}]}",
+      "valid": false
+    },
+    {
+      "name": "catalog_infinity_context",
+      "wire": "{\"kind\":\"upstream_catalog\",\"models\":[{\"model_id\":\"m1\",\"max_context_tokens\":Infinity,\"provenance\":\"reported\"}]}",
+      "valid": false
+    },
+    {
+      "name": "catalog_escaped_surrogate_model_id",
+      "wire": "{\"kind\":\"upstream_catalog\",\"models\":[{\"model_id\":\"m\\ud800\",\"max_context_tokens\":8,\"provenance\":\"reported\"}]}",
+      "valid": false
+    },
+    {
+      "name": "ack_duplicate_granted_roles",
+      "wire": "{\"kind\":\"upstream_ack\",\"native_link_version\":1,\"link_incarnation_id\":\"link-incarnation-upstream-0001\",\"upstream_binding_id\":\"ub-abababababababababababababababab\",\"granted_roles\":[\"upstream\"],\"granted_roles\":[\"serve\"],\"negotiated_features\":[\"iw.link-upstream/1\",\"iw.link-http-json/1\"],\"principal_label\":\"p\",\"records_prompt_content\":true}",
+      "valid": false
+    },
+    {
+      "name": "ack_duplicate_records_prompt_content",
+      "wire": "{\"kind\":\"upstream_ack\",\"native_link_version\":1,\"link_incarnation_id\":\"link-incarnation-upstream-0001\",\"upstream_binding_id\":\"ub-abababababababababababababababab\",\"granted_roles\":[\"upstream\"],\"negotiated_features\":[\"iw.link-upstream/1\",\"iw.link-http-json/1\"],\"principal_label\":\"p\",\"records_prompt_content\":false,\"records_prompt_content\":true}",
+      "valid": false
+    },
+    {
+      "name": "ack_plain",
+      "wire": "{\"kind\":\"upstream_ack\",\"native_link_version\":1,\"link_incarnation_id\":\"link-incarnation-upstream-0001\",\"upstream_binding_id\":\"ub-abababababababababababababababab\",\"granted_roles\":[\"upstream\"],\"negotiated_features\":[\"iw.link-upstream/1\",\"iw.link-http-json/1\"],\"principal_label\":\"p\",\"records_prompt_content\":true}",
+      "valid": true
+    },
+    {
+      "name": "hello_plain",
+      "wire": "{\"kind\": \"hello\", \"node_id\": \"gateway-dialer-a\", \"role\": \"upstream\", \"credential\": \"iw-example-not-a-real-key\", \"native_link_version\": 1, \"link_incarnation_id\": \"link-incarnation-upstream-0001\", \"native_link_features\": [\"iw.link-upstream/1\", \"iw.link-http-json/1\"], \"credential_type\": \"api_key\", \"link_roles\": [\"upstream\"], \"channel_binding\": \"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\"}",
+      "valid": true
+    },
+    {
+      "name": "hello_duplicate_credential_type",
+      "wire": "{\"kind\": \"hello\", \"node_id\": \"gateway-dialer-a\", \"role\": \"upstream\", \"credential\": \"iw-example-not-a-real-key\", \"native_link_version\": 1, \"link_incarnation_id\": \"link-incarnation-upstream-0001\", \"native_link_features\": [\"iw.link-upstream/1\", \"iw.link-http-json/1\"], \"credential_type\": \"registration\", \"credential_type\": \"api_key\", \"link_roles\": [\"upstream\"], \"channel_binding\": \"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\"}",
+      "valid": false
+    },
+    {
+      "name": "hello_duplicate_link_roles",
+      "wire": "{\"kind\": \"hello\", \"node_id\": \"gateway-dialer-a\", \"role\": \"upstream\", \"credential\": \"iw-example-not-a-real-key\", \"native_link_version\": 1, \"link_incarnation_id\": \"link-incarnation-upstream-0001\", \"native_link_features\": [\"iw.link-upstream/1\", \"iw.link-http-json/1\"], \"credential_type\": \"api_key\", \"link_roles\": [\"serve\"], \"link_roles\": [\"upstream\"], \"channel_binding\": \"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\"}",
+      "valid": false
+    },
+    {
+      "name": "hello_duplicate_channel_binding",
+      "wire": "{\"kind\": \"hello\", \"node_id\": \"gateway-dialer-a\", \"role\": \"upstream\", \"credential\": \"iw-example-not-a-real-key\", \"native_link_version\": 1, \"link_incarnation_id\": \"link-incarnation-upstream-0001\", \"native_link_features\": [\"iw.link-upstream/1\", \"iw.link-http-json/1\"], \"credential_type\": \"api_key\", \"link_roles\": [\"upstream\"], \"channel_binding\": \"0000000000000000000000000000000000000000000000000000000000000000\", \"channel_binding\": \"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef\"}",
+      "valid": false
+    },
+    {
+      "name": "refused_plain",
+      "wire": "{\"kind\":\"refused\",\"request_id\":\"r1\",\"code\":\"rate_limited\"}",
+      "valid": true
+    },
+    {
+      "name": "refused_duplicate_code",
+      "wire": "{\"kind\":\"refused\",\"request_id\":\"r1\",\"code\":\"rate_limited\",\"code\":\"key_invalid\"}",
+      "valid": false
+    },
+    {
+      "name": "request_duplicate_traffic_class",
+      "wire": "{\"kind\":\"request\",\"request_id\":\"r1\",\"payload\":\"{\\\"model\\\":\\\"m\\\"}\",\"meta\":{\"http\":{\"version\":1,\"method\":\"POST\",\"target\":\"/v1/chat/completions\",\"content_type\":\"application/json\",\"payload_bytes\":13},\"traffic_class\":\"shareable\",\"traffic_class\":\"private\"}}",
+      "valid": false
+    },
+    {
+      "name": "request_nested_duplicate_http_member",
+      "wire": "{\"kind\":\"request\",\"request_id\":\"r1\",\"payload\":\"{\\\"model\\\":\\\"m\\\"}\",\"meta\":{\"http\":{\"version\":1,\"version\":1,\"method\":\"POST\",\"target\":\"/v1/chat/completions\",\"content_type\":\"application/json\",\"payload_bytes\":13},\"traffic_class\":\"shareable\"}}",
+      "valid": false
+    },
+    {
+      "name": "request_class_plain",
+      "wire": "{\"kind\":\"request\",\"request_id\":\"r1\",\"payload\":\"{\\\"model\\\":\\\"m\\\"}\",\"meta\":{\"http\":{\"version\":1,\"method\":\"POST\",\"target\":\"/v1/chat/completions\",\"content_type\":\"application/json\",\"payload_bytes\":13},\"traffic_class\":\"shareable\"}}",
+      "valid": true
+    },
+    {
+      "name": "unknown_kind",
+      "wire": "{\"kind\":\"upstream_catalogue\",\"models\":[]}",
+      "valid": false
+    },
+    {
+      "name": "not_an_object",
+      "wire": "[\"upstream_catalog\"]",
+      "valid": false
+    }
+  ],
+  "request_class_cases": [
+    {
+      "name": "absent",
+      "valid": true
+    },
+    {
+      "name": "private",
+      "declared": "private",
+      "valid": true
+    },
+    {
+      "name": "shareable",
+      "declared": "shareable",
+      "valid": true
+    },
+    {
+      "name": "unrecognised_short_string",
+      "declared": "volunteer",
+      "valid": true
+    },
+    {
+      "name": "empty_string",
+      "declared": "",
+      "valid": true
+    },
+    {
+      "name": "at_the_bound",
+      "declared": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "valid": true
+    },
+    {
+      "name": "over_the_bound",
+      "declared": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "valid": false
+    },
+    {
+      "name": "boolean",
+      "declared": true,
+      "valid": false
+    },
+    {
+      "name": "number",
+      "declared": 1,
+      "valid": false
+    },
+    {
+      "name": "null",
+      "declared": null,
+      "valid": false
+    },
+    {
+      "name": "array",
+      "declared": [
+        "private"
+      ],
+      "valid": false
+    },
+    {
+      "name": "object",
+      "declared": {
+        "class": "private"
+      },
+      "valid": false
+    }
+  ],
+  "effective_class_cases": [
+    {
+      "name": "declared_'private'_ceiling_private",
+      "ceiling": "private",
+      "effective": "private",
+      "declared": "private"
+    },
+    {
+      "name": "declared_'private'_ceiling_shareable",
+      "ceiling": "shareable",
+      "effective": "private",
+      "declared": "private"
+    },
+    {
+      "name": "declared_'shareable'_ceiling_private",
+      "ceiling": "private",
+      "effective": "private",
+      "declared": "shareable"
+    },
+    {
+      "name": "declared_'shareable'_ceiling_shareable",
+      "ceiling": "shareable",
+      "effective": "shareable",
+      "declared": "shareable"
+    },
+    {
+      "name": "declared_None_ceiling_private",
+      "ceiling": "private",
+      "effective": "private"
+    },
+    {
+      "name": "declared_None_ceiling_shareable",
+      "ceiling": "shareable",
+      "effective": "private"
+    },
+    {
+      "name": "declared_'volunteer'_ceiling_private",
+      "ceiling": "private",
+      "effective": "private",
+      "declared": "volunteer"
+    },
+    {
+      "name": "declared_'volunteer'_ceiling_shareable",
+      "ceiling": "shareable",
+      "effective": "private",
+      "declared": "volunteer"
+    },
+    {
+      "name": "declared_''_ceiling_private",
+      "ceiling": "private",
+      "effective": "private",
+      "declared": ""
+    },
+    {
+      "name": "declared_''_ceiling_shareable",
+      "ceiling": "shareable",
+      "effective": "private",
+      "declared": ""
+    },
+    {
+      "name": "declared_'PRIVATE'_ceiling_private",
+      "ceiling": "private",
+      "effective": "private",
+      "declared": "PRIVATE"
+    },
+    {
+      "name": "declared_'PRIVATE'_ceiling_shareable",
+      "ceiling": "shareable",
+      "effective": "private",
+      "declared": "PRIVATE"
+    },
+    {
+      "name": "declared_'Shareable'_ceiling_private",
+      "ceiling": "private",
+      "effective": "private",
+      "declared": "Shareable"
+    },
+    {
+      "name": "declared_'Shareable'_ceiling_shareable",
+      "ceiling": "shareable",
+      "effective": "private",
+      "declared": "Shareable"
+    },
+    {
+      "name": "declared_' shareable'_ceiling_private",
+      "ceiling": "private",
+      "effective": "private",
+      "declared": " shareable"
+    },
+    {
+      "name": "declared_' shareable'_ceiling_shareable",
+      "ceiling": "shareable",
+      "effective": "private",
+      "declared": " shareable"
+    }
+  ],
+  "ack_pairing_cases": [
+    {
+      "name": "echoes_both_ids_and_grants_upstream",
+      "hello": {
+        "kind": "hello",
+        "node_id": "gateway-dialer-a",
+        "role": "upstream",
+        "credential": "iw-example-not-a-real-key",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "native_link_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "credential_type": "api_key",
+        "link_roles": [
+          "upstream"
+        ],
+        "channel_binding": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      },
+      "ack": {
+        "kind": "upstream_ack",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "upstream_binding_id": "ub-abababababababababababababababab",
+        "granted_roles": [
+          "upstream"
+        ],
+        "negotiated_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "principal_label": "principal-7f3a",
+        "records_prompt_content": true
+      },
+      "accepted": true
+    },
+    {
+      "name": "another_dials_incarnation_id",
+      "hello": {
+        "kind": "hello",
+        "node_id": "gateway-dialer-a",
+        "role": "upstream",
+        "credential": "iw-example-not-a-real-key",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "native_link_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "credential_type": "api_key",
+        "link_roles": [
+          "upstream"
+        ],
+        "channel_binding": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      },
+      "ack": {
+        "kind": "upstream_ack",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0002",
+        "upstream_binding_id": "ub-abababababababababababababababab",
+        "granted_roles": [
+          "upstream"
+        ],
+        "negotiated_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "principal_label": "principal-7f3a",
+        "records_prompt_content": true
+      },
+      "accepted": false
+    },
+    {
+      "name": "grants_serve_instead",
+      "hello": {
+        "kind": "hello",
+        "node_id": "gateway-dialer-a",
+        "role": "upstream",
+        "credential": "iw-example-not-a-real-key",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "native_link_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "credential_type": "api_key",
+        "link_roles": [
+          "upstream"
+        ],
+        "channel_binding": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      },
+      "ack": {
+        "kind": "upstream_ack",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "upstream_binding_id": "ub-abababababababababababababababab",
+        "granted_roles": [
+          "serve"
+        ],
+        "negotiated_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "principal_label": "principal-7f3a",
+        "records_prompt_content": true
+      },
+      "accepted": false
+    },
+    {
+      "name": "grants_serve_beside_upstream",
+      "hello": {
+        "kind": "hello",
+        "node_id": "gateway-dialer-a",
+        "role": "upstream",
+        "credential": "iw-example-not-a-real-key",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "native_link_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "credential_type": "api_key",
+        "link_roles": [
+          "upstream"
+        ],
+        "channel_binding": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      },
+      "ack": {
+        "kind": "upstream_ack",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "upstream_binding_id": "ub-abababababababababababababababab",
+        "granted_roles": [
+          "serve",
+          "upstream"
+        ],
+        "negotiated_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "principal_label": "principal-7f3a",
+        "records_prompt_content": true
+      },
+      "accepted": false
+    },
+    {
+      "name": "negotiates_a_feature_that_was_not_offered",
+      "hello": {
+        "kind": "hello",
+        "node_id": "gateway-dialer-a",
+        "role": "upstream",
+        "credential": "iw-example-not-a-real-key",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "native_link_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "credential_type": "api_key",
+        "link_roles": [
+          "upstream"
+        ],
+        "channel_binding": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      },
+      "ack": {
+        "kind": "upstream_ack",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "upstream_binding_id": "ub-abababababababababababababababab",
+        "granted_roles": [
+          "upstream"
+        ],
+        "negotiated_features": [
+          "iw.link-upstream/1",
+          "iw.link-native-request/1"
+        ],
+        "principal_label": "principal-7f3a",
+        "records_prompt_content": true
+      },
+      "accepted": false
+    },
+    {
+      "name": "negotiates_fewer_features_than_offered",
+      "hello": {
+        "kind": "hello",
+        "node_id": "gateway-dialer-a",
+        "role": "upstream",
+        "credential": "iw-example-not-a-real-key",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "native_link_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "credential_type": "api_key",
+        "link_roles": [
+          "upstream"
+        ],
+        "channel_binding": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+      },
+      "ack": {
+        "kind": "upstream_ack",
+        "native_link_version": 1,
+        "link_incarnation_id": "link-incarnation-upstream-0001",
+        "upstream_binding_id": "ub-abababababababababababababababab",
+        "granted_roles": [
+          "upstream"
+        ],
+        "negotiated_features": [
+          "iw.link-upstream/1",
+          "iw.link-http-json/1"
+        ],
+        "principal_label": "principal-7f3a",
+        "records_prompt_content": true
+      },
+      "accepted": true
+    }
+  ],
+  "refusal_cases": [
+    {
+      "name": "binding_closed",
+      "code": "binding_closed",
+      "reversible": false
+    },
+    {
+      "name": "key_invalid",
+      "code": "key_invalid",
+      "reversible": false
+    },
+    {
+      "name": "invalid_request",
+      "code": "invalid_request",
+      "reversible": false
+    },
+    {
+      "name": "model_not_permitted",
+      "code": "model_not_permitted",
+      "reversible": false
+    },
+    {
+      "name": "federation_loop",
+      "code": "federation_loop",
+      "reversible": false
+    },
+    {
+      "name": "hop_limit_exceeded",
+      "code": "hop_limit_exceeded",
+      "reversible": false
+    },
+    {
+      "name": "deadline_exceeded",
+      "code": "deadline_exceeded",
+      "reversible": false
+    },
+    {
+      "name": "duplicate_request",
+      "code": "duplicate_request",
+      "reversible": false
+    },
+    {
+      "name": "rate_limited",
+      "code": "rate_limited",
+      "reversible": true
+    },
+    {
+      "name": "concurrency_limited",
+      "code": "concurrency_limited",
+      "reversible": true
+    },
+    {
+      "name": "token_budget_exceeded",
+      "code": "token_budget_exceeded",
+      "reversible": true
+    },
+    {
+      "name": "backend_unavailable",
+      "code": "backend_unavailable",
+      "reversible": true
+    }
+  ]
+}

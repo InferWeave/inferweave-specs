@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-upstream-hello.json",
+  "title": "Link upstream Hello",
+  "description": "Spec 63. The Hello a dialer sends to be granted the upstream role. It carries one typed api_key credential (never a registration credential), no registration connection id, exactly the two features iw.link-upstream/1 and iw.link-http-json/1, a fresh link_incarnation_id per dial, and a channel_binding: the lowercase hex SHA-256 over the transport exporter, the incarnation id and the dialer id. The binding is replay resistance across channels, not proof of possession of the key; TLS protects the key. Closed: an acceptor that reads this Hello refuses unknown members of the shape below, although the wire decoder of the reference implementation ignores unknown members of a Hello (a refused Hello gets no acknowledgement, so the refusal is silent). link-hello.json describes the same frame for a legacy peer and stays open.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "node_id", "role", "credential", "native_link_version", "link_incarnation_id", "native_link_features", "credential_type", "link_roles", "channel_binding"],
+  "properties": {
+    "kind": {"const": "hello"},
+    "node_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[^\\s,=\\u0000-\\u001f\\u007f-\\u009f]+(?![\\s\\S])", "description": "The dialing gateway's id: no whitespace, control character, comma or equals sign (the list-token alphabet of the federation path)."},
+    "role": {"const": "upstream"},
+    "credential": {"type": "string", "minLength": 1, "maxLength": 4096, "description": "The api_key secret. Never logged, never in argv or a URL; a fixture carries an obviously fake value."},
+    "session": {"type": "string", "minLength": 1, "maxLength": 256},
+    "native_link_version": {"type": "integer", "const": 1},
+    "link_incarnation_id": {"type": "string", "minLength": 16, "maxLength": 128, "pattern": "^[!-~]+(?![\\s\\S])"},
+    "native_link_features": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {"enum": ["iw.link-upstream/1", "iw.link-http-json/1"]},
+      "allOf": [
+        {"contains": {"const": "iw.link-upstream/1"}},
+        {"contains": {"const": "iw.link-http-json/1"}}
+      ]
+    },
+    "credential_type": {"const": "api_key"},
+    "link_roles": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"const": "upstream"}},
+    "channel_binding": {"type": "string", "pattern": "^[0-9a-f]{64}(?![\\s\\S])"}
+  }
+}

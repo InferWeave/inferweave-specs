@@ -1,0 +1,15 @@
+{
+  "kind": "request",
+  "request_id": "up-0123456789abcdef",
+  "payload": "{\"model\":\"qwen3-coder-30b-a3b-instruct-q4-k-m\",\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}]}",
+  "meta": {
+    "http": {
+      "version": 1,
+      "method": "POST",
+      "target": "/v1/chat/completions",
+      "content_type": "application/json",
+      "payload_bytes": 91
+    },
+    "traffic_class": "private"
+  }
+}

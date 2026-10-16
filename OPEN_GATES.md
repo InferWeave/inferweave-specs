@@ -755,7 +755,8 @@ binding (no registration), N upstreams, no transit by default, an acceptor-appen
 a hop limit, request-id idempotency and one charge per boundary. It is gateway byte relay, so invariant
 11 limits it to where direct transport is unavailable or forbidden. (Superseded in part by the "Update
 2026-10-16: spec 63 residuals" section below: the acceptor, executor, dialer and most tests now exist in the
-Rust gateway; no schema or conformance fixture does.) Bounds (catalog size, drain window, rate and
+Rust gateway; the closed schemas and vectors for its frames now exist too: see "Update 2026-10-16: spec 63 schemas and
+vectors" below.) Bounds (catalog size, drain window, rate and
 concurrency defaults, hop limit beyond 8, transit) are unspecified because none is measured. **Open
 decisions** (`decisions/2026-10-15-link-upstream-role.md`): whether the Go site gateway implements the
 acceptor side (touches the D-002 amendment), and whether this needs its own feature ID. The only
@@ -864,13 +865,47 @@ Nothing here opens a production gate. Every Rust statement below is about defaul
   reservation, breaker threshold, cool-down and bandwidth bound, drain window, catalog bound, dedupe TTL); the
   HTTPS fallback and reconciliation with `INFERWEAVE_PRINCIPALS_FILE` (test 9: plaintext, unsalted principal file;
   needs per-key rate, concurrency, budget and dedupe state shared across two entry points, so it is not small);
-  the Hello, acknowledgement, catalog and `traffic_class` schemas and conformance vectors (the spec 59 oracle does
-  not yet know `traffic_class`); that the non-recording assertion suppresses only the two stores the gateway is
+  that the non-recording assertion suppresses only the two stores the gateway is
   known to keep (the ledger row's content and response capture), with no audit of any other store; a real-socket
   test that a request silent with no output opens the breaker (the 60 s bound makes it too slow; the decision is
   unit-tested only); the Go acceptor decision and the feature-ID decision of the decision record; the `transit`
   grant; a deployment. The 200-response bodies remain the node's bytes after redaction of known members only.
 
+
+### Update 2026-10-16: spec 63 schemas and vectors
+
+Nothing here opens a production gate; no catalog row is `verified`.
+
+* **Now in this repository (offline only):** closed, bounded schemas `link-upstream-hello.json` (the `api_key`
+  Hello: `role: upstream`, `credential_type`, `link_roles: ["upstream"]`, exactly two features, a fresh
+  incarnation id, a 64-hex `channel_binding`), `link-upstream-hello-ack.json` (`kind: upstream_ack`; granted roles
+  exactly `["upstream"]`, `upstream_binding_id`, `principal_label`, `records_prompt_content`, optional
+  `reads_traffic_class`), `link-upstream-catalog.json` (at most 256 closed `{model_id, max_context_tokens,
+  provenance: reported}` entries), `link-upstream-catalog-request.json` and `link-upstream-refused.json` (the
+  twelve-code vocabulary); `meta.traffic_class` added to the closed `link-http-request.json` (so the spec 59 oracle
+  accepts a classed request) with the same bound as `link-request-meta.json`; `link-hello.json` no longer
+  demands a registration id of an `api_key` Hello. Valid and invalid fixtures (`fixtures/*/link-upstream-*` and
+  `link-http-request-traffic-class-*`: 13 valid, 68 invalid), `conformance/link-upstream-vectors.json` (raw-wire cases decoded strictly, so a duplicate member or a
+  non-finite number is refused; traffic-class order; the dialer's acknowledgement pairing; reversible refusals),
+  the oracle `conformance/link_upstream.py`, the contract `contracts/protocol-v1/link-upstream.json`, a
+  `link_upstream_profile` in `conformance/manifest.yaml`, `tests/smoke/test_link_upstream.py` (run by
+  `validate_specs.py --self-test`) and five `meta.traffic_class` request vectors in `link-http-json-vectors.json`.
+* **Rust (open pull request, awaiting independent review, so OWED until it merges):** the real encoder emits exactly
+  the valid fixtures; the real receive path decodes them; every invalid fixture is refused by the schema; the frames a
+  real dialer and acceptor exchange over a recording proxy pass the schemas; the acceptor's refusal codes are the
+  schema's vocabulary. `validate_catalog` now also bounds `max_context_tokens` at 2^53 - 1.
+* **Receiver leniency, recorded rather than fixed (the schema states what a conformant sender produces):** the Rust
+  decoder ignores an unknown member of a Hello, an acknowledgement, a catalog, a catalog request and a `refused`
+  frame; accepts `link_roles: ["serve","upstream"]` (and grants only `upstream`); does not itself reject an empty or
+  oversize `credential` (the key store refuses it, no acknowledgement); reads an unknown `refused` code as
+  irreversible; and delivers a `refused` frame with an empty request id to no request. A dialer's own `upstream`
+  codes `upstream_unavailable` and `upstream_policy` are accepted by it but are not in the twelve-code vocabulary.
+* **UNSATISFIED / owed:** the schemas are not production evidence, and every bound in them (256 entries, 2^53 - 1
+  context, 64-character label, 256-character request id) is a placeholder; the channel-binding digest construction is
+  not specified here (only its encoding), so no known-answer vector exists; the `role: "upstream"` Hello member and the
+  frame kinds `upstream_ack`, `upstream_catalog` and `upstream_catalog_request` are taken from the Rust wire and are
+  now named in spec 63; no Go implementation; the task card P1-T18 still says "tests owed" in general terms; all the
+  items listed as owed in the "spec 63 residuals" section above.
 
 ### Update 2026-10-16 (final): what is merged, deployed and still owed for specs 56, 61, 62 and 63
 
@@ -887,7 +922,7 @@ spec 63 behaviour is default-off, and no catalog row is `verified`.
   stall, a disconnect that did not cancel the node request, the body-form probe marker, a blocking reader, request-id
   collisions across clients, a `logprobs` clone, and two token-budget bypasses. Still **owed**: the items in the
   "spec 63 residuals" section above (durable counters and dedupe, measured numbers, HTTPS fallback and principal
-  reconciliation, schemas and vectors for the new members, audit of other content stores, the Go acceptor and
+  reconciliation, audit of other content stores, the Go acceptor and
   feature-ID decisions, the `transit` grant). The 200-response body is no longer "the node's bytes": it is reduced
   to the allow-list.
 * **Spec 62 (Rust, merged: #1022, #1041, #1070, #1075, #1077, #1078; specs #291, #293):** the hosting wire path
