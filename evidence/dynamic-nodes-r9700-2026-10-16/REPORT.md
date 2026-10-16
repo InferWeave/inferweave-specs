@@ -107,6 +107,11 @@ on `beast` for inspection; the milestone snapshots above are the canonical recor
   separate follow-up — it is outside P5-T35's scope, which is the Rust reference
   (`InferWeave/inferweave`).
 - The **Flash-Next 8-card deployment** could not be placed on this 2-card host (correct
-  `no_matching_profile` behavior). Producing its own measured draft requires an 8-card R9700 host.
-- A **separate adversarial review** of the implementation is a recommended follow-up (see P5-T35
-  completion evidence).
+  `no_matching_profile` behavior). No 8-card R9700 host exists in the fleet — the largest R9700
+  host is 2-card — so its measured draft is **not achievable on available hardware**, and no
+  follow-up is owed. The `no_matching_profile` rejection on a 2-card host is the correct terminal
+  behavior for the fleet (and is itself proof the 8-card gating works). If 8-card R9700 hardware
+  is added later, the same proof (fetch → measure → draft → serve) applies.
+- A **separate adversarial review** of the implementation was completed on 2026-10-16
+  (**PR InferWeave/inferweave-specs#303**; no Critical/High/Medium defects — see
+  [`ADVERSARIAL_REVIEW.md`](ADVERSARIAL_REVIEW.md), same directory).
