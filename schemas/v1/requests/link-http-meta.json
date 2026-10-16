@@ -20,7 +20,9 @@
     "target": {
       "enum": [
         "/v1/chat/completions",
-        "/v1/completions"
+        "/v1/completions",
+        "/v1/systemone",
+        "/v1/systemone/batch"
       ]
     },
     "content_type": {
