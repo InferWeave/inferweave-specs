@@ -1,7 +1,7 @@
 {
   "kind": "stop",
   "version": 1,
-  "id": "dyn-000001-nodebeast",
+  "id": "dyn-tmws1s-000001-nodebeast",
   "gpuIds": [
     "iw-gpu-a"
   ]

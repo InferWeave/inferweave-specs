@@ -1,5 +1,5 @@
 {
-  "id": "dyn-000001-nodebeast",
+  "id": "dyn-tmws1s-000001-nodebeast",
   "model": "qwen3.8-27b-modality-vision-quant-q8_k_xl",
   "gpuIds": [
     "iw-gpu-2b7e1c4a9d3f5e60718293a4b5c6d7e8",

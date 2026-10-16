@@ -1,0 +1,43 @@
+{
+  "nodeId": "node-beast",
+  "role": "node",
+  "credential": "credential-example",
+  "endpoint": "",
+  "models": [],
+  "deployment": "",
+  "vramBytes": 0,
+  "kvBytes": 0,
+  "kvBytesPerToken": 0,
+  "gpuIds": [
+    "iw-gpu-2b7e1c4a9d3f5e60718293a4b5c6d7e8",
+    "iw-gpu-9f1e2d3c4b5a69788796a5b4c3d2e1f0"
+  ],
+  "capabilities": [
+    "iw.dynamic-node/1"
+  ],
+  "dynamic": {
+    "version": 1,
+    "host": {
+      "gpuVendor": "amd",
+      "gpuModel": "Radeon AI PRO R9700",
+      "ramGib": 503,
+      "shmGib": 80,
+      "pcieGen": 5
+    },
+    "gpus": [
+      {
+        "gpuId": "iw-gpu-2b7e1c4a9d3f5e60718293a4b5c6d7e8",
+        "serial": "cbaeb7d327498d9e",
+        "vramMib": 32624
+      },
+      {
+        "gpuId": "iw-gpu-9f1e2d3c4b5a69788796a5b4c3d2e1f0",
+        "serial": "241df8039cca72a9",
+        "vramMib": 32624
+      }
+    ],
+    "artifactRoot": "/var/lib/inferweave/artifacts",
+    "freeBytes": 1932735283200,
+    "containerRuntime": "docker"
+  }
+}

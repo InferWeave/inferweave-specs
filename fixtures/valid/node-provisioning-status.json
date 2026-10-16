@@ -1,5 +1,5 @@
 {
-  "id": "dyn-000001-nodebeast",
+  "id": "dyn-tmws1s-000001-nodebeast",
   "model": "qwen3.8-27b-modality-vision-quant-q8_k_xl",
   "gpuIds": [
     "iw-gpu-2b7e1c4a9d3f5e60718293a4b5c6d7e8",
@@ -7,6 +7,6 @@
   ],
   "phase": "serving",
   "endpoint": "10.20.30.40:32768",
-  "deployment": "dep_7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f",
+  "deployment": "dep_1d126f9f1bcaf744be28305d405630b52fccedda919efbd4de3705117f706d57",
   "updatedAt": 1792000000
 }

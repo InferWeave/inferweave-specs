@@ -111,6 +111,8 @@ MAP = {
     "registration": "requests/registration.json",
     "heartbeat": "requests/heartbeat.json",
     "node-hardware": "requests/node-hardware.json",
+    "node-register-dynamic": "requests/node-register.json",
+    "node-register-response-dynamic": "requests/node-register-response.json",
     "node-dynamic-facts": "requests/node-dynamic-facts.json",
     "node-assignment": "requests/node-assignment.json",
     "node-assignment-measure": "requests/node-assignment.json",
