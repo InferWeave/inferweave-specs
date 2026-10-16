@@ -74,6 +74,16 @@ class LinkHttpContract(unittest.TestCase):
             frame=self.request();frame['meta'][key]={}
             with self.subTest(key=key),self.assertRaises(Exception):request_valid(frame)
 
+    def test_systemone_targets_in_contract(self):
+        self.assertIn('/v1/systemone',CONTRACT['targets']);self.assertIn('/v1/systemone/batch',CONTRACT['targets'])
+        self.assertEqual(CONTRACT['streaming_targets'],['/v1/chat/completions'])
+        for target in ('/v1/systemone','/v1/systemone/batch'):
+            frame=self.request('{"model":"m","texts":["a"]}');frame['meta']['http']['target']=target
+            self.assertTrue(request_valid(frame))
+        for target in ('/v1/systemone/other','/v1/systemone?x','/v1/systemone/batch/'):
+            frame=self.request('{"model":"m"}');frame['meta']['http']['target']=target
+            with self.subTest(target=target),self.assertRaises(Exception):request_valid(frame)
+
     def test_malformed_json_and_resource_limits(self):
         for payload in ('[]','{"a":1,"a":2}','{"x":{"a":1,"a":2}}','{"x":NaN}','{"x":1e999}','{"x":"\\ud800"}','{}{}'):
             with self.subTest(payload=payload),self.assertRaises(Exception):request_valid(self.request(payload))
