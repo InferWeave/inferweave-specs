@@ -910,9 +910,12 @@ spec 63 behaviour is default-off, and no catalog row is `verified`.
 * **Spec 61 (Rust #1021, #1029, #1039, #1062; specs #289, #290):** the contract and schema additions now exist
   (precision-class table with an additivity check, ad-hoc request and response schemas with `resolution_tree` and
   `unmet`, the three precision reason codes, conformance fixtures; acceptance entries 30 to 35 stay `owed` with
-  partial evidence). `selection.precision_table_version` is **validation-only**: it checks that the named table is
-  held but classification still uses each candidate's own advertised table version, which is harmless while only
-  table 1 exists and becomes a real gap when a second version does. A malformed ad-hoc selection is now 400
+  partial evidence). `selection.precision_table_version` was **validation-only**; it now also **binds
+  classification** (spec amended 2026-10-16; the Rust change is an open pull request awaiting
+  independent review, so it is OWED until it merges): a candidate that advertises another version, or none, is
+  classified by its token under the pinned table, an unheld pin excludes with `PRECISION_UNVERIFIED` and the new
+  `unmet` token `precision_table_version`. Proven there only with a test-only second table (production holds table 1
+  alone), so no real second table has been exercised. A malformed ad-hoc selection is now 400
   `INVALID_CAPABILITY` (InferWeave/inferweave #1073) instead of 503.
 * **Spec 56 (Rust #1063, #1073, #1074; specs #294):** node-attested runtime observations: an executor node
   (`--engine-catalogue`) sends a bounded, sequence-fenced snapshot of its own engines over the authenticated link

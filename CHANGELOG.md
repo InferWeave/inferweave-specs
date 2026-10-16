@@ -6,6 +6,14 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Spec 61: a held `selection.precision_table_version` now **binds classification**, not only validation (a candidate
+  advertising another table version, or none, is classified by its token under the pinned table, whatever its
+  route; the pinned class is what `preferred.precision` ranks and `unmet.observed` reports). New frozen `unmet`
+  requirement token `precision_table_version` (after `min_precision_class`), produced only when a stored revision's
+  pin names a table the resolving producer does not hold; such candidates are `EXCLUDED` with the existing
+  `PRECISION_UNVERIFIED`. Additive vocabulary: a consumer that closes the `unmet_requirement` enum must add it. With
+  no pin, behaviour is unchanged. Rust implementation in an open pull request; see `OPEN_GATES.md`.
+
 - Spec 65 (InferWeave Storage, proposed and implemented in part on an unmerged branch of the reference
   implementation) added with decision record `decisions/2026-10-16-inferweave-storage.md` (features
   `IW-STORE-001` and `IW-STORE-002`, tasks `P5-T36` and `P5-T37`, both `owed`): the `store` role and the

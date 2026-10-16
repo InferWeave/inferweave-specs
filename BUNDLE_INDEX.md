@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,220,745 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,221,717 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -26,14 +26,14 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `.semgrepignore` — `81c5def09b50` — ~86t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `c4c0ceee436d` — ~4,738t
+- `CHANGELOG.md` — `741f3b78cad0` — ~4,933t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `dd08bc2f1ab0` — ~17,317t
+- `OPEN_GATES.md` — `d864d76c8157` — ~17,391t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -97,7 +97,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/prompt-record.example.json` — `8b199a55dc53` — ~137t
 - `contracts/protocol-v1/alias-execution.json` — `ca41b93ec234` — ~1,367t
 - `contracts/protocol-v1/device-types.json` — `a95cf75d2a7e` — ~74t
-- `contracts/protocol-v1/dynamic-aliases.json` — `a6c9090bd656` — ~2,387t
+- `contracts/protocol-v1/dynamic-aliases.json` — `2adde8a61269` — ~2,395t
 - `contracts/protocol-v1/error-taxonomy.json` — `0211bd0e86c2` — ~223t
 - `contracts/protocol-v1/gpu-memory-capabilities.json` — `18ccae99b274` — ~179t
 - `contracts/protocol-v1/gpu-memory-events.json` — `7058ee8f1787` — ~169t
@@ -548,7 +548,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/aliases/advertisement.json` — `a248a77490cd` — ~47t
 - `schemas/v1/aliases/capabilities.json` — `4ec5d57b6d73` — ~301t
 - `schemas/v1/aliases/catalog.json` — `291bebdacbb9` — ~44t
-- `schemas/v1/aliases/contract.json` — `8eb53d5b655d` — ~13,625t
+- `schemas/v1/aliases/contract.json` — `84bca6ff5196` — ~13,634t
 - `schemas/v1/aliases/definition.json` — `223305508427` — ~45t
 - `schemas/v1/aliases/detail.json` — `84f4d1275374` — ~43t
 - `schemas/v1/aliases/draft-write.json` — `a4cffbed2683` — ~46t
@@ -721,7 +721,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/58_MODEL_INTELLIGENCE_UI_COHESION.md` — `3e42b409a63f` — ~3,385t
 - `specs/59_LINK_HTTP_JSON.md` — `c18801c541c2` — ~3,152t
 - `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` — `7b7c75b158fd` — ~3,108t
-- `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` — `ff99c51f9119` — ~6,699t
+- `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` — `77414c142add` — ~7,385t
 - `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` — `d4cafcc30163` — ~6,736t
 - `specs/63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS.md` — `6d5b3e96bd41` — ~7,616t
 - `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` — `34c058ffbaeb` — ~11,958t

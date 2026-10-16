@@ -45,13 +45,14 @@ A **token** matches `[a-z0-9._]{1,32}` (the segment alphabet of the canonical mo
 `iw-core` `ModelId`, bounded). Anything else is rejected, not truncated.
 
 `precision_class` is computed by the *producer* and advertised; a consumer never reclassifies a
-token it received. Precision facts carry the **confidence of spec 54 Resolution step 6** and
+token it received, except under a **pin** (below), where the pinned table, not the advertisement,
+classifies. Precision facts carry the **confidence of spec 54 Resolution step 6** and
 satisfy a hard precision requirement only as that step permits: *advertised* is not *verified*,
 and federation cannot promote it. The class matters only to `min_precision_class` and
 `preferred.precision`; `quantization_allow` and `quantization_deny` look at the token alone and
 never need verification. Where either of the first two is set, a consumer that holds the
 advertised `precision_table_version` MUST verify the class against its own table for any
-federated candidate, and a mismatch makes the candidate `EXCLUDED`. A consumer that does not hold
+federated candidate (unless a pin reclassifies it, see Pin below), and a mismatch makes the candidate `EXCLUDED`. A consumer that does not hold
 that table version cannot verify, so the fact stays *advertised* and satisfies a hard precision
 requirement only where the hard policy explicitly permits advertised confidence; under the
 default verified minimum of spec 54 step 6 the candidate is `EXCLUDED`. Both exclusions carry the
@@ -136,11 +137,30 @@ Rules:
   validating producer's current table; a producer that wants a revision's validity fixed states the
   pin. A pin that the validating producer does not hold, a pin of 0, and a pin beside none of the
   three precision members are rejected as `INVALID_CAPABILITY`: an unheld table cannot be checked
-  against, and a pin on nothing does nothing. The pin is **validation-only**: it changes only the conflict check below. It
-  never reclassifies a candidate; resolution classifies and verifies each candidate by the table
-  version that candidate advertises (above). It applies to the selection's own requirement and to
-  a request's `required` alike (the table checked against), but the "pin beside no precision
-  member" rule is judged on the selection alone, never on a request's `required`.
+  against, and a pin on nothing does nothing. A held pin **binds classification** as well as
+  validation. Under a pin `P`, for each candidate:
+  * a candidate that advertises `precision_table_version` `P` keeps its advertised `precision_class`
+    and, if federated, is verified against table `P` exactly as above (a mismatch is
+    `PRECISION_UNVERIFIED`);
+  * every other candidate, local or federated, whether it advertises a different version, an
+    unheld version or none, is **classified by its `quantization` token under table `P`**; its
+    advertised class is not read and nothing about it needs verifying, because the consumer holds
+    the table. A token outside table `P` (including one a later table added) is `unknown` under
+    it, so under `min_precision_class` it is `PRECISION_UNKNOWN`; a pin is a statement about one
+    table, not about later ones;
+  * the class so derived is the one `preferred.precision` ranks and the one `unmet.observed`
+    reports, so the two never contradict why a candidate was excluded;
+  * `quantization_allow` and `quantization_deny` are unchanged (token alone), and a candidate with
+    no `quantization` is `QUANTIZATION_ABSENT` as before.
+
+  With no pin each candidate is read as above, unchanged. A stored revision can carry a pin the
+  resolving producer no longer holds (for example after a rollback to an older build). Resolution
+  cannot classify against a table it does not have, so every candidate whose class matters is
+  `EXCLUDED` with `PRECISION_UNVERIFIED` and the node's `unmet` carries the requirement
+  `precision_table_version` (below), in addition to `min_precision_class` when that is set. It
+  applies to the selection's own requirement and to a request's `required` alike (the table
+  checked against and the table classified under), but the "pin beside no precision member" rule
+  is judged on the selection alone, never on a request's `required`.
 * **Conflict** is evaluated against the table version pinned as above and fails `INVALID_CAPABILITY`: an allow set that is empty
   after removing the deny set; an allow set none of whose tokens can meet `min_precision_class`
   under that version (tokens of class `unknown` count as unable). A token classified in a later
@@ -277,8 +297,14 @@ entries explaining why the branch is not available *now*:
 
 `requirement` tokens: `runtime_family`, `input_modality`, `output_modality`, `feature`,
 `min_context_tokens`, `min_output_tokens`, `embedding_dimensions`, `output_schema`,
-`min_precision_class`, `quantization`, `privacy`, `residency`, `trusted_origin`, `license`,
-`health`, `capacity`.
+`min_precision_class`, `precision_table_version`, `quantization`, `privacy`, `residency`,
+`trusted_origin`, `license`, `health`, `capacity`. The token `precision_table_version` is produced only when
+the selection's pin names a table the resolving producer does not hold; its `required` is the pin (an
+integer) and it has no `observed`, because a pin is a policy member, not a bound a candidate can
+approach. An ad-hoc selection with a pin the producer does not hold is rejected as
+`INVALID_CAPABILITY` before resolution, so on a producer that validates and resolves with one set of tables the token
+can appear only through a revision stored under an earlier build; it is in the vocabulary so that case is typed and
+not silent.
 
 A requirement the *caller itself stated* (privacy, residency, trusted origin, license, embedding
 dimensions, output schema) is reportable: a **visible** candidate that fails it on a label the
@@ -345,7 +371,12 @@ All are **owed**; none is `proven`. Each must fail if its control is removed.
    rule above fails `INVALID_CAPABILITY`; a request that weakens the alias is a safe failure;
    a class mismatch under an identical `precision_table_version` yields `PRECISION_UNVERIFIED`, as
    does an advertised class from an unheld table version under the default verified minimum;
-   allow/deny never require verification.
+   allow/deny never require verification. A held pin binds classification: with two held tables, a
+   candidate advertising the other version (or none, or an unheld one) is classified by its token under
+   the pinned table whatever its route, an advertised class is never read for it, the same candidate
+   without a pin keeps its own table, a candidate on the pinned version is still verified, the pinned
+   class is what `preferred.precision` ranks and `unmet.observed` reports, and a pin the producer does
+   not hold excludes with `PRECISION_UNVERIFIED` and the `unmet` token `precision_table_version`.
 2. Ad-hoc: only the two routes accept `selection`, with the level-2 header and the right grant;
    `alias_id` with `selection` is rejected; omitted authority members default to the caller's
    floor; no candidate outside the caller's grant is returned; no dispatch, enqueue, reservation,
