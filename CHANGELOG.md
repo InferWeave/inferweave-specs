@@ -6,6 +6,14 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Additive, optional System One CPU capacity wire (`IW-NODEHW-001`, `IW-DP-001`; proof owed, see `OPEN_GATES.md`):
+  `systemone[].device` and `max_concurrency` on the register body, `systemone` load on the node heartbeat,
+  `meta.systemone_batch` on link request meta, and the `/v1/systemone` and `/v1/systemone/batch`
+  `iw.link-http-json/1` targets (`stream:true` refused with 400 `stream_unsupported` on every non-chat target).
+  Slot semantics now distinguish schedulable `slots` from the `max_concurrency` admission bound, and a CPU-only node
+  is first class (`cpu` device/backend, `gpus: []`, routable without GPU telemetry). Older peers are unaffected:
+  every member is optional and omitted when absent. Casing of the new members is inconsistent and recorded as open.
+
 - Additive, explicitly negotiated `dynamic_aliases: "2"` (spec 54) preserves level 1.
   Adds strict alias policies/revisions, instance-level preview and evidence, frozen reasons/events,
   native management schemas and bounded fixtures. D-002 extends only the existing Go operator UI;

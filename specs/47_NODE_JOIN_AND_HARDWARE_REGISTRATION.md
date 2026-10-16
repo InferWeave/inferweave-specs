@@ -107,6 +107,52 @@ legacy registration without `capabilities` succeeds as before, receives an empty
 from a new gateway, and cannot enable native dispatch. No feature is inferred from protocol
 version, node id, model, or a generic features map.
 
+### 2.2 System One workload advert (`systemone`) and heartbeat load (normative)
+
+**Source of this text.** The System One node workload is specified only in the implementation
+repository (`InferWeave/inferweave`, `docs/specs/systemone-node-workload.md`); this repository
+previously had no text for the register member `systemone` at all (an implementation choice made
+because the specifications were silent). This section is the normative wire text for the
+capacity-related members; it does not specify the System One runtime or its request protocol.
+
+The register body MAY carry `systemone`: an array of at most 256 `SystemOneAdvert` objects, each the
+shape of `schemas/v1/requests/node-systemone-advert.json`:
+
+| Member | Type | Rule |
+| --- | --- | --- |
+| `model` | string, non-empty | the decision model the placement serves |
+| `slots` | integer >= 1 | **schedulable units**: concurrent worker processes on CPU, one per GPU. Seat arithmetic uses it exactly as it uses a generative `models[].slots` |
+| `device` | string, optional | device kind the runtime executes on: non-empty lowercase token `[a-z0-9_-]+` (`cpu`, `cuda`, ...). Informational: it MUST NOT change routing authority |
+| `max_concurrency` | integer, optional | **admission bound**: requests in flight the node accepts. Absent means equal to `slots`. When present it MUST be `>= slots` |
+
+A gateway MUST refuse a registration whose `systemone` entry has `slots` of 0, an empty `model`, a
+`max_concurrency` below `slots`, or a malformed `device` (HTTP 400 `bad_request`; the reference
+node performs the same checks before sending). A runtime with no ready process is advertised by
+omitting the entry, never as `slots: 0`. `device` and `max_concurrency` are omitted when absent (never
+`null`); a node that sends neither emits the bytes it always did, and a gateway that predates them
+ignores both (this schema does not close the object).
+
+**Casing (recorded inconsistency, unresolved).** The register body is camelCase, but the members of a
+`systemone[]` entry are snake_case (`max_concurrency`), matching the link `meta` style
+(`timeout_ms`, `systemone_batch`) rather than the enclosing body; the heartbeat object below is
+camelCase (`maxConcurrency`). Both are what the reference implementation emits today, so both are
+normative here until a decision picks one spelling (`OPEN_GATES.md`). A consumer MUST NOT accept the
+other spelling in either place.
+
+**Heartbeat.** The node heartbeat `status` (the object that carries `busySlots` and `queueDepth`)
+MAY carry `systemone`, shaped by `schemas/v1/requests/node-systemone-status.json`:
+`{"inflight","queueDepth","maxConcurrency","readyProcesses","processes"}` (non-negative integers,
+camelCase): requests being served, requests accepted but not started, the admission bound,
+worker processes ready to serve, and worker processes configured. Absent means *not reported*,
+never zero load. It is informational for routing and never replaces the registered `slots`.
+Per section 6.12, a connection that keeps only `busySlots`, `queueDepth` and `leaving` discards it.
+
+**Routability is not decided here.** The existing register shape rules (section 4 and
+`node-register.json`) still require a routable node to name an endpoint and at least one model, or to
+be gateway-role. The reference node registers a System One node with its real endpoint and the
+`systemone` list while `models` carries no generative model; that combination is a shape section 4
+calls invalid. This section does not resolve it: see `OPEN_GATES.md`.
+
 ## 3. The `hardware` member
 
 ### 3.1 Gateway rules
@@ -172,6 +218,12 @@ A node SHOULD send:
   "notes": [ "no container runtime found" ]
 }
 ```
+
+A CPU-only node reports `"gpus": []` (the member present and empty, not omitted) and offers no
+`iw.gpu-memory/1`; `cpu.threads` is the thread count the runtime may use. A reference producer
+also stores `cores` and `sockets` beside `cpu`; the gateway keeps them verbatim (section 3.1 rule 5),
+and they are not part of this layout. `hardware` stays informational (section 3.1 rule 8): it never
+makes a CPU node routable or unroutable.
 
 Members: byte counts are integers in bytes; `speedMbps` is `null` when the link speed is unknown
 (never `0` for unknown); `notes` is an array of free-form strings the node uses to say what it

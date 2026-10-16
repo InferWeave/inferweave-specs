@@ -11,6 +11,7 @@
     "queue": {"type": "boolean"},
     "probe": {"type": "boolean"},
     "http": {"$ref": "link-http-meta.json"},
+    "systemone_batch": {"type": "boolean", "description": "true marks the payload as a System One batch on the legacy frame path (no meta.http). Omitted when absent; a receiver that predates it ignores the key. Independent of meta.http, whose targets /v1/systemone[/batch] carry the same distinction in the target."},
     "native": {
       "type": "object",
       "additionalProperties": false,

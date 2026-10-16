@@ -558,6 +558,23 @@ A slot is:
 Slot count may depend on model, context length, batch policy, VRAM allocation, runtime
 implementation, and request class. Do not assume a slot always represents one physical GPU.
 
+### Slots versus admission bound; CPU-only nodes
+
+`slots` is the schedulable unit; `max_concurrency` is a different quantity, the number of requests
+the serving node accepts in flight. They coincide only when each schedulable unit serves exactly one
+request at a time. A System One runtime on a CPU node is the counter-example: `slots` is the number
+of concurrent worker processes, each process batches, and `max_concurrency` is the larger number of
+requests the node admits (`specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` section 2.2). When an
+advertisement carries both, `max_concurrency >= slots`; absent `max_concurrency` means equal to
+`slots`. A gateway MUST do seat arithmetic over `slots` and MUST NOT treat `max_concurrency` as
+schedulable units.
+
+A CPU-only node is first class. The device type `cpu` (`contracts/protocol-v1/device-types.json`)
+and the backend token `cpu` are legal in a registration; the node's `hardware` report has
+`gpus: []`; and the node is routable from its advertised capacity alone. A gateway MUST NOT require
+GPU telemetry, a GPU identity or the `iw.gpu-memory/1` capability to route to, count or admit a node
+whose runtime executes on `cpu`. Spec 46's GPU memory accounting does not apply to it.
+
 ### Dynamic capacity
 
 Capacity advertisements are timestamped and expected to change independently of model identity:

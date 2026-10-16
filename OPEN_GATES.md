@@ -746,3 +746,30 @@ Nothing here opens a production gate.
   lifecycle generation, `runtimeObservations` ingestion, qualification and privacy/residency/trust evidence
   (every row is `Advertised`/`UNKNOWN`; none is selectable); an owner-canonical resource-group identity.
 
+### Update 2026-10-15 (latest): System One CPU capacity wire (specs 44, 47, 59)
+
+Nothing here opens a production gate or marks a control available.
+
+* **Specified, additive, optional:** `systemone[].device` / `max_concurrency` (spec 47 section 2.2), heartbeat
+  `status.systemone`, link `meta.systemone_batch`, link-http targets `/v1/systemone` and `/v1/systemone/batch`
+  (spec 59), and the CPU-only-node statement (spec 44). Reference implementation: InferWeave/inferweave #1045 (open at
+  the time of writing, not merged); the Go gateway side is metabolomics-us/inferweave-gateway #557.
+* **Proof status.** `proven` here: the offline spec-59 oracle, the new link-http vectors and the schema checks
+  in `tests/smoke/test_systemone_wire.py` (the target vectors fail with the contract change removed). **Owed, UNSATISFIED:**
+  gateway-side enforcement of `max_concurrency >= slots` and of the `device` token in either gateway; a mixed Rust/Go
+  fleet routing to a CPU node with no GPU telemetry; heartbeat `systemone` ingestion; the Go `link_http`
+  acceptance of the two new targets. Owed by inferweave #1045 and inferweave-gateway #557 until their tests exist,
+  run and fail with the control removed. Measured capacity values (`max_concurrency` defaults, process counts) are
+  not stated or relied on.
+* **Open specification defects, not resolved by this change:**
+  1. Casing: `systemone[]` entries are snake_case in a camelCase register body, the heartbeat object is camelCase.
+     Both are recorded as normative today; one spelling must be chosen by decision.
+  2. A System One node registers a real endpoint with `models: []` and a `systemone` list, a shape spec 47
+     section 4 and `node-register.json` call invalid. Either the shape rule or the registration is wrong.
+  3. Whether a System One request may use the legacy frame path (with `systemone_batch`, or body-classified) when
+     `iw.link-http-json/1` is not negotiated, instead of the 503 `FEATURE_UNSUPPORTED` that spec 59 now requires
+     for HTTP mode.
+  4. The reference validator requires a non-empty `model` in the body on every link-http target; spec 59's oracle
+     did not check it (now stated for System One only; chat and completions text is unchanged).
+  5. The node-workload design (`systemone-node-workload.md`) lives only in the implementation repository.
+

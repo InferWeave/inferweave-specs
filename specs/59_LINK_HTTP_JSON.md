@@ -50,6 +50,27 @@ placement, or return HTTP 503 `FEATURE_UNSUPPORTED` with `retryable:false` befor
 dispatch. Never strip the HTTP target and silently send it as chat. Receiving an
 unnegotiated `meta.http` request fails before backend execution.
 
+### System One targets
+
+`/v1/systemone` and `/v1/systemone/batch` carry a System One (Laya) decision request and a batch of
+them. They are `POST` with a strict JSON object body (the rules below apply unchanged, including a
+non-empty `model` string that must equal the selected deployment when one is selected). `stream`
+exists only on the chat target: `stream:true` on any other target, these two included, returns HTTP
+400 `stream_unsupported` before dispatch, and a non-boolean `stream` is invalid. A node that has not
+negotiated `iw.link-http-json/1` for the bound link gets no System One HTTP-mode request: the
+gateway returns HTTP 503 `FEATURE_UNSUPPORTED`, `retryable:false`, before dispatch (never rewriting the
+target). `/v1/systemone?x`, `/v1/systemone/other` and `/v1/systemone/batch/` are refused like every
+other inexpressible target.
+
+Separately, the legacy (metadata-free) frame path has no `meta.http`. A sender on that path marks a
+System One batch with the optional boolean `meta.systemone_batch: true` (schema
+`link-request-meta.json`); the key is omitted when not set, an old receiver ignores it, and it is
+mutually independent of `meta.http` (the HTTP target already says batch or not). The reference
+receiver additionally classifies an unmarked legacy System One frame from the body's `model`. That
+body-based fallback is implementation behaviour, not specified here: whether a gateway may use the
+legacy path for System One when HTTP mode is not negotiated, rather than answering 503, is left open
+(`OPEN_GATES.md`).
+
 ## Request bytes and limits
 
 The closed `schemas/v1/requests/link-http-request.json` describes the logical
@@ -60,8 +81,8 @@ Request after existing negotiated chunk reassembly. Its `meta.http` contains:
 ```
 
 `payload_bytes` is the actual UTF-8 byte length of the unchanged Request.payload;
-the number above is illustrative. Only exact `/v1/chat/completions` and
-`/v1/completions` targets are legal. No query, fragment, percent-encoded alternative,
+the number above is illustrative. Only exact `/v1/chat/completions`, `/v1/completions`,
+`/v1/systemone` and `/v1/systemone/batch` targets are legal. No query, fragment, percent-encoded alternative,
 absolute URL, alternate method, arbitrary headers or destination is expressible.
 The backend origin comes only from authenticated deployment configuration.
 The existing `/v1/completions` API remains non-streaming: `stream:true` MUST return
@@ -152,7 +173,8 @@ its current bounded rules. There is no resume semantics in this version.
 Closed schemas, golden/hostile vectors and the offline state-machine oracle in
 `conformance/link_http_json.py` are specification evidence. Run
 `python3 -m unittest discover -s tests/smoke -p 'test_link_http_json.py'` and
-`python3 scripts/validate_specs.py --self-test`. Production Rust/Go mixed-version,
+`python3 scripts/validate_specs.py --self-test`. The System One targets' vectors (accepted, not-negotiated 503, stream refusal, refused targets) are in
+the same file. Production Rust/Go mixed-version,
 real backend exact path/status/MIME/bytes, cancellation, credit exhaustion, socket
 loss and no-replay tests remain **owed**. Spec57 and alias rollout gates remain
 blocked. Independent review is required before implementation activation.

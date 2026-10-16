@@ -136,8 +136,11 @@ Rules:
   validating producer's current table; a producer that wants a revision's validity fixed states the
   pin. A pin that the validating producer does not hold, a pin of 0, and a pin beside none of the
   three precision members are rejected as `INVALID_CAPABILITY`: an unheld table cannot be checked
-  against, and a pin on nothing does nothing. The pin changes only the conflict check below; it
-  never reclassifies a candidate's advertised class.
+  against, and a pin on nothing does nothing. The pin is **validation-only**: it changes only the conflict check below. It
+  never reclassifies a candidate; resolution classifies and verifies each candidate by the table
+  version that candidate advertises (above). It applies to the selection's own requirement and to
+  a request's `required` alike (the table checked against), but the "pin beside no precision
+  member" rule is judged on the selection alone, never on a request's `required`.
 * **Conflict** is evaluated against the table version pinned as above and fails `INVALID_CAPABILITY`: an allow set that is empty
   after removing the deny set; an allow set none of whose tokens can meet `min_precision_class`
   under that version (tokens of class `unknown` count as unable). A token classified in a later

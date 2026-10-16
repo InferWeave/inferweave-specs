@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/node-systemone-advert.json",
+  "title": "SystemOneAdvert (entry of the `systemone` array in POST /v1/node/register)",
+  "description": "One System One decision-model placement a node serves. Members are snake_case although the enclosing register body is camelCase (specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md section 2.2; recorded inconsistency, not endorsed). slots is the schedulable unit; max_concurrency is the admission bound and, when present, MUST be >= slots, which JSON Schema draft-07 cannot express (semantic rule; the conformance vectors carry it). Absent device and max_concurrency are omitted, never null.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "model",
+    "slots"
+  ],
+  "properties": {
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "slots": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "device": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z0-9_-]+(?![\\s\\S])"
+    },
+    "max_concurrency": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

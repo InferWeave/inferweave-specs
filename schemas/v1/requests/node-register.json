@@ -42,6 +42,7 @@
     },
     "hardware": {"$ref": "node-hardware.json"},
     "dynamic": {"$ref": "node-dynamic-facts.json"},
+    "systemone": {"type": "array", "maxItems": 256, "items": {"$ref": "node-systemone-advert.json"}},
     "runtimeObservations": {"$ref": "runtime-observation-report.json"}
   },
   "oneOf": [
