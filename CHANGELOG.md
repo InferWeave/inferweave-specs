@@ -6,6 +6,15 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Spec 65 (InferWeave Storage, proposed and implemented in part on an unmerged branch of the reference
+  implementation) added with decision record `decisions/2026-10-16-inferweave-storage.md` (features
+  `IW-STORE-001` and `IW-STORE-002`, tasks `P5-T36` and `P5-T37`, both `owed`): the `store` role and the
+  additive capability `iw.store/1`, the signed `iwg1` read grant, the native `/v1/blob` data plane and a
+  read-only S3 front end, network exposure and abuse controls, the single-writer rule for shared filesystems,
+  the digest index with an optional capability-gated topology `store` field and `grantIssuerKeys`, the
+  multi-source stager and store quarantine. Older peers are unaffected. Nothing opens a production gate; see
+  `OPEN_GATES.md` (TLS, grant forwarding across federation, per-range hashes and ingest leases unsatisfied).
+
 - Spec 56 amended after the Rust producer and ingester (`IW-ALIAS-001`; proof still owed, see `OPEN_GATES.md`): the
   report may ride the node heartbeat; duplicate JSON members are refused; additive, diagnostic-only heartbeat
   answer member `runtimeObservations.resync` (an old peer ignores it) with a paced producer epoch rotation; the
