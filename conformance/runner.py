@@ -32,6 +32,7 @@ sys.path.insert(0, str(ROOT / "conformance"))
 import node_join  # noqa: E402
 import runtime_protocol  # noqa: E402
 import link_http_json  # noqa: E402
+import link_upstream  # noqa: E402
 import dynamic_aliases  # noqa: E402
 import alias_edge_delegation  # noqa: E402
 import runtime_observations  # noqa: E402
@@ -109,6 +110,11 @@ MAP = {
     "link-http-failure": "requests/link-http-failure.json",
     "link-http-end": "requests/link-http-end.json",
     "link-request-meta": "requests/link-request-meta.json",
+    "link-upstream-hello": "requests/link-upstream-hello.json",
+    "link-upstream-hello-ack": "requests/link-upstream-hello-ack.json",
+    "link-upstream-catalog": "requests/link-upstream-catalog.json",
+    "link-upstream-catalog-request": "requests/link-upstream-catalog-request.json",
+    "link-upstream-refused": "requests/link-upstream-refused.json",
     "link-end": "requests/link-end.json",
     "link-response-meta": "requests/link-response-meta.json",
     "deployment": "deployments/deployment.json",
@@ -226,6 +232,8 @@ def validate_fixture(path, must_pass, schema_rel=None):
         # Rules a schema cannot express: the derived dep_ id, the matrix floor, artifact
         # collisions and size overflow, the card count (spec 64 section 5).
         semantic_errors.extend(dynamic_nodes.semantic_errors(fixture, schema_rel))
+    if schema_rel in ("requests/link-upstream-catalog.json",) and not errors:
+        semantic_errors.extend(link_upstream.semantic_errors(fixture))
     if schema_rel.startswith("aliases/") and not errors:
         semantic_errors.extend(dynamic_aliases.semantic_errors(fixture, Path(schema_rel).stem))
     ok = not errors and not semantic_errors
@@ -608,6 +616,12 @@ def main():
     failures += len(http_errors)
     if not http_errors:
         print("PASS  Link HTTP JSON vectors (offline; production proof owed)")
+    upstream_errors = link_upstream.check_vectors(ROOT)
+    for error in upstream_errors:
+        print("FAIL  " + error)
+    failures += len(upstream_errors)
+    if not upstream_errors:
+        print("PASS  Link upstream vectors (offline; production proof owed)")
     execution_errors = alias_execution.check_vectors(ROOT)
     for error in execution_errors:
         print("FAIL  " + error)

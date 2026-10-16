@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-upstream-catalog-request.json",
+  "title": "Link upstream catalog request",
+  "description": "Spec 63. The dialer asks an upstream link's acceptor for the key's current catalog; it doubles as the dialer's keep-alive. The acceptor answers at most once per second per link. Carries no member.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind"],
+  "properties": {
+    "kind": {"const": "upstream_catalog_request"}
+  }
+}

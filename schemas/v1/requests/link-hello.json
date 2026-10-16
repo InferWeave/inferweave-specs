@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/requests/link-hello.json",
   "title": "Link Hello",
-  "description": "Authenticated Link handshake. Legacy peers omit all native_link_* fields. A v1 native sender binds its independently offered request and response capabilities to the exact current control registration and generates a fresh link_incarnation_id for every socket/dial.",
+  "description": "Authenticated Link handshake. An api_key Hello (spec 63, schema link-upstream-hello.json) has no registration to bind to, so the registration requirements apply to every other Hello. Legacy peers omit all native_link_* fields. A v1 native sender binds its independently offered request and response capabilities to the exact current control registration and generates a fresh link_incarnation_id for every socket/dial.",
   "type": "object",
   "additionalProperties": true,
   "required": ["kind", "node_id", "role", "credential"],
@@ -22,7 +22,10 @@
       "uniqueItems": true,
       "items": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^iw\\.[a-z0-9-]+/(0|[1-9][0-9]*)$"},
       "contains": {"enum": ["iw.link-native-request/1", "iw.link-http-json/1"]}
-    }
+    },
+    "link_roles": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"enum": ["serve", "upstream"]}, "description": "Spec 63. Roles the dialer asks for; absence means serve. An api_key Hello carries exactly [upstream] (see link-upstream-hello.json); a registration Hello never carries upstream."},
+    "credential_type": {"enum": ["registration", "api_key"], "description": "Spec 63. Which store the acceptor validates credential against; absence means registration."},
+    "channel_binding": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "Spec 63. Lowercase hex SHA-256 over the transport exporter, the incarnation id and the dialer id; api_key Hellos only."}
   },
   "allOf": [
     {
@@ -32,10 +35,22 @@
           {"required": ["registration_connection_id"]},
           {"required": ["link_incarnation_id"]},
           {"required": ["native_link_features"]}
-        ]
+        ],
+        "not": {"required": ["credential_type"], "properties": {"credential_type": {"const": "api_key"}}}
       },
       "then": {
         "required": ["native_link_version", "registration_connection_id", "link_incarnation_id", "native_link_features"]
+      }
+    },
+    {
+      "if": {"required": ["credential_type"], "properties": {"credential_type": {"const": "api_key"}}},
+      "then": {
+        "required": ["native_link_version", "link_incarnation_id", "native_link_features", "link_roles", "channel_binding"],
+        "not": {"required": ["registration_connection_id"]},
+        "properties": {"link_roles": {"const": ["upstream"]}}
+      },
+      "else": {
+        "not": {"anyOf": [{"required": ["channel_binding"]}, {"properties": {"link_roles": {"contains": {"const": "upstream"}}}, "required": ["link_roles"]}]}
       }
     }
   ]

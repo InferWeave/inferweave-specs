@@ -1021,6 +1021,10 @@ def self_test():
     if http_test.returncode:
         print(http_test.stdout + http_test.stderr)
         return 1
+    upstream_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_link_upstream.py")], capture_output=True, text=True)
+    if upstream_test.returncode:
+        print(upstream_test.stdout + upstream_test.stderr)
+        return 1
     file_mutations = 1 + len(gpu_breaks) + len(semantic)
     print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "
           "every guard rejects its known-bad input")

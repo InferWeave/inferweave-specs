@@ -1,0 +1,10 @@
+{
+  "kind": "upstream_catalog",
+  "models": [
+    {
+      "model_id": "",
+      "max_context_tokens": 8,
+      "provenance": "reported"
+    }
+  ]
+}

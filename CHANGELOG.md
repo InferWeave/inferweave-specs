@@ -14,6 +14,13 @@ versioning rules and the protocol change workflow.
   `PRECISION_UNVERIFIED`. Additive vocabulary: a consumer that closes the `unmet_requirement` enum must add it. With
   no pin, behaviour is unchanged. Rust implementation in an open pull request; see `OPEN_GATES.md`.
 
+- Spec 63: closed, bounded schemas and conformance vectors for the `upstream` role frames (`IW-DP-002`; proof owed,
+  see `OPEN_GATES.md`): `link-upstream-hello.json`, `link-upstream-hello-ack.json` (`kind: upstream_ack`),
+  `link-upstream-catalog.json`, `link-upstream-catalog-request.json`, `link-upstream-refused.json`,
+  `meta.traffic_class` on the closed `link-http-request.json`, an `api_key` Hello accepted by `link-hello.json`,
+  `contracts/protocol-v1/link-upstream.json` and `conformance/link-upstream-vectors.json`. Additive: no existing
+  frame changes shape; nothing opens a production gate.
+
 - Spec 65 (InferWeave Storage, proposed and implemented in part on an unmerged branch of the reference
   implementation) added with decision record `decisions/2026-10-16-inferweave-storage.md` (features
   `IW-STORE-001` and `IW-STORE-002`, tasks `P5-T36` and `P5-T37`, both `owed`): the `store` role and the

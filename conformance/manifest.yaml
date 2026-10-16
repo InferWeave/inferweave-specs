@@ -62,3 +62,11 @@ link_http_json_profile:
   capability: iw.link-http-json/1
   artifact_runner: tests/smoke/test_link_http_json.py
   production_proof: owed
+
+# Spec63 upstream link role frames; production conformance remains owed.
+link_upstream_profile:
+  feature: link_upstream
+  level: "1"
+  capability: iw.link-upstream/1
+  artifact_runner: tests/smoke/test_link_upstream.py
+  production_proof: owed

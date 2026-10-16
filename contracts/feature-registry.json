@@ -184,6 +184,9 @@
         "P1-T18",
         "P3-T08",
         "P5-T03"
+      ],
+      "contracts": [
+        "contracts/protocol-v1/link-upstream.json"
       ]
     },
     {

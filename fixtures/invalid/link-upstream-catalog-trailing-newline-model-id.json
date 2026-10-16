@@ -1,0 +1,15 @@
+{
+  "kind": "upstream_catalog",
+  "models": [
+    {
+      "model_id": "m1\n",
+      "max_context_tokens": 32768,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "llama-3.3-70b-instruct-q8-0",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    }
+  ]
+}

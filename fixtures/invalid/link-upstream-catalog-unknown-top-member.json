@@ -1,0 +1,16 @@
+{
+  "kind": "upstream_catalog",
+  "models": [
+    {
+      "model_id": "qwen3-coder-30b-a3b-instruct-q4-k-m",
+      "max_context_tokens": 32768,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "llama-3.3-70b-instruct-q8-0",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    }
+  ],
+  "surprise": true
+}

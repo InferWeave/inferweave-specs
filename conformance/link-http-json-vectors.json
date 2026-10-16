@@ -1237,6 +1237,121 @@
         "dispatch_allowed": false,
         "refused": "invalid_http_request"
       }
+    },
+    {
+      "name": "upstream_traffic_class_shareable",
+      "request": {
+        "kind": "request",
+        "request_id": "up-1",
+        "payload": "{\"model\": \"exact@rev\", \"prompt\": \"hello\", \"stream\": false}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/completions",
+            "content_type": "application/json",
+            "payload_bytes": 58
+          },
+          "traffic_class": "shareable"
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": true,
+        "mode": "http"
+      }
+    },
+    {
+      "name": "upstream_traffic_class_private",
+      "request": {
+        "kind": "request",
+        "request_id": "up-1",
+        "payload": "{\"model\": \"exact@rev\", \"prompt\": \"hello\", \"stream\": false}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/completions",
+            "content_type": "application/json",
+            "payload_bytes": 58
+          },
+          "traffic_class": "private"
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": true,
+        "mode": "http"
+      }
+    },
+    {
+      "name": "upstream_traffic_class_unrecognised_short",
+      "request": {
+        "kind": "request",
+        "request_id": "up-1",
+        "payload": "{\"model\": \"exact@rev\", \"prompt\": \"hello\", \"stream\": false}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/completions",
+            "content_type": "application/json",
+            "payload_bytes": 58
+          },
+          "traffic_class": "volunteer"
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": true,
+        "mode": "http"
+      }
+    },
+    {
+      "name": "upstream_traffic_class_over_32",
+      "request": {
+        "kind": "request",
+        "request_id": "up-1",
+        "payload": "{\"model\": \"exact@rev\", \"prompt\": \"hello\", \"stream\": false}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/completions",
+            "content_type": "application/json",
+            "payload_bytes": 58
+          },
+          "traffic_class": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": false,
+        "refused": "invalid_http_request"
+      }
+    },
+    {
+      "name": "upstream_traffic_class_not_a_string",
+      "request": {
+        "kind": "request",
+        "request_id": "up-1",
+        "payload": "{\"model\": \"exact@rev\", \"prompt\": \"hello\", \"stream\": false}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/completions",
+            "content_type": "application/json",
+            "payload_bytes": 58
+          },
+          "traffic_class": true
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": false,
+        "refused": "invalid_http_request"
+      }
     }
   ]
 }

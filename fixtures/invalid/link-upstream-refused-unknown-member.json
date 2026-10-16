@@ -1,0 +1,6 @@
+{
+  "kind": "refused",
+  "request_id": "up-0123456789abcdef",
+  "code": "rate_limited",
+  "model": "secret-model"
+}

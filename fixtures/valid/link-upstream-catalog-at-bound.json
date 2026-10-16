@@ -1,0 +1,1285 @@
+{
+  "kind": "upstream_catalog",
+  "models": [
+    {
+      "model_id": "m000",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m001",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m002",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m003",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m004",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m005",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m006",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m007",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m008",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m009",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m010",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m011",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m012",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m013",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m014",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m015",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m016",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m017",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m018",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m019",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m020",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m021",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m022",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m023",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m024",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m025",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m026",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m027",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m028",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m029",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m030",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m031",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m032",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m033",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m034",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m035",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m036",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m037",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m038",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m039",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m040",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m041",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m042",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m043",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m044",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m045",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m046",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m047",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m048",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m049",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m050",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m051",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m052",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m053",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m054",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m055",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m056",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m057",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m058",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m059",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m060",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m061",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m062",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m063",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m064",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m065",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m066",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m067",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m068",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m069",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m070",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m071",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m072",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m073",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m074",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m075",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m076",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m077",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m078",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m079",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m080",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m081",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m082",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m083",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m084",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m085",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m086",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m087",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m088",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m089",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m090",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m091",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m092",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m093",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m094",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m095",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m096",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m097",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m098",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m099",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m100",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m101",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m102",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m103",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m104",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m105",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m106",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m107",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m108",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m109",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m110",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m111",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m112",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m113",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m114",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m115",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m116",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m117",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m118",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m119",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m120",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m121",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m122",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m123",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m124",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m125",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m126",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m127",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m128",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m129",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m130",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m131",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m132",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m133",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m134",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m135",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m136",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m137",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m138",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m139",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m140",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m141",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m142",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m143",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m144",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m145",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m146",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m147",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m148",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m149",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m150",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m151",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m152",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m153",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m154",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m155",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m156",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m157",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m158",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m159",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m160",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m161",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m162",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m163",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m164",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m165",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m166",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m167",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m168",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m169",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m170",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m171",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m172",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m173",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m174",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m175",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m176",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m177",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m178",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m179",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m180",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m181",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m182",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m183",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m184",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m185",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m186",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m187",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m188",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m189",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m190",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m191",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m192",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m193",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m194",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m195",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m196",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m197",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m198",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m199",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m200",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m201",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m202",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m203",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m204",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m205",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m206",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m207",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m208",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m209",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m210",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m211",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m212",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m213",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m214",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m215",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m216",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m217",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m218",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m219",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m220",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m221",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m222",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m223",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m224",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m225",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m226",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m227",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m228",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m229",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m230",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m231",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m232",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m233",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m234",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m235",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m236",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m237",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m238",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m239",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m240",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m241",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m242",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m243",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m244",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m245",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m246",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m247",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m248",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m249",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m250",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m251",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m252",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m253",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m254",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    },
+    {
+      "model_id": "m255",
+      "max_context_tokens": 8192,
+      "provenance": "reported"
+    }
+  ]
+}

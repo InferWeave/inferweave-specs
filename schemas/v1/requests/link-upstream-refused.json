@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/link-upstream-refused.json",
+  "title": "Link upstream refused frame",
+  "description": "Spec 63. On an upstream link every admission refusal is this frame and never a response head, so the dialer can tell 'this was not executed' from 'execution produced this'. Granting upstream is what lets the acceptor send it (the frame is otherwise gated on iw.link-refusal/1, which an upstream link does not negotiate). The code is a closed vocabulary that names no model, key, path or other tenant. A dialer treats only rate_limited, concurrency_limited, token_budget_exceeded and backend_unavailable as reversible. The refused frame of the federated-admission design also has optional retry_after_ms and queue_ms; the acceptor of this role sends neither, so they are not part of this form.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "request_id", "code"],
+  "properties": {
+    "kind": {"const": "refused"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[^\\u0000-\\u001f\\u007f]*(?![\\s\\S])"},
+    "code": {"enum": ["binding_closed", "key_invalid", "invalid_request", "model_not_permitted", "federation_loop", "hop_limit_exceeded", "deadline_exceeded", "duplicate_request", "rate_limited", "concurrency_limited", "token_budget_exceeded", "backend_unavailable"]}
+  }
+}

@@ -57,6 +57,11 @@
         "probe": {
           "type": "boolean"
         },
+        "traffic_class": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Spec 63. The dialer's declared traffic class on an upstream link: private or shareable. Untrusted; an absent or unrecognised value is private. Sent only after the acceptor's acknowledgement carried reads_traffic_class true."
+        },
         "http": {
           "$ref": "link-http-meta.json"
         }
