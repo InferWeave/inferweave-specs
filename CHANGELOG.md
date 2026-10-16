@@ -6,6 +6,12 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Spec 63 (link `upstream` role, proposed and implemented in part, default off) amended after the Rust
+  implementation (`IW-DP-002`; see `OPEN_GATES.md`): optional request-`meta` member `traffic_class` (spec 59,
+  `link-request-meta.json`; an old receiver ignores it), the `refused` frame carried by the `upstream` role,
+  closed catalog entries with `max_context_tokens`, `records_prompt_content` assertion semantics, fresh request
+  id per dispatch, token-budget semantics, relay circuit breaker, drain wait. Nothing opens a production gate.
+
 - Additive, optional System One CPU capacity wire (`IW-NODEHW-001`, `IW-DP-001`; proof owed, see `OPEN_GATES.md`):
   `systemone[].device` and `max_concurrency` on the register body, `systemone` load on the node heartbeat,
   `meta.systemone_batch` on link request meta, and the `/v1/systemone` and `/v1/systemone/batch`

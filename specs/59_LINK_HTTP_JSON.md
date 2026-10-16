@@ -71,6 +71,15 @@ body-based fallback is implementation behaviour, not specified here: whether a g
 legacy path for System One when HTTP mode is not negotiated, rather than answering 503, is left open
 (`OPEN_GATES.md`).
 
+On an `upstream` link (spec 63) `meta` may also carry, beside `meta.http`, the optional string member
+`traffic_class` (`private` or `shareable`, at most 32 bytes; it is added to the otherwise closed
+`meta.http` composition of `http`, `timeout_ms`, `via`, `queue` and `probe`; schema
+`link-request-meta.json`), the dialer's declared class, which the
+acceptor treats as untrusted and combines with the key's ceiling. It is sent only after the
+acceptor granted the `upstream` role; a receiver that predates it ignores it, which reads as
+undeclared, that is `private`. An `upstream` link also carries the `refused` frame for every
+admission refusal (spec 63); that is the second exception spec 63 names to this spec.
+
 ## Request bytes and limits
 
 The closed `schemas/v1/requests/link-http-request.json` describes the logical
