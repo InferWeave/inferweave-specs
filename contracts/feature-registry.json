@@ -1176,6 +1176,28 @@
       ]
     },
     {
+      "id": "IW-STORE-001",
+      "name": "InferWeave Storage Phase 1: content-addressed model store with signed iwg1 grants, native and S3 read-only front ends, network exposure and single-writer rules, digest index, quarantine and a multi-source stager (iw.store/1, Protocol 1.1.0)",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "gateway+node",
+      "canonical_tasks": [
+        "P5-T36"
+      ]
+    },
+    {
+      "id": "IW-STORE-002",
+      "name": "InferWeave Storage Phase 2: TLS, federated grant forwarding, per-range hashes, ingest leases, replication and repair, quota and eviction, write path, rendezvous",
+      "phase": 5,
+      "priority": "P2",
+      "status": "required_later",
+      "owner_component": "gateway+node",
+      "canonical_tasks": [
+        "P5-T37"
+      ]
+    },
+    {
       "id": "IW-RT-001",
       "name": "Runtime-family registry, typed capabilities, isolated adapter lifecycle and mixed-version negotiation",
       "phase": "B",

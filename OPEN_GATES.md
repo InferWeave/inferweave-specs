@@ -374,6 +374,63 @@ Unsatisfied, and recorded `owed` by `P5-T33` (Rust gateway) and `P5-T34` (Go gat
 No deployment may enable open enrollment, and no placement or routing behaviour may depend on
 `hardware`, until those tests are `proven` and an operator decision approves it.
 
+## InferWeave Storage (specs/65) — 2026-10-16
+
+**BLOCKED for production use.** `specs/65_INFERWEAVE_STORAGE.md` defines the `store` role, the
+`iw.store/1` capability, the signed `iwg1` grant, the native and read-only S3 front ends, the
+network exposure and single-writer controls of a store, the digest index and the multi-source
+stager. Its decision record (`decisions/2026-10-16-inferweave-storage.md`) is `Proposed`.
+Phase 1 is implemented in part in the reference implementation (branch `feat/inferweave-storage`,
+commit `c92fb073`, **not merged** at the time of writing); Phase 2 is not built.
+
+Unsatisfied, and recorded `owed` by `P5-T36` (feature `IW-STORE-001`, Phase 1) and `P5-T37`
+(feature `IW-STORE-002`, Phase 2):
+
+- the reference implementation carries unit, loopback HTTP, TLS-gateway, S3 client interoperability
+  and stager tests; no independent review has run, and no blob has moved between two real clusters
+  through a store. The farm staging figure (about 20 minutes for 30 GiB) is the motivating
+  observation and is not a measurement of this system;
+- **TLS (H1, O2, O14):** no store listener serves TLS; a non-private bind is plain HTTP, so a grant
+  or an S3 signed request is visible to the network path. Until it exists no gated-scope blob may be
+  served beyond a private network or a tunnel. The store only warns on a public bind;
+- **per-listener blob scope (H6, O3):** a store has no scope tag per blob, so a publicly bound
+  store does not refuse gated blobs; the operator must keep them out of its directory. Which models
+  are gated is undecided;
+- **grant forwarding across federation (O4):** a parent gateway cannot obtain a grant for a child's
+  store on a node's behalf; it names the remote holder and the node asks that gateway, and the
+  store lists that gateway's key as an operator extra. Transitive (grandchild) reporting and the
+  trust anchor across federated gateways are not built;
+- **per-range hashes (O7):** a corrupt assembly is attributed to a source only by the single-source
+  retry; Phase 1 omits them;
+- **presenter binding (O5):** a grant is a bearer token within its `node_id`; replay for up to 300
+  seconds is accepted;
+- **whole-blob grants (O11), the `max_request_bytes` cap (O12), the S3 credential model (O13), the
+  ETag as SHA-256 (O16) and the S3 request cap (O17)** are decisions the specification states and
+  no operator has approved;
+- **abuse controls (H2, H3, H4, H5, H7):** lockout is per exact IP (an IPv6 `/64` can cycle
+  addresses); the allow-list is read at start only; the request ceiling is a fixed window; there is
+  no PROXY protocol option; a native client with one valid grant can rotate `X-IW-Node` values to
+  dodge the identity lock and no address-wide backstop counter exists;
+- **quarantine corroboration (O8):** the flag exists; its default is 1 and the right production
+  value is unmeasured. A single node's report can quarantine a good store at the default;
+- **first store location (O1):** no site operator has approved where the first store runs (a login
+  node may breach cluster policy); no store is deployed anywhere;
+- **Phase 2 is not built:** ingest leases (6.6), replication, repair, quota and eviction (10.1), the
+  write path of the S3 front end (5A.8), the rendezvous with no inbound port (5B.10) and the
+  epoch and no-replace publication (5C.6); failure modes F1 to F6, F10 to F14, F18 and F21 are
+  `owed` with no test;
+- the Rust client through `artifact_cache.rs` is not built; only `stage.py` stages from a store;
+  hedging beyond throughput shifting is not built;
+- integration with `specs/27` (the cache tiers) and `specs/64` (artifact sources) is undecided
+  (O18), and `specs/40`, `specs/47` and the topology schemas of this repository are not yet amended
+  for the `store` field and the `store` role;
+- no conformance vectors exist in this repository for the `iwg1` transcript; the known answers live
+  only in the reference implementation's tests.
+
+No store may be deployed, no listener may be exposed beyond loopback or a private network, and no
+gated or private model may be placed on a store, until those tests are `proven` against a running
+fleet, TLS (or a tunnel) is approved for any non-private path, and an operator decision approves it.
+
 ## Dynamic nodes and gateway-driven provisioning (specs/64) — 2026-10-15
 
 **BLOCKED for production use.** `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` defines the

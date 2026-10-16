@@ -99,6 +99,8 @@ Features: **92**
 | `IW-GPUMEM-001` GPU memory accounting, reservations, pressure, decision records, OOM postmortem and placement simulation on the capability-gated iw.gpu-memory family (Protocol 1.1.0) | P1 | 5 | control-plane+gateway+node+consumer | `P5-T30`, `P5-T31`, `P5-T32` |
 | `IW-NODEHW-001` Hardware-only node registration, the optional versioned hardware report, the always-present assignments array and tokenless proof enrollment as one wire contract for the Rust and Go gateways (Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T33`, `P5-T34` |
 | `IW-DYNNODE-001` Dynamic nodes: gateway-driven provisioning over the register and heartbeat responses (`iw.dynamic-node/1`), measured-profile selection, one node per engine, drafted profiles from measurements (Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T35` |
+| `IW-STORE-001` InferWeave Storage Phase 1: content-addressed model store, signed iwg1 grants, native and S3 read-only front ends, digest index, quarantine and multi-source stager (`iw.store/1`, Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T36` |
+| `IW-STORE-002` InferWeave Storage Phase 2: TLS, federated grant forwarding, per-range hashes, ingest leases, replication, write path, rendezvous | P2 | 5 | gateway+node | `P5-T37` |
 | `IW-RT-001` Runtime families, typed capabilities, isolated adapters and feature negotiation | P1 | B | control-plane | `B-T01` |
 | `IW-RT-002` Native `/inferweave/v1` endpoints, standalone schema parity and exact-incarnation bounded request plus HTTP response-proof negotiation | P1 | B | control-plane | `B-T02` |
 | `IW-RT-003` Transactional lifecycle, single-flight loads, reservations, caches and rollback | P1 | B | control-plane | `B-T03` |

@@ -158,6 +158,8 @@ Total tasks: **168**
 | `P5-T33` | 5 | C80 | P5-T24, P5-T25 | Node join: hardware-only registration, assignments and tokenless enrollment in the Rust gateway |
 | `P5-T34` | 5 | C80 | P5-T24, P5-T25 | Node join: hardware-only registration, assignments and tokenless enrollment in the Go gateway |
 | `P5-T35` | 5 | C85 | P5-T33 | Dynamic nodes: capability-gated assignments, facts, status and gateway provisioning |
+| `P5-T36` | 5 | C85 | P5-T33 | InferWeave Storage Phase 1: signed grants, store daemon, S3 front end, digest index and multi-source stager |
+| `P5-T37` | 5 | C85 | P5-T36 | InferWeave Storage Phase 2: ingest leases, replication, TLS, federated grants and per-range hashes |
 | `B-T01` | B | C75 | — | Runtime families and typed capabilities |
 | `B-T02` | B | C75 | B-T01 | Native `/inferweave/v1` control-plane and inference endpoints |
 | `B-T03` | B | C75 | B-T01 | Transactional runtime hot-swap lifecycle |
