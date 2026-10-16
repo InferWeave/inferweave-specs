@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,257,058 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,258,049 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `f492d44c8394` — ~18,234t
+- `OPEN_GATES.md` — `c80d8f60cf63` — ~18,309t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -45,7 +45,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `agents/spec-author.md` — `31ca2354413f` — ~113t
 - `agents/spec-reviewer.md` — `b428d8e915af` — ~134t
 - `bundle-manifest.json` — `d70a5b0d6742` — ~553t
-- `conformance/README.md` — `d23e4852c530` — ~1,108t
+- `conformance/README.md` — `3c7258961bea` — ~1,204t
 - `conformance/alias-edge-delegation-vectors.json` — `6a38e2d28078` — ~4,446t
 - `conformance/alias-execution-vectors.json` — `0c44f8f36712` — ~16,485t
 - `conformance/alias-inference-transport-vectors.json` — `f485aaed3bc9` — ~8,317t
@@ -370,13 +370,19 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/link-upstream-hello-ack-unknown-member.json` — `9476281576b3` — ~99t
 - `fixtures/invalid/link-upstream-hello-ack-uppercase-binding-id.json` — `a5d803282372` — ~95t
 - `fixtures/invalid/link-upstream-hello-duplicate-feature.json` — `9d5fc1205d52` — ~113t
+- `fixtures/invalid/link-upstream-hello-duplicated-upstream-role.json` — `0bb497c3ff7f` — ~118t
 - `fixtures/invalid/link-upstream-hello-empty-credential.json` — `3c698df21a44` — ~107t
+- `fixtures/invalid/link-upstream-hello-empty-role.json` — `5be149efb4ad` — ~112t
 - `fixtures/invalid/link-upstream-hello-empty-roles.json` — `621aa4342646` — ~109t
 - `fixtures/invalid/link-upstream-hello-extra-feature.json` — `e39dabb11341` — ~122t
 - `fixtures/invalid/link-upstream-hello-missing-channel-binding.json` — `109b7dfed8be` — ~91t
 - `fixtures/invalid/link-upstream-hello-missing-credential-type.json` — `9201ed7d2e1d` — ~106t
+- `fixtures/invalid/link-upstream-hello-missing-role.json` — `3bd2ee9ffd44` — ~108t
 - `fixtures/invalid/link-upstream-hello-missing-upstream-feature.json` — `7093615c6e1f` — ~115t
+- `fixtures/invalid/link-upstream-hello-node-id-with-bom.json` — `e9cada8a11c0` — ~112t
 - `fixtures/invalid/link-upstream-hello-node-id-with-comma.json` — `3d7d727448ed` — ~112t
+- `fixtures/invalid/link-upstream-hello-node-id-with-line-separator.json` — `ed94e8a8bfd6` — ~112t
+- `fixtures/invalid/link-upstream-hello-node-id-with-nbsp.json` — `e1117f0a3783` — ~112t
 - `fixtures/invalid/link-upstream-hello-node-id-with-space.json` — `9b62f3a3c37e` — ~111t
 - `fixtures/invalid/link-upstream-hello-oversize-credential.json` — `a2ddf35088ed` — ~1,132t
 - `fixtures/invalid/link-upstream-hello-oversize-node-id.json` — `e72ce95ae014` — ~142t
@@ -390,6 +396,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/link-upstream-hello-trailing-newline-incarnation-id.json` — `b151a577a632` — ~114t
 - `fixtures/invalid/link-upstream-hello-unknown-member.json` — `0e5089b27ab6` — ~119t
 - `fixtures/invalid/link-upstream-hello-uppercase-channel-binding.json` — `2e3ed90a8955` — ~114t
+- `fixtures/invalid/link-upstream-hello-upstream-and-serve-roles.json` — `ede25864b3bf` — ~117t
 - `fixtures/invalid/link-upstream-hello-wrong-link-version.json` — `9eaddf7cc66e` — ~114t
 - `fixtures/invalid/link-upstream-hello-wrong-role.json` — `a29c3e967c33` — ~113t
 - `fixtures/invalid/link-upstream-refused-empty-request-id.json` — `4450845b415b` — ~18t
@@ -702,7 +709,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/requests/link-upstream-catalog-request.json` — `05116a1c8d57` — ~140t
 - `schemas/v1/requests/link-upstream-catalog.json` — `8c5262855464` — ~441t
 - `schemas/v1/requests/link-upstream-hello-ack.json` — `b271b4c5a4d2` — ~531t
-- `schemas/v1/requests/link-upstream-hello.json` — `833887f32dee` — ~657t
+- `schemas/v1/requests/link-upstream-hello.json` — `9bf100f044ec` — ~686t
 - `schemas/v1/requests/link-upstream-refused.json` — `4c385b6228d0` — ~362t
 - `schemas/v1/requests/node-assignment.json` — `452881c1d41a` — ~3,472t
 - `schemas/v1/requests/node-dynamic-facts.json` — `b1f37d22e54c` — ~590t

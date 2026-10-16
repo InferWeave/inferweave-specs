@@ -896,10 +896,13 @@ Nothing here opens a production gate; no catalog row is `verified`.
   schema's vocabulary. `validate_catalog` now also bounds `max_context_tokens` at 2^53 - 1.
 * **Receiver leniency, recorded rather than fixed (the schema states what a conformant sender produces):** the Rust
   decoder ignores an unknown member of a Hello, an acknowledgement, a catalog, a catalog request and a `refused`
-  frame; accepts `link_roles: ["serve","upstream"]` (and grants only `upstream`); does not itself reject an empty or
-  oversize `credential` (the key store refuses it, no acknowledgement); reads an unknown `refused` code as
-  irreversible; and delivers a `refused` frame with an empty request id to no request. A dialer's own `upstream`
-  codes `upstream_unavailable` and `upstream_policy` are accepted by it but are not in the twelve-code vocabulary.
+  frame; does not itself reject an empty or oversize `credential` (the key store refuses it, no acknowledgement);
+  reads an unknown `refused` code as irreversible; and delivers a `refused` frame with an empty request id to no
+  request. A dialer's own `upstream_unavailable` and `upstream_policy` codes are accepted by it but are not in the
+  twelve-code vocabulary. **Corrected after review:** the real acceptor now refuses (no acknowledgement) an `api_key`
+  Hello whose `role` is not `upstream` and whose `link_roles` is not exactly `["upstream"]` (an earlier draft of the
+  Rust tests claimed this while the acceptor ignored `role`); its catalog drops an entry the dialer's
+  `validate_catalog` would reject; the dialer-id alphabet names U+FEFF.
 * **UNSATISFIED / owed:** the schemas are not production evidence, and every bound in them (256 entries, 2^53 - 1
   context, 64-character label, 256-character request id) is a placeholder; the channel-binding digest construction is
   not specified here (only its encoding), so no known-answer vector exists; the `role: "upstream"` Hello member and the

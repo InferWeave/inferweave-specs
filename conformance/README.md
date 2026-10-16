@@ -62,3 +62,8 @@ the dialer's acknowledgement pairing and the reversible refusals). Rules a schem
 lists a model id twice) live in `link_upstream.py`. `runner.py` replays the vectors and the fixtures;
 `validate_specs.py --self-test` runs the smoke test. Production proof remains owed; no Rust or Go behaviour is
 claimed by these files.
+
+Portability of the `link-upstream-*` patterns: each ends `(?![\s\S])`, which means "end of input". It is used instead
+of `$` because ECMA-262 and Python `$` also match before a trailing newline. An engine whose regular expressions have
+no look-ahead (RE2, Rust `regex`) must read it as `\z`. `node_id` also names U+FEFF explicitly: ECMA-262 `\s` contains
+it, Python `re` does not.
