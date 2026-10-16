@@ -2,7 +2,7 @@
   "kind": "serve",
   "version": 1,
   "id": "dyn-tmws1s-000001-nodebeast",
-  "deployment": "dep_1d126f9f1bcaf744be28305d405630b52fccedda919efbd4de3705117f706d57",
+  "deployment": "dep_b5bbbf7b9f3ab5955ce6410e89b9847b72a5e5d83de6ff8244b8dfebd96af6d5",
   "model": "qwen3.8-27b-modality-vision-quant-q8_k_xl",
   "gpuIds": [
     "iw-gpu-2b7e1c4a9d3f5e60718293a4b5c6d7e8",

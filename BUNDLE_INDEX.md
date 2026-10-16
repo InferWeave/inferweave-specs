@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,107,165 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,121,340 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -54,7 +54,9 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/alias_inference_transport.py` — `27381277284a` — ~866t
 - `conformance/compatibility.yaml` — `bc14705e6e9e` — ~726t
 - `conformance/deployment-key-vectors.json` — `f817862b8b8d` — ~1,149t
+- `conformance/dynamic-node-vectors.json` — `c9d715f4af75` — ~2,078t
 - `conformance/dynamic_aliases.py` — `2cc37c4b51d4` — ~1,898t
+- `conformance/dynamic_nodes.py` — `f07efb7c2530` — ~2,201t
 - `conformance/link-http-json-vectors.json` — `2f9f4590a259` — ~5,827t
 - `conformance/link_http_json.py` — `a7441e870ac2` — ~2,128t
 - `conformance/manifest.yaml` — `0c5a75320819` — ~646t
@@ -65,7 +67,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/owner-execution-permit-vectors.json` — `df73b72d7d7c` — ~7,772t
 - `conformance/owner_execution_permit.py` — `a40045c4d83b` — ~3,452t
 - `conformance/release-manifest.yaml` — `f1864185a739` — ~294t
-- `conformance/runner.py` — `5679af5f5541` — ~7,700t
+- `conformance/runner.py` — `ee1a37a56474` — ~8,022t
 - `conformance/runtime-family-vectors.json` — `e9182c76245d` — ~3,138t
 - `conformance/runtime-observation-vectors.json` — `199670cef5ac` — ~19,334t
 - `conformance/runtime_observations.py` — `d4b1c36d2a1f` — ~1,382t
@@ -309,9 +311,23 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/mission-event-unknown-field.json` — `2b67ba03022b` — ~243t
 - `fixtures/invalid/mission-event-unknown-progress-kind.json` — `b001309c8813` — ~239t
 - `fixtures/invalid/node-assignment-escaping-artifact.json` — `edf2d2aa8b9e` — ~652t
+- `fixtures/invalid/node-assignment-measure-artifact-sizes-overflow.json` — `a2c4b6457f61` — ~582t
+- `fixtures/invalid/node-assignment-measure-artifacts-collide-dir-and-file.json` — `4968c7f61431` — ~576t
+- `fixtures/invalid/node-assignment-measure-artifacts-collide-listed-twice.json` — `df61b3eb9ef6` — ~580t
+- `fixtures/invalid/node-assignment-measure-artifacts-collide-part-file.json` — `4fd28ad21ed3` — ~577t
+- `fixtures/invalid/node-assignment-measure-artifacts-collide-sha256-file.json` — `730933252be8` — ~583t
+- `fixtures/invalid/node-assignment-measure-concurrency-over-256.json` — `e4ff180092b6` — ~679t
+- `fixtures/invalid/node-assignment-measure-context-below-floor.json` — `d63e67738879` — ~678t
+- `fixtures/invalid/node-assignment-measure-max-tokens-one.json` — `599807c49249` — ~678t
+- `fixtures/invalid/node-assignment-serve-deployment-not-derived.json` — `8d541d3236b0` — ~732t
+- `fixtures/invalid/node-assignment-serve-deployment-stale-after-command-change.json` — `f7be84f782e1` — ~738t
+- `fixtures/invalid/node-assignment-serve-gpu-count-mismatch.json` — `dceb4b4f6aca` — ~720t
+- `fixtures/invalid/node-assignment-serve-max-context-above-supported.json` — `8fff28452376` — ~732t
+- `fixtures/invalid/node-assignment-serve-slots-over-u32.json` — `e88b151bd54c` — ~734t
 - `fixtures/invalid/node-assignment-stop-with-cargo.json` — `7fee5c4f4e74` — ~28t
 - `fixtures/invalid/node-assignment-typed-deployment.json` — `88e9e2f5fb0f` — ~718t
 - `fixtures/invalid/node-assignment-unknown-kind.json` — `901ed0e69456` — ~15t
+- `fixtures/invalid/node-dynamic-facts-blank-serial.json` — `a7464a8a557c` — ~133t
 - `fixtures/invalid/node-dynamic-facts-no-cards.json` — `abdf85987f21` — ~70t
 - `fixtures/invalid/node-dynamic-facts-wrong-version.json` — `bb8002b3edbe` — ~136t
 - `fixtures/invalid/node-hardware-missing-version.json` — `f0094fe08aff` — ~210t
@@ -321,6 +337,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/node-missing-id.json` — `6df7ff2a4a7d` — ~13t
 - `fixtures/invalid/node-provisioning-status-failed-without-reason.json` — `61f1557527d2` — ~101t
 - `fixtures/invalid/node-provisioning-status-message-too-long.json` — `748b232f2602` — ~185t
+- `fixtures/invalid/node-provisioning-status-unknown-reason.json` — `24e47b18fecf` — ~79t
 - `fixtures/invalid/node-register-gateway-missing-deployment.json` — `4ca4d194d2ff` — ~59t
 - `fixtures/invalid/node-register-mixed-hardware-only.json` — `d3706dd29296` — ~33t
 - `fixtures/invalid/node-register-native-capability-map.json` — `17f7c6deb67a` — ~139t
@@ -428,19 +445,20 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/mission-event-progress.json` — `7af7f368d514` — ~239t
 - `fixtures/valid/model-variant.json` — `913c5690bbbe` — ~33t
 - `fixtures/valid/model.json` — `73854ced3bff` — ~14t
-- `fixtures/valid/node-assignment-measure.json` — `59f09c281b59` — ~678t
+- `fixtures/valid/node-assignment-measure.json` — `ff9170aed043` — ~678t
 - `fixtures/valid/node-assignment-stop.json` — `3f9b804c8ded` — ~19t
-- `fixtures/valid/node-assignment.json` — `e46b9145e88e` — ~732t
+- `fixtures/valid/node-assignment.json` — `9943e69703ee` — ~732t
 - `fixtures/valid/node-dynamic-facts.json` — `01d381391573` — ~136t
 - `fixtures/valid/node-hardware-report.json` — `11e6cfa1e2d9` — ~214t
 - `fixtures/valid/node-hardware.json` — `3e127be088c8` — ~245t
-- `fixtures/valid/node-provisioning-status.json` — `bac61a7f4921` — ~96t
+- `fixtures/valid/node-provisioning-status-runtime-unavailable.json` — `ea7e7323229e` — ~94t
+- `fixtures/valid/node-provisioning-status.json` — `a3917ddf218f` — ~96t
 - `fixtures/valid/node-register-dynamic.json` — `bf3b5739ebe7` — ~241t
 - `fixtures/valid/node-register-gateway-empty.json` — `f2d139705070` — ~67t
 - `fixtures/valid/node-register-legacy.json` — `e7860cdb79fa` — ~31t
 - `fixtures/valid/node-register-native-response.json` — `b3c55ed2e76a` — ~147t
 - `fixtures/valid/node-register-native.json` — `2ac2fa6533bd` — ~139t
-- `fixtures/valid/node-register-response-dynamic.json` — `ed73b1b05a09` — ~883t
+- `fixtures/valid/node-register-response-dynamic.json` — `2c97365626f1` — ~883t
 - `fixtures/valid/node-register-response-legacy.json` — `900d6239ef6d` — ~36t
 - `fixtures/valid/node-register-response-native-response.json` — `7df0e3d8e29e` — ~51t
 - `fixtures/valid/node-register-response-native.json` — `d7f962ef1e95` — ~42t
@@ -563,11 +581,11 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/requests/link-http-token.json` — `dcccaa44129e` — ~351t
 - `schemas/v1/requests/link-request-meta.json` — `0883479bd4c0` — ~589t
 - `schemas/v1/requests/link-response-meta.json` — `48b239e0dcaa` — ~565t
-- `schemas/v1/requests/node-assignment.json` — `2d6c89233de7` — ~3,004t
-- `schemas/v1/requests/node-dynamic-facts.json` — `65f43c4e0a65` — ~516t
+- `schemas/v1/requests/node-assignment.json` — `452881c1d41a` — ~3,472t
+- `schemas/v1/requests/node-dynamic-facts.json` — `b1f37d22e54c` — ~590t
 - `schemas/v1/requests/node-hardware-report.json` — `3b00c4fae6d6` — ~577t
 - `schemas/v1/requests/node-hardware.json` — `9d1413d86adb` — ~255t
-- `schemas/v1/requests/node-provisioning-status.json` — `760fad665561` — ~896t
+- `schemas/v1/requests/node-provisioning-status.json` — `a482566061cb` — ~1,033t
 - `schemas/v1/requests/node-register-response.json` — `bdd49cd732e0` — ~311t
 - `schemas/v1/requests/node-register.json` — `448dc5f19daa` — ~905t
 - `schemas/v1/requests/prediction.json` — `1017ff013d83` — ~124t

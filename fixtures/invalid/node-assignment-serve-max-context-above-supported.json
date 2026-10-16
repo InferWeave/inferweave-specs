@@ -1,0 +1,109 @@
+{
+  "kind": "serve",
+  "version": 1,
+  "id": "dyn-tmws1s-000001-nodebeast",
+  "deployment": "dep_fed8e99ebe80c454c19ee62d4322dbef0e09d7ac56e2ccc243c9d042e6c884f9",
+  "model": "qwen3.8-27b-modality-vision-quant-q8_k_xl",
+  "gpuIds": [
+    "iw-gpu-2b7e1c4a9d3f5e60718293a4b5c6d7e8",
+    "iw-gpu-9f1e2d3c4b5a69788796a5b4c3d2e1f0"
+  ],
+  "profile": {
+    "name": "r9700-27b-q8-vision-llamacpp-tp2",
+    "version": 1,
+    "match": {
+      "gpu": {
+        "vendor": "amd",
+        "model": [
+          "Radeon AI PRO R9700"
+        ],
+        "count": 2,
+        "vramMibMin": 30000
+      },
+      "host": {
+        "ramGibMin": 128,
+        "pcieGenMin": 4
+      },
+      "model": {
+        "family": "qwen3.8",
+        "name": "qwen3.8-27b"
+      },
+      "serves": {
+        "slots": 1,
+        "contextPerSlotMin": 229376
+      }
+    },
+    "launch": {
+      "label": "llamacpp-vulkan-q8-vision-tp2",
+      "engine": "llama.cpp",
+      "backend": "vulkan",
+      "image": "ghcr.io/ggml-org/llama.cpp",
+      "digest": "sha256:3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c",
+      "command": [
+        "--model",
+        "/models/Qwen3.8-27B-UD-Q8_K_XL.gguf",
+        "--mmproj",
+        "/models/mmproj-F16.gguf",
+        "--ctx-size",
+        "229376",
+        "--parallel",
+        "1",
+        "--flash-attn",
+        "on",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8080"
+      ],
+      "mounts": [
+        {
+          "host": "$ARTIFACTS",
+          "container": "/models",
+          "readOnly": true
+        }
+      ]
+    },
+    "quantization": "q8_k_xl",
+    "evidence": [
+      {
+        "run": "r9700-q8-vision-measure",
+        "date": "2026-10-15",
+        "context": 229376,
+        "concurrency": 1,
+        "decodeTps": 31.4,
+        "prefillTps": 412.0,
+        "ttftP50Ms": 557000.0
+      }
+    ],
+    "probe": {
+      "readyTimeoutSec": 1800,
+      "longPromptTokens": 100000
+    }
+  },
+  "artifacts": [
+    {
+      "path": "Qwen3.8-27B-UD-Q8_K_XL.gguf",
+      "bytes": 31457991680,
+      "sha256": "af36ecb6b5db1407953345b746c14ac93f0657dda413910b4348683a2d990377",
+      "sources": [
+        "file:///quobyte/metabolomicsgrp/it/llm/hf-cache/hub/models--unsloth--Qwen3.8-27B-GGUF/snapshots/4ca720788d1e01f1bff70c033e0d0028fd02e502/Qwen3.8-27B-UD-Q8_K_XL.gguf",
+        "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/4ca720788d1e01f1bff70c033e0d0028fd02e502/Qwen3.8-27B-UD-Q8_K_XL.gguf"
+      ]
+    },
+    {
+      "path": "mmproj-F16.gguf",
+      "bytes": 927607488,
+      "sha256": "cbb841a9ee0636b2ec172f5bb8df2ea8dfeb01e90fe7c6126581d662a0b4e43e",
+      "sources": [
+        "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/4ca720788d1e01f1bff70c033e0d0028fd02e502/mmproj-F16.gguf"
+      ]
+    }
+  ],
+  "advert": {
+    "slots": 1,
+    "contextSupported": 262144,
+    "maxContextTokens": 300000,
+    "kvBytesPerToken": 65536,
+    "tools": true
+  }
+}

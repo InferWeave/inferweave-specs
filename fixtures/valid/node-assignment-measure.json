@@ -2,7 +2,7 @@
   "kind": "measure",
   "version": 1,
   "id": "dyn-tmws1s-000002-nodebeast",
-  "deployment": "dep_56f048af225cabeb5103a2b119d474554cc3a6d90ec17d8468fa2fd2b9839f24",
+  "deployment": "dep_f000cb7eb34343b9194aa18f1913ccdcccf352729ebe947b39a6365725eaa4b4",
   "model": "qwen3.8-27b-modality-vision-quant-q8_k_xl",
   "gpuIds": [
     "iw-gpu-2b7e1c4a9d3f5e60718293a4b5c6d7e8",

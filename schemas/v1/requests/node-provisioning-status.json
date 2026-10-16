@@ -2,14 +2,14 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/requests/node-provisioning-status.json",
   "title": "Dynamic node provisioning status (the `provisioning` member of POST /v1/node/heartbeat)",
-  "description": "One entry per assignment a dynamic node has acted on (specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 6). Read leniently by the gateway after the beat is accepted; a malformed entry is dropped, never a refused beat. The member is an array of these, a top-level member of the heartbeat body, sent on every beat while the capability is in force (`[]` when idle); the 65536-byte bound is a size rule the schema cannot express.",
+  "description": "One entry per assignment a dynamic node has acted on (specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 6). Read leniently by the gateway after the beat is accepted; a malformed entry is dropped, never a refused beat. The member is an array of these, a top-level member of the heartbeat body, sent on every beat while the capability is in force (`[]` when idle); the 65536-byte bound (on the compact serialization of the whole array) and the gateway's reading of at most 64 entries are rules the schema cannot express.",
   "type": "object",
   "additionalProperties": true,
   "required": ["id", "model", "gpuIds", "phase", "updatedAt"],
   "properties": {
-    "id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9._-]+$"},
     "model": {"type": "string", "maxLength": 200},
-    "gpuIds": {"type": "array", "maxItems": 64, "items": {"type": "string", "minLength": 1, "maxLength": 256}},
+    "gpuIds": {"type": "array", "maxItems": 64, "items": {"type": "string", "minLength": 1, "maxLength": 256}, "description": "At most 64; a gateway keeps the first 64."},
     "phase": {
       "type": "string",
       "enum": ["pending", "fetching", "launching", "probing", "serving", "measuring", "measured", "failed", "stopped"]
@@ -25,7 +25,8 @@
     "readySec": {"type": "number", "minimum": 0},
     "reason": {
       "type": "string",
-      "enum": ["refused", "artifact_unavailable", "digest_mismatch", "disk_full", "launch_failed", "probe_failed", "engine_exited", "measure_failed"]
+      "description": "Closed. Permanent (the pair is not tried again while the gateway runs): launch_failed, probe_failed, measure_failed. Transient (tried again after 600 s): artifact_unavailable, digest_mismatch, disk_full, runtime_unavailable, engine_exited. refused is never a verdict on a profile; the gateway backs the placement off.",
+      "enum": ["refused", "artifact_unavailable", "digest_mismatch", "disk_full", "runtime_unavailable", "launch_failed", "probe_failed", "engine_exited", "measure_failed"]
     },
     "message": {"type": "string", "maxLength": 512, "description": "What failed, at most 512 characters (a node cuts a longer one); never the bytes that failed it."}
   },

@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/requests/node-assignment.json",
   "title": "Node assignment (one entry of `assignments` on the register and heartbeat responses)",
-  "description": "What a gateway wants on a dynamic node's cards (specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 5). Desired state, repeated on every answer until the node's status agrees; withdrawal is the explicit `stop` kind, never an absent entry. The schemas describe the entries a gateway of this version emits; a node validates entry by entry, ignores an entry whose kind or version it does not know, and does not act on a known entry that fails validation (it reports it refused when its id is a plain id). `serve` carries the whole runtime profile (docs/specs/runtime-profile-autoselect.md section 3 in the implementation repository), so the node needs no profile library of its own.",
+  "description": "What a gateway wants on a dynamic node's cards (specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 5). Desired state, repeated on every answer until the node's status agrees; withdrawal is the explicit `stop` kind, never an absent entry. The schemas describe the entries a gateway of this version emits; a node validates entry by entry, ignores an entry whose kind or version it does not know, and does not act on a known entry that fails validation (it reports it refused when its id is a plain id). A node also recomputes `deployment` from the payload (section 5 rule 6) and refuses an entry whose id differs. `serve` carries the whole runtime profile (docs/specs/runtime-profile-autoselect.md section 3 in the implementation repository), so the node needs no profile library of its own. Rules a JSON Schema cannot express are listed in section 5 and checked by conformance/dynamic_nodes.py: the derived `deployment`, `advert.maxContextTokens` at most `contextSupported`, `matrix.contexts` each at least 10 * (`maxTokens` + 16), artifact paths that do not collide on disk (`a` and `a/b`, `x` and `x.part`, `m.gguf` and `m.gguf.sha256`, a path twice) and sizes that add up within 2^64 - 1, and as many `gpuIds` as the profile's `match.gpu.count`.",
   "type": "object",
   "required": [
     "kind",
@@ -87,7 +87,8 @@
           "properties": {
             "slots": {
               "type": "integer",
-              "minimum": 1
+              "minimum": 1,
+              "maximum": 4294967295
             },
             "contextSupported": {
               "type": "integer",
@@ -107,7 +108,8 @@
             "structuredOutput": {
               "type": "boolean"
             }
-          }
+          },
+          "description": "The figures the engine advertises. Unknown members are ignored by a node (a newer gateway may add one); the known ones are validated."
         }
       },
       "required": [
@@ -160,7 +162,8 @@
               "items": {
                 "type": "integer",
                 "minimum": 1
-              }
+              },
+              "description": "Each depth at least 10 * (maxTokens + 16) (a rule the schema cannot express; conformance/dynamic_nodes.py checks it)."
             },
             "concurrency": {
               "type": "array",
@@ -168,13 +171,15 @@
               "maxItems": 8,
               "items": {
                 "type": "integer",
-                "minimum": 1
+                "minimum": 1,
+                "maximum": 256
               }
             },
             "maxTokens": {
               "type": "integer",
-              "minimum": 1,
-              "maximum": 4096
+              "minimum": 2,
+              "maximum": 4096,
+              "description": "At least 2: one output token is no decode rate."
             }
           }
         }
@@ -194,7 +199,7 @@
   ],
   "definitions": {
     "deployment": {
-      "description": "dep_ and the SHA-256 over the model id, profile name and version, image, digest, command and every artifact's path and digest (section 5 rule 6).",
+      "description": "dep_ and the lowercase hex SHA-256 of the byte string of section 5 rule 6: the model id, the profile name and version, the launch image, digest, command, environment, privileges, mounts, shm size, engine, backend and label, every artifact's path and digest, and for a serve the advert figures; every list count-prefixed. A node recomputes it and refuses an entry whose id differs.",
       "type": "string",
       "pattern": "^dep_[0-9a-f]{64}$"
     },
@@ -227,7 +232,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 1024,
-            "pattern": "^(?!/)(?!.*(^|/)\\.\\.?(/|$))(?!.*//).*$"
+            "pattern": "^(?!/)(?!.*(^|/)\\.\\.?(/|$))(?!.*//)(?!.*/$).*$"
           },
           "bytes": {
             "type": "integer",
@@ -251,7 +256,7 @@
       }
     },
     "profile": {
-      "description": "A RuntimeProfile document as the implementation repository's docs/specs/runtime-profiles/*.yaml defines it, in JSON. Only the members this contract depends on are constrained here.",
+      "description": "A RuntimeProfile document as the implementation repository's docs/specs/runtime-profiles/*.yaml defines it, in JSON. Only the members this contract depends on are constrained here. A node reads the profile strictly: a member the RuntimeProfile type does not know, anywhere in it, makes the entry unparseable and so refused.",
       "type": "object",
       "additionalProperties": true,
       "required": [
@@ -412,6 +417,22 @@
                   }
                 }
               }
+            },
+            "env": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Part of the deployment id, in ascending key order."
+            },
+            "privileges": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "shmSize": {
+              "type": "string"
             }
           }
         },

@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://inferweave.dev/schemas/v1/requests/node-dynamic-facts.json",
   "title": "Dynamic node facts (the `dynamic` member of POST /v1/node/register)",
-  "description": "What a dynamic node (inferweave join --model dynamic) says about itself on every registration (specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 4): its host as the runtime-profile selector reads it, every card by stable id and launch serial, and its artifact root. Acted on only while iw.dynamic-node/1 is in force for the registration. The 65536-byte bound is a size rule the schema cannot express.",
+  "description": "What a dynamic node (inferweave join --model dynamic) says about itself on every registration (specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 4): its host as the runtime-profile selector reads it, every card by stable id and launch serial, and its artifact root. Acted on only while iw.dynamic-node/1 is in force for the registration. The 65536-byte bound, measured on the compact serialization of the member as sent (unknown members included), is a size rule the schema cannot express; a gateway refuses a member over it, and one over a bound below, with 400 bad_request. Unknown members are ignored.",
   "type": "object",
   "additionalProperties": true,
   "required": ["version", "host", "gpus", "artifactRoot", "containerRuntime"],
@@ -14,7 +14,7 @@
       "required": ["gpuVendor", "gpuModel", "ramGib", "shmGib", "pcieGen"],
       "properties": {
         "gpuVendor": {"type": "string", "enum": ["amd", "nvidia"]},
-        "gpuModel": {"type": "string", "minLength": 1, "maxLength": 256},
+        "gpuModel": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "\\S"},
         "ramGib": {"type": "integer", "minimum": 0},
         "shmGib": {"type": "integer", "minimum": 0},
         "pcieGen": {"type": "integer", "minimum": 0, "maximum": 255}
@@ -29,15 +29,15 @@
         "additionalProperties": true,
         "required": ["gpuId", "serial", "vramMib"],
         "properties": {
-          "gpuId": {"type": "string", "minLength": 1, "maxLength": 256},
-          "serial": {"type": "string", "minLength": 1, "maxLength": 256},
+          "gpuId": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "\\S"},
+          "serial": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "\\S"},
           "vramMib": {"type": "integer", "minimum": 0},
           "busy": {"type": "boolean"}
         }
       }
     },
-    "artifactRoot": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "artifactRoot": {"type": "string", "minLength": 1, "maxLength": 4096, "pattern": "\\S"},
     "freeBytes": {"type": "integer", "minimum": 0},
-    "containerRuntime": {"type": "string", "minLength": 1, "maxLength": 64}
+    "containerRuntime": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "\\S"}
   }
 }

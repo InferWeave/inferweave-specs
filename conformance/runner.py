@@ -8,6 +8,9 @@ Validates conformance fixtures against the canonical JSON Schemas:
 - every pinned contract under contracts/gpu-memory/ must validate as a fleet snapshot
 - conformance/node-join-vectors.json (spec 47) must agree with the reference model in
   conformance/node_join.py, and its enrollment known answers must be reproducible from the seed
+- conformance/dynamic-node-vectors.json (spec 64 section 5 rule 6) must reproduce the deployment-id known answers, and every
+  valid or invalid node-assignment / node-register-response fixture is also held to the rules a schema cannot express
+  (conformance/dynamic_nodes.py: the derived deployment id, matrix floor, artifact collisions, size overflow, card count)
 - conformance/native-link-binding-vectors.json (specs 45/49) must reject registration/Link races
 - conformance/runtime-family-vectors.json (spec 53) is run per family; each family reports PASS/FAIL
 
@@ -32,6 +35,7 @@ import link_http_json  # noqa: E402
 import dynamic_aliases  # noqa: E402
 import alias_edge_delegation  # noqa: E402
 import runtime_observations  # noqa: E402
+import dynamic_nodes  # noqa: E402
 import alias_execution  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
@@ -118,6 +122,7 @@ MAP = {
     "node-assignment-measure": "requests/node-assignment.json",
     "node-assignment-stop": "requests/node-assignment.json",
     "node-provisioning-status": "requests/node-provisioning-status.json",
+    "node-provisioning-status-runtime-unavailable": "requests/node-provisioning-status.json",
     "node-hardware-report": "requests/node-hardware-report.json",
     "event": "events/event.json",
     "metric": "events/metric.json",
@@ -216,6 +221,10 @@ def validate_fixture(path, must_pass, schema_rel=None):
         semantic_errors.extend(runtime_observations.semantic_errors(fixture))
     if schema_rel == "events/runtime-observation-event.json" and not errors:
         semantic_errors.extend(runtime_observations.semantic_errors(fixture["report"]))
+    if schema_rel in ("requests/node-assignment.json", "requests/node-register-response.json") and not errors:
+        # Rules a schema cannot express: the derived dep_ id, the matrix floor, artifact
+        # collisions and size overflow, the card count (spec 64 section 5).
+        semantic_errors.extend(dynamic_nodes.semantic_errors(fixture, schema_rel))
     if schema_rel.startswith("aliases/") and not errors:
         semantic_errors.extend(dynamic_aliases.semantic_errors(fixture, Path(schema_rel).stem))
     ok = not errors and not semantic_errors
@@ -275,6 +284,16 @@ def check_deployment_key_vectors():
     if not ok:
         print("FAIL  deployment-key vectors disagree with canonical JCS/SHA-256 reference")
     return ok
+
+
+def check_dynamic_node_vectors():
+    """Recompute the deployment-id known answers of spec 64 section 5 rule 6."""
+    errors = dynamic_nodes.check_vectors(ROOT)
+    for error in errors:
+        print("FAIL  " + error)
+    if not errors:
+        print("PASS  dynamic-node deployment-id vectors (reproduced from the reference layout; node proof owed)")
+    return not errors
 
 
 def check_native_link_binding_vectors():
@@ -606,6 +625,7 @@ def main():
     failures += len(edge_errors)
     failures += 0 if check_node_join_vectors() else 1
     failures += 0 if check_deployment_key_vectors() else 1
+    failures += 0 if check_dynamic_node_vectors() else 1
     failures += 0 if check_native_link_binding_vectors() else 1
     failures += 0 if check_native_link_response_vectors() else 1
     failures += 0 if report_runtime_family_vectors(args.runtime_family_vectors) else 1
