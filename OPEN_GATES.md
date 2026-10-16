@@ -553,6 +553,8 @@ fences, actual encoded-byte report bounds before parsing, physical resource-grou
 multi-GPU-loss propagation and atomic admission revalidation. A-T08 owes mixed-version live
 rollout, latency/parity and failure/recovery evidence. Working Rust observation helpers and
 local fixture success cannot close these gates or promote probes into verified tools/privacy.
+A design for the verifier's evidence store and record is **proposed, needs owner acceptance; it decides and
+authorizes nothing**: `decisions/2026-10-16-proposed-qualification-verifier.md`.
 
 ## Alias execution identity and exclusive claims (spec57) — unsatisfied
 
@@ -967,7 +969,8 @@ spec 63 behaviour is default-off, and no catalog row is `verified`.
   `runtimeObservations.resync` diagnostic (5 minutes, doubling to one hour). Registration by an unknown or
   unproven node is a uniform 401, not a 400 that reveals which node ids hold credentials. **UNSATISFIED / owed:**
   no qualification verifier (the spec leaves the evidence store and record format undefined, so `qualification_id`
-  and `owner_policy_id` stay opaque and nothing becomes `verified`); only executor nodes send observations, so the
+  and `owner_policy_id` stay opaque and nothing becomes `verified`; a design is proposed in
+  `decisions/2026-10-16-proposed-qualification-verifier.md`, which needs owner acceptance and decides nothing); only executor nodes send observations, so the
   lab's `node join --model` nodes stay `UNKNOWN`; zero clock-skew tolerance (fails closed, as the spec requires);
   the gateway keeps observations in memory only; the owner remembers only 8 retired epochs; the one line that
   passes the producer into the join-loop re-registration decision has no running-loop test; same-epoch
@@ -1009,7 +1012,8 @@ owner's hosting wire is a separate flag, and no executor reaches `READY`.
   handle format and lifetime, how the owner's operator authenticates to receive handles, which route returns them, what
   an "authorized requester" is, and what a requester who is told the plan "as if no other tenant's model existed"
   may rely on when the owner would in fact have to evict (that requester is told `FITS` for a plan the owner can
-  honour only by unloading something); (3) the channel reaches port 443 only, so an owner must be fronted by a
+  honour only by unloading something; answers are proposed in
+  `decisions/2026-10-16-proposed-hosting-operator-audience.md`, needing owner acceptance); (3) the channel reaches port 443 only, so an owner must be fronted by a
   TLS terminator on 443 (the gateway's own TLS listener is a link port); no end-to-end run against a real owner
   over TLS exists; (4) the inbound side still parses with `serde_json::Value` (a duplicate key on a request or
   heartbeat is not refused); (5) the freshness of an `acquirable` answer is receipt time only, with no
@@ -1050,9 +1054,30 @@ production gate; spec 62 and spec 63 behaviour stays default-off and is deployed
   fill the cache, concurrent operator `hosting/ask` and `hosting/discover` calls are capped at 4 (429 beyond it), and
   inbound provisioning requests refuse duplicate JSON keys. **Still owed:** the alias `PROVISIONABLE` marking from a
   discovery answer; the operator-audience plan (the spec leaves the eviction handle format, lifetime and recipient
-  undefined); real profile, load and validation hooks (they fail closed, so nothing reaches `READY`); a run against a
+  undefined; proposed answers in `decisions/2026-10-16-proposed-hosting-operator-audience.md`); real profile, load and
+  validation hooks (they fail closed, so nothing reaches `READY`; the boundary with spec 50 is proposed in
+  `decisions/2026-10-16-proposed-hosting-hook-boundary.md`); a run against a
   real owner over TLS; a large weight download through the CDN redirect chain; the per-key hosting role; the Go
   console rendering; licence checks for local sources.
-* **Not done and not mine to decide:** the Go-acceptor and feature-ID decisions of the spec 63 decision record; the
-  spec 56 qualification verifier (the spec leaves the evidence store and record format undefined); joining farm and
+* **Not done and not mine to decide:** the Go-acceptor and feature-ID decisions of the spec 63 decision record
+  (recommendations proposed in `decisions/2026-10-16-proposed-link-upstream-open-decisions.md`); the
+  spec 56 qualification verifier (the spec leaves the evidence store and record format undefined; a design is proposed in
+  `decisions/2026-10-16-proposed-qualification-verifier.md`); joining farm and
   the other bender nodes to the lab gateway; rotating the lab API key that was pasted into a chat.
+
+### Update 2026-10-16 (proposed decision records for the owed design gaps): nothing is decided
+
+Four records under `decisions/` are **Proposed, need owner acceptance, and decide and authorize nothing**. They do
+not amend any spec, open any gate or change any item above from owed to anything else. Each is design only, cites
+the spec lines and the `InferWeave/inferweave@a54e0398` code it relies on, and lists the owner's open questions.
+
+* **Spec 56 qualification verifier** (the evidence store and record `qualification_id` should resolve to):
+  `decisions/2026-10-16-proposed-qualification-verifier.md`. Still owed: all of it. No row can become `verified`.
+* **Spec 62 operator-audience plan** (eviction handle, lifetime, recipient, route, "authorized requester", what
+  `FITS` may be relied on for): `decisions/2026-10-16-proposed-hosting-operator-audience.md`. Still owed: all of it,
+  and a source of runtime memory reports; `FITS_AFTER_EVICTION` stays unreachable.
+* **Spec 62 profile and load hook boundary with spec 50**: `decisions/2026-10-16-proposed-hosting-hook-boundary.md`.
+  Still owed: real hooks; the delivered hooks still fail closed.
+* **Spec 63 open decisions** (Go acceptor side, own feature ID, invariant 11):
+  `decisions/2026-10-16-proposed-link-upstream-open-decisions.md`. The three decisions of
+  `decisions/2026-10-15-link-upstream-role.md` remain open.
