@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,154,882 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,156,372 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -26,7 +26,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `.semgrepignore` — `81c5def09b50` — ~86t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `1f19999424e4` — ~4,391t
+- `CHANGELOG.md` — `149eb88d4cb1` — ~4,527t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
@@ -695,7 +695,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/53_RUNTIME_FAMILY_CONFORMANCE.md` — `d1c8172161f8` — ~923t
 - `specs/54_DYNAMIC_MODEL_ALIASES.md` — `a93f9646e0d4` — ~7,977t
 - `specs/55_ALIAS_EDGE_DELEGATION.md` — `38b0da721b74` — ~2,316t
-- `specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md` — `386f8e1ac659` — ~3,888t
+- `specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md` — `aac39acef794` — ~5,069t
 - `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` — `3659d1492b01` — ~10,487t
 - `specs/58_MODEL_INTELLIGENCE_UI_COHESION.md` — `3e42b409a63f` — ~3,385t
 - `specs/59_LINK_HTTP_JSON.md` — `c18801c541c2` — ~3,152t
@@ -896,7 +896,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_registry_traceable.py` — `12e6dab6b9ad` — ~665t
 - `tests/smoke/test_runtime_families.py` — `f297f5195d5e` — ~949t
 - `tests/smoke/test_runtime_lifecycle.py` — `ce9f6eaf0c02` — ~1,245t
-- `tests/smoke/test_runtime_observation_contract.py` — `96694bb0205b` — ~805t
+- `tests/smoke/test_runtime_observation_contract.py` — `075965e9e3ba` — ~978t
 - `tests/smoke/test_runtime_protocol_gap_repair.py` — `02d1a6dd7955` — ~1,692t
 - `tests/smoke/test_runtime_protocol_semantics.py` — `85923c2a6c09` — ~9,893t
 - `tests/smoke/test_systemone_wire.py` — `bf11221968d1` — ~748t

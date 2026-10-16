@@ -6,6 +6,12 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Spec 56 amended after the Rust producer and ingester (`IW-ALIAS-001`; proof still owed, see `OPEN_GATES.md`): the
+  report may ride the node heartbeat; duplicate JSON members are refused; additive, diagnostic-only heartbeat
+  answer member `runtimeObservations.resync` (an old peer ignores it) with a paced producer epoch rotation; the
+  producer rotates its epoch before the owner's fence budget; durable producer epoch and sequence ceiling;
+  UNLOADED tombstones; same-epoch re-registration keeps fences. Nothing opens a production gate.
+
 - Spec 63 (link `upstream` role, proposed and implemented in part, default off) amended after the Rust
   implementation (`IW-DP-002`; see `OPEN_GATES.md`): optional request-`meta` member `traffic_class` (spec 59,
   `link-request-meta.json`; an old receiver ignores it), the `refused` frame carried by the `upstream` role,
