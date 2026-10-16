@@ -41,6 +41,8 @@
       "items": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^iw\\.[a-z0-9-]+/(0|[1-9][0-9]*)$"}
     },
     "hardware": {"$ref": "node-hardware.json"},
+    "dynamic": {"$ref": "node-dynamic-facts.json"},
+    "systemone": {"type": "array", "maxItems": 256, "items": {"$ref": "node-systemone-advert.json"}},
     "runtimeObservations": {"$ref": "runtime-observation-report.json"}
   },
   "oneOf": [

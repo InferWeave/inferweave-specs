@@ -1,0 +1,30 @@
+{
+  "request_context": {
+    "allow_federation": true
+  },
+  "selection": {
+    "precision_table_version": 1,
+    "preferred": {
+      "latency": 1.0
+    },
+    "required": {
+      "features": {
+        "tools": {
+          "confidence": "verified",
+          "fidelity": [
+            "native"
+          ]
+        }
+      },
+      "input_modalities": [
+        "text"
+      ],
+      "min_context_tokens": 32768,
+      "min_precision_class": "high",
+      "runtime_families": [
+        "llm"
+      ]
+    },
+    "type": "MANAGED"
+  }
+}

@@ -1,0 +1,490 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/node-assignment.json",
+  "title": "Node assignment (one entry of `assignments` on the register and heartbeat responses)",
+  "description": "What a gateway wants on a dynamic node's cards (specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 5). Desired state, repeated on every answer until the node's status agrees; withdrawal is the explicit `stop` kind, never an absent entry. The schemas describe the entries a gateway of this version emits; a node validates entry by entry, ignores an entry whose kind or version it does not know, and does not act on a known entry that fails validation (it reports it refused when its id is a plain id). A node also recomputes `deployment` from the payload (section 5 rule 6) and refuses an entry whose id differs. `serve` carries the whole runtime profile (docs/specs/runtime-profile-autoselect.md section 3 in the implementation repository), so the node needs no profile library of its own. Rules a JSON Schema cannot express are listed in section 5 and checked by conformance/dynamic_nodes.py: the derived `deployment`, `advert.maxContextTokens` at most `contextSupported`, `matrix.contexts` each at least 10 * (`maxTokens` + 16), artifact paths that do not collide on disk (`a` and `a/b`, `x` and `x.part`, `m.gguf` and `m.gguf.sha256`, a path twice) and sizes that add up within 2^64 - 1, and as many `gpuIds` as the profile's `match.gpu.count`.",
+  "type": "object",
+  "required": [
+    "kind",
+    "version",
+    "id"
+  ],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "serve",
+        "measure",
+        "stop"
+      ]
+    },
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9._-]+$"
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "kind": {
+          "const": "stop"
+        },
+        "version": {
+          "type": "integer",
+          "const": 1
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-z0-9._-]+$"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "version",
+        "id"
+      ]
+    },
+    {
+      "properties": {
+        "kind": {
+          "const": "serve"
+        },
+        "deployment": {
+          "$ref": "#/definitions/deployment"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "gpuIds": {
+          "$ref": "#/definitions/gpuIds"
+        },
+        "profile": {
+          "$ref": "#/definitions/profile"
+        },
+        "artifacts": {
+          "$ref": "#/definitions/artifacts"
+        },
+        "advert": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "slots",
+            "contextSupported",
+            "maxContextTokens",
+            "kvBytesPerToken"
+          ],
+          "properties": {
+            "slots": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4294967295
+            },
+            "contextSupported": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "maxContextTokens": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "kvBytesPerToken": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "tools": {
+              "type": "boolean"
+            },
+            "structuredOutput": {
+              "type": "boolean"
+            }
+          },
+          "description": "The figures the engine advertises. Unknown members are ignored by a node (a newer gateway may add one); the known ones are validated."
+        }
+      },
+      "required": [
+        "kind",
+        "version",
+        "id",
+        "deployment",
+        "model",
+        "gpuIds",
+        "profile",
+        "artifacts",
+        "advert"
+      ]
+    },
+    {
+      "properties": {
+        "kind": {
+          "const": "measure"
+        },
+        "deployment": {
+          "$ref": "#/definitions/deployment"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "gpuIds": {
+          "$ref": "#/definitions/gpuIds"
+        },
+        "candidate": {
+          "$ref": "#/definitions/profile"
+        },
+        "artifacts": {
+          "$ref": "#/definitions/artifacts"
+        },
+        "matrix": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contexts",
+            "concurrency",
+            "maxTokens"
+          ],
+          "properties": {
+            "contexts": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 8,
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "description": "Each depth at least 10 * (maxTokens + 16) (a rule the schema cannot express; conformance/dynamic_nodes.py checks it)."
+            },
+            "concurrency": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 8,
+              "items": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 256
+              }
+            },
+            "maxTokens": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 4096,
+              "description": "At least 2: one output token is no decode rate."
+            }
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "version",
+        "id",
+        "deployment",
+        "model",
+        "gpuIds",
+        "candidate",
+        "artifacts",
+        "matrix"
+      ]
+    }
+  ],
+  "definitions": {
+    "deployment": {
+      "description": "dep_ and the lowercase hex SHA-256 of the byte string of section 5 rule 6: the model id, the profile name and version, the launch image, digest, command, environment, privileges, mounts, shm size, engine, backend and label, every artifact's path and digest, and for a serve the advert figures; every list count-prefixed. A node recomputes it and refuses an entry whose id differs.",
+      "type": "string",
+      "pattern": "^dep_[0-9a-f]{64}$"
+    },
+    "gpuIds": {
+      "description": "Cards of the receiving node only; as many as the profile's match.gpu.count.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "bytes",
+          "sha256",
+          "sources"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "pattern": "^(?!/)(?!.*(^|/)\\.\\.?(/|$))(?!.*//)(?!.*/$).*$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "pattern": "^(file|https?)://",
+              "maxLength": 4096
+            }
+          }
+        }
+      }
+    },
+    "profile": {
+      "description": "A RuntimeProfile document as the implementation repository's docs/specs/runtime-profiles/*.yaml defines it, in JSON. Only the members this contract depends on are constrained here. A node reads the profile strictly: a member the RuntimeProfile type does not know, anywhere in it, makes the entry unparseable and so refused.",
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "name",
+        "version",
+        "match",
+        "launch"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "match": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "gpu",
+            "model",
+            "serves"
+          ],
+          "properties": {
+            "gpu": {
+              "type": "object",
+              "additionalProperties": true,
+              "required": [
+                "vendor",
+                "model",
+                "count",
+                "vramMibMin"
+              ],
+              "properties": {
+                "vendor": {
+                  "type": "string",
+                  "enum": [
+                    "amd",
+                    "nvidia"
+                  ]
+                },
+                "model": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "vramMibMin": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "model": {
+              "type": "object",
+              "required": [
+                "family",
+                "name"
+              ],
+              "properties": {
+                "family": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "serves": {
+              "type": "object",
+              "required": [
+                "slots",
+                "contextPerSlotMin"
+              ],
+              "properties": {
+                "slots": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "contextPerSlotMin": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        },
+        "launch": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "label",
+            "engine",
+            "backend",
+            "image",
+            "digest"
+          ],
+          "properties": {
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "engine": {
+              "type": "string",
+              "enum": [
+                "vllm",
+                "llama.cpp",
+                "strata"
+              ]
+            },
+            "backend": {
+              "type": "string",
+              "minLength": 1
+            },
+            "image": {
+              "type": "string",
+              "minLength": 1
+            },
+            "digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            },
+            "command": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "mounts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "host",
+                  "container"
+                ],
+                "properties": {
+                  "host": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "container": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "readOnly": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "env": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Part of the deployment id, in ascending key order."
+            },
+            "privileges": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "shmSize": {
+              "type": "string"
+            }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/evidence"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "description": "One measured cell, as a runtime profile's evidence row: decodeTps is the aggregate decode rate across the cell's concurrent streams at the named context depth (specs/39, invariant 42).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run",
+        "date",
+        "context",
+        "concurrency",
+        "decodeTps"
+      ],
+      "properties": {
+        "run": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "date": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "context": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "concurrency": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "decodeTps": {
+          "type": "number",
+          "minimum": 0
+        },
+        "prefillTps": {
+          "type": "number",
+          "minimum": 0
+        },
+        "ttftP50Ms": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

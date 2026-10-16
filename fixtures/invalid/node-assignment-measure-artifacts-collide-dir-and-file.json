@@ -1,0 +1,103 @@
+{
+  "kind": "measure",
+  "version": 1,
+  "id": "dyn-tmws1s-000002-nodebeast",
+  "deployment": "dep_a33d90f14be1ae9d44464c09695135ccd522c612dfb7d510f4a19f646fe62d10",
+  "model": "qwen3.8-27b-modality-vision-quant-q8_k_xl",
+  "gpuIds": [
+    "iw-gpu-2b7e1c4a9d3f5e60718293a4b5c6d7e8",
+    "iw-gpu-9f1e2d3c4b5a69788796a5b4c3d2e1f0"
+  ],
+  "candidate": {
+    "name": "r9700-27b-q8-vision-llamacpp-tp2-candidate",
+    "version": 1,
+    "match": {
+      "gpu": {
+        "vendor": "amd",
+        "model": [
+          "Radeon AI PRO R9700"
+        ],
+        "count": 2,
+        "vramMibMin": 30000
+      },
+      "host": {
+        "ramGibMin": 128,
+        "pcieGenMin": 4
+      },
+      "model": {
+        "family": "qwen3.8",
+        "name": "qwen3.8-27b"
+      },
+      "serves": {
+        "slots": 1,
+        "contextPerSlotMin": 229376
+      }
+    },
+    "launch": {
+      "label": "llamacpp-vulkan-q8-vision-tp2",
+      "engine": "llama.cpp",
+      "backend": "vulkan",
+      "image": "ghcr.io/ggml-org/llama.cpp",
+      "digest": "sha256:3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c",
+      "command": [
+        "--model",
+        "/models/Qwen3.8-27B-UD-Q8_K_XL.gguf",
+        "--mmproj",
+        "/models/mmproj-F16.gguf",
+        "--ctx-size",
+        "229376",
+        "--parallel",
+        "1",
+        "--flash-attn",
+        "on",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8080"
+      ],
+      "mounts": [
+        {
+          "host": "$ARTIFACTS",
+          "container": "/models",
+          "readOnly": true
+        }
+      ]
+    },
+    "quantization": "q8_k_xl",
+    "evidence": [],
+    "probe": {
+      "readyTimeoutSec": 1800,
+      "longPromptTokens": 100000
+    }
+  },
+  "artifacts": [
+    {
+      "path": "a",
+      "bytes": 1000,
+      "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sources": [
+        "https://example.invalid/a"
+      ]
+    },
+    {
+      "path": "a/b",
+      "bytes": 1000,
+      "sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "sources": [
+        "https://example.invalid/a/b"
+      ]
+    }
+  ],
+  "matrix": {
+    "contexts": [
+      122880,
+      176128,
+      229376
+    ],
+    "concurrency": [
+      1,
+      2
+    ],
+    "maxTokens": 128
+  }
+}

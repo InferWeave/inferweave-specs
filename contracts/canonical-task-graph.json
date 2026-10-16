@@ -3953,6 +3953,109 @@
       "proof_owed_by": "P5-T34"
     },
     {
+      "id": "P5-T35",
+      "phase": 5,
+      "title": "Dynamic nodes: capability-gated assignments, facts, status and gateway provisioning",
+      "depends_on": [
+        "P5-T33"
+      ],
+      "specs": [
+        "64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING",
+        "47_NODE_JOIN_AND_HARDWARE_REGISTRATION",
+        "25_SLURM_EPHEMERAL_PROVIDER_NODES",
+        "39_INFERENCE_RUNTIME_TUNING",
+        "43_GPU_PLACEMENT_HOT_SWAP"
+      ],
+      "features": [
+        "IW-DYNNODE-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Implement the specs/64 contract in the Rust gateway and node (InferWeave/inferweave): a node started with --model dynamic registers hardware-only with its dynamic facts and offers iw.dynamic-node/1; a gateway with desired models answers its register and every heartbeat with serve, measure and stop assignments chosen from measured runtime profiles with every card of an engine on one node; the node fetches pinned artifacts, launches the assigned profile, probes it, re-registers as a routable node and reports provisioning status; a measurement becomes a draft profile the next plan may select.",
+      "required_tests": [
+        "a dynamic node's register is hardware-only, carries the dynamic facts and the capability offer, and files no telemetry while idle",
+        "assignments on the register and heartbeat responses are acted on only while iw.dynamic-node/1 is in force, and provisioning rides the beat only then",
+        "malformed dynamic facts are refused with 400 bad_request before anything is minted",
+        "a serve assignment fetches artifacts with size and SHA-256 verified and a cut HTTP download resumed, launches the profile pinned to the assigned cards, probes it and reports serving with the engine endpoint and the derived dep_ id",
+        "a profile without decode evidence at 90 percent of the context floor at the serving slot count is never assigned to serve, and a required quality suite excludes unscored profiles",
+        "a measure assignment runs every matrix cell, reports one evidence row per cell, stops the engine, and the gateway drafts a profile the next plan selects",
+        "a failed placement is recorded and, for the permanent failure reasons (launch_failed, probe_failed, measure_failed), not retried on the same node until the gateway restarts (the transient reasons, disk_full and runtime_unavailable among them, expire after 600 seconds), a refusal is never recorded as a failure but backs the same placement off for 60 seconds doubling to 600 and is shown on the operator view, and a serving engine that stops answering is released after three beats",
+        "a model removed from the configuration is stopped explicitly, a restarted gateway adopts a serving engine instead of stopping it (one active status per node and model) and stops an engine beyond the model's replicas, a held assignment its node never reports is dropped after 300 seconds as a transient failure, and a stale node releases its placement",
+        "every card of one assignment is on one node, profiles are ordered by quality tier, measured decode at the floor, name and version (never by group size), and the deployment id is the one derived from the entry's payload (the known answers of specs/64 section 5 rule 6 reproduce), differs between profiles and is refused by a node when it does not match",
+        "facts, status and matrix bounds hold as sent: a facts member over 64 KiB or past a schema bound is refused 400 with a message of at most 200 characters, a report is read for at most 64 entries, and a measure whose depth is below 10 x (maxTokens + 16), whose artifacts collide on disk or whose sizes overflow 64 bits is refused"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T35"
+    },
+    {
+      "id": "P5-T36",
+      "phase": 5,
+      "title": "InferWeave Storage Phase 1: signed grants, store daemon, S3 front end, digest index and multi-source stager",
+      "depends_on": [
+        "P5-T33"
+      ],
+      "specs": [
+        "65_INFERWEAVE_STORAGE",
+        "47_NODE_JOIN_AND_HARDWARE_REGISTRATION",
+        "20_NODE_AUTOCONFIG_DISCOVERY",
+        "40_NETWORK_TOPOLOGY_GRAPH",
+        "45_PROTOCOL_V1"
+      ],
+      "features": [
+        "IW-STORE-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Implement the specs/65 Phase 1 contract in the Rust gateway, the iw-store daemon and the staging client (InferWeave/inferweave): a store registers hardware-only under role store and capability iw.store/1, serves sha256-pinned blobs read-only over a native range API authenticated by a short-lived signed iwg1 grant and over an optional read-only S3 front end, never writes under its blob directory, refuses to start on an exposed bind, and advertises verified digests that the gateway indexes; a gateway issues grants only to enrolled nodes for catalogued digests in their scope and quarantines a store that served bytes not matching a pin; a node stages a blob from several holders in ranges, verifies size and SHA-256 before the file is visible and falls back to the origin.",
+      "required_tests": [
+        "the iwg1 token reproduces the signed-transcript known answers, is verified in the specified order returning the first failure, caps lifetime and length, rejects duplicate and unknown keys and non-canonical encodings, and never panics on garbage or oversize input",
+        "a store trusts only the issuer keys its home gateways return in grantIssuerKeys plus operator extras, applies a changed set without restart, and rejects an untrusted issuer before the signature is evaluated",
+        "the native data plane answers only the status codes of specs/65 section 5.4 in the specified order, serves 206 ranges that match Content-Range, rejects multi-range, suffix and unranged requests under a range grant, authenticates before it reveals whether a digest exists, and resolves blobs by digest only without following a symlink out of the blob directory",
+        "the daemon never creates, opens for write, truncates, renames or removes anything under its blob directory, refuses a state directory or index inside the blob directory or on a shared filesystem unless overridden, holds one exclusive lock per state directory and names every temp file uniquely",
+        "a store refuses to start on a wildcard bind, on a non-loopback bind without an allow-list, and on a public bind without the explicit flags, closes a peer outside the allow-list before reading any byte, and never takes the peer address from a header",
+        "failed authentication is charged to (address, identity) only after a grant verified against a trusted issuer and otherwise to the address, garbage never locks a victim identity, lockout doubles to its cap and answers 429 with Retry-After, the lockout table is bounded, and the global request ceiling and per-IP connection cap answer 503",
+        "the S3 front end has no anonymous access, verifies AWS Signature Version 4 in header and presigned form, answers every write verb 403 read-only without reading the body, lists and pages only keys inside the access key's bucket and prefix scope, emits the sha256 as ETag, serves byte-exact ranges, and refuses a keys file readable by group or other",
+        "a gateway sends the store messages and the grantIssuerKeys and topology store fields only to a peer that negotiated iw.store/1, accepts advertisements from an enrolled store only (full, delta and paged, with need_full on an epoch gap), indexes a digest as held only when complete, ages entries out after three refresh intervals and drops a store on a leave notice only if the caller owns the store id",
+        "a gateway issues a grant only to a node currently enrolled with a fresh registration, only for a catalogued digest in the node's scope, with node_id taken from the authenticated link, never signs a grant for a holder behind a child gateway, rate-limits requests per node, and grants a non-public digest by range for at most 60 seconds",
+        "topology store pages carry at most 1000 digests each and one hop, a parent ingests them only from an enrolled gateway whose registration negotiated iw.store/1 and keeps only catalogued digests, a gateway peer that did not negotiate receives the pre-storage document unchanged, and remote entries expire after 900 seconds",
+        "a store reported with an attributable digest_mismatch by the configured number of distinct enrolled nodes is quarantined, excluded from holders, grants and topology until an operator clear, a store cannot report itself, and an unattributable mismatch never quarantines",
+        "the stager fetches ranges from several holders, resumes from its .part files after a restart or a dead source, discards a 206 whose Content-Range does not match, reports a source that served bytes failing the pin, never makes the file visible before size and SHA-256 equal the pin, treats ENOSPC as fatal, and falls back to the origin when no source completes or the fabric is unavailable"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T36"
+    },
+    {
+      "id": "P5-T37",
+      "phase": 5,
+      "title": "InferWeave Storage Phase 2: ingest leases, replication, TLS, federated grants and per-range hashes",
+      "depends_on": [
+        "P5-T36"
+      ],
+      "specs": [
+        "65_INFERWEAVE_STORAGE",
+        "47_NODE_JOIN_AND_HARDWARE_REGISTRATION",
+        "27_SITE_CONNECTOR_ARTIFACT_CACHE",
+        "63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS"
+      ],
+      "features": [
+        "IW-STORE-002"
+      ],
+      "context_class": "C85",
+      "outcome": "Implement the specs/65 Phase 2 contract after its open items are decided: a TLS listener and per-listener blob scope so a non-private bind may serve gated blobs, a gateway-forwarded grant request across federation, per-range hashes in the catalog, ingest leases with an epoch and a no-replace publish so exactly one writer exists per file, replication with repair, quota and eviction, an optional write path that publishes only a blob matching its pin, and a rendezvous so a store listens on no inbound port.",
+      "required_tests": [
+        "a store listener serves TLS with a configured certificate, and a gated-scope blob is served only on a TLS or private listener while a publicly bound plain listener serves public-scope blobs only",
+        "a parent gateway forwards a node's grant request to the child gateway that owns the store, the child signs the grant, and a store never accepts a grant signed by a gateway it does not trust",
+        "a catalog with per-range hashes lets the stager attribute a corrupt range to one source and retry that range alone",
+        "an ingest lease is granted to at most one store per digest with a monotonically increasing epoch, a take-over after expiry writes a different temp name than the old writer, publication uses a no-replace rename and never replaces a file being read, and publishing an existing digest is idempotent",
+        "a store missing a catalogued digest replicates it from holders, a failed periodic verify deletes the blob and re-replicates it, and eviction never removes the only complete copy or a blob under a lease",
+        "a write to the S3 front end succeeds only for a key granted write and only for an object whose SHA-256 and size equal the pin, publishes by atomic rename after verification and deletes the part file otherwise",
+        "a store reachable only through a rendezvous accepts no inbound connection, and the grant and signature checks are unchanged"
+      ],
+      "notes": "",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T37"
+    },
+    {
       "id": "B-T01",
       "phase": "B",
       "title": "Runtime families and typed capabilities",

@@ -6,6 +6,35 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Spec 65 (InferWeave Storage, proposed and implemented in part on an unmerged branch of the reference
+  implementation) added with decision record `decisions/2026-10-16-inferweave-storage.md` (features
+  `IW-STORE-001` and `IW-STORE-002`, tasks `P5-T36` and `P5-T37`, both `owed`): the `store` role and the
+  additive capability `iw.store/1`, the signed `iwg1` read grant, the native `/v1/blob` data plane and a
+  read-only S3 front end, network exposure and abuse controls, the single-writer rule for shared filesystems,
+  the digest index with an optional capability-gated topology `store` field and `grantIssuerKeys`, the
+  multi-source stager and store quarantine. Older peers are unaffected. Nothing opens a production gate; see
+  `OPEN_GATES.md` (TLS, grant forwarding across federation, per-range hashes and ingest leases unsatisfied).
+
+- Spec 56 amended after the Rust producer and ingester (`IW-ALIAS-001`; proof still owed, see `OPEN_GATES.md`): the
+  report may ride the node heartbeat; duplicate JSON members are refused; additive, diagnostic-only heartbeat
+  answer member `runtimeObservations.resync` (an old peer ignores it) with a paced producer epoch rotation; the
+  producer rotates its epoch before the owner's fence budget; durable producer epoch and sequence ceiling;
+  UNLOADED tombstones; same-epoch re-registration keeps fences. Nothing opens a production gate.
+
+- Spec 63 (link `upstream` role, proposed and implemented in part, default off) amended after the Rust
+  implementation (`IW-DP-002`; see `OPEN_GATES.md`): optional request-`meta` member `traffic_class` (spec 59,
+  `link-request-meta.json`; an old receiver ignores it), the `refused` frame carried by the `upstream` role,
+  closed catalog entries with `max_context_tokens`, `records_prompt_content` assertion semantics, fresh request
+  id per dispatch, token-budget semantics, relay circuit breaker, drain wait. Nothing opens a production gate.
+
+- Additive, optional System One CPU capacity wire (`IW-NODEHW-001`, `IW-DP-001`; proof owed, see `OPEN_GATES.md`):
+  `systemone[].device` and `max_concurrency` on the register body, `systemone` load on the node heartbeat,
+  `meta.systemone_batch` on link request meta, and the `/v1/systemone` and `/v1/systemone/batch`
+  `iw.link-http-json/1` targets (`stream:true` refused with 400 `stream_unsupported` on every non-chat target).
+  Slot semantics now distinguish schedulable `slots` from the `max_concurrency` admission bound, and a CPU-only node
+  is first class (`cpu` device/backend, `gpus: []`, routable without GPU telemetry). Older peers are unaffected:
+  every member is optional and omitted when absent. Casing of the new members is inconsistent and recorded as open.
+
 - Additive, explicitly negotiated `dynamic_aliases: "2"` (spec 54) preserves level 1.
   Adds strict alias policies/revisions, instance-level preview and evidence, frozen reasons/events,
   native management schemas and bounded fixtures. D-002 extends only the existing Go operator UI;
@@ -118,6 +147,75 @@ counted physical memory in `reserved` was following ambiguous text and must be c
 - Specification gap recorded, not a correction: the repository never defined the `/v1/node/*`
   bodies, so no earlier text is changed.
 
+
+### Dynamic nodes and gateway-driven provisioning (added to 1.1.0, unreleased)
+
+**Compatibility classification: minor, backwards-compatible, with one specification
+correction.** Capability-gated: an older node never offers `iw.dynamic-node/1`, sends no
+`dynamic` and reads `assignments: []` as before; an older gateway lists nothing and a dynamic
+node registered to it stays hardware-only. The correction: spec 47 §5.1 said `assignments`
+"MUST be `[]`" in this version; that was the reservation, and the text now says it is `[]` for
+every registration that has not negotiated a capability that fills it.
+
+- `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` and decision record
+  `decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` (feature `IW-DYNNODE-001`, task
+  `P5-T35`, `owed`).
+- Capability `iw.dynamic-node/1`; register member `dynamic`
+  (`schemas/v1/requests/node-dynamic-facts.json`); `assignments` entries `serve`, `measure`,
+  `stop` on the register and heartbeat responses (`schemas/v1/requests/node-assignment.json`);
+  heartbeat member `provisioning` (`schemas/v1/requests/node-provisioning-status.json`);
+  `node-register-response.json` now allows up to 8 assignment entries.
+- Rules: desired state repeated until the node agrees, withdrawal explicit, unknown entries
+  skipped; pinned, resumable, digest-verified artifacts; only profiles with decode evidence at 90%
+  of the context floor serve, unmeasured candidates are measured first and drafted; every card of
+  an engine on one node; nothing is placed on a registration before its first `provisioning`
+  report; only operator-enrolled credentials are provisioned; spec 47 §6.12 keeps `provisioning`
+  on a hardware-only heartbeat when the capability is in force.
+- The `dep_` deployment id is derived, never typed, as one SHA-256 over length-prefixed strings and
+  count-prefixed lists: the model id, the profile name and version, the whole launch block
+  (image, digest, command, environment in key order, privileges, mounts, shm size, engine,
+  backend, label), the artifacts' paths and digests and, for a `serve`, the advert figures. A
+  node recomputes it and refuses an entry whose id differs. Three known answers
+  (`conformance/dynamic-node-vectors.json`) are recomputed by `conformance/runner.py`.
+- Failure classes: `launch_failed`, `probe_failed` and `measure_failed` are permanent (not
+  retried into the same placement while the gateway runs); `engine_exited`,
+  `artifact_unavailable`, `digest_mismatch`, `disk_full` and the new reason `runtime_unavailable`
+  (the container runtime is down, an image pull failed, a container name collided, a non-space
+  filesystem error) expire after 600 seconds. `refused` is never a failure, but the same
+  (node, model, profile) is not placed again for 60 seconds, doubling to 600. A holding its node
+  never reports is dropped after 300 seconds as a transient failure; an engine beyond a model's
+  `replicas` is sent a `stop`; of the active statuses a node reports for one model at most one is
+  adopted, and a report is read for at most 64 entries.
+- Plan order: quality tier, then measured decode at the floor, then profile name and version.
+  The size of the serving group is not a key; on equal best scores the smaller quality tolerance
+  sets the tier, as the shared profile ranking does. The idle reasons are `occupied`,
+  `no_matching_profile`, `no_qualified_profile`, `failed_before`, `measuring_elsewhere`,
+  `replicas_met`, `awaiting_status` and `refused_recently`.
+- Bounds a gateway enforces: the `dynamic` member is at most 64 KiB as sent (unknown members
+  count) and keeps to the schema's field bounds, with a 400 message cut to 200 characters; a
+  measure candidate's name leaves room for `<candidate>-draft-<id>` within 128 characters (at
+  most 71); a `measure` matrix has `maxTokens` of at least 2, concurrency at most 256 and each
+  depth at least 10 x (`maxTokens` + 16); artifact paths do not collide on disk (`a` and `a/b`,
+  `x` and `x.part`, `m.gguf` and `m.gguf.sha256`) and their sizes add up within 64 bits;
+  `advert.slots` is at most 4294967295; a node ignores unknown advert members. A draft of an
+  allowed candidate is admitted when `profilesAllow` is set; a draft is matched to the host's
+  facts as they were when the `measure` was assigned; the operator view marks drafts and what is
+  served from them `experimental` and lists `refusals`.
+- Node behaviour recorded in the specification: a `file://` source is read only under an
+  operator-configured source root; HTTP sources never target loopback or link-local addresses,
+  follow at most three redirects and never downgrade from https to http; `$ARTIFACTS` mounts are
+  read-only and confined to the deployment's directory; a node may reuse a verified file of the
+  same size and SHA-256 from another deployment; a `stop` cancels an in-flight assignment; a node
+  cuts status messages to 512 characters and keeps its report within 64 KiB, oldest terminal
+  statuses first.
+- A boot token of at most 12 base-36 characters (hash of clock, process id and a random value)
+  replaces the start time in seconds in assignment ids.
+- Specification corrections made before this entry was accepted: the first draft of the
+  deployment-id rule did not count its lists (a command ending in the strings an artifact
+  contributes hashed like that artifact) and left out environment, privileges, mounts, shm size,
+  engine, backend, label and the advert; `disk_full` was listed as permanent.
+- Fixtures under `fixtures/valid` and `fixtures/invalid`, one valid and several invalid for the
+  new rules; operator view `GET /iw/v1/dynamic`.
 
 ## 1.0.0 — initial protocol (in progress)
 

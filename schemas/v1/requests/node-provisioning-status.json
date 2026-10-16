@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/requests/node-provisioning-status.json",
+  "title": "Dynamic node provisioning status (the `provisioning` member of POST /v1/node/heartbeat)",
+  "description": "One entry per assignment a dynamic node has acted on (specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md section 6). Read leniently by the gateway after the beat is accepted; a malformed entry is dropped, never a refused beat. The member is an array of these, a top-level member of the heartbeat body, sent on every beat while the capability is in force (`[]` when idle); the 65536-byte bound (on the compact serialization of the whole array) and the gateway's reading of at most 64 entries are rules the schema cannot express.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["id", "model", "gpuIds", "phase", "updatedAt"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z0-9._-]+$"},
+    "model": {"type": "string", "maxLength": 200},
+    "gpuIds": {"type": "array", "maxItems": 64, "items": {"type": "string", "minLength": 1, "maxLength": 256}, "description": "At most 64; a gateway keeps the first 64."},
+    "phase": {
+      "type": "string",
+      "enum": ["pending", "fetching", "launching", "probing", "serving", "measuring", "measured", "failed", "stopped"]
+    },
+    "updatedAt": {"type": "integer", "minimum": 0, "description": "Unix seconds of the assignment's last change."},
+    "bytesDone": {"type": "integer", "minimum": 0},
+    "bytesTotal": {"type": "integer", "minimum": 0},
+    "endpoint": {"type": "string", "minLength": 1, "maxLength": 1024},
+    "deployment": {"type": "string", "pattern": "^dep_[0-9a-f]{64}$"},
+    "cellsDone": {"type": "integer", "minimum": 0},
+    "cellsTotal": {"type": "integer", "minimum": 0},
+    "evidence": {"type": "array", "maxItems": 64, "items": {"$ref": "#/definitions/evidence"}},
+    "readySec": {"type": "number", "minimum": 0},
+    "reason": {
+      "type": "string",
+      "description": "Closed. Permanent (the pair is not tried again while the gateway runs): launch_failed, probe_failed, measure_failed. Transient (tried again after 600 s): artifact_unavailable, digest_mismatch, disk_full, runtime_unavailable, engine_exited. refused is never a verdict on a profile; the gateway backs the placement off.",
+      "enum": ["refused", "artifact_unavailable", "digest_mismatch", "disk_full", "runtime_unavailable", "launch_failed", "probe_failed", "engine_exited", "measure_failed"]
+    },
+    "message": {"type": "string", "maxLength": 512, "description": "What failed, at most 512 characters (a node cuts a longer one); never the bytes that failed it."}
+  },
+  "allOf": [
+    {"if": {"properties": {"phase": {"const": "fetching"}}}, "then": {"required": ["bytesDone", "bytesTotal"]}},
+    {"if": {"properties": {"phase": {"const": "serving"}}}, "then": {"required": ["endpoint", "deployment"]}},
+    {"if": {"properties": {"phase": {"const": "measuring"}}}, "then": {"required": ["cellsDone", "cellsTotal"]}},
+    {"if": {"properties": {"phase": {"const": "measured"}}}, "then": {"required": ["evidence", "readySec"]}},
+    {"if": {"properties": {"phase": {"const": "failed"}}}, "then": {"required": ["reason", "message"]}}
+  ],
+  "definitions": {
+    "evidence": {
+      "description": "One measured cell, as a runtime profile's evidence row: decodeTps is the aggregate decode rate across the cell's concurrent streams at the named context depth (specs/39, invariant 42).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run", "date", "context", "concurrency", "decodeTps"],
+      "properties": {
+        "run": {"type": "string", "maxLength": 128},
+        "date": {"type": "string", "maxLength": 32},
+        "context": {"type": "integer", "minimum": 1},
+        "concurrency": {"type": "integer", "minimum": 1},
+        "decodeTps": {"type": "number", "minimum": 0},
+        "prefillTps": {"type": "number", "minimum": 0},
+        "ttftP50Ms": {"type": "number", "minimum": 0}
+      }
+    }
+  }
+}

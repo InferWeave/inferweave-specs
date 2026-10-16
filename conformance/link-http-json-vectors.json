@@ -1035,6 +1035,208 @@
         "status": 400,
         "code": "stream_unsupported"
       }
+    },
+    {
+      "name": "systemone_accepted",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"laya-0.4b-modality-text-quant-fp16\", \"texts\": [\"a\"]}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/systemone",
+            "content_type": "application/json",
+            "payload_bytes": 63
+          }
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": true,
+        "mode": "http"
+      }
+    },
+    {
+      "name": "systemone_batch_accepted",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"laya-0.4b-modality-text-quant-fp16\", \"texts\": [\"a\"]}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/systemone/batch",
+            "content_type": "application/json",
+            "payload_bytes": 63
+          }
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": true,
+        "mode": "http"
+      }
+    },
+    {
+      "name": "systemone_not_negotiated",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"laya-0.4b-modality-text-quant-fp16\", \"texts\": [\"a\"]}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/systemone",
+            "content_type": "application/json",
+            "payload_bytes": 63
+          }
+        }
+      },
+      "bound": false,
+      "expected": {
+        "dispatch_allowed": false,
+        "status": 503,
+        "code": "FEATURE_UNSUPPORTED"
+      }
+    },
+    {
+      "name": "systemone_batch_not_negotiated",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"laya-0.4b-modality-text-quant-fp16\", \"texts\": [\"a\"]}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/systemone/batch",
+            "content_type": "application/json",
+            "payload_bytes": 63
+          }
+        }
+      },
+      "bound": false,
+      "expected": {
+        "dispatch_allowed": false,
+        "status": 503,
+        "code": "FEATURE_UNSUPPORTED"
+      }
+    },
+    {
+      "name": "systemone_stream_true_refused",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"laya-0.4b-modality-text-quant-fp16\", \"texts\": [\"a\"], \"stream\": true}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/systemone",
+            "content_type": "application/json",
+            "payload_bytes": 79
+          }
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": false,
+        "status": 400,
+        "code": "stream_unsupported"
+      }
+    },
+    {
+      "name": "systemone_batch_stream_true_refused",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"laya-0.4b-modality-text-quant-fp16\", \"texts\": [\"a\"], \"stream\": true}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/systemone/batch",
+            "content_type": "application/json",
+            "payload_bytes": 79
+          }
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": false,
+        "status": 400,
+        "code": "stream_unsupported"
+      }
+    },
+    {
+      "name": "systemone_other_refused",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"laya-0.4b-modality-text-quant-fp16\", \"texts\": [\"a\"]}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/systemone/other",
+            "content_type": "application/json",
+            "payload_bytes": 63
+          }
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": false,
+        "refused": "invalid_http_request"
+      }
+    },
+    {
+      "name": "systemone_query_refused",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"laya-0.4b-modality-text-quant-fp16\", \"texts\": [\"a\"]}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/systemone?x=1",
+            "content_type": "application/json",
+            "payload_bytes": 63
+          }
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": false,
+        "refused": "invalid_http_request"
+      }
+    },
+    {
+      "name": "systemone_batch_trailing_slash_refused",
+      "request": {
+        "kind": "request",
+        "request_id": "r1",
+        "payload": "{\"model\": \"laya-0.4b-modality-text-quant-fp16\", \"texts\": [\"a\"]}",
+        "meta": {
+          "http": {
+            "version": 1,
+            "method": "POST",
+            "target": "/v1/systemone/batch/",
+            "content_type": "application/json",
+            "payload_bytes": 63
+          }
+        }
+      },
+      "bound": true,
+      "expected": {
+        "dispatch_allowed": false,
+        "refused": "invalid_http_request"
+      }
     }
   ]
 }

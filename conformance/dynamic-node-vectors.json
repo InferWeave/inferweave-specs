@@ -1,0 +1,372 @@
+{
+  "_comment": [
+    "Known answers for the deployment id of specs/64 section 5 rule 6, checked by conformance/runner.py through conformance/dynamic_nodes.py.",
+    "The three known answers are the ones the reference implementation's unit test iw_core::dynamic_node::the_deployment_id_known_answer_vectors asserts; they were reproduced here, byte for byte, with python3 -I hashlib, before this file was written.",
+    "`change` is laid over `base`: model, name, version, launch (members replaced), artifacts (replaced whole), advert (members replaced; null is no advert, which a measure hashes). Every `mustDiffer` change moves the id away from the base and from each other change; each pair of `mustDifferPairs` must hash differently (the count prefixes). Every `mustEqual` change touches only members that are not hashed and leaves the id where it was."
+  ],
+  "base": {
+    "model": "qwen3.8-27b-modality-vision-quant-q8_k_xl",
+    "profile": {
+      "name": "r9700-q8-one",
+      "version": 1,
+      "launch": {
+        "label": "r9700-q8-one",
+        "engine": "llama.cpp",
+        "backend": "rocm",
+        "image": "ghcr.io/ggml-org/llama.cpp",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "command": [
+          "--model",
+          "/models/m.gguf"
+        ]
+      }
+    },
+    "artifacts": [
+      {
+        "path": "m.gguf",
+        "bytes": 1,
+        "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "sources": [
+          "https://example.invalid/m.gguf"
+        ]
+      }
+    ],
+    "advert": {
+      "slots": 1,
+      "contextSupported": 262144,
+      "maxContextTokens": 262144,
+      "kvBytesPerToken": 65536
+    }
+  },
+  "knownAnswers": [
+    {
+      "id": "serve",
+      "change": {},
+      "expect": "dep_2dbde03f1caf05686818da3ade04a6ced7853aedea6ac3021d76e27d38c94e44"
+    },
+    {
+      "id": "measure",
+      "change": {
+        "advert": null
+      },
+      "expect": "dep_6866ef335f03f489914a99313941c3b16b2be92b8cad743439c2f851aa26019e"
+    },
+    {
+      "id": "serve-with-env-privileges-mounts-shm",
+      "change": {
+        "launch": {
+          "env": {
+            "HSA_OVERRIDE": "1",
+            "A": "x"
+          },
+          "privileges": [
+            "--device=/dev/kfd"
+          ],
+          "mounts": [
+            {
+              "host": "/models",
+              "container": "/models",
+              "readOnly": true
+            },
+            {
+              "host": "/cache",
+              "container": "/c",
+              "readOnly": false
+            }
+          ],
+          "shmSize": "64g"
+        }
+      },
+      "expect": "dep_6c0ec71feede12a8789bccda8a8d345b7ec27547af8c074e5bef58987b8c615f"
+    }
+  ],
+  "mustDiffer": [
+    {
+      "id": "model",
+      "change": {
+        "model": "qwen3.8-27b-modality-vision-quant-q8_0"
+      }
+    },
+    {
+      "id": "profile-name",
+      "change": {
+        "name": "r9700-q8-two"
+      }
+    },
+    {
+      "id": "profile-version",
+      "change": {
+        "version": 2
+      }
+    },
+    {
+      "id": "image",
+      "change": {
+        "launch": {
+          "image": "ghcr.io/ggml-org/llama.cpp-other"
+        }
+      }
+    },
+    {
+      "id": "digest",
+      "change": {
+        "launch": {
+          "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      }
+    },
+    {
+      "id": "command",
+      "change": {
+        "launch": {
+          "command": [
+            "--model",
+            "/models/m.gguf",
+            "--flash-attn"
+          ]
+        }
+      }
+    },
+    {
+      "id": "artifact-path",
+      "change": {
+        "artifacts": [
+          {
+            "path": "n.gguf",
+            "bytes": 1,
+            "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sources": [
+              "https://example.invalid/m.gguf"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "artifact-sha256",
+      "change": {
+        "artifacts": [
+          {
+            "path": "m.gguf",
+            "bytes": 1,
+            "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "sources": [
+              "https://example.invalid/m.gguf"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "env",
+      "change": {
+        "launch": {
+          "env": {
+            "A": "x"
+          }
+        }
+      }
+    },
+    {
+      "id": "privileges",
+      "change": {
+        "launch": {
+          "privileges": [
+            "--device=/dev/kfd"
+          ]
+        }
+      }
+    },
+    {
+      "id": "mount-read-only-flag",
+      "change": {
+        "launch": {
+          "mounts": [
+            {
+              "host": "/models",
+              "container": "/models",
+              "readOnly": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "shm-size",
+      "change": {
+        "launch": {
+          "shmSize": "64g"
+        }
+      }
+    },
+    {
+      "id": "engine",
+      "change": {
+        "launch": {
+          "engine": "vllm"
+        }
+      }
+    },
+    {
+      "id": "backend",
+      "change": {
+        "launch": {
+          "backend": "vulkan"
+        }
+      }
+    },
+    {
+      "id": "label",
+      "change": {
+        "launch": {
+          "label": "other-label"
+        }
+      }
+    },
+    {
+      "id": "advert-slots",
+      "change": {
+        "advert": {
+          "slots": 2
+        }
+      }
+    },
+    {
+      "id": "advert-context-supported",
+      "change": {
+        "advert": {
+          "contextSupported": 131072,
+          "maxContextTokens": 131072
+        }
+      }
+    },
+    {
+      "id": "advert-max-context-tokens",
+      "change": {
+        "advert": {
+          "maxContextTokens": 229376
+        }
+      }
+    },
+    {
+      "id": "advert-kv-bytes-per-token",
+      "change": {
+        "advert": {
+          "kvBytesPerToken": 32768
+        }
+      }
+    },
+    {
+      "id": "no-advert-measure",
+      "change": {
+        "advert": null
+      }
+    }
+  ],
+  "mustEqual": [
+    {
+      "id": "artifact-bytes",
+      "change": {
+        "artifacts": [
+          {
+            "path": "m.gguf",
+            "bytes": 31457991680,
+            "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sources": [
+              "https://example.invalid/m.gguf"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "artifact-sources",
+      "change": {
+        "artifacts": [
+          {
+            "path": "m.gguf",
+            "bytes": 1,
+            "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sources": [
+              "file:///mirror/m.gguf",
+              "https://example.invalid/other/m.gguf"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "advert-tools-and-structured-output",
+      "change": {
+        "advert": {
+          "tools": true,
+          "structuredOutput": true
+        }
+      }
+    },
+    {
+      "id": "match-rules-and-evidence",
+      "change": {
+        "profile": {
+          "match": {
+            "gpu": {
+              "vendor": "nvidia",
+              "model": [
+                "x"
+              ],
+              "count": 9,
+              "vramMibMin": 1
+            }
+          },
+          "evidence": [
+            {
+              "run": "r",
+              "date": "2026-10-15",
+              "context": 1,
+              "concurrency": 1,
+              "decodeTps": 1.0
+            }
+          ],
+          "quality": {
+            "suite": "s",
+            "n": 1,
+            "score": 0.9,
+            "toleranceAbs": 0.01
+          }
+        }
+      }
+    }
+  ],
+  "mustDifferPairs": [
+    {
+      "id": "command-cannot-impersonate-an-artifact",
+      "a": {
+        "launch": {
+          "command": [
+            "x",
+            "p",
+            "s"
+          ]
+        },
+        "artifacts": []
+      },
+      "b": {
+        "launch": {
+          "command": [
+            "x"
+          ]
+        },
+        "artifacts": [
+          {
+            "path": "p",
+            "bytes": 1,
+            "sha256": "s",
+            "sources": [
+              "https://example.invalid/p"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
