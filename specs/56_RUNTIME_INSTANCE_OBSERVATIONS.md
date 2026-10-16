@@ -73,6 +73,62 @@ the current producer's configured default, not a measured freshness SLO. Future-
 reports cannot establish current facts. Receiver trusted time and connection freshness cap validity;
 clock disagreement fails closed with diagnostic status rather than extending expiry.
 
+### 2.1 Heartbeat delivery, the resync diagnostic and epoch rotation
+
+*Amendment, from the first Rust producer and ingester (InferWeave/inferweave #1074).*
+
+**Heartbeat delivery.** A TTL of at most 60000 ms needs a refresh channel, so the camelCase member
+`runtimeObservations` may also ride the node heartbeat, on a connection whose registration negotiated
+`iw.runtime-observations/1`. The same bounds, strict decoding and ordering rules apply as for the register
+member. A heartbeat report is read only from the current authenticated connection of an enrolled, non-token-free
+node; a retired connection's heartbeat changes nothing. A refused report never refuses the heartbeat itself:
+the beat is accepted and only the node's observation facts are withdrawn (section 3).
+
+**Strict decoding.** The report is decoded with duplicate object members rejected at any depth, including
+members that differ only by JSON escapes. A duplicate is a malformed report, withdrawn like any other.
+
+**Heartbeat answer member `runtimeObservations.resync`.** The heartbeat answer MAY carry
+`"runtimeObservations": {"resync": true}`. It is a *diagnostic only* and never a refusal: the heartbeat status
+and every other answer member are unchanged, and a peer that does not know the member ignores it. An owner
+sends it on a connection with the capability in force when the node's last report on that connection was
+refused as a retired source epoch, an epoch mismatch within a registration, or a sequence regression (the
+refusals only a new epoch repairs, for example a producer restored from an old disk snapshot). It is omitted
+otherwise, including after a refusal of another kind and after any accepted report.
+
+A producer that sees `resync` on **N consecutive** heartbeats (the reference producer uses N = 5; any good beat
+resets that count) SHOULD take a NEW source epoch at its next registration, re-registering to create one if it
+must, because a new epoch is accepted only as the first snapshot of a registration (section 3). Because an
+owner that answers `resync` for ever must not make a node re-register for ever, the producer MUST pace such
+rotations: not before 5 minutes after the previous one, doubling for each consecutive one up to 1 hour, the pace
+not undone by ordinary good beats and forgotten only after an hour without the diagnostic. A rotation that
+cannot be made durable stops the producer's reports and is retried at a later registration at the same pace.
+
+**Epoch rotation for the owner's fence budget.** Section 3 has the owner keep item fences and tombstones
+for the whole epoch, in bounded space. Nothing is forgotten within an epoch. A producer therefore MUST start a
+new epoch at a registration before it has reported more distinct generations in one epoch than the owner can
+hold; the reference producer rotates at 256 (the schema allows ids that cost about 1.2 KB per generation across
+fence and tombstone, against a 512 KiB budget). An owner that cannot hold more refuses the snapshot as a fence
+limit and says that a new epoch is needed. A new epoch is an owner-authenticated reset: the owner retires the old
+epoch, discards its fences, tombstones and envelope sequence, and takes the first snapshot of the new one. A
+rotation that would restart no emptier (every counted generation is a live engine) is not made.
+
+**Durable producer identity.** The epoch and a write-ahead ceiling on the sequence survive a producer restart,
+so a restarted producer carries on above everything it sent under the same epoch; an unreadable, foreign or
+implausible journal (a ceiling above 2^53 - 1 less the reservation block) is a lost journal and mints a new
+epoch. The ceiling is reserved on disk before use and the count of distinct generations is persisted with it; a
+producer that cannot write either sends nothing. The journal is created readable by its owner only.
+
+**UNLOADED tombstones.** A producer reports an incarnation that has left its booking (unloaded, or replaced by a
+restart) as an UNLOADED item for that generation for a few consecutive snapshots, at a newer item sequence each
+time. A withdrawn engine that is still running is omitted, not tombstoned. A reload under the same instance id
+sends only the live new generation (one item per instance), and the owner treats a generation that an
+instance has already left as dead: replaying it, even at a newer sequence and without an UNLOADED item, is
+refused as a resurrection.
+
+**Same-epoch re-registration.** A re-registration that names the same epoch is the same journal registering
+again: the owner withdraws the previous registration's facts but keeps the fences, tombstones and envelope
+sequence of the epoch, and holds the new registration to them.
+
 ## 3. Ordering, invalidation and event projection
 
 Envelope sequence increases within source epoch; an item's sequence is no greater than envelope
