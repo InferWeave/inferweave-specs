@@ -1165,6 +1165,17 @@
       ]
     },
     {
+      "id": "IW-DYNNODE-001",
+      "name": "Dynamic nodes: a node that joins with no model is provisioned by its gateway over the register and heartbeat responses (iw.dynamic-node/1): facts, serve/measure/stop assignments, status, measured-profile selection with every card of an engine on one node, and drafted profiles from measurements (Protocol 1.1.0)",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "gateway+node",
+      "canonical_tasks": [
+        "P5-T35"
+      ]
+    },
+    {
       "id": "IW-RT-001",
       "name": "Runtime-family registry, typed capabilities, isolated adapter lifecycle and mixed-version negotiation",
       "phase": "B",

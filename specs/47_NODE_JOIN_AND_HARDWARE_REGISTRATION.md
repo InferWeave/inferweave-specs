@@ -260,11 +260,20 @@ never enforces it (section 3.1 rule 5).
 
 ### 5.1 `assignments`
 
-The register response gains an **always-present** member `assignments`: an array reserved for
-future gateway-to-node instructions (images to pull, a profile to run). In this version it MUST be
-`[]`. A node MUST ignore entries it does not understand and MUST NOT fail a registration because of
-one. No entry shape is defined yet; the first one will be added by a later minor release together
-with a capability name.
+The register response gains an **always-present** member `assignments`: an array of
+gateway-to-node instructions (images to pull, a profile to run). A node MUST ignore entries it does
+not understand and MUST NOT fail a registration because of one.
+
+It is `[]` for every registration that has not negotiated a capability that fills it. The first
+entry shapes, and the capability name that puts them in force (`iw.dynamic-node/1`, offered only
+by a node started with `--model dynamic`), are defined by
+`specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` together with the heartbeat response's
+`assignments` and the heartbeat request's `provisioning` member. That `provisioning` member is
+the one exception to the rule of section 6.12 that a hardware-only registration's heartbeat keeps
+only `busySlots`, `queueDepth` and `leaving`. Earlier text said the array
+"MUST be `[]`" in this version; that was the reservation, not a rule against filling it, and a
+gateway that lists the capability fills it for that registration only. A registration that does
+not negotiate it, and an older gateway, still answer `[]`.
 
 ### 5.2 Endpoints
 
@@ -580,8 +589,18 @@ that proxy only or accept the shared limit.
 A connection whose registration is hardware-only, or whose credential is proof-only, MUST NOT be
 allowed to file telemetry: `POST /v1/node/telemetry` is `403 forbidden`. Its heartbeat is accepted
 for liveness but keeps only `busySlots`, `queueDepth` and `leaving`; everything else in the status
-(devices, residency, GPU memory) is discarded (section 6.9). Heartbeat and telemetry bodies SHOULD be
-size-capped before parsing (Rust: 1 MiB).
+(devices, residency, GPU memory) is discarded (section 6.9).
+
+**Exception: `provisioning`.** On a registration that negotiated `iw.dynamic-node/1`
+(`specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` section 6) the heartbeat's `provisioning`
+member is also kept, because a hardware-only dynamic node files no telemetry and has no other way
+to say where an assignment is. It is read only for a registration whose credential an operator
+enrolled (never for a proof-only credential, section 6), it is bounded as that section says, and
+it contributes no devices, GPU memory or capacity (section 6.9). A gateway that caps a
+hardware-only registration's heartbeat body more tightly than other beats raises that cap by the
+`provisioning` bound for such a beat.
+
+Heartbeat and telemetry bodies SHOULD be size-capped before parsing (Rust: 1 MiB).
 
 ## 7. Compatibility
 

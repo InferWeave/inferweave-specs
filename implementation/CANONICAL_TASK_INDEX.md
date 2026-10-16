@@ -1,6 +1,6 @@
 # Canonical Task Index
 
-Total tasks: **167**
+Total tasks: **168**
 
 | Task | Phase | Context | Depends | Title |
 |---|---:|---:|---|---|
@@ -157,6 +157,7 @@ Total tasks: **167**
 | `P5-T32` | 5 | C85 | P5-T31 | GPU memory: decision records, lifecycle events, OOM postmortem and placement simulation |
 | `P5-T33` | 5 | C80 | P5-T24, P5-T25 | Node join: hardware-only registration, assignments and tokenless enrollment in the Rust gateway |
 | `P5-T34` | 5 | C80 | P5-T24, P5-T25 | Node join: hardware-only registration, assignments and tokenless enrollment in the Go gateway |
+| `P5-T35` | 5 | C85 | P5-T33 | Dynamic nodes: capability-gated assignments, facts, status and gateway provisioning |
 | `B-T01` | B | C75 | — | Runtime families and typed capabilities |
 | `B-T02` | B | C75 | B-T01 | Native `/inferweave/v1` control-plane and inference endpoints |
 | `B-T03` | B | C75 | B-T01 | Transactional runtime hot-swap lifecycle |

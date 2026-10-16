@@ -2182,6 +2182,26 @@ Rules:
 
 ## Phase B — Runtime families (protocol)
 
+### P5-T35 — Dynamic nodes: capability-gated assignments, facts, status and gateway provisioning
+**Context:** `C85`
+**Depends on:** P5-T33
+**Features:** IW-DYNNODE-001
+**Read:** specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md, specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md, specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md, specs/39_INFERENCE_RUNTIME_TUNING.md, specs/43_GPU_PLACEMENT_HOT_SWAP.md
+
+**Outcome:** Implement the specs/64 contract in the Rust gateway and node (InferWeave/inferweave): a node started with --model dynamic registers hardware-only with its dynamic facts and offers iw.dynamic-node/1; a gateway with desired models answers its register and every heartbeat with serve, measure and stop assignments chosen from measured runtime profiles with every card of an engine on one node; the node fetches pinned artifacts, launches the assigned profile, probes it, re-registers as a routable node and reports provisioning status; a measurement becomes a draft profile the next plan may select.
+
+**Required tests:**
+- a dynamic node's register is hardware-only, carries the dynamic facts and the capability offer, and files no telemetry while idle
+- assignments on the register and heartbeat responses are acted on only while iw.dynamic-node/1 is in force, and provisioning rides the beat only then
+- malformed dynamic facts are refused with 400 bad_request before anything is minted
+- a serve assignment fetches artifacts with size and SHA-256 verified and a cut HTTP download resumed, launches the profile pinned to the assigned cards, probes it and reports serving with the engine endpoint and the derived dep_ id
+- a profile without decode evidence at 90 percent of the context floor at the serving slot count is never assigned to serve, and a required quality suite excludes unscored profiles
+- a measure assignment runs every matrix cell, reports one evidence row per cell, stops the engine, and the gateway drafts a profile the next plan selects
+- a failed placement is recorded and, for the permanent failure reasons (launch_failed, probe_failed, measure_failed), not retried on the same node until the gateway restarts (the transient reasons, disk_full and runtime_unavailable among them, expire after 600 seconds), a refusal is never recorded as a failure but backs the same placement off for 60 seconds doubling to 600 and is shown on the operator view, and a serving engine that stops answering is released after three beats
+- a model removed from the configuration is stopped explicitly, a restarted gateway adopts a serving engine instead of stopping it (one active status per node and model) and stops an engine beyond the model's replicas, a held assignment its node never reports is dropped after 300 seconds as a transient failure, and a stale node releases its placement
+- every card of one assignment is on one node, profiles are ordered by quality tier, measured decode at the floor, name and version (never by group size), and the deployment id is the one derived from the entry's payload (the known answers of specs/64 section 5 rule 6 reproduce), differs between profiles and is refused by a node when it does not match
+- facts, status and matrix bounds hold as sent: a facts member over 64 KiB or past a schema bound is refused 400 with a message of at most 200 characters, a report is read for at most 64 entries, and a measure whose depth is below 10 x (maxTokens + 16), whose artifacts collide on disk or whose sizes overflow 64 bits is refused
+
 ### B-T01 — Runtime families and typed capabilities
 **Context:** `C75`
 **Depends on:** none

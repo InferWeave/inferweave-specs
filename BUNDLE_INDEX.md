@@ -1,9 +1,9 @@
 # InferWeave Specs Repository Index
 
 Version: **12.0**
-Specifications: **64**
-Tracked features: **101**
-Canonical tasks: **167**
+Specifications: **65**
+Tracked features: **102**
+Canonical tasks: **168**
 Deployment: **Docker Compose persistent / Apptainer Slurm**
 GPU watchdog/rescue: **required**
 
@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,105,506 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,149,657 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -26,14 +26,14 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `.semgrepignore` — `81c5def09b50` — ~86t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `fedecb3acdbc` — ~2,842t
+- `CHANGELOG.md` — `aa37133cdc74` — ~4,255t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `5c6855793b4f` — ~12,794t
+- `OPEN_GATES.md` — `4e796f3f9d05` — ~13,586t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -54,7 +54,9 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/alias_inference_transport.py` — `27381277284a` — ~866t
 - `conformance/compatibility.yaml` — `bc14705e6e9e` — ~726t
 - `conformance/deployment-key-vectors.json` — `f817862b8b8d` — ~1,149t
+- `conformance/dynamic-node-vectors.json` — `c9d715f4af75` — ~2,078t
 - `conformance/dynamic_aliases.py` — `26a30bc943ad` — ~3,288t
+- `conformance/dynamic_nodes.py` — `f07efb7c2530` — ~2,201t
 - `conformance/link-http-json-vectors.json` — `21215a61c524` — ~7,195t
 - `conformance/link_http_json.py` — `46945fcd7af5` — ~2,160t
 - `conformance/manifest.yaml` — `0c5a75320819` — ~646t
@@ -65,7 +67,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/owner-execution-permit-vectors.json` — `df73b72d7d7c` — ~7,772t
 - `conformance/owner_execution_permit.py` — `a40045c4d83b` — ~3,452t
 - `conformance/release-manifest.yaml` — `f1864185a739` — ~294t
-- `conformance/runner.py` — `79946b3e23cf` — ~7,604t
+- `conformance/runner.py` — `9d9e051fb9cf` — ~8,040t
 - `conformance/runtime-family-vectors.json` — `e9182c76245d` — ~3,138t
 - `conformance/runtime-observation-vectors.json` — `199670cef5ac` — ~19,334t
 - `conformance/runtime_observations.py` — `d4b1c36d2a1f` — ~1,382t
@@ -74,13 +76,13 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
-- `contracts/canonical-task-graph.json` — `8904cb269d65` — ~36,090t
+- `contracts/canonical-task-graph.json` — `da355f9314f1` — ~37,044t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~167t
 - `contracts/deployment-manifest.image.example.yaml` — `94c2bd1e9061` — ~577t
 - `contracts/dynamic-alias-acceptance.json` — `bb8b1516edf3` — ~3,803t
 - `contracts/error.example.json` — `fa977ed47913` — ~111t
-- `contracts/feature-registry.json` — `ec7f7a31d9f1` — ~7,662t
+- `contracts/feature-registry.json` — `c4c5ae6fc24e` — ~7,796t
 - `contracts/gpu-memory/01-b200-primary-whisper-pack.fleet.json` — `b41b6dd4151c` — ~4,130t
 - `contracts/gpu-memory/02-a100x4-vllm-tp4-slurm.fleet.json` — `699cb3543660` — ~6,637t
 - `contracts/gpu-memory/03-r9700x2-rocm-layer-split-no-slots.fleet.json` — `13fb12227d16` — ~3,322t
@@ -116,6 +118,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-12-dynamic-alias-authority.md` — `da2d9267f07f` — ~520t
 - `decisions/2026-10-12-farm-gateway-zero-capacity-registration.md` — `dc2e67481da6` — ~638t
 - `decisions/2026-10-12-model-intelligence-ui-cohesion.md` — `aaa0263e7798` — ~660t
+- `decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` — `b9735ab20a83` — ~2,610t
 - `decisions/2026-10-15-link-upstream-role.md` — `39973a699b66` — ~382t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `468dc44cd437` — ~4,192t
@@ -314,15 +317,39 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/mission-event-summary-too-long.json` — `437bac0447f1` — ~305t
 - `fixtures/invalid/mission-event-unknown-field.json` — `2b67ba03022b` — ~243t
 - `fixtures/invalid/mission-event-unknown-progress-kind.json` — `b001309c8813` — ~239t
+- `fixtures/invalid/node-assignment-escaping-artifact.json` — `edf2d2aa8b9e` — ~652t
+- `fixtures/invalid/node-assignment-measure-artifact-sizes-overflow.json` — `a2c4b6457f61` — ~582t
+- `fixtures/invalid/node-assignment-measure-artifacts-collide-dir-and-file.json` — `4968c7f61431` — ~576t
+- `fixtures/invalid/node-assignment-measure-artifacts-collide-listed-twice.json` — `df61b3eb9ef6` — ~580t
+- `fixtures/invalid/node-assignment-measure-artifacts-collide-part-file.json` — `4fd28ad21ed3` — ~577t
+- `fixtures/invalid/node-assignment-measure-artifacts-collide-sha256-file.json` — `730933252be8` — ~583t
+- `fixtures/invalid/node-assignment-measure-concurrency-over-256.json` — `e4ff180092b6` — ~679t
+- `fixtures/invalid/node-assignment-measure-context-below-floor.json` — `d63e67738879` — ~678t
+- `fixtures/invalid/node-assignment-measure-max-tokens-one.json` — `599807c49249` — ~678t
+- `fixtures/invalid/node-assignment-serve-deployment-not-derived.json` — `8d541d3236b0` — ~732t
+- `fixtures/invalid/node-assignment-serve-deployment-stale-after-command-change.json` — `f7be84f782e1` — ~738t
+- `fixtures/invalid/node-assignment-serve-gpu-count-mismatch.json` — `dceb4b4f6aca` — ~720t
+- `fixtures/invalid/node-assignment-serve-max-context-above-supported.json` — `8fff28452376` — ~732t
+- `fixtures/invalid/node-assignment-serve-slots-over-u32.json` — `e88b151bd54c` — ~734t
+- `fixtures/invalid/node-assignment-stop-with-cargo.json` — `7fee5c4f4e74` — ~28t
+- `fixtures/invalid/node-assignment-typed-deployment.json` — `88e9e2f5fb0f` — ~718t
+- `fixtures/invalid/node-assignment-unknown-kind.json` — `901ed0e69456` — ~15t
+- `fixtures/invalid/node-dynamic-facts-blank-serial.json` — `a7464a8a557c` — ~133t
+- `fixtures/invalid/node-dynamic-facts-no-cards.json` — `abdf85987f21` — ~70t
+- `fixtures/invalid/node-dynamic-facts-wrong-version.json` — `bb8002b3edbe` — ~136t
 - `fixtures/invalid/node-hardware-missing-version.json` — `f0094fe08aff` — ~210t
 - `fixtures/invalid/node-hardware-not-object.json` — `09bb4ed5ad6a` — ~8t
 - `fixtures/invalid/node-hardware-report-negative-vram.json` — `05ad3281363a` — ~212t
 - `fixtures/invalid/node-hardware-version-string.json` — `6072ed618bf3` — ~214t
 - `fixtures/invalid/node-missing-id.json` — `6df7ff2a4a7d` — ~13t
+- `fixtures/invalid/node-provisioning-status-failed-without-reason.json` — `61f1557527d2` — ~101t
+- `fixtures/invalid/node-provisioning-status-message-too-long.json` — `748b232f2602` — ~185t
+- `fixtures/invalid/node-provisioning-status-unknown-reason.json` — `24e47b18fecf` — ~79t
 - `fixtures/invalid/node-register-gateway-missing-deployment.json` — `4ca4d194d2ff` — ~59t
 - `fixtures/invalid/node-register-mixed-hardware-only.json` — `d3706dd29296` — ~33t
 - `fixtures/invalid/node-register-native-capability-map.json` — `17f7c6deb67a` — ~139t
 - `fixtures/invalid/node-register-node-empty-endpoint.json` — `c343350edec3` — ~65t
+- `fixtures/invalid/node-register-response-assignments-too-many.json` — `868aa5f7f717` — ~260t
 - `fixtures/invalid/node-register-response-duplicate-capability.json` — `79b9e39a0f95` — ~50t
 - `fixtures/invalid/node-register-routable-missing-capacity.json` — `96b1d6acaa80` — ~92t
 - `fixtures/invalid/protocol-bad-version.json` — `56625bd802e2` — ~25t
@@ -428,12 +455,20 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/mission-event-progress.json` — `7af7f368d514` — ~239t
 - `fixtures/valid/model-variant.json` — `913c5690bbbe` — ~33t
 - `fixtures/valid/model.json` — `73854ced3bff` — ~14t
+- `fixtures/valid/node-assignment-measure.json` — `ff9170aed043` — ~678t
+- `fixtures/valid/node-assignment-stop.json` — `3f9b804c8ded` — ~19t
+- `fixtures/valid/node-assignment.json` — `9943e69703ee` — ~732t
+- `fixtures/valid/node-dynamic-facts.json` — `01d381391573` — ~136t
 - `fixtures/valid/node-hardware-report.json` — `11e6cfa1e2d9` — ~214t
 - `fixtures/valid/node-hardware.json` — `3e127be088c8` — ~245t
+- `fixtures/valid/node-provisioning-status-runtime-unavailable.json` — `ea7e7323229e` — ~94t
+- `fixtures/valid/node-provisioning-status.json` — `a3917ddf218f` — ~96t
+- `fixtures/valid/node-register-dynamic.json` — `bf3b5739ebe7` — ~241t
 - `fixtures/valid/node-register-gateway-empty.json` — `f2d139705070` — ~67t
 - `fixtures/valid/node-register-legacy.json` — `e7860cdb79fa` — ~31t
 - `fixtures/valid/node-register-native-response.json` — `b3c55ed2e76a` — ~147t
 - `fixtures/valid/node-register-native.json` — `2ac2fa6533bd` — ~139t
+- `fixtures/valid/node-register-response-dynamic.json` — `2c97365626f1` — ~883t
 - `fixtures/valid/node-register-response-legacy.json` — `900d6239ef6d` — ~36t
 - `fixtures/valid/node-register-response-native-response.json` — `7df0e3d8e29e` — ~51t
 - `fixtures/valid/node-register-response-native.json` — `d7f962ef1e95` — ~42t
@@ -461,17 +496,17 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/runtime-observation-report.json` — `a2e472f63798` — ~281t
 - `fixtures/valid/seat.json` — `226b3cc299f9` — ~19t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `b1051c2bceea` — ~3,031t
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `eb0eb915b104` — ~26,012t
-- `implementation/CANONICAL_TASK_INDEX.md` — `7bd504d142d8` — ~3,683t
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `bfc2d4273ec2` — ~26,884t
+- `implementation/CANONICAL_TASK_INDEX.md` — `f6e21e626a5e` — ~3,712t
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
 - `implementation/ERROR_SEMANTICS.md` — `353b4a250389` — ~598t
-- `implementation/FEATURE_TASK_COVERAGE.md` — `8761f4ed57be` — ~3,076t
+- `implementation/FEATURE_TASK_COVERAGE.md` — `27a8478780af` — ~3,142t
 - `implementation/IMPLEMENTATION_ORDER.md` — `1a48655f5ecc` — ~221t
 - `implementation/MILESTONES.md` — `84f77749cf80` — ~481t
 - `implementation/MONOREPO_BOOTSTRAP.md` — `7d729410dacd` — ~367t
 - `implementation/PHASE_GATES.md` — `b821ccf27648` — ~672t
-- `implementation/SPEC_TASK_COVERAGE.md` — `ae65f1869fff` — ~1,626t
+- `implementation/SPEC_TASK_COVERAGE.md` — `9c92f52f6707` — ~1,653t
 - `implementation/TEST_STRATEGY.md` — `5ded1d51fb57` — ~1,301t
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `openapi/README.md` — `2cec122d644f` — ~207t
@@ -558,10 +593,13 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/requests/link-http-token.json` — `dcccaa44129e` — ~351t
 - `schemas/v1/requests/link-request-meta.json` — `9ec7d3aa6548` — ~669t
 - `schemas/v1/requests/link-response-meta.json` — `48b239e0dcaa` — ~565t
+- `schemas/v1/requests/node-assignment.json` — `452881c1d41a` — ~3,472t
+- `schemas/v1/requests/node-dynamic-facts.json` — `b1f37d22e54c` — ~590t
 - `schemas/v1/requests/node-hardware-report.json` — `3b00c4fae6d6` — ~577t
 - `schemas/v1/requests/node-hardware.json` — `9d1413d86adb` — ~255t
-- `schemas/v1/requests/node-register-response.json` — `404762552103` — ~270t
-- `schemas/v1/requests/node-register.json` — `550e89478d16` — ~918t
+- `schemas/v1/requests/node-provisioning-status.json` — `a482566061cb` — ~1,033t
+- `schemas/v1/requests/node-register-response.json` — `bdd49cd732e0` — ~311t
+- `schemas/v1/requests/node-register.json` — `0bf5ac0dc7eb` — ~931t
 - `schemas/v1/requests/node-systemone-advert.json` — `4af7456bad7d` — ~307t
 - `schemas/v1/requests/node-systemone-status.json` — `dfcf8200d555` — ~276t
 - `schemas/v1/requests/prediction.json` — `1017ff013d83` — ~124t
@@ -648,7 +686,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/44_CORE_PROTOCOL.md` — `ef12f6112a93` — ~12,397t
 - `specs/45_PROTOCOL_V1.md` — `4bfad5e835f7` — ~11,082t
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `4ef07f017b84` — ~13,331t
-- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `a072490b85d9` — ~10,646t
+- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `c337216415bf` — ~10,993t
 - `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `56766c2f5e63` — ~1,860t
 - `specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md` — `387132ce71c0` — ~2,005t
 - `specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md` — `24d9f61452a1` — ~3,315t
@@ -665,6 +703,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` — `ff99c51f9119` — ~6,699t
 - `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` — `39a580af16ea` — ~6,678t
 - `specs/63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS.md` — `3ae270316b23` — ~4,040t
+- `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` — `34c058ffbaeb` — ~11,958t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `99f922c820cb` — ~544t
@@ -824,6 +863,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-5/P5-T32.md` — `e40ac49dd0c8` — ~483t
 - `tasks/phase-5/P5-T33.md` — `3b69e5031fde` — ~635t
 - `tasks/phase-5/P5-T34.md` — `7491e8f30dae` — ~642t
+- `tasks/phase-5/P5-T35.md` — `3cd16bd7894d` — ~1,240t
 - `tasks/phase-A/A-T01.md` — `8300274295bc` — ~255t
 - `tasks/phase-A/A-T02.md` — `5440d59b1574` — ~271t
 - `tasks/phase-A/A-T03.md` — `95ae59475969` — ~245t

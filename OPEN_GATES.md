@@ -374,6 +374,48 @@ Unsatisfied, and recorded `owed` by `P5-T33` (Rust gateway) and `P5-T34` (Go gat
 No deployment may enable open enrollment, and no placement or routing behaviour may depend on
 `hardware`, until those tests are `proven` and an operator decision approves it.
 
+## Dynamic nodes and gateway-driven provisioning (specs/64) — 2026-10-15
+
+**BLOCKED for production use.** `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` defines the
+`iw.dynamic-node/1` capability, the `dynamic` register member, the first non-empty `assignments`
+entries (`serve`, `measure`, `stop`) on the register and heartbeat responses, the heartbeat
+`provisioning` member, and the gateway's plan from desired models and measured runtime profiles.
+Its decision record (`decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md`) is `Proposed`.
+Three schemas and their fixtures are checked by `python3 conformance/runner.py`.
+
+Unsatisfied, and recorded `owed` by `P5-T35`, feature `IW-DYNNODE-001`:
+
+- the reference implementation (Rust gateway and node) carries unit, HTTP-on-loopback and
+  scripted-gateway tests for every rule of the specification; no dynamic node has fetched real
+  weights, launched a real profile through docker and served requests through its gateway, and no
+  independent review has run;
+- the two deployments the operator asked for (`qwen3.8-27b-modality-vision-quant-q8_k_xl` on two
+  cards and `qwen3.8-flash_next-modality-vision-quant-q8_0` on eight, plain `q8_0` because the
+  upstream repository publishes no `UD-Q8_K_XL` build (decision record); 120k to 260k context,
+  every card on one R9700 host) have no shipped runtime profile with Q8 evidence at that depth: the reference
+  configuration lists them as measurement candidates, so the first assignment on a real host is a
+  `measure`, and the draft it yields has no quality block. Serving from a draft is permitted by
+  the reference only where the desired model does not require a quality suite; no draft has been
+  produced on real hardware;
+- the Go gateway (`metabolomics-us/inferweave-gateway`) does not implement specs/64; a dynamic
+  node registered to it is recorded hardware-only and assigned nothing;
+- link-only dynamic nodes (behind NAT) and two engines on one dynamic node are non-goals of this
+  version; a dynamic node is dialled at an operator-named address;
+- the reference node fetches over `file://` (only under an operator-configured source root) and
+  `http(s)://` only; the site-connector cache tiers of specs/27 are not consulted;
+- the node behaviours recorded in specs/64 section 5 (the `file://` source root, the HTTP source
+  restrictions, the content store, read-only confined `$ARTIFACTS` mounts, a `stop` that cancels
+  an in-flight assignment, the node's own trimming of its report) come from the node branch of the
+  reference implementation, which is not merged; they were not read against that code when this
+  specification was last revised, and no test drives them against this specification;
+- `conformance/node_join.py` still answers `assignments: []` for every registration, which
+  remains correct for a registration that does not negotiate the capability; no vector drives a
+  negotiated registration against a running gateway.
+
+No production gateway may provision a dynamic node, and no drafted profile may serve production
+traffic, until those tests are `proven` against a running fleet and an operator decision approves
+it.
+
 ## Universal runtime families and lifecycle (specs/48–53) — 2026-10-12
 
 **BLOCKED for production use.** The IW-RT-001…006/B-T01…06 protocol artifacts define typed runtime
