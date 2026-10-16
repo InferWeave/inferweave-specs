@@ -639,22 +639,32 @@ exercises yet. Nothing in spec60 is `proven`, and no production gate opens.
 
 ## Alias precision, ad-hoc selection and resolution trees (spec61)
 
-**UNSATISFIED / owed.** `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` is a
-proposed additive amendment of spec54 level 2: precision as a selection dimension, an ad-hoc
-evaluate-only selection, and a four-level resolution tree with typed unmet requirements. No
-schema, fixture, producer, consumer or test exists, so every required test is **owed** and
-nothing in spec61 is `proven`. The precision-class table is a classification: six of its tokens
-were observed in the reference lab gateway's model listings on 2026-10-14 and the rest are
-unobserved. The bounds (64 model nodes, 256 instance nodes, 16 `unmet` entries, 16 allowed
-tokens) are design limits, not measurements, and are owed a measured response-size check. The
-`capacity` shortfall depends on owner memory reporting (spec46) that is not universal. Hosting
-requests, offers, approval, download and profile generation are not specified here and no gate
-for them opens. Also owed: the schemas `schemas/v1/aliases/precision-classes.json`,
-`resolve-request.json` and `simulate-request.json` (the optional `selection` member), the response
-fields (`adhoc`, `resolution_tree`, `unmet`, `truncated`, `unmet_truncated`), the new frozen
-vocabularies in `contracts/protocol-v1/dynamic-aliases.json`, the acceptance-matrix entries in
-`contracts/dynamic-alias-acceptance.json`, and the six required tests of spec61. None exists.
-No production gate opens.
+**PARTLY SATISFIED (contract shape); the rest UNSATISFIED / owed.**
+`specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` is a proposed additive amendment
+of spec54 level 2: precision as a selection dimension, an ad-hoc evaluate-only selection, and a
+four-level resolution tree with typed unmet requirements.
+
+*Now present and checked by `tests/smoke/test_dynamic_alias_contract.py`:* the schemas
+`schemas/v1/aliases/precision-classes.json` (versioned table, additivity checked), the ad-hoc body
+(`selection`, optional `request_context`, closed, DYNAMIC only, exclusive with `alias_id` and
+`definition`) on `resolve-request.json` and `simulate-request.json`, `adhoc-resolution.json` with
+`resolution_tree`, `unmet`, `truncated` and `unmet_truncated`, the optional table-version pin
+`selection.precision_table_version`, the three precision candidate reasons in the frozen reason
+vocabulary and spec54's table, the precision and unmet vocabularies in
+`contracts/protocol-v1/dynamic-aliases.json`, and acceptance entries 30 to 35. The ad-hoc
+response fixture is the exact JSON the Rust producer serializes (InferWeave/inferweave test
+`adhoc_wire_fixture_is_exactly_what_the_producer_serializes`), so the schema and the producer
+agree on shape. This proves **shape only**; acceptance entries 30 to 35 stay `owed` because the
+matrix demands a run against an implementation, and each carries `partial_evidence`.
+
+*Still UNSATISFIED / owed:* the Go consumer beyond fixtures (required test 5); stamping the pin at
+publish time (an absent pin means the validating build's current table); the precision-class table
+is a classification, six of its tokens were observed in the reference lab gateway's model listings
+on 2026-10-15 and the rest are unobserved; the bounds (64 model nodes, 256 instance nodes, 16
+`unmet` entries, 16 allowed tokens) are design limits, not measurements, and are owed a measured
+response-size check; the `capacity` shortfall depends on owner memory reporting (spec46) that is not
+universal. Hosting requests, offers, approval, download and profile generation are not specified
+here and no gate for them opens. No production gate opens.
 
 ## Federated provisioning: hosting requests (spec62)
 
@@ -702,8 +712,8 @@ Nothing here opens a production gate.
   `POST /inferweave/v1/aliases/resolve|simulate` with an inline `selection`, the resolution tree and
   `unmet` are implemented and deployed to the bender lab gateway (management/preview only). A signed
   edge request against it returned 200. **UNSATISFIED / owed:** rate limiting and audit of ad-hoc
-  calls (no preview audit sink exists); the table-version pin; the schema/contract additions listed in
-  spec 61 (`contract.json`, `precision-classes.json`, `selection` on the request schemas); a measured
+  calls (no preview audit sink exists); stamping the table-version pin at publish (the pin member
+  itself and the schema/contract additions now exist, see the spec61 gate above); a measured
   memory report in the production inventory (so `capacity` never appears); the Go console test 5 is
   covered by metabolomics-us/inferweave-gateway #549 against fixtures only. **Defect found by running
   it:** an ad-hoc selection with no stated preferences was rejected because stored-alias preference

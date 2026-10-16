@@ -1,0 +1,219 @@
+{
+  "adhoc": true,
+  "admission_reserved": false,
+  "alias": null,
+  "candidates": [
+    {
+      "capability_profile": {
+        "confidence": "verified",
+        "features": {
+          "tools": {
+            "confidence": "verified",
+            "fidelity": "native",
+            "provenance": {
+              "build_version": "opq-fx-9584b9cb01bd4fad",
+              "expires_at": "2026-10-12T20:01:00Z",
+              "observed_at": "2026-10-12T19:59:00Z",
+              "protocol_version": "1.1.0",
+              "sequence": 1,
+              "source_generation": "opq-fx-26785b56454e2c85",
+              "source_id": "opq-fx-4ac2eee5a58b1d0d",
+              "verification_id": "opq-fx-f8c481e61153b585"
+            }
+          }
+        },
+        "input_modalities": [
+          "text"
+        ],
+        "instance_generation": "opq-fx-ccecda8231281dd7",
+        "max_context_tokens": 65536,
+        "max_output_tokens": 8192,
+        "output_modalities": [
+          "text"
+        ],
+        "policy_evidence_id": "opq-fx-e81ddc37beb1dc47",
+        "precision_class": "low",
+        "precision_table_version": 1,
+        "privacy": [
+          "opq-fx-b2cece8a7006077d"
+        ],
+        "profile_id": "opq-fx-c2677f2db429394e",
+        "provenance": {
+          "build_version": "opq-fx-9584b9cb01bd4fad",
+          "expires_at": "2026-10-12T20:01:00Z",
+          "observed_at": "2026-10-12T19:59:00Z",
+          "protocol_version": "1.1.0",
+          "sequence": 1,
+          "source_generation": "opq-fx-26785b56454e2c85",
+          "source_id": "opq-fx-4ac2eee5a58b1d0d",
+          "verification_id": "opq-fx-f8c481e61153b585"
+        },
+        "quantization": "q4_k_m",
+        "residency": "opq-fx-68fbffb37328f781",
+        "runtime_family": "llm",
+        "trusted_origin": "opq-fx-a492e78572951391"
+      },
+      "deployment_key": "opq-fx-382619c147e5bb16",
+      "eligibility": "EXCLUDED",
+      "instance_generation": "opq-fx-ccecda8231281dd7",
+      "instance_id": "opq-fx-f04f84ec7600e3df",
+      "model_id": "model-far@v1",
+      "owner_admission_required": true,
+      "owner_gateway_id": "opq-fx-77bca3d8315d8db6",
+      "reasons": [
+        "INVALID_CAPABILITY"
+      ],
+      "resource_group_id": "opq-fx-d0297ff3e6681c7d",
+      "route_kind": "FEDERATED",
+      "state": "READY"
+    },
+    {
+      "capability_profile": {
+        "confidence": "verified",
+        "features": {
+          "tools": {
+            "confidence": "verified",
+            "fidelity": "native",
+            "provenance": {
+              "build_version": "test",
+              "expires_at": "2026-10-12T20:01:00Z",
+              "observed_at": "2026-10-12T19:59:00Z",
+              "protocol_version": "1.1.0",
+              "sequence": 1,
+              "source_generation": "owner-epoch-7",
+              "source_id": "owner",
+              "verification_id": "proof-1"
+            }
+          }
+        },
+        "input_modalities": [
+          "text"
+        ],
+        "instance_generation": "gen-1",
+        "max_context_tokens": 65536,
+        "max_output_tokens": 8192,
+        "output_modalities": [
+          "text"
+        ],
+        "policy_evidence_id": "policy-1",
+        "precision_class": "low",
+        "precision_table_version": 1,
+        "privacy": [
+          "private"
+        ],
+        "profile_id": "profile-mid",
+        "provenance": {
+          "build_version": "test",
+          "expires_at": "2026-10-12T20:01:00Z",
+          "observed_at": "2026-10-12T19:59:00Z",
+          "protocol_version": "1.1.0",
+          "sequence": 1,
+          "source_generation": "owner-epoch-7",
+          "source_id": "owner",
+          "verification_id": "proof-1"
+        },
+        "quantization": "q4_k_m",
+        "residency": "eu",
+        "runtime_family": "llm",
+        "trusted_origin": "trusted"
+      },
+      "deployment_key": "deployment-mid",
+      "eligibility": "EXCLUDED",
+      "instance_generation": "gen-1",
+      "instance_id": "mid",
+      "metric_evidence": {
+        "latency": {
+          "confidence": "verified",
+          "provenance": {
+            "build_version": "test",
+            "expires_at": "2026-10-12T20:01:00Z",
+            "observed_at": "2026-10-12T19:59:00Z",
+            "protocol_version": "1.1.0",
+            "sequence": 1,
+            "source_generation": "owner-epoch-7",
+            "source_id": "owner",
+            "verification_id": "proof-1"
+          },
+          "sample_size": 10,
+          "unit": "ms",
+          "value": 10.0
+        }
+      },
+      "model_id": "model-mid@v1",
+      "owner_admission_required": true,
+      "owner_gateway_id": "owner",
+      "reasons": [
+        "INVALID_CAPABILITY"
+      ],
+      "resource_group_id": "gpu-mid",
+      "route_kind": "LOCAL",
+      "state": "READY"
+    }
+  ],
+  "catalog_revision": "catalog-17",
+  "evaluated_at": "2026-10-12T20:00:00Z",
+  "expires_at": "2026-10-12T20:00:02Z",
+  "resolution_id": "res-test",
+  "resolution_tree": {
+    "selection": {
+      "adhoc": true,
+      "expires_at": "2026-10-12T20:00:02Z",
+      "instances_omitted": 0,
+      "models": [],
+      "models_omitted": 0,
+      "selection": {
+        "precision_table_version": 1,
+        "preferred": {
+          "latency": 1.0
+        },
+        "required": {
+          "features": {
+            "tools": {
+              "confidence": "verified",
+              "fidelity": [
+                "native"
+              ]
+            }
+          },
+          "input_modalities": [
+            "text"
+          ],
+          "min_context_tokens": 32768,
+          "min_precision_class": "high",
+          "runtime_families": [
+            "llm"
+          ]
+        },
+        "type": "DYNAMIC"
+      },
+      "status": "UNAVAILABLE",
+      "unmet": [
+        {
+          "count": 2,
+          "observed": "low",
+          "required": "high",
+          "requirement": "min_precision_class",
+          "scope": "model"
+        }
+      ],
+      "unmet_omitted": 0,
+      "unmet_truncated": false
+    }
+  },
+  "routing_policy_version": "dynamic-aliases/1",
+  "status": "UNAVAILABLE",
+  "truncated": false,
+  "unmet": [
+    {
+      "count": 2,
+      "observed": "low",
+      "required": "high",
+      "requirement": "min_precision_class",
+      "scope": "model"
+    }
+  ],
+  "unmet_truncated": false,
+  "warnings": [
+    "PREVIEW_ONLY_REVALIDATE_ON_DISPATCH"
+  ]
+}
