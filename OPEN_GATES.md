@@ -800,7 +800,8 @@ Nothing here opens a production gate. Every Rust statement below is about defaul
   dialer (test 4); the non-recording assertion (`IW_UPSTREAM_RECORDS_PROMPT_CONTENT=false`: no prompt content in the
   ledger row, no response capture, ack `false`) so private traffic can reach a local-domain non-recording upstream;
   the relay circuit breaker and per-link bandwidth bound (test 8); the drain wait for upstream requests in flight
-  (test 7); a fix to the metadata composition check that would have closed every classed upstream request.
+  (test 7); the class sent only to an acceptor whose ack says `reads_traffic_class`; a cancelled request charged its
+  whole reservation and streams asked for usage (independent review round 1); a fix to the metadata composition check that would have closed every classed upstream request.
 * **UNSATISFIED / owed:** durable token counters and durable request-id dedupe (both are in memory and reset on an
   acceptor restart, so a restart refunds a spent budget); a measured default for every number (budget window and
   reservation, breaker threshold, cool-down and bandwidth bound, drain window, catalog bound, dedupe TTL); the
