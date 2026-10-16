@@ -1014,3 +1014,45 @@ owner's hosting wire is a separate flag, and no executor reaches `READY`.
   over TLS exists; (4) the inbound side still parses with `serde_json::Value` (a duplicate key on a request or
   heartbeat is not refused); (5) the freshness of an `acquirable` answer is receipt time only, with no
   `sequence`; (6) every other required test of spec 62 stays owed as recorded above.
+
+### Update 2026-10-16 (closing): durable counters, the pin, the upstream Hello checks and discovery follow-ups are merged
+
+This supersedes any earlier line in this file that calls these items open or "awaiting review". Nothing here opens a
+production gate; spec 62 and spec 63 behaviour stays default-off and is deployed nowhere.
+
+* **Spec 63 durable counters and dedupe (InferWeave/inferweave #1102, #1106; opt-in by `IW_UPSTREAM_STATE_DIR`,
+  default off, requires the role):** proven by tests that execute: spend, restart, still spent; the window rollover
+  persists; a reservation in flight at a crash is charged in full; dedupe holds across a restart within its TTL; a
+  clock set back refunds nothing; a damaged journal is quarantined and every budget is treated as spent until an
+  operator reset, and that damage is not forgotten if the replacement snapshot cannot be written; a torn final
+  record is dropped while mid-file damage is still damage; the journal and the dedupe snapshot are bounded (the
+  journal compacts at 75% of its cap, and request ids are stored as a 128-bit digest); fsync, settle and slot-record
+  failures refuse budgeted keys until healed; a dead flusher is detected. Two independent reviews and a follow-up
+  closed a wedge at the size cap, damage forgotten after a failed startup, a torn-tail lockout, and a copy fallback
+  that could follow a symlink. **Still owed:** power loss can lose up to one flusher interval (500 ms or less) of
+  records; a forward wall-clock jump across a restart rolls windows early; ids beyond the snapshot budget may
+  re-execute after a restart; compaction runs under the state lock; every number (the 500 ms flush, the 10 s stall
+  limit, the 30 s back-off, the 4 kept damaged files, the 64 MiB cap) is an unmeasured placeholder; there is no
+  metric for journal faults; a default deployment still resets its counters on restart; the HTTPS fallback and the
+  principals-file shared state (required test 9) are not done.
+* **Spec 63 upstream Hello checks (#1098):** the real acceptor now refuses an api_key Hello whose `role` is not
+  exactly `upstream` or whose `link_roles` is not exactly `["upstream"]`, with no acknowledgement, on both listeners;
+  the catalog sender drops entries the dialer would reject. The schemas, fixtures and vectors are merged (see the
+  schemas section above). The role refusal is proven on the plain link by a test; the TLS listener is covered by the
+  single call site only.
+* **Spec 61 precision-table pin (#1097, #1099):** a held `selection.precision_table_version` now binds
+  classification: a candidate that advertises the pinned version keeps its class and is verified; every other
+  candidate is classified by its quantization token under the pinned table, a tokenless pinned candidate is
+  `unknown`, and an unheld pin excludes with `PRECISION_UNVERIFIED` and the new `unmet` token
+  `precision_table_version`. Production holds only table 1, so no second real table has been exercised. A Go console
+  that closes the `unmet_requirement` enum must add the token.
+* **Spec 62 discovery follow-ups (#1101, #1103):** failed discovery answers are not cached, unknown peer names never
+  fill the cache, concurrent operator `hosting/ask` and `hosting/discover` calls are capped at 4 (429 beyond it), and
+  inbound provisioning requests refuse duplicate JSON keys. **Still owed:** the alias `PROVISIONABLE` marking from a
+  discovery answer; the operator-audience plan (the spec leaves the eviction handle format, lifetime and recipient
+  undefined); real profile, load and validation hooks (they fail closed, so nothing reaches `READY`); a run against a
+  real owner over TLS; a large weight download through the CDN redirect chain; the per-key hosting role; the Go
+  console rendering; licence checks for local sources.
+* **Not done and not mine to decide:** the Go-acceptor and feature-ID decisions of the spec 63 decision record; the
+  spec 56 qualification verifier (the spec leaves the evidence store and record format undefined); joining farm and
+  the other bender nodes to the lab gateway; rotating the lab API key that was pasted into a chat.
