@@ -86,8 +86,14 @@ An `upstream` link has no registration, so it uses a **different, typed credenti
   failover. A request admitted under the budget may
   finish, so the budget can be exceeded by the requests in flight at the moment it is reached,
   bounded by the key's concurrency bound. Each admitted request reserves an estimate of its tokens
-  at admission and the reservation is replaced by the engine-reported usage when the request ends;
-  a request that ends without a usage report is charged its reservation, never zero. A budget
+  at admission (the prompt, plus the requested output limit for each of the `n` choices, up to a
+  bound) and the reservation is replaced by the engine-reported usage when the request ends; the
+  acceptor asks the engine to report usage on a stream (and withholds the extra event from a caller
+  that did not ask for it). A request that ends without a usage report, including one cancelled
+  before its response, is charged its whole reservation (or what was seen of its output if that is
+  more), never zero and never refunded by a cancel; only a request the pipeline answered with an
+  error status is charged its prompt alone. The counters are per key id and principal, so a rotated
+  key under a new id starts a fresh budget. A budget
   whose counters do not survive an acceptor restart is weaker than one that does; whether the
   counters are durable is stated in Proof status, and a restart that resets them is a known
   weakness until they are.
@@ -123,7 +129,7 @@ An `upstream` link has no registration, so it uses a **different, typed credenti
 * A role not granted is absent. A dialer that asked for `upstream` and was not granted it closes
   that role and **never falls back** to `serve`, to an unauthenticated path or to the HTTPS API.
 * **The acknowledgement and the refusal frame.** The acknowledgement names the granted roles, the
-  principal's pseudonymous label, the negotiated features and `records_prompt_content` (see
+  principal's pseudonymous label, the negotiated features, `reads_traffic_class` and `records_prompt_content` (see
   Privacy). Granting `upstream` is what lets the acceptor send the `refused` frame on this link:
   the frame belongs to the federated-admission link capability `iw.link-refusal/1` (defined in the
   implementation repository's federated-admission design, not in this specification set), which
@@ -155,9 +161,11 @@ An `upstream` link has no registration, so it uses a **different, typed credenti
   `private` and `shareable` (`private` is the more restrictive: a request restricted to owned
   machines; `shareable` may also be served by vetted volunteer hardware). The vocabulary is the
   Rust gateway's node-tier vocabulary; spec 44 does not define it, and an earlier draft cited
-  spec 44 for it in error. The dialer sends it only on a link whose acknowledgement granted
-  `upstream`, where the acceptor is known to read it (a reader that predates the member ignores it,
-  which reads as undeclared). The request's class is the more restrictive of the declared class
+  spec 44 for it in error. The dialer sends it only on a link whose acknowledgement carries the boolean member
+  `reads_traffic_class: true` (absent means false), because an acceptor that predates the member
+  rejects a `meta` key it does not know; it is an acknowledgement member and not a negotiated
+  feature because an earlier acceptor accepts a Hello that offers exactly two features. Where it is
+  not sent the acceptor reads the request as undeclared, that is `private`. The request's class is the more restrictive of the declared class
   and the key's ceiling, in the order just stated; an undeclared, absent or unrecognised class is
   `private`. The acceptor never reads the class from anywhere but
   this member, and a dialer's class can only make a request more restrictive than the key's
