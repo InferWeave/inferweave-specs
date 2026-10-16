@@ -323,6 +323,13 @@ correlation ID; retry-after is optional and measured.
 | `EXECUTION_IN_PROGRESS` | true | 409 |
 | `EXECUTION_OUTCOME_UNKNOWN` | false | 409 |
 | `EXECUTION_RESULT_UNAVAILABLE` | false | 409 |
+| `PRECISION_UNVERIFIED` | false | 400 |
+| `QUANTIZATION_ABSENT` | false | 400 |
+| `PRECISION_UNKNOWN` | false | 400 |
+
+The last three are the spec 61 precision candidate reasons: they explain a candidate exclusion and
+are never returned as an HTTP error. The HTTP column is the status they would carry if one were
+ever reported alone, matching `FEATURE_UNVERIFIED`.
 
 Health: `READY`, `DEGRADED`, `QUEUE_ONLY`, `PROVISIONABLE`, `UNAVAILABLE`, `DISABLED`.
 

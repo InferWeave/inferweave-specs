@@ -445,7 +445,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../schemas/v1/aliases/resolution.json
+                oneOf:
+                - $ref: ../schemas/v1/aliases/resolution.json
+                - $ref: ../schemas/v1/aliases/adhoc-resolution.json
         default:
           description: Canonical redacted alias error; 401/403 auth, 412 CAS, 428 missing
             precondition, 409 idempotency conflict, 503 capacity.
@@ -476,7 +478,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../schemas/v1/aliases/resolution.json
+                oneOf:
+                - $ref: ../schemas/v1/aliases/resolution.json
+                - $ref: ../schemas/v1/aliases/adhoc-resolution.json
         default:
           description: Canonical redacted alias error; 401/403 auth, 412 CAS, 428 missing
             precondition, 409 idempotency conflict, 503 capacity.
