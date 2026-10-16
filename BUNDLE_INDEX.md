@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,191,201 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,191,444 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -65,7 +65,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/node-join-vectors.json` — `d7aa10218ed6` — ~9,063t
 - `conformance/node_join.py` — `606158868345` — ~3,836t
 - `conformance/owner-execution-permit-vectors.json` — `df73b72d7d7c` — ~7,772t
-- `conformance/owner_execution_permit.py` — `a40045c4d83b` — ~3,452t
+- `conformance/owner_execution_permit.py` — `2a204b3f4fda` — ~3,695t
 - `conformance/release-manifest.yaml` — `f1864185a739` — ~294t
 - `conformance/runner.py` — `9d9e051fb9cf` — ~8,040t
 - `conformance/runtime-family-vectors.json` — `e9182c76245d` — ~3,138t
