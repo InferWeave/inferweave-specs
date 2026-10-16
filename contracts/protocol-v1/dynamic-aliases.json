@@ -193,6 +193,21 @@
       "code": "EXECUTION_RESULT_UNAVAILABLE",
       "retryable": false,
       "http_status": 409
+    },
+    {
+      "code": "PRECISION_UNVERIFIED",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "QUANTIZATION_ABSENT",
+      "retryable": false,
+      "http_status": 400
+    },
+    {
+      "code": "PRECISION_UNKNOWN",
+      "retryable": false,
+      "http_status": 400
     }
   ],
   "events": [
@@ -394,6 +409,73 @@
         "CANDIDATES_TRUNCATED",
         "METRICS_UNAVAILABLE"
       ]
+    },
+    "precision_band": {
+      "schema_path": [
+        "definitions",
+        "precision_band"
+      ],
+      "values": [
+        "full",
+        "high",
+        "medium",
+        "low",
+        "very_low"
+      ],
+      "document": "specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md"
+    },
+    "precision_class": {
+      "schema_path": [
+        "definitions",
+        "precision_class"
+      ],
+      "values": [
+        "full",
+        "high",
+        "medium",
+        "low",
+        "very_low",
+        "unknown"
+      ],
+      "document": "specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md"
+    },
+    "unmet_requirement": {
+      "schema_path": [
+        "definitions",
+        "unmet_requirement"
+      ],
+      "values": [
+        "runtime_family",
+        "input_modality",
+        "output_modality",
+        "feature",
+        "min_context_tokens",
+        "min_output_tokens",
+        "embedding_dimensions",
+        "output_schema",
+        "min_precision_class",
+        "quantization",
+        "privacy",
+        "residency",
+        "trusted_origin",
+        "license",
+        "health",
+        "capacity"
+      ],
+      "document": "specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md"
+    },
+    "unmet_scope": {
+      "schema_path": [
+        "definitions",
+        "unmet_scope"
+      ],
+      "values": [
+        "selection",
+        "model",
+        "instance",
+        "owner"
+      ],
+      "document": "specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md"
     }
   }
 }
