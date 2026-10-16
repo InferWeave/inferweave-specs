@@ -1,8 +1,8 @@
 # Dynamic nodes and gateway-driven model provisioning — 2026-10-15
 
-**Status:** Proposed  
+**Status:** Accepted  
 **Decision owner:** InferWeave operator  
-**Date:** 2026-10-15  
+**Date:** 2026-10-15 (accepted 2026-10-16; operational proof on real R9700 hardware, see `tasks/phase-5/P5-T35.md` and `evidence/dynamic-nodes-r9700-2026-10-16/`)  
 **Authorizes:** On acceptance: the wire contract of
 `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` (the `iw.dynamic-node/1` capability, the
 `dynamic` register member, the first `assignments` entry shapes, the heartbeat `provisioning`

@@ -437,23 +437,25 @@ fleet, TLS (or a tunnel) is approved for any non-private path, and an operator d
 `iw.dynamic-node/1` capability, the `dynamic` register member, the first non-empty `assignments`
 entries (`serve`, `measure`, `stop`) on the register and heartbeat responses, the heartbeat
 `provisioning` member, and the gateway's plan from desired models and measured runtime profiles.
-Its decision record (`decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md`) is `Proposed`.
+Its decision record (`decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md`) is `Accepted` (2026-10-16).
 Three schemas and their fixtures are checked by `python3 conformance/runner.py`.
 
-Unsatisfied, and recorded `owed` by `P5-T35`, feature `IW-DYNNODE-001`:
+**Satisfied for the Rust reference implementation** (2026-10-16) — operational proof on host `beast` (2× R9700); `tasks/phase-5/P5-T35.md` is `proven`, full record in `evidence/dynamic-nodes-r9700-2026-10-16/`. Remaining follow-ups:
 
 - the reference implementation (Rust gateway and node) carries unit, HTTP-on-loopback and
-  scripted-gateway tests for every rule of the specification; no dynamic node has fetched real
-  weights, launched a real profile through docker and served requests through its gateway, and no
-  independent review has run;
+  scripted-gateway tests for every rule of the specification, **and a dynamic node has fetched
+  real weights, launched a real profile through docker and served real inference through its
+  gateway** (2026-10-16, host `beast`, 2× R9700 — `evidence/dynamic-nodes-r9700-2026-10-16/`); a
+  separate adversarial review remains a follow-up;
 - the two deployments the operator asked for (`qwen3.8-27b-modality-vision-quant-q8_k_xl` on two
   cards and `qwen3.8-flash_next-modality-vision-quant-q8_0` on eight, plain `q8_0` because the
   upstream repository publishes no `UD-Q8_K_XL` build (decision record); 120k to 260k context,
   every card on one R9700 host) have no shipped runtime profile with Q8 evidence at that depth: the reference
   configuration lists them as measurement candidates, so the first assignment on a real host is a
   `measure`, and the draft it yields has no quality block. Serving from a draft is permitted by
-  the reference only where the desired model does not require a quality suite; no draft has been
-  produced on real hardware;
+  the reference only where the desired model does not require a quality suite; a draft was
+  produced on real hardware and is serving (the 27B, host `beast`, 2026-10-16); the 8-card
+  Flash-Next still needs an 8-card R9700 host to produce its own draft;
 - the Go gateway (`metabolomics-us/inferweave-gateway`) does not implement specs/64; a dynamic
   node registered to it is recorded hardware-only and assigned nothing;
 - link-only dynamic nodes (behind NAT) and two engines on one dynamic node are non-goals of this
