@@ -289,6 +289,26 @@ alias never sees `READY` before the profile facts are recorded.
   to plan. `acquirable` marks an alias candidate `PROVISIONABLE` (spec 54 eligibility) **only when**
   the owner is not `disabled` and the signal is fresh (by `sequence`/`observed_at`, as the planner
   treats stale offers); `PROVISIONABLE` is never `READY`.
+* **Carriage and wire names (recorded from the Rust implementation, InferWeave/inferweave
+  #1101; the text above named neither).** The delivered code never sends
+  `ProvisionCapacity` to a peer (it is read only on the owner's operator status), so a member "in
+  the capacity signal" had no wire to travel on. The member is therefore carried on the owner's
+  `provision.capabilities` reply on `iw.provisioning/2`, beside `features`, as
+  `acquirable: {sources, maxDownloadBytes, licenses}`: `sources` is 1 to 3 distinct values of
+  `owner_cache`, `inventory`, `huggingface`; `maxDownloadBytes` is a positive number of bytes;
+  `licenses` is at most 64 normalized identifiers, never `unknown`, and may be empty (nothing is
+  pre-accepted; the approver acknowledges per plan). The object is closed. It is present only when
+  the same reply offers `acquisition`; a consumer rejects it otherwise, and rejects it on a
+  capabilities message a hosting peer *sends* to an owner. **Freshness:** the reply is live, so
+  `sequence`/`observed_at` are not carried; a consumer judges freshness by receipt time and may
+  cache an answer for a short, bounded time (the implementation uses 60 s and at most 64 entries).
+  The owner derives the member only from owner-declared policy, never from free disk or VRAM, and
+  **withholds it** when it is `disabled` or `advertise_only`, when `emergency_stop` is set, when
+  the asking peer is not on the parent allowlist, when it has no policy bound (an owner with none
+  denies), when it has no phase ceiling (acquisition is refused without one), or when
+  `autonomous` has no caps. It lists `huggingface` only when the owner has an egress host.
+  Discovery of willing owners asks the configured peers `provision.capabilities` only (bounded
+  fan-out, a per-peer timeout); it plans, reserves and fetches nothing.
 * Spec 54 forbids a Go-held alias database, selector or inventory. The Go site gateway MAY render
   the plan, `fit`, `shortfall`, `phases` and progress it receives, and MAY relay a request; it
   does not size, plan, fetch or decide.
