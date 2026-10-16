@@ -52,9 +52,10 @@ What exists today, read at the pinned commit:
   "the deployment id this node registered with" (`runtime_observation_report.rs:491-500`, `:672`; the
   test fixture is `dep_x`, `:768`): the `dep_` grammar of the table. Spec 50's single-flight
   `deployment_key` is a different object, `sha256:<hex>` over an RFC 8785 canonical manifest
-  (`specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md:78-99`). Spec 64 derives a third form, the `dep_`
-  id of a dynamic node, from length-prefixed fields (`specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md`
-  section 5). For GPUs, `required_gpu_ids` are node-claimed (`iw-gpu-0` in the producer's tests,
+  (`specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md:78-99`). So there are two identity forms, not one: the
+  `dep_` id and the spec 50 key. On a dynamic node the `dep_` id is the one spec 64 derives from
+  length-prefixed fields (`specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` section 1 table, section 5
+  rule 6); how the `dep_` id of an executor node is formed was not verified for this record. For GPUs, `required_gpu_ids` are node-claimed (`iw-gpu-0` in the producer's tests,
   `runtime_observation_report.rs:769`), cross-checked against the registration's `node.gpu_ids`
   (`alias_inventory.rs:675-679`), while `gpu_inventory.gpu_id` is a free text key and the
   owner-canonical resource-group identity (spec 56 section 4, lines 198-215) is still owed.
@@ -100,7 +101,7 @@ Define a **qualification record**: a closed JSON document, canonicalized (RFC 87
 spec 55 already do), whose `qualification_id` is `q1-` plus the lowercase SHA-256 of the canonical
 body, signed by a **verifier key** with the same trust shape as spec 55's edge keys (a configured
 public key per `(verifier_id, key_id)`, an exact purpose string, a validity interval, an
-enabled/revoked state; spec 55 lines 11-16). The owner holds the public keys, never the private
+enabled/revoked state; spec 55 lines 10-12). The owner holds the public keys, never the private
 ones. Resolution is a lookup by digest, so a record cannot be altered or substituted without the id
 changing. Revocation is a separate signed, append-only list. `deployment_qualification` stays the
 spec 23 benchmark-evidence table and a record names its rows through `evidence_ref`; the two are
@@ -235,8 +236,8 @@ sets referenced by `evidence_ref` stay in the owner's warehouse under spec 23's 
   schema and the Rust type.
 * Negative: a key-management duty for the operator; requalification after every reload and, under the
   literal epoch rule, after every epoch rotation; one more store to keep identical across replicas.
-* The mismatch between the three deployment identities (`dep_` id, spec 50 `deployment_key`, spec 64
-  derived id) becomes visible: a record carries both the observed id and the owner-computed key.
+* The mismatch between the two deployment identity forms (the `dep_` id, spec 64 derived on dynamic
+  nodes, and the spec 50 `deployment_key`) becomes visible: a record carries both the observed id and the owner-computed key.
   Whether they should be unified is not decided here.
 * `deployment_qualification` is not changed. Its unfrozen `result` column is not resolved by this
   record (invariant 41 remains open for it).

@@ -59,7 +59,7 @@ What the code does at the pinned commit:
 
 Constraints: spec 61's rule that for a principal not authorized to see a candidate every entry, count
 and figure "MUST be identical to those of a world in which that candidate does not exist", with handle
-values differing "by nonce, never their structure" (`specs/61_*.md:352-356`); D-003 owner priority
+values differing "by nonce, never their structure" (`specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md:352-356`); D-003 owner priority
 (`decisions/DECISIONS_REQUIRED.md:53-62`); local clients outrank upstream (spec 62 lines 51, 270); a
 hot swap keeps the old runtime routable until the new one validates, and a failed swap rolls back
 (spec 50 lines 70-77); pins protect active, rollback and operator-required cache entries (spec 50
@@ -87,7 +87,7 @@ lines 174-183).
 ### C. What the requester is told when the owner would have to evict
 
 1. **`UNKNOWN`.** Honest but it differs from the answer for an empty world, so it leaks occupancy and
-   breaks the identical-world rule (`specs/61_*.md:352-356`). Rejected.
+   breaks the identical-world rule (`specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md:352-356`). Rejected.
 2. **`FITS`, with its meaning fixed: fit against the owner's total hardware and policy caps, not an
    availability or entitlement statement.** Keeps the rule; moves the honesty into what `FITS` may be
    relied on for.
@@ -108,7 +108,7 @@ lines 174-183).
 contract; every number is left to the owner's policy (none measured).
 
 **Handle.** `ev1-` plus 128 bits of fresh randomness from the system generator (the shape spec 63
-uses for `ub-` binding ids, `specs/63_*.md:203`). It is minted when the operator view is computed, per
+uses for `ub-` binding ids, `specs/63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS.md:203`). It is minted when the operator view is computed, per
 `(reservation_id, candidate)`, so the same victim has different handles in different plans. The owner
 keeps an in-memory map `handle -> (reservation_id, instance_id, generation, node, model, residency
 report sequence, policy revision)`. It is never derived from a model or instance name, never logged

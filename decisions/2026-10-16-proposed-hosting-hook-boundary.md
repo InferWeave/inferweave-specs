@@ -61,11 +61,13 @@ The delivered seam, at the pinned commit:
 * **Evidence rows carry no VRAM.** A spec 64 evidence row is `context`, `concurrency`, `decodeTps`,
   optionally `prefillTps` and `ttftP50Ms` (spec 64 line 52). Spec 62's `ProfileFacts.vram_bytes`
   ("measured peak VRAM") therefore has no producer in either path as specified.
-* **Three deployment identities exist.** Spec 50's `deployment_key`, `sha256:` over a canonical
-  manifest recomputed by the receiver (spec 50 lines 78-99); spec 64's `dep_<hex>` derived from
-  length-prefixed launch, artifact and advert fields (spec 64 section 5 rule 6; accepted decision item
-  6); and the `dep_` id a node registers under, which the spec 56 producer reports as
-  `deployment_fingerprint` (`crates/iw-cli/src/runtime_observation_report.rs:672`).
+* **Two deployment identity forms exist.** Spec 50's `deployment_key`, `sha256:` over a canonical
+  manifest recomputed by the receiver (spec 50 lines 78-99); and the `dep_<hex>` id, which on a dynamic
+  node is the one spec 64 derives from length-prefixed launch, artifact and advert fields (spec 64
+  section 1 table and section 5 rule 6; accepted decision item 6) and which a node registers under; the
+  spec 56 producer reports that registered id as `deployment_fingerprint`
+  (`crates/iw-cli/src/runtime_observation_report.rs:672`). How an executor node's `dep_` id is formed was
+  not verified for this record.
 * **Two acquisition paths.** The gateway's `DownloadExecutor` fetches weights into a `0700`
   reservation-scoped staging directory (`provision_executor.rs`; spec 62 `acquiring` and `verifying`).
   A spec 64 node fetches for itself, only on an assignment (decision item 7). Spec 50 requires model
@@ -107,7 +109,7 @@ adapter and waits for the target's reported progress:
 * For: honors "adds no loader"; reuses two proven node paths; keeps one allocation authority.
 * Against: two targets with different guarantees (2a has no reservation contract, no co-residency and
   no drain; 2b has all of them but needs an advert template the node does not have for a model it has
-  never served); the three identities must be reconciled; VRAM measurement has no producer.
+  never served); the two identity forms must be reconciled; VRAM measurement has no producer.
 
 ### 3. Collapse profiling into loading
 
@@ -129,8 +131,8 @@ step (against option 3), which on 2a is a spec 64 `measure`. The sketch below is
 **What the hosting executor hands to spec 50 (or to a target that claims to implement it):**
 
 1. A **manifest** from which the receiver recomputes `deployment_key` (spec 50 lines 90-99). The
-   executor's stated key is never trusted. The record also carries the target's own derived id
-   (spec 64 `dep_` or the registered id) so the mapping between identities is explicit, not assumed.
+   executor's stated key is never trusted. The record also carries the target's own `dep_` id so the
+   mapping between the two forms is explicit, not assumed.
 2. **Staged, verified artifacts by content digest**, not a path into a reservation directory. The
    `acquiring` and `verifying` phases end by publishing into the transactional cache (spec 50 lines
    174-183) or by naming a source the node can fetch from with the pinned size and digest (spec 64
@@ -199,8 +201,8 @@ executor node.
 * Positive: the gateway keeps no loader and no second scheduler; the same boundary serves both node
   paths; every unsafe action is named and testable; a hosted model's confidence cannot be inflated.
 * Negative: two loads (a measurement then a serve) on 2a; 2a has no reservation contract and no drain,
-  so it can host only onto idle cards and cannot be the eviction path; the three deployment
-  identities stay unreconciled; the shared hook mutex must be replaced by per-target state if more than
+  so it can host only onto idle cards and cannot be the eviction path; the two deployment
+  identity forms stay unreconciled; the shared hook mutex must be replaced by per-target state if more than
   one hosting reservation runs.
 * The delivered `PhaseHooks` trait becomes legacy: the new trait replaces it, and `NoHooks` stays as the
   default so nothing reaches `READY` without a target.
@@ -216,7 +218,7 @@ no staging path as model path, progress never synthesized, cancel detaches a wai
 ## Open questions for the owner
 
 1. Is 2a (dynamic node, one engine, no drain) an acceptable first target, given it cannot evict?
-2. Which deployment identity does a hosted model carry, and may the three be unified later?
+2. Which deployment identity does a hosted model carry, and may the two forms be unified later?
 3. Where does measured peak VRAM come from: a new spec 64 evidence member or the spec 46 report?
 4. Should spec 62 gain a closed `LOAD_FAILED` reason, or is `VALIDATION_FAILED` kept?
 5. How does a model no executor node has an advert template for get one: a new node assignment kind, or

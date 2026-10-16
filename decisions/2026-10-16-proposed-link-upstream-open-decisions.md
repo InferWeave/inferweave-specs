@@ -97,7 +97,7 @@ a deployment choice, outside this decision.
 ### Options
 
 1. **Extend `IW-DP-002`.** No registry change.
-2. **A new feature ID**, for example `IW-LINK-UPSTREAM-001` (naming is the owner's), with canonical task
+2. **A new feature ID**, for example `IW-LINKUP-001` (the registry's IDs are `IW-<WORD>-<NNN>`) (naming is the owner's), with canonical task
    `P1-T18` (which would list it beside `IW-DP-001` and `IW-DP-002`), its own coverage row and its
    own contract entry, carrying spec 63's proof status.
 3. **A new ID and a new task**, separating the upstream work from `P1-T18`'s relay-fallback outcome.

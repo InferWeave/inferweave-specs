@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,287,949 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,288,078 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -124,10 +124,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` — `520cdf86d20f` — ~2,646t
 - `decisions/2026-10-15-link-upstream-role.md` — `103cb8889177` — ~577t
 - `decisions/2026-10-16-inferweave-storage.md` — `291a3eed2b04` — ~1,601t
-- `decisions/2026-10-16-proposed-hosting-hook-boundary.md` — `ef9ea3836a64` — ~4,072t
-- `decisions/2026-10-16-proposed-hosting-operator-audience.md` — `9bd636fd432f` — ~3,548t
-- `decisions/2026-10-16-proposed-link-upstream-open-decisions.md` — `0cba53f55530` — ~2,744t
-- `decisions/2026-10-16-proposed-qualification-verifier.md` — `2b531d621d27` — ~4,785t
+- `decisions/2026-10-16-proposed-hosting-hook-boundary.md` — `f60aa0eccfee` — ~4,103t
+- `decisions/2026-10-16-proposed-hosting-operator-audience.md` — `7d6167fa3fa7` — ~3,585t
+- `decisions/2026-10-16-proposed-link-upstream-open-decisions.md` — `8e37858e17ef` — ~2,753t
+- `decisions/2026-10-16-proposed-qualification-verifier.md` — `83ecfd025cae` — ~4,837t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `468dc44cd437` — ~4,192t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
