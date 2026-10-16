@@ -696,8 +696,9 @@ role `upstream` (capability `iw.link-upstream/1`): a gateway holding a typed `ap
 an upstream gateway and submits exact-model requests up the held link, with its own acceptor-created
 binding (no registration), N upstreams, no transit by default, an acceptor-appended federation path with
 a hop limit, request-id idempotency and one charge per boundary. It is gateway byte relay, so invariant
-11 limits it to where direct transport is unavailable or forbidden. No schema, fixture, sender, acceptor,
-dialer or test exists; every required test is **owed**. Bounds (catalog size, drain window, rate and
+11 limits it to where direct transport is unavailable or forbidden. (Superseded in part by the "Update
+2026-10-16: spec 63 residuals" section below: the acceptor, executor, dialer and most tests now exist in the
+Rust gateway; no schema or conformance fixture does.) Bounds (catalog size, drain window, rate and
 concurrency defaults, hop limit beyond 8, transit) are unspecified because none is measured. **Open
 decisions** (`decisions/2026-10-15-link-upstream-role.md`): whether the Go site gateway implements the
 acceptor side (touches the D-002 amendment), and whether this needs its own feature ID. The only
@@ -772,4 +773,43 @@ Nothing here opens a production gate or marks a control available.
   4. The reference validator requires a non-empty `model` in the body on every link-http target; spec 59's oracle
      did not check it (now stated for System One only; chat and completions text is unchanged).
   5. The node-workload design (`systemone-node-workload.md`) lives only in the implementation repository.
+
+### Update 2026-10-16: spec 63 residuals (spec amended; Rust follow-up open)
+
+Nothing here opens a production gate. Every Rust statement below is about default-off code.
+
+* **Spec 63 amended** (this change) after the Rust implementation (InferWeave/inferweave #1024, #1051, #1062, merged).
+  Defects resolved in the text: relay accounting versus "the executing gateway charges" (an upstream-executed row is
+  ordinary and never relay-marked); the declared class now has a wire member (`meta.traffic_class`, spec 59 and
+  `link-request-meta.json`, composing beside `meta.http`); `records_prompt_content` has assertion semantics (so a
+  private request can reach an upstream that positively records nothing); a fresh request id per dispatch; catalog
+  entries carry `max_context_tokens`; the `upstream` role carries `refused`; the vacuous disjoint stream-id rule is
+  replaced; an empty-payload response head counts as output; one credential per Hello so one role per link; the
+  allow-list is required; the hop limit has no default; a refused Hello gets no acknowledgement; the channel
+  binding is replay resistance, not proof of possession; the traffic-class vocabulary is no longer cited to spec 44;
+  token-budget, relay-breaker and drain semantics are specified. The two exceptions to spec 59 are named in spec 63.
+* **Proven (merged Rust, each control shown by a mutant that its test kills; see the PR descriptions of #1051 and
+  #1062):** required tests 1 (negotiation and binding, dialer and acceptor), 3 (allow-list, concurrency, rate, alias
+  never resolved) and 5 (topology: no transit, independent upstreams, stale on disconnect, loop refusal), the
+  accounting rows of test 6 (executing gateway charges; the dialer's record is `reported`; a repeated id is not
+  executed twice across reconnects), the revocation and failover rows of test 7, success-response redaction, and the
+  direct-path preference and byte counters of test 8.
+* **Implemented in the open follow-up PR (InferWeave/inferweave #1072, not merged and awaiting independent review,
+  so OWED until it merges; its description lists 18 mutants each killed by a named test):** the per-key token budget (key field, reservation at admission, charge from engine usage,
+  24 h window, refusal `token_budget_exceeded`); the declared class on the wire and its use by the acceptor and
+  dialer (test 4); the non-recording assertion (`IW_UPSTREAM_RECORDS_PROMPT_CONTENT=false`: no prompt content in the
+  ledger row, no response capture, ack `false`) so private traffic can reach a local-domain non-recording upstream;
+  the relay circuit breaker and per-link bandwidth bound (test 8); the drain wait for upstream requests in flight
+  (test 7); a fix to the metadata composition check that would have closed every classed upstream request.
+* **UNSATISFIED / owed:** durable token counters and durable request-id dedupe (both are in memory and reset on an
+  acceptor restart, so a restart refunds a spent budget); a measured default for every number (budget window and
+  reservation, breaker threshold, cool-down and bandwidth bound, drain window, catalog bound, dedupe TTL); the
+  HTTPS fallback and reconciliation with `INFERWEAVE_PRINCIPALS_FILE` (test 9: plaintext, unsalted principal file;
+  needs per-key rate, concurrency, budget and dedupe state shared across two entry points, so it is not small);
+  the Hello, acknowledgement, catalog and `traffic_class` schemas and conformance vectors (the spec 59 oracle does
+  not yet know `traffic_class`); that the non-recording assertion suppresses only the two stores the gateway is
+  known to keep (the ledger row's content and response capture), with no audit of any other store; a real-socket
+  test that a request silent with no output opens the breaker (the 60 s bound makes it too slow; the decision is
+  unit-tested only); the Go acceptor decision and the feature-ID decision of the decision record; the `transit`
+  grant; a deployment. The 200-response bodies remain the node's bytes after redaction of known members only.
 
