@@ -5,7 +5,19 @@ import json
 import struct
 from pathlib import Path
 
-from jsonschema import Draft7Validator, RefResolver
+from jsonschema import Draft7Validator
+
+try:  # jsonschema >= 4.18 ships `referencing`; the legacy RefResolver mis-scopes sibling refs there
+    import inspect
+
+    from referencing import Registry, Resource
+    from referencing.jsonschema import DRAFT7
+
+    # `referencing` can be installed next to an older jsonschema; use it only if the validator takes it.
+    if "registry" not in inspect.signature(Draft7Validator).parameters:
+        Registry = None
+except ImportError:  # older jsonschema: RefResolver is not broken, and `referencing` is absent
+    Registry = None
 import alias_edge_delegation as edge
 import node_join
 
@@ -44,13 +56,22 @@ def decode(raw, root, schema_name="aliases/owner-execution-permit.json", maximum
     value = json.loads(raw.decode('utf-8'), object_pairs_hook=edge._unique_members)
     schema_path = root / 'schemas/v1' / schema_name
     schema = json.loads(schema_path.read_text())
-    store = {}
-    for path in (root / "schemas/v1").rglob("*.json"):
-        item = json.loads(path.read_text())
-        store[item["$id"]] = item
-    resolver = RefResolver(schema["$id"], schema, store=store,
-                           handlers={"https": lambda uri: (_ for _ in ()).throw(ValueError("unknown schema"))})
-    if list(Draft7Validator(schema, resolver=resolver).iter_errors(value)):
+    if Registry is not None:
+        registry = Registry()
+        for path in (root / "schemas/v1").rglob("*.json"):
+            item = json.loads(path.read_text())
+            registry = registry.with_resource(item["$id"], Resource.from_contents(item, default_specification=DRAFT7))
+        validator = Draft7Validator(schema, registry=registry)
+    else:
+        from jsonschema import RefResolver
+        store = {}
+        for path in (root / "schemas/v1").rglob("*.json"):
+            item = json.loads(path.read_text())
+            store[item["$id"]] = item
+        resolver = RefResolver(schema["$id"], schema, store=store,
+                               handlers={"https": lambda uri: (_ for _ in ()).throw(ValueError("unknown schema"))})
+        validator = Draft7Validator(schema, resolver=resolver)
+    if list(validator.iter_errors(value)):
         raise ValueError('POLICY_DENIED')
     if 'invocation_id' in value and len(edge.decode_base64(value['invocation_id'])) != 16:
         raise ValueError('POLICY_DENIED')
