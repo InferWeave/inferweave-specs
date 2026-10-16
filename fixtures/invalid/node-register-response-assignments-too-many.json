@@ -1,0 +1,55 @@
+{
+  "nodeId": "node-beast",
+  "connectionId": "c-0123456789abcdef",
+  "freshnessTtlSecs": 30,
+  "capabilities": [
+    "iw.dynamic-node/1"
+  ],
+  "assignments": [
+    {
+      "kind": "stop",
+      "version": 1,
+      "id": "dyn-tmws1s-000001-nodebeast"
+    },
+    {
+      "kind": "stop",
+      "version": 1,
+      "id": "dyn-tmws1s-000002-nodebeast"
+    },
+    {
+      "kind": "stop",
+      "version": 1,
+      "id": "dyn-tmws1s-000003-nodebeast"
+    },
+    {
+      "kind": "stop",
+      "version": 1,
+      "id": "dyn-tmws1s-000004-nodebeast"
+    },
+    {
+      "kind": "stop",
+      "version": 1,
+      "id": "dyn-tmws1s-000005-nodebeast"
+    },
+    {
+      "kind": "stop",
+      "version": 1,
+      "id": "dyn-tmws1s-000006-nodebeast"
+    },
+    {
+      "kind": "stop",
+      "version": 1,
+      "id": "dyn-tmws1s-000007-nodebeast"
+    },
+    {
+      "kind": "stop",
+      "version": 1,
+      "id": "dyn-tmws1s-000008-nodebeast"
+    },
+    {
+      "kind": "stop",
+      "version": 1,
+      "id": "dyn-tmws1s-000009-nodebeast"
+    }
+  ]
+}

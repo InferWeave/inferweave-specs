@@ -53,5 +53,20 @@ class RuntimeObservationContract(unittest.TestCase):
         self.assertEqual(contract.disposition(report, tombstone['context'])['producer_ready'], ['instance-a'])
 
 
+class ResyncDiagnosticAmendment(unittest.TestCase):
+    """The heartbeat-answer member the Rust producer and ingester use must stay specified."""
+
+    def test_spec_defines_the_resync_diagnostic_and_its_limits(self):
+        text = (ROOT / 'specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md').read_text()
+        for needle in [
+            '`runtimeObservations.resync`', 'diagnostic only', 'never a refusal',
+            'RetiredEpoch', 'N consecutive', '5 minutes', '1 hour',
+            'MUST start a\nnew epoch', 'Nothing is forgotten within an epoch',
+        ]:
+            if needle == 'RetiredEpoch':
+                needle = 'retired source epoch'
+            self.assertIn(needle, text)
+
+
 if __name__ == '__main__':
     unittest.main()

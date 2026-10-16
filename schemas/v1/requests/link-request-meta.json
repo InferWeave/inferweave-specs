@@ -11,6 +11,8 @@
     "queue": {"type": "boolean"},
     "probe": {"type": "boolean"},
     "http": {"$ref": "link-http-meta.json"},
+    "traffic_class": {"type": "string", "maxLength": 32, "description": "Spec 63. The dialer's declared traffic class on an upstream link: private or shareable. Untrusted; an absent or unrecognised value is private. Sent only after the acceptor granted the upstream role; a receiver that predates it ignores it."},
+    "systemone_batch": {"type": "boolean", "description": "true marks the payload as a System One batch on the legacy frame path (no meta.http). Omitted when absent; a receiver that predates it ignores the key. Independent of meta.http, whose targets /v1/systemone[/batch] carry the same distinction in the target."},
     "native": {
       "type": "object",
       "additionalProperties": false,

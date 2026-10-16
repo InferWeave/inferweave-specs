@@ -107,6 +107,52 @@ legacy registration without `capabilities` succeeds as before, receives an empty
 from a new gateway, and cannot enable native dispatch. No feature is inferred from protocol
 version, node id, model, or a generic features map.
 
+### 2.2 System One workload advert (`systemone`) and heartbeat load (normative)
+
+**Source of this text.** The System One node workload is specified only in the implementation
+repository (`InferWeave/inferweave`, `docs/specs/systemone-node-workload.md`); this repository
+previously had no text for the register member `systemone` at all (an implementation choice made
+because the specifications were silent). This section is the normative wire text for the
+capacity-related members; it does not specify the System One runtime or its request protocol.
+
+The register body MAY carry `systemone`: an array of at most 256 `SystemOneAdvert` objects, each the
+shape of `schemas/v1/requests/node-systemone-advert.json`:
+
+| Member | Type | Rule |
+| --- | --- | --- |
+| `model` | string, non-empty | the decision model the placement serves |
+| `slots` | integer >= 1 | **schedulable units**: concurrent worker processes on CPU, one per GPU. Seat arithmetic uses it exactly as it uses a generative `models[].slots` |
+| `device` | string, optional | device kind the runtime executes on: non-empty lowercase token `[a-z0-9_-]+` (`cpu`, `cuda`, ...). Informational: it MUST NOT change routing authority |
+| `max_concurrency` | integer, optional | **admission bound**: requests in flight the node accepts. Absent means equal to `slots`. When present it MUST be `>= slots` |
+
+A gateway MUST refuse a registration whose `systemone` entry has `slots` of 0, an empty `model`, a
+`max_concurrency` below `slots`, or a malformed `device` (HTTP 400 `bad_request`; the reference
+node performs the same checks before sending). A runtime with no ready process is advertised by
+omitting the entry, never as `slots: 0`. `device` and `max_concurrency` are omitted when absent (never
+`null`); a node that sends neither emits the bytes it always did, and a gateway that predates them
+ignores both (this schema does not close the object).
+
+**Casing (recorded inconsistency, unresolved).** The register body is camelCase, but the members of a
+`systemone[]` entry are snake_case (`max_concurrency`), matching the link `meta` style
+(`timeout_ms`, `systemone_batch`) rather than the enclosing body; the heartbeat object below is
+camelCase (`maxConcurrency`). Both are what the reference implementation emits today, so both are
+normative here until a decision picks one spelling (`OPEN_GATES.md`). A consumer MUST NOT accept the
+other spelling in either place.
+
+**Heartbeat.** The node heartbeat `status` (the object that carries `busySlots` and `queueDepth`)
+MAY carry `systemone`, shaped by `schemas/v1/requests/node-systemone-status.json`:
+`{"inflight","queueDepth","maxConcurrency","readyProcesses","processes"}` (non-negative integers,
+camelCase): requests being served, requests accepted but not started, the admission bound,
+worker processes ready to serve, and worker processes configured. Absent means *not reported*,
+never zero load. It is informational for routing and never replaces the registered `slots`.
+Per section 6.12, a connection that keeps only `busySlots`, `queueDepth` and `leaving` discards it.
+
+**Routability is not decided here.** The existing register shape rules (section 4 and
+`node-register.json`) still require a routable node to name an endpoint and at least one model, or to
+be gateway-role. The reference node registers a System One node with its real endpoint and the
+`systemone` list while `models` carries no generative model; that combination is a shape section 4
+calls invalid. This section does not resolve it: see `OPEN_GATES.md`.
+
 ## 3. The `hardware` member
 
 ### 3.1 Gateway rules
@@ -173,6 +219,12 @@ A node SHOULD send:
 }
 ```
 
+A CPU-only node reports `"gpus": []` (the member present and empty, not omitted) and offers no
+`iw.gpu-memory/1`; `cpu.threads` is the thread count the runtime may use. A reference producer
+also stores `cores` and `sockets` beside `cpu`; the gateway keeps them verbatim (section 3.1 rule 5),
+and they are not part of this layout. `hardware` stays informational (section 3.1 rule 8): it never
+makes a CPU node routable or unroutable.
+
 Members: byte counts are integers in bytes; `speedMbps` is `null` when the link speed is unknown
 (never `0` for unknown); `notes` is an array of free-form strings the node uses to say what it
 could not detect. A member the node cannot determine is omitted rather than invented.
@@ -208,11 +260,20 @@ never enforces it (section 3.1 rule 5).
 
 ### 5.1 `assignments`
 
-The register response gains an **always-present** member `assignments`: an array reserved for
-future gateway-to-node instructions (images to pull, a profile to run). In this version it MUST be
-`[]`. A node MUST ignore entries it does not understand and MUST NOT fail a registration because of
-one. No entry shape is defined yet; the first one will be added by a later minor release together
-with a capability name.
+The register response gains an **always-present** member `assignments`: an array of
+gateway-to-node instructions (images to pull, a profile to run). A node MUST ignore entries it does
+not understand and MUST NOT fail a registration because of one.
+
+It is `[]` for every registration that has not negotiated a capability that fills it. The first
+entry shapes, and the capability name that puts them in force (`iw.dynamic-node/1`, offered only
+by a node started with `--model dynamic`), are defined by
+`specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` together with the heartbeat response's
+`assignments` and the heartbeat request's `provisioning` member. That `provisioning` member is
+the one exception to the rule of section 6.12 that a hardware-only registration's heartbeat keeps
+only `busySlots`, `queueDepth` and `leaving`. Earlier text said the array
+"MUST be `[]`" in this version; that was the reservation, not a rule against filling it, and a
+gateway that lists the capability fills it for that registration only. A registration that does
+not negotiate it, and an older gateway, still answer `[]`.
 
 ### 5.2 Endpoints
 
@@ -528,8 +589,18 @@ that proxy only or accept the shared limit.
 A connection whose registration is hardware-only, or whose credential is proof-only, MUST NOT be
 allowed to file telemetry: `POST /v1/node/telemetry` is `403 forbidden`. Its heartbeat is accepted
 for liveness but keeps only `busySlots`, `queueDepth` and `leaving`; everything else in the status
-(devices, residency, GPU memory) is discarded (section 6.9). Heartbeat and telemetry bodies SHOULD be
-size-capped before parsing (Rust: 1 MiB).
+(devices, residency, GPU memory) is discarded (section 6.9).
+
+**Exception: `provisioning`.** On a registration that negotiated `iw.dynamic-node/1`
+(`specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` section 6) the heartbeat's `provisioning`
+member is also kept, because a hardware-only dynamic node files no telemetry and has no other way
+to say where an assignment is. It is read only for a registration whose credential an operator
+enrolled (never for a proof-only credential, section 6), it is bounded as that section says, and
+it contributes no devices, GPU memory or capacity (section 6.9). A gateway that caps a
+hardware-only registration's heartbeat body more tightly than other beats raises that cap by the
+`provisioning` bound for such a beat.
+
+Heartbeat and telemetry bodies SHOULD be size-capped before parsing (Rust: 1 MiB).
 
 ## 7. Compatibility
 

@@ -30,3 +30,10 @@ federation path with a hop limit, one charge per boundary.
 ## Not authorized
 
 Any deployment, any key issuance, any production gateway change.
+
+## Amendment 2026-10-15 (after the Rust implementation)
+
+Spec 63 was amended for the defects found while implementing it (see its Amendments table) and the
+Rust gateway now implements the role, default off. This changes none of the open decisions above and
+authorizes nothing new: no deployment, key issuance or production change. The two exceptions the spec
+names to spec 59 (`meta.traffic_class`, `refused` on an `upstream` link) are recorded in spec 59.

@@ -25,7 +25,9 @@ and single-pool unified memory; subtract outstanding offers (multi-parent double
 owner-bound, epoch-fenced, idempotent revoke/renew/release; wire lease progress expiry into a
 production caller; crash-recovery reconcile. Accept: concurrent-admission and overcommit tests,
 Apple-unified no-double-count test, stale-offer, node-loss, lease-expiry/fencing tests, each
-shown failing with the guard removed. PRs: (a) CPU-only fix, (b) CPU/RAM/unified, (c) ledger.
+shown failing with the guard removed. PRs: (a)+(b) CPU-only and CPU/RAM/unified together, after S1
+(a zero-VRAM relaxation alone does not make a CPU-only node admit anything; see 10 section 7), (c) ledger
+(first slice merged: inferweave #1056; remainder in inferweave #1061).
 
 ## W2 — Universal runtime and adapters
 Repo: inferweave. Allowed: iw-core/runtime_family.rs, iw-node runtime_manager/hot_swap/SwapDriver,
@@ -57,8 +59,9 @@ batch+concurrency+mode) with staleness; regression detection; closed-loop profil
 
 ## W6 — Gateway UI and observability
 Repo: inferweave-gateway (+ apps/web only for ported benchmark views). Allowed: web/, typed Rust
-API client, internal/pool gating flag. Depends: S1; data from W1/W3/W4. Tasks: flag pool loop off
-by default behind Rust authority (D1); call Rust provision/profiles/occupancy/demand; add
+API client. Depends: S1; data from W1/W3/W4. Tasks: pool loop flag is DONE and defaults ON (D1,
+gateway #565); shadow mode needs `pool.Reconcile` split into plan and apply first (gateway #559);
+call Rust provision/profiles/occupancy/demand; add
 unified-memory, NUMA, stages, leases, Slurm wait reasons, placement history on the existing
 shell; run Playwright in CI with screenshot baselines; stale/redaction states.
 Accept: existing UI unchanged; a11y checks pass; no new Go routing logic.

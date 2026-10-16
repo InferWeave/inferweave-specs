@@ -234,7 +234,7 @@ alias never sees `READY` before the profile facts are recorded.
   binds the `source`, `repository` (and `repository_id`), the `expected_digests` set,
   `quantization` and the `egress_hosts` list. If the source publishes no per-artifact digest
   and the owner's cache holds none (a first fetch), the operator must approve the digests the
-  owner computed; without that the result is `UNVERIFIED` and the model stays not `READY`.
+  owner computed; without that the result is `UNVERIFIED`: the `verifying` phase fails the reservation with the closed reason `DIGEST_MISMATCH` (no digest could be matched; `UNVERIFIED` names this case in prose and is not a separate failure reason) and the model stays not `READY`.
   Approval of a plan does not authorize a different revision, source, host, additional artifact
   or larger bounds.
 * **`autonomous`**: acquisition only inside **owner policy caps** set in advance by the owner
@@ -319,7 +319,7 @@ All **owed**; none is `proven`. Each must fail if its control is removed.
    longer emits `READY`; preemption by a local client in each pre-`READY` phase.
 6. Safety: digest mismatch discards the artifact; a code-executing format is refused; an
    unplanned egress host is refused; no runtime remote-code option is ever enabled; `.bin`/`.pkl` refused by default; a redirect to
-   an unplanned host is refused; an unverifiable first fetch is `UNVERIFIED`, not `READY`.
+   an unplanned host is refused; an unverifiable first fetch is `UNVERIFIED` (fails `verifying` with `DIGEST_MISMATCH`), not `READY`.
 7. Privacy: a requester without authorization receives a plan identical to one for a world in
    which the other tenants' models do not exist (modulo handles).
 8. Privacy of the plan: `shortfall` carries no observed free figure; repeated requests cannot

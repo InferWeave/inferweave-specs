@@ -1,0 +1,13 @@
+{
+  "id": "dyn-tmws1s-000001-nodebeast",
+  "model": "qwen3.8-27b-modality-vision-quant-q8_k_xl",
+  "gpuIds": [
+    "iw-gpu-2b7e1c4a9d3f5e60718293a4b5c6d7e8",
+    "iw-gpu-9f1e2d3c4b5a69788796a5b4c3d2e1f0"
+  ],
+  "phase": "failed",
+  "endpoint": "10.20.30.40:32768",
+  "deployment": "dep_7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f",
+  "updatedAt": 1792000000,
+  "message": "OOM"
+}

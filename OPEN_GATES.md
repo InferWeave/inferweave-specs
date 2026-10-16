@@ -374,6 +374,105 @@ Unsatisfied, and recorded `owed` by `P5-T33` (Rust gateway) and `P5-T34` (Go gat
 No deployment may enable open enrollment, and no placement or routing behaviour may depend on
 `hardware`, until those tests are `proven` and an operator decision approves it.
 
+## InferWeave Storage (specs/65) — 2026-10-16
+
+**BLOCKED for production use.** `specs/65_INFERWEAVE_STORAGE.md` defines the `store` role, the
+`iw.store/1` capability, the signed `iwg1` grant, the native and read-only S3 front ends, the
+network exposure and single-writer controls of a store, the digest index and the multi-source
+stager. Its decision record (`decisions/2026-10-16-inferweave-storage.md`) is `Proposed`.
+Phase 1 is implemented in part in the reference implementation (branch `feat/inferweave-storage`,
+commit `c92fb073`, **not merged** at the time of writing); Phase 2 is not built.
+
+Unsatisfied, and recorded `owed` by `P5-T36` (feature `IW-STORE-001`, Phase 1) and `P5-T37`
+(feature `IW-STORE-002`, Phase 2):
+
+- the reference implementation carries unit, loopback HTTP, TLS-gateway, S3 client interoperability
+  and stager tests; no independent review has run, and no blob has moved between two real clusters
+  through a store. The farm staging figure (about 20 minutes for 30 GiB) is the motivating
+  observation and is not a measurement of this system;
+- **TLS (H1, O2, O14):** no store listener serves TLS; a non-private bind is plain HTTP, so a grant
+  or an S3 signed request is visible to the network path. Until it exists no gated-scope blob may be
+  served beyond a private network or a tunnel. The store only warns on a public bind;
+- **per-listener blob scope (H6, O3):** a store has no scope tag per blob, so a publicly bound
+  store does not refuse gated blobs; the operator must keep them out of its directory. Which models
+  are gated is undecided;
+- **grant forwarding across federation (O4):** a parent gateway cannot obtain a grant for a child's
+  store on a node's behalf; it names the remote holder and the node asks that gateway, and the
+  store lists that gateway's key as an operator extra. Transitive (grandchild) reporting and the
+  trust anchor across federated gateways are not built;
+- **per-range hashes (O7):** a corrupt assembly is attributed to a source only by the single-source
+  retry; Phase 1 omits them;
+- **presenter binding (O5):** a grant is a bearer token within its `node_id`; replay for up to 300
+  seconds is accepted;
+- **whole-blob grants (O11), the `max_request_bytes` cap (O12), the S3 credential model (O13), the
+  ETag as SHA-256 (O16) and the S3 request cap (O17)** are decisions the specification states and
+  no operator has approved;
+- **abuse controls (H2, H3, H4, H5, H7):** lockout is per exact IP (an IPv6 `/64` can cycle
+  addresses); the allow-list is read at start only; the request ceiling is a fixed window; there is
+  no PROXY protocol option; a native client with one valid grant can rotate `X-IW-Node` values to
+  dodge the identity lock and no address-wide backstop counter exists;
+- **quarantine corroboration (O8):** the flag exists; its default is 1 and the right production
+  value is unmeasured. A single node's report can quarantine a good store at the default;
+- **first store location (O1):** no site operator has approved where the first store runs (a login
+  node may breach cluster policy); no store is deployed anywhere;
+- **Phase 2 is not built:** ingest leases (6.6), replication, repair, quota and eviction (10.1), the
+  write path of the S3 front end (5A.8), the rendezvous with no inbound port (5B.10) and the
+  epoch and no-replace publication (5C.6); failure modes F1 to F6, F10 to F14, F18 and F21 are
+  `owed` with no test;
+- the Rust client through `artifact_cache.rs` is not built; only `stage.py` stages from a store;
+  hedging beyond throughput shifting is not built;
+- integration with `specs/27` (the cache tiers) and `specs/64` (artifact sources) is undecided
+  (O18), and `specs/40`, `specs/47` and the topology schemas of this repository are not yet amended
+  for the `store` field and the `store` role;
+- no conformance vectors exist in this repository for the `iwg1` transcript; the known answers live
+  only in the reference implementation's tests.
+
+No store may be deployed, no listener may be exposed beyond loopback or a private network, and no
+gated or private model may be placed on a store, until those tests are `proven` against a running
+fleet, TLS (or a tunnel) is approved for any non-private path, and an operator decision approves it.
+
+## Dynamic nodes and gateway-driven provisioning (specs/64) — 2026-10-15
+
+**BLOCKED for production use.** `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` defines the
+`iw.dynamic-node/1` capability, the `dynamic` register member, the first non-empty `assignments`
+entries (`serve`, `measure`, `stop`) on the register and heartbeat responses, the heartbeat
+`provisioning` member, and the gateway's plan from desired models and measured runtime profiles.
+Its decision record (`decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md`) is `Proposed`.
+Three schemas and their fixtures are checked by `python3 conformance/runner.py`.
+
+Unsatisfied, and recorded `owed` by `P5-T35`, feature `IW-DYNNODE-001`:
+
+- the reference implementation (Rust gateway and node) carries unit, HTTP-on-loopback and
+  scripted-gateway tests for every rule of the specification; no dynamic node has fetched real
+  weights, launched a real profile through docker and served requests through its gateway, and no
+  independent review has run;
+- the two deployments the operator asked for (`qwen3.8-27b-modality-vision-quant-q8_k_xl` on two
+  cards and `qwen3.8-flash_next-modality-vision-quant-q8_0` on eight, plain `q8_0` because the
+  upstream repository publishes no `UD-Q8_K_XL` build (decision record); 120k to 260k context,
+  every card on one R9700 host) have no shipped runtime profile with Q8 evidence at that depth: the reference
+  configuration lists them as measurement candidates, so the first assignment on a real host is a
+  `measure`, and the draft it yields has no quality block. Serving from a draft is permitted by
+  the reference only where the desired model does not require a quality suite; no draft has been
+  produced on real hardware;
+- the Go gateway (`metabolomics-us/inferweave-gateway`) does not implement specs/64; a dynamic
+  node registered to it is recorded hardware-only and assigned nothing;
+- link-only dynamic nodes (behind NAT) and two engines on one dynamic node are non-goals of this
+  version; a dynamic node is dialled at an operator-named address;
+- the reference node fetches over `file://` (only under an operator-configured source root) and
+  `http(s)://` only; the site-connector cache tiers of specs/27 are not consulted;
+- the node behaviours recorded in specs/64 section 5 (the `file://` source root, the HTTP source
+  restrictions, the content store, read-only confined `$ARTIFACTS` mounts, a `stop` that cancels
+  an in-flight assignment, the node's own trimming of its report) come from the node branch of the
+  reference implementation, which is not merged; they were not read against that code when this
+  specification was last revised, and no test drives them against this specification;
+- `conformance/node_join.py` still answers `assignments: []` for every registration, which
+  remains correct for a registration that does not negotiate the capability; no vector drives a
+  negotiated registration against a running gateway.
+
+No production gateway may provision a dynamic node, and no drafted profile may serve production
+traffic, until those tests are `proven` against a running fleet and an operator decision approves
+it.
+
 ## Universal runtime families and lifecycle (specs/48–53) — 2026-10-12
 
 **BLOCKED for production use.** The IW-RT-001…006/B-T01…06 protocol artifacts define typed runtime
@@ -597,22 +696,32 @@ exercises yet. Nothing in spec60 is `proven`, and no production gate opens.
 
 ## Alias precision, ad-hoc selection and resolution trees (spec61)
 
-**UNSATISFIED / owed.** `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` is a
-proposed additive amendment of spec54 level 2: precision as a selection dimension, an ad-hoc
-evaluate-only selection, and a four-level resolution tree with typed unmet requirements. No
-schema, fixture, producer, consumer or test exists, so every required test is **owed** and
-nothing in spec61 is `proven`. The precision-class table is a classification: six of its tokens
-were observed in the reference lab gateway's model listings on 2026-10-14 and the rest are
-unobserved. The bounds (64 model nodes, 256 instance nodes, 16 `unmet` entries, 16 allowed
-tokens) are design limits, not measurements, and are owed a measured response-size check. The
-`capacity` shortfall depends on owner memory reporting (spec46) that is not universal. Hosting
-requests, offers, approval, download and profile generation are not specified here and no gate
-for them opens. Also owed: the schemas `schemas/v1/aliases/precision-classes.json`,
-`resolve-request.json` and `simulate-request.json` (the optional `selection` member), the response
-fields (`adhoc`, `resolution_tree`, `unmet`, `truncated`, `unmet_truncated`), the new frozen
-vocabularies in `contracts/protocol-v1/dynamic-aliases.json`, the acceptance-matrix entries in
-`contracts/dynamic-alias-acceptance.json`, and the six required tests of spec61. None exists.
-No production gate opens.
+**PARTLY SATISFIED (contract shape); the rest UNSATISFIED / owed.**
+`specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` is a proposed additive amendment
+of spec54 level 2: precision as a selection dimension, an ad-hoc evaluate-only selection, and a
+four-level resolution tree with typed unmet requirements.
+
+*Now present and checked by `tests/smoke/test_dynamic_alias_contract.py`:* the schemas
+`schemas/v1/aliases/precision-classes.json` (versioned table, additivity checked), the ad-hoc body
+(`selection`, optional `request_context`, closed, DYNAMIC only, exclusive with `alias_id` and
+`definition`) on `resolve-request.json` and `simulate-request.json`, `adhoc-resolution.json` with
+`resolution_tree`, `unmet`, `truncated` and `unmet_truncated`, the optional table-version pin
+`selection.precision_table_version`, the three precision candidate reasons in the frozen reason
+vocabulary and spec54's table, the precision and unmet vocabularies in
+`contracts/protocol-v1/dynamic-aliases.json`, and acceptance entries 30 to 35. The ad-hoc
+response fixture is the exact JSON the Rust producer serializes (InferWeave/inferweave test
+`adhoc_wire_fixture_is_exactly_what_the_producer_serializes`), so the schema and the producer
+agree on shape. This proves **shape only**; acceptance entries 30 to 35 stay `owed` because the
+matrix demands a run against an implementation, and each carries `partial_evidence`.
+
+*Still UNSATISFIED / owed:* the Go consumer beyond fixtures (required test 5); stamping the pin at
+publish time (an absent pin means the validating build's current table); the precision-class table
+is a classification, six of its tokens were observed in the reference lab gateway's model listings
+on 2026-10-15 and the rest are unobserved; the bounds (64 model nodes, 256 instance nodes, 16
+`unmet` entries, 16 allowed tokens) are design limits, not measurements, and are owed a measured
+response-size check; the `capacity` shortfall depends on owner memory reporting (spec46) that is not
+universal. Hosting requests, offers, approval, download and profile generation are not specified
+here and no gate for them opens. No production gate opens.
 
 ## Federated provisioning: hosting requests (spec62)
 
@@ -644,8 +753,9 @@ role `upstream` (capability `iw.link-upstream/1`): a gateway holding a typed `ap
 an upstream gateway and submits exact-model requests up the held link, with its own acceptor-created
 binding (no registration), N upstreams, no transit by default, an acceptor-appended federation path with
 a hop limit, request-id idempotency and one charge per boundary. It is gateway byte relay, so invariant
-11 limits it to where direct transport is unavailable or forbidden. No schema, fixture, sender, acceptor,
-dialer or test exists; every required test is **owed**. Bounds (catalog size, drain window, rate and
+11 limits it to where direct transport is unavailable or forbidden. (Superseded in part by the "Update
+2026-10-16: spec 63 residuals" section below: the acceptor, executor, dialer and most tests now exist in the
+Rust gateway; no schema or conformance fixture does.) Bounds (catalog size, drain window, rate and
 concurrency defaults, hop limit beyond 8, transit) are unspecified because none is measured. **Open
 decisions** (`decisions/2026-10-15-link-upstream-role.md`): whether the Go site gateway implements the
 acceptor side (touches the D-002 amendment), and whether this needs its own feature ID. The only
@@ -660,8 +770,8 @@ Nothing here opens a production gate.
   `POST /inferweave/v1/aliases/resolve|simulate` with an inline `selection`, the resolution tree and
   `unmet` are implemented and deployed to the bender lab gateway (management/preview only). A signed
   edge request against it returned 200. **UNSATISFIED / owed:** rate limiting and audit of ad-hoc
-  calls (no preview audit sink exists); the table-version pin; the schema/contract additions listed in
-  spec 61 (`contract.json`, `precision-classes.json`, `selection` on the request schemas); a measured
+  calls (no preview audit sink exists); stamping the table-version pin at publish (the pin member
+  itself and the schema/contract additions now exist, see the spec61 gate above); a measured
   memory report in the production inventory (so `capacity` never appears); the Go console test 5 is
   covered by metabolomics-us/inferweave-gateway #549 against fixtures only. **Defect found by running
   it:** an ad-hoc selection with no stated preferences was rejected because stored-alias preference
@@ -694,3 +804,133 @@ Nothing here opens a production gate.
   lifecycle generation, `runtimeObservations` ingestion, qualification and privacy/residency/trust evidence
   (every row is `Advertised`/`UNKNOWN`; none is selectable); an owner-canonical resource-group identity.
 
+### Update 2026-10-15 (latest): System One CPU capacity wire (specs 44, 47, 59)
+
+Nothing here opens a production gate or marks a control available.
+
+* **Specified, additive, optional:** `systemone[].device` / `max_concurrency` (spec 47 section 2.2), heartbeat
+  `status.systemone`, link `meta.systemone_batch`, link-http targets `/v1/systemone` and `/v1/systemone/batch`
+  (spec 59), and the CPU-only-node statement (spec 44). Reference implementation: InferWeave/inferweave #1045 (open at
+  the time of writing, not merged); the Go gateway side is metabolomics-us/inferweave-gateway #557.
+* **Proof status.** `proven` here: the offline spec-59 oracle, the new link-http vectors and the schema checks
+  in `tests/smoke/test_systemone_wire.py` (the target vectors fail with the contract change removed). **Owed, UNSATISFIED:**
+  gateway-side enforcement of `max_concurrency >= slots` and of the `device` token in either gateway; a mixed Rust/Go
+  fleet routing to a CPU node with no GPU telemetry; heartbeat `systemone` ingestion; the Go `link_http`
+  acceptance of the two new targets. Owed by inferweave #1045 and inferweave-gateway #557 until their tests exist,
+  run and fail with the control removed. Measured capacity values (`max_concurrency` defaults, process counts) are
+  not stated or relied on.
+* **Open specification defects, not resolved by this change:**
+  1. Casing: `systemone[]` entries are snake_case in a camelCase register body, the heartbeat object is camelCase.
+     Both are recorded as normative today; one spelling must be chosen by decision.
+  2. A System One node registers a real endpoint with `models: []` and a `systemone` list, a shape spec 47
+     section 4 and `node-register.json` call invalid. Either the shape rule or the registration is wrong.
+  3. Whether a System One request may use the legacy frame path (with `systemone_batch`, or body-classified) when
+     `iw.link-http-json/1` is not negotiated, instead of the 503 `FEATURE_UNSUPPORTED` that spec 59 now requires
+     for HTTP mode.
+  4. The reference validator requires a non-empty `model` in the body on every link-http target; spec 59's oracle
+     did not check it (now stated for System One only; chat and completions text is unchanged).
+  5. The node-workload design (`systemone-node-workload.md`) lives only in the implementation repository.
+
+### Update 2026-10-16: spec 63 residuals (spec amended; Rust follow-up open)
+
+Nothing here opens a production gate. Every Rust statement below is about default-off code.
+
+* **Spec 63 amended** (this change) after the Rust implementation (InferWeave/inferweave #1024, #1051, #1062, merged).
+  Defects resolved in the text: relay accounting versus "the executing gateway charges" (an upstream-executed row is
+  ordinary and never relay-marked); the declared class now has a wire member (`meta.traffic_class`, spec 59 and
+  `link-request-meta.json`, composing beside `meta.http`); `records_prompt_content` has assertion semantics (so a
+  private request can reach an upstream that positively records nothing); a fresh request id per dispatch; catalog
+  entries carry `max_context_tokens`; the `upstream` role carries `refused`; the vacuous disjoint stream-id rule is
+  replaced; an empty-payload response head counts as output; one credential per Hello so one role per link; the
+  allow-list is required; the hop limit has no default; a refused Hello gets no acknowledgement; the channel
+  binding is replay resistance, not proof of possession; the traffic-class vocabulary is no longer cited to spec 44;
+  token-budget, relay-breaker and drain semantics are specified. The two exceptions to spec 59 are named in spec 63.
+* **Proven (merged Rust, each control shown by a mutant that its test kills; see the PR descriptions of #1051 and
+  #1062):** required tests 1 (negotiation and binding, dialer and acceptor), 3 (allow-list, concurrency, rate, alias
+  never resolved) and 5 (topology: no transit, independent upstreams, stale on disconnect, loop refusal), the
+  accounting rows of test 6 (executing gateway charges; the dialer's record is `reported`; a repeated id is not
+  executed twice across reconnects), the revocation and failover rows of test 7, success-response redaction, and the
+  direct-path preference and byte counters of test 8.
+* **Implemented in the open follow-up PR (InferWeave/inferweave #1072, not merged and awaiting independent review,
+  so OWED until it merges; its description lists 18 mutants each killed by a named test):** the per-key token budget (key field, reservation at admission, charge from engine usage,
+  24 h window, refusal `token_budget_exceeded`); the declared class on the wire and its use by the acceptor and
+  dialer (test 4); the non-recording assertion (`IW_UPSTREAM_RECORDS_PROMPT_CONTENT=false`: no prompt content in the
+  ledger row, no response capture, ack `false`) so private traffic can reach a local-domain non-recording upstream;
+  the relay circuit breaker and per-link bandwidth bound (test 8); the drain wait for upstream requests in flight
+  (test 7); the class sent only to an acceptor whose ack says `reads_traffic_class`; a cancelled request charged its
+  whole reservation and streams asked for usage (independent review round 1); a fix to the metadata composition check that would have closed every classed upstream request.
+* **UNSATISFIED / owed:** durable token counters and durable request-id dedupe (both are in memory and reset on an
+  acceptor restart, so a restart refunds a spent budget); a measured default for every number (budget window and
+  reservation, breaker threshold, cool-down and bandwidth bound, drain window, catalog bound, dedupe TTL); the
+  HTTPS fallback and reconciliation with `INFERWEAVE_PRINCIPALS_FILE` (test 9: plaintext, unsalted principal file;
+  needs per-key rate, concurrency, budget and dedupe state shared across two entry points, so it is not small);
+  the Hello, acknowledgement, catalog and `traffic_class` schemas and conformance vectors (the spec 59 oracle does
+  not yet know `traffic_class`); that the non-recording assertion suppresses only the two stores the gateway is
+  known to keep (the ledger row's content and response capture), with no audit of any other store; a real-socket
+  test that a request silent with no output opens the breaker (the 60 s bound makes it too slow; the decision is
+  unit-tested only); the Go acceptor decision and the feature-ID decision of the decision record; the `transit`
+  grant; a deployment. The 200-response bodies remain the node's bytes after redaction of known members only.
+
+
+### Update 2026-10-16 (final): what is merged, deployed and still owed for specs 56, 61, 62 and 63
+
+This section supersedes the "open follow-up" wording above. Nothing here opens a production gate: every spec 62 and
+spec 63 behaviour is default-off, and no catalog row is `verified`.
+
+* **Spec 63 (Rust, merged: InferWeave/inferweave #1024, #1051, #1062, #1072):** the acceptor executor, TLS 1.3
+  channel-binding exporter, N-upstream dialer, success-response redaction (an allow-list at every level, `model`
+  replaced by the id the key requested, `logprobs`/`usage` reduced to known members), the per-key token budget
+  (cancel before the head and streams without usage are charged their reservation or what was observed, whichever is
+  larger), the declared class (`meta.traffic_class`, sent only when the ack says `reads_traffic_class`), the
+  non-recording assertion, the relay circuit breaker and bandwidth bound, and the drain wait. Four independent
+  security reviews (rounds on #1051, #1062, #1072) found and closed: Cancel-id memory exhaustion, TLS early-data
+  stall, a disconnect that did not cancel the node request, the body-form probe marker, a blocking reader, request-id
+  collisions across clients, a `logprobs` clone, and two token-budget bypasses. Still **owed**: the items in the
+  "spec 63 residuals" section above (durable counters and dedupe, measured numbers, HTTPS fallback and principal
+  reconciliation, schemas and vectors for the new members, audit of other content stores, the Go acceptor and
+  feature-ID decisions, the `transit` grant). The 200-response body is no longer "the node's bytes": it is reduced
+  to the allow-list.
+* **Spec 62 (Rust, merged: #1022, #1041, #1070, #1075, #1077, #1078; specs #291, #293):** the hosting wire path
+  (`iw.provisioning/2` only for peers authenticated with a spec 63 key, `hosting/<principal>` namespace, operator
+  routes require the admin secret, egress hosts clamped to the owner's policy) and the node-side executor
+  (`iw-weight-fetch`: egress and port pinned on every hop, credential to the first hop only, digest verified before
+  rename, caps during the stream, resume from a `.part` file hashed whole, HF `_id` bound to the claimed
+  repository id, network address vetting helper, driver watchdog and abandon path, resolve off the lock with
+  tickets, rate and concurrency bounds, a deterministic lock-order test). Five independent review rounds closed a
+  repository-id binding hole, an unpinned port, a hung-read wedge, a resolve-under-lock stall, a lock-order
+  deadlock between the driver and the operator API, and cache and rate-limit abuse. **UNSATISFIED / owed:** no
+  production `ObjectFetcher` (DNS vetting, pinned connect, redirect handling are specified in the trait but
+  nothing implements them, so the downloader has only run against fakes), no installer flag, no real profile, load
+  or validation hooks (nothing reaches `READY`), no production outbound `HostingPeerChannel` (so `hosting/ask` is
+  404), no capacity-signal discovery (`acquirable`), no per-key hosting role (a dedicated keys file is required
+  instead), no console endpoint (the spec defines none), the Go console rendering of required test 9, the
+  operator-audience plan with eviction handles, licence checks for local sources, and a measured default for every
+  number. Every required test of spec 62 beyond the controller and the pure slice stays **owed** until a real
+  fetcher runs.
+* **Spec 61 (Rust #1021, #1029, #1039, #1062; specs #289, #290):** the contract and schema additions now exist
+  (precision-class table with an additivity check, ad-hoc request and response schemas with `resolution_tree` and
+  `unmet`, the three precision reason codes, conformance fixtures; acceptance entries 30 to 35 stay `owed` with
+  partial evidence). `selection.precision_table_version` is **validation-only**: it checks that the named table is
+  held but classification still uses each candidate's own advertised table version, which is harmless while only
+  table 1 exists and becomes a real gap when a second version does. A malformed ad-hoc selection is now 400
+  `INVALID_CAPABILITY` (InferWeave/inferweave #1073) instead of 503.
+* **Spec 56 (Rust #1063, #1073, #1074; specs #294):** node-attested runtime observations: an executor node
+  (`--engine-catalogue`) sends a bounded, sequence-fenced snapshot of its own engines over the authenticated link
+  (register and heartbeat), the gateway ingests it only from the current authenticated connection and only for the
+  authenticated node, and for a row the owner policy already grants the alias inventory shows READY with
+  `node-attested:<node>` provenance (confidence stays `Advertised`; capacity comes from gateway state). Producer
+  side: a durable generation and epoch journal (0600, write-ahead sequence ceiling), UNLOADED tombstones, a new
+  epoch before the owner's fence budget (spec 56 §2.1: nothing is forgotten within an epoch), and a paced
+  `runtimeObservations.resync` diagnostic (5 minutes, doubling to one hour). Registration by an unknown or
+  unproven node is a uniform 401, not a 400 that reveals which node ids hold credentials. **UNSATISFIED / owed:**
+  no qualification verifier (the spec leaves the evidence store and record format undefined, so `qualification_id`
+  and `owner_policy_id` stay opaque and nothing becomes `verified`); only executor nodes send observations, so the
+  lab's `node join --model` nodes stay `UNKNOWN`; zero clock-skew tolerance (fails closed, as the spec requires);
+  the gateway keeps observations in memory only; the owner remembers only 8 retired epochs; the one line that
+  passes the producer into the join-loop re-registration decision has no running-loop test; same-epoch
+  re-registration is not exercised against a real executor and gateway.
+* **Lab deployment (2026-10-16):** the bender lab gateway (`iw-lab-gateway`, built from `main` after #1078) runs
+  with `--no-builtin-models` (#1066). Nodes `node_9d943655cf39cd3d` (Qwen) and `node_acf41c7185b8782a` (beast)
+  re-attach after a restart (first attempt `node not enrolled`, then admitted). An ad-hoc resolve returns both as
+  `advertised`, excluded and unselectable. Not deployed: any spec 62 or spec 63 behaviour (flags off), farm and the
+  other bender nodes (not joined to the lab gateway).

@@ -273,6 +273,78 @@
       "gate": "Must run against implementation; contract fixture checks are insufficient.",
       "execution_claim_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md",
       "owner_execution_permit_contract": "specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md#51-owner-to-node-envelope-and-one-use-execution-fence"
+    },
+    {
+      "id": 30,
+      "requirement": "spec61 precision: min class and allow/deny admit and exclude the expected candidates; absent or unknown fails closed; conflicts are INVALID_CAPABILITY; PRECISION_UNVERIFIED",
+      "owner_task": "A-T03",
+      "proof_status": "owed",
+      "evidence": [],
+      "partial_evidence": [
+        "InferWeave/inferweave crates/iw-core/src/alias_precision.rs and alias_resolution.rs unit tests (not a live run)"
+      ],
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "contract": "specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md"
+    },
+    {
+      "id": 31,
+      "requirement": "spec61 ad-hoc: only resolve and simulate accept selection with the level header and grant; no dispatch, reservation or permit; adhoc true, alias null",
+      "owner_task": "A-T05",
+      "proof_status": "owed",
+      "evidence": [],
+      "partial_evidence": [
+        "InferWeave/inferweave crates/iw-gateway/src/alias_service/tests.rs (in-process; a signed edge request returned 200 on the bender lab gateway, which is not a conformance run)"
+      ],
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "contract": "specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md"
+    },
+    {
+      "id": 32,
+      "requirement": "spec61 tree: four fixed levels, 64/256 bounds with omitted counts, tree and flat list agree, per-response handles, expiry",
+      "owner_task": "A-T05",
+      "proof_status": "owed",
+      "evidence": [],
+      "partial_evidence": [
+        "InferWeave/inferweave crates/iw-core/src/alias_tree_tests.rs (unit)"
+      ],
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "contract": "specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md"
+    },
+    {
+      "id": 33,
+      "requirement": "spec61 unmet: every token produced by a fixture, no entitlement token, unauthorized candidates indistinguishable from absence, bounded with unmet_truncated",
+      "owner_task": "A-T05",
+      "proof_status": "owed",
+      "evidence": [],
+      "partial_evidence": [
+        "InferWeave/inferweave crates/iw-core/src/alias_tree_tests.rs (unit)"
+      ],
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "contract": "specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md"
+    },
+    {
+      "id": 34,
+      "requirement": "spec61 cross-language: the Go console renders the tree and unmet from the schema without deriving them",
+      "owner_task": "A-T07",
+      "proof_status": "owed",
+      "evidence": [],
+      "partial_evidence": [
+        "metabolomics-us/inferweave-gateway #549 against fixtures only"
+      ],
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "contract": "specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md"
+    },
+    {
+      "id": 35,
+      "requirement": "spec61 table: precision-classes.json is additive, a token never changes class, a published revision's validity never changes with a later table version",
+      "owner_task": "A-T01",
+      "proof_status": "owed",
+      "evidence": [],
+      "partial_evidence": [
+        "this repository: conformance/dynamic_aliases.py precision_table_errors; InferWeave/inferweave alias_precision.rs"
+      ],
+      "gate": "Must run against implementation; contract fixture checks are insufficient.",
+      "contract": "specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md"
     }
   ]
 }

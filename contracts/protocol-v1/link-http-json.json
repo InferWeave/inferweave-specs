@@ -5,7 +5,12 @@
   "capability": "iw.link-http-json/1",
   "targets": [
     "/v1/chat/completions",
-    "/v1/completions"
+    "/v1/completions",
+    "/v1/systemone",
+    "/v1/systemone/batch"
+  ],
+  "streaming_targets": [
+    "/v1/chat/completions"
   ],
   "method": "POST",
   "failure_codes": [

@@ -50,7 +50,10 @@
         "UNSUPPORTED_ALIAS_LEVEL",
         "EXECUTION_IN_PROGRESS",
         "EXECUTION_OUTCOME_UNKNOWN",
-        "EXECUTION_RESULT_UNAVAILABLE"
+        "EXECUTION_RESULT_UNAVAILABLE",
+        "PRECISION_UNVERIFIED",
+        "QUANTIZATION_ABSENT",
+        "PRECISION_UNKNOWN"
       ]
     },
     "event_type": {
@@ -260,6 +263,26 @@
             "verified"
           ],
           "description": "Alias omission means verified; request omission inherits alias minimum. An explicit request may strengthen but never weaken the alias minimum."
+        },
+        "min_precision_class": {
+          "$ref": "contract.json#/definitions/precision_band"
+        },
+        "quantization_allow": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "contract.json#/definitions/precision_token"
+          }
+        },
+        "quantization_deny": {
+          "type": "array",
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "contract.json#/definitions/precision_token"
+          }
         }
       },
       "required": []
@@ -299,6 +322,11 @@
           "maximum": 1
         },
         "reliability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "precision": {
           "type": "number",
           "minimum": 0,
           "maximum": 1
@@ -388,6 +416,12 @@
         },
         "preferred": {
           "$ref": "contract.json#/definitions/preferences"
+        },
+        "precision_table_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991,
+          "description": "Spec 61 pin: the precision-class table version the precision requirement members are validated against. Absent means the validating build's current table. Rejected beside no precision member, and when the table version is not held."
         }
       },
       "required": [
@@ -640,6 +674,17 @@
         },
         "confidence": {
           "$ref": "contract.json#/definitions/confidence"
+        },
+        "quantization": {
+          "$ref": "contract.json#/definitions/precision_token"
+        },
+        "precision_class": {
+          "$ref": "contract.json#/definitions/precision_class"
+        },
+        "precision_table_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
         }
       },
       "required": [
@@ -869,51 +914,13 @@
       ]
     },
     "resolve_request": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "alias_id": {
-          "$ref": "contract.json#/definitions/alias_id"
+      "oneOf": [
+        {
+          "$ref": "contract.json#/definitions/resolve_request_stored"
         },
-        "request_context": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "tenant": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
-            },
-            "runtime_family": {
-              "$ref": "contract.json#/definitions/family"
-            },
-            "required": {
-              "$ref": "contract.json#/definitions/requirements"
-            },
-            "preferred": {
-              "$ref": "contract.json#/definitions/preferences"
-            },
-            "allow_federation": {
-              "type": "boolean"
-            },
-            "allow_cold_start": {
-              "type": "boolean"
-            },
-            "deadline_ms": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 300000
-            }
-          },
-          "required": []
-        },
-        "include_explanations": {
-          "type": "boolean"
+        {
+          "$ref": "contract.json#/definitions/adhoc_request"
         }
-      },
-      "required": [
-        "alias_id",
-        "request_context"
       ]
     },
     "resolution": {
@@ -1456,51 +1463,13 @@
       ]
     },
     "simulate_request": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "definition": {
-          "$ref": "contract.json#/definitions/definition"
+      "oneOf": [
+        {
+          "$ref": "contract.json#/definitions/simulate_request_stored"
         },
-        "request_context": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "tenant": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 256
-            },
-            "runtime_family": {
-              "$ref": "contract.json#/definitions/family"
-            },
-            "required": {
-              "$ref": "contract.json#/definitions/requirements"
-            },
-            "preferred": {
-              "$ref": "contract.json#/definitions/preferences"
-            },
-            "allow_federation": {
-              "type": "boolean"
-            },
-            "allow_cold_start": {
-              "type": "boolean"
-            },
-            "deadline_ms": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 300000
-            }
-          },
-          "required": []
-        },
-        "include_explanations": {
-          "type": "boolean"
+        {
+          "$ref": "contract.json#/definitions/adhoc_request"
         }
-      },
-      "required": [
-        "definition",
-        "request_context"
       ]
     },
     "validate_request": {
@@ -1706,6 +1675,595 @@
           "$ref": "contract.json#/definitions/provenance"
         }
       }
+    },
+    "precision_token": {
+      "type": "string",
+      "pattern": "^[a-z0-9._]{1,32}$",
+      "description": "Spec 61 token alphabet, the segment alphabet of the canonical model id, bounded. Rejected, never truncated."
+    },
+    "precision_band": {
+      "type": "string",
+      "enum": [
+        "full",
+        "high",
+        "medium",
+        "low",
+        "very_low"
+      ],
+      "description": "Spec 61 nominal weight bit-width band, highest to lowest. `unknown` is a class value only and never a band."
+    },
+    "precision_class": {
+      "type": "string",
+      "enum": [
+        "full",
+        "high",
+        "medium",
+        "low",
+        "very_low",
+        "unknown"
+      ]
+    },
+    "request_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tenant": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "runtime_family": {
+          "$ref": "contract.json#/definitions/family"
+        },
+        "required": {
+          "$ref": "contract.json#/definitions/requirements"
+        },
+        "preferred": {
+          "$ref": "contract.json#/definitions/preferences"
+        },
+        "allow_federation": {
+          "type": "boolean"
+        },
+        "allow_cold_start": {
+          "type": "boolean"
+        },
+        "deadline_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 300000
+        }
+      },
+      "required": []
+    },
+    "resolve_request_stored": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "alias_id": {
+          "$ref": "contract.json#/definitions/alias_id"
+        },
+        "request_context": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tenant": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "runtime_family": {
+              "$ref": "contract.json#/definitions/family"
+            },
+            "required": {
+              "$ref": "contract.json#/definitions/requirements"
+            },
+            "preferred": {
+              "$ref": "contract.json#/definitions/preferences"
+            },
+            "allow_federation": {
+              "type": "boolean"
+            },
+            "allow_cold_start": {
+              "type": "boolean"
+            },
+            "deadline_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300000
+            }
+          },
+          "required": []
+        },
+        "include_explanations": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "alias_id",
+        "request_context"
+      ]
+    },
+    "simulate_request_stored": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definition": {
+          "$ref": "contract.json#/definitions/definition"
+        },
+        "request_context": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tenant": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "runtime_family": {
+              "$ref": "contract.json#/definitions/family"
+            },
+            "required": {
+              "$ref": "contract.json#/definitions/requirements"
+            },
+            "preferred": {
+              "$ref": "contract.json#/definitions/preferences"
+            },
+            "allow_federation": {
+              "type": "boolean"
+            },
+            "allow_cold_start": {
+              "type": "boolean"
+            },
+            "deadline_ms": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300000
+            }
+          },
+          "required": []
+        },
+        "include_explanations": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "definition",
+        "request_context"
+      ]
+    },
+    "adhoc_selection": {
+      "allOf": [
+        {
+          "$ref": "contract.json#/definitions/selection"
+        },
+        {
+          "properties": {
+            "type": {
+              "const": "DYNAMIC"
+            }
+          }
+        }
+      ],
+      "description": "Spec 61: an anonymous DYNAMIC selection. MANAGED needs a stored allowlist and is not an ad-hoc form."
+    },
+    "adhoc_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "selection": {
+          "$ref": "contract.json#/definitions/adhoc_selection"
+        },
+        "request_context": {
+          "$ref": "contract.json#/definitions/request_context"
+        },
+        "include_explanations": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "selection"
+      ],
+      "description": "Spec 61 ad-hoc body for POST /inferweave/v1/aliases/resolve|simulate. Closed, so alias_id or definition beside selection is rejected. request_context may be omitted."
+    },
+    "unmet_requirement": {
+      "type": "string",
+      "enum": [
+        "runtime_family",
+        "input_modality",
+        "output_modality",
+        "feature",
+        "min_context_tokens",
+        "min_output_tokens",
+        "embedding_dimensions",
+        "output_schema",
+        "min_precision_class",
+        "quantization",
+        "privacy",
+        "residency",
+        "trusted_origin",
+        "license",
+        "health",
+        "capacity"
+      ]
+    },
+    "unmet_scope": {
+      "type": "string",
+      "enum": [
+        "selection",
+        "model",
+        "instance",
+        "owner"
+      ]
+    },
+    "unmet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requirement": {
+          "$ref": "contract.json#/definitions/unmet_requirement"
+        },
+        "required": {},
+        "observed": {},
+        "scope": {
+          "$ref": "contract.json#/definitions/unmet_scope"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "requirement",
+        "required",
+        "scope",
+        "count"
+      ]
+    },
+    "tree_owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "owner_gateway_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "route_kind": {
+          "type": "string",
+          "enum": [
+            "LOCAL",
+            "FEDERATED"
+          ]
+        },
+        "path": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "owner_gateway_id",
+        "route_kind",
+        "path",
+        "expires_at"
+      ]
+    },
+    "tree_instance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "instance_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "instance_generation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "READY",
+            "BUSY",
+            "COLD",
+            "PROVISIONABLE",
+            "DRAINING",
+            "LOST",
+            "UNHEALTHY",
+            "UNKNOWN"
+          ]
+        },
+        "eligibility": {
+          "type": "string",
+          "enum": [
+            "ELIGIBLE",
+            "QUEUEABLE",
+            "COLD_START_POSSIBLE",
+            "PROVISIONABLE",
+            "EXCLUDED"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "maxItems": 48,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "contract.json#/definitions/reason"
+          }
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "owner": {
+          "$ref": "contract.json#/definitions/tree_owner"
+        }
+      },
+      "required": [
+        "instance_id",
+        "instance_generation",
+        "state",
+        "eligibility",
+        "reasons",
+        "expires_at",
+        "owner"
+      ]
+    },
+    "tree_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "instances": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "$ref": "contract.json#/definitions/tree_instance"
+          }
+        },
+        "unmet": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "contract.json#/definitions/unmet"
+          }
+        },
+        "unmet_truncated": {
+          "type": "boolean"
+        },
+        "unmet_omitted": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "model_id",
+        "expires_at",
+        "instances",
+        "unmet",
+        "unmet_truncated",
+        "unmet_omitted"
+      ]
+    },
+    "tree_selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "adhoc": {
+          "const": true
+        },
+        "selection": {
+          "$ref": "contract.json#/definitions/adhoc_selection"
+        },
+        "status": {
+          "$ref": "contract.json#/definitions/health"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "models": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "contract.json#/definitions/tree_model"
+          }
+        },
+        "models_omitted": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "instances_omitted": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unmet": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "contract.json#/definitions/unmet"
+          }
+        },
+        "unmet_truncated": {
+          "type": "boolean"
+        },
+        "unmet_omitted": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "adhoc",
+        "selection",
+        "status",
+        "expires_at",
+        "models",
+        "models_omitted",
+        "instances_omitted",
+        "unmet",
+        "unmet_truncated",
+        "unmet_omitted"
+      ]
+    },
+    "resolution_tree": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "selection": {
+          "$ref": "contract.json#/definitions/tree_selection"
+        }
+      },
+      "required": [
+        "selection"
+      ]
+    },
+    "adhoc_resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resolution_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "catalog_revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "routing_policy_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "evaluated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "$ref": "contract.json#/definitions/health"
+        },
+        "selected": {
+          "$ref": "contract.json#/definitions/instance_identity"
+        },
+        "candidates": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "$ref": "contract.json#/definitions/candidate"
+          }
+        },
+        "admission_reserved": {
+          "const": false
+        },
+        "warnings": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "PREVIEW_ONLY_REVALIDATE_ON_DISPATCH",
+              "CANDIDATES_TRUNCATED",
+              "METRICS_UNAVAILABLE"
+            ]
+          }
+        },
+        "alias": {
+          "type": "null"
+        },
+        "adhoc": {
+          "const": true
+        },
+        "resolution_tree": {
+          "$ref": "contract.json#/definitions/resolution_tree"
+        },
+        "unmet": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "contract.json#/definitions/unmet"
+          }
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "unmet_truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "resolution_id",
+        "catalog_revision",
+        "routing_policy_version",
+        "evaluated_at",
+        "expires_at",
+        "status",
+        "candidates",
+        "admission_reserved",
+        "warnings",
+        "alias",
+        "adhoc",
+        "resolution_tree",
+        "unmet",
+        "truncated",
+        "unmet_truncated"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "selected"
+            ]
+          },
+          "then": {
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "READY",
+                  "DEGRADED"
+                ]
+              },
+              "selected": {
+                "properties": {
+                  "state": {
+                    "const": "READY"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "description": "Spec 61 evaluate-only answer. alias is null, adhoc is true, nothing is reserved, and no permit, claim or binding member exists."
     }
   }
 }

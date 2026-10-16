@@ -179,8 +179,11 @@ def check_vectors(root=ROOT):
 
 def request_decision(frame, bound):
     """Preserve existing legacy completions stream rejection before transport dispatch."""
-    request_valid(frame)
-    if (frame['meta']['http']['target'] == '/v1/completions'
+    try:
+        request_valid(frame)
+    except Exception:
+        return {'dispatch_allowed': False, 'refused': 'invalid_http_request'}
+    if (frame['meta']['http']['target'] not in CONTRACT['streaming_targets']
             and strict_json(frame['payload']).get('stream') is True):
         return {'dispatch_allowed': False, 'status': 400, 'code': 'stream_unsupported'}
     mode = dispatch_mode(frame['meta']['http']['target'], bound)

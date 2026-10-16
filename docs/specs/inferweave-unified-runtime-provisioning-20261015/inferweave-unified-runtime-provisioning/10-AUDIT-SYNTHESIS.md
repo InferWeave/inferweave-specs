@@ -75,9 +75,37 @@ Serialize shared crate edits: iw-core capacity.rs (W1 only until merged), iw-gat
 provision_* (W4 only; W1 supplies a trait), iw-core runtime_family.rs (W2 only).
 
 ## 6. Decisions (conservative defaults, recorded)
-D1 Go pool loop: feature-flag it off by default behind Rust authority; do not delete.
+D1 Go pool loop: a flag, **default on** (revised 2026-10-16; this originally said default off). Default-off would stop demand ever being acted on, which the gateway's own tests document as the failure it once had. Built as `-pool-reconcile on|off`, gateway #565 (merged). Do not delete the loop until Rust parity is proven; shadow mode needs a split of `pool.Reconcile` into plan and apply (gateway #559).
 D2 CPU fallback: explicit opt-in per profile; strict-SLO rejects it; never silent.
 D3 Artifact digest: SHA-256, with migration reading old digests read-only.
 D4 Lease expiry: progress-based per invariant 37.
 D5 Unified memory: one physical pool entry; RAM and "VRAM" views derived, never summed.
 D6 Hardware claims: only mock/sim evidence unless a labeled runner reports the device.
+
+## 7. Status update (2026-10-16) — supersedes anything above that disagrees
+
+What changed after this audit was written, verified against the code or the PRs:
+
+- **Merged:** inferweave #1056 (offer double-allocation and revoke ownership in the federated
+  provisioning controller); inferweave-gateway #565 (D1 flag, default on); inferweave-specs
+  #279 (spec 64). Follow-ups from the independent review of #1056 are tracked in inferweave #1061.
+- **Lease expiry has no production caller of `tick`, confirmed**, and nothing outside tests
+  attaches the provisioning transport at all (`with_provision_transport` is called only in
+  `tests/gateway_e2e.rs`). The ledger is dormant in production, so the #1056 bugs were latent.
+  Wiring is W4, not a W1 fix.
+- **W1(a), the CPU-only fix, is not independent of S1.** `CapacityModel` has one accelerator pool
+  that weights, KV and seats all draw from; relaxing the zero-VRAM check alone yields a node
+  that advertises and admits nothing. It needs a memory-pool contract (system RAM as the pool;
+  meaning of `vram_bytes` for a node with no accelerator). W1(a) and (b) are one change after S1.
+- **CI exists and gates merges.** inferweave and inferweave-gateway use Woodpecker
+  (`.woodpecker/rust.yaml`, `.woodpecker.yml`), not GitHub Actions; the earlier "no CI" reading
+  came from looking only for `.github`. The specs repo has `protocol-ci.yml`, which showed no
+  runs. The gateway's branch protection also requires the branch to be current with `main`.
+- **jsonschema version split.** `validate_specs.py` and `conformance/runner.py` fail on the
+  pinned jsonschema 4.23 (legacy `RefResolver` scoping) and pass on 4.17. The smoke failures seen
+  earlier were this version effect, not independent defects. Several `RefResolver` call sites
+  remain; see specs #287 and the follow-up issue.
+- **Known flake, fixed upstream:** gateway tests failed intermittently with "TempDir RemoveAll
+  cleanup: directory not empty" (a background key-usage write racing temp-dir removal); fixed on
+  gateway `main` by #560.
+- **Still true and unstarted:** the memory-pool contract (spec 65), W2 to W5, and shadow mode.
