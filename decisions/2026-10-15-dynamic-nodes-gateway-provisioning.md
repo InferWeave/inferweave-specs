@@ -24,7 +24,11 @@ on the node, and restarting the node. The operator asked for the next step: star
 and configure models onto it over the protocol, and only in that mode. The operator's first use is
 two Qwen3.8 deployments (the 27B and Flash-Next, Q8 with vision) on the R9700 hosts, with every
 card of one engine on one physical host, at 120k to 260k of context per request, and the highest
-aggregate tokens per second a measured profile gives.
+aggregate tokens per second a measured profile gives. (As configured in the reference
+implementation, not as contract: the 27B is `q8_k_xl` on two cards; Flash-Next is served as plain
+`q8_0`, in six shards plus the projector, on eight cards, because the upstream repository
+publishes no `UD-Q8_K_XL` build and the model needs about 213 GiB across its cards. The model id says
+which: `...-quant-q8_0`.)
 
 Spec 47 reserved `assignments` on the register response for exactly this and defined no entry.
 Spec 25 described the exchange in prose for Slurm workers. The reference implementation had a
@@ -54,21 +58,38 @@ file. None of the three let a node that joined with nothing be given something.
    becomes a draft profile the next plan may select; a model with measurement candidates cannot
    require a quality suite, and a candidate whose matrix could not produce a qualified draft is
    refused at load. A draft serves on measured throughput alone, so it is not authorized for
-   production traffic by this record. Alternative rejected: serving from a candidate's published
+   production traffic by this record. Eligible profiles, drafts among them, are ordered by quality
+   tier, then measured decode at the floor, then name and version; the size of the serving group
+   is not an ordering key, so an engine over more cards wins only when its evidence says it is
+   faster. Alternative rejected: serving from a candidate's published
    figures, which spec 39 records as assumptions.
 5. **All cards of an engine on one node**, by construction: an entry names one node's cards and
    as many as the profile's `match.gpu.count`. Alternative rejected: multi-node tensor
    parallelism, which the autoscaler's `--nodes=1` rule and spec 43 already exclude.
-6. **The deployment id is derived** from the model, the profile name and version, the image, its
-   digest, the command and the artifact paths and digests, as one length-prefixed SHA-256
-   (invariant 15; spec 64 section 5 rule 6), never typed by an operator.
+6. **The deployment id is derived** from the model, the profile name and version, the whole launch
+   block (image, digest, command, environment, privileges, mounts, shm size, engine, backend,
+   label), the artifact paths and digests and, for a `serve`, the advert figures, as one SHA-256
+   over length-prefixed strings and count-prefixed lists (invariant 15; spec 64 section 5 rule 6),
+   never typed by an operator. A node recomputes the id and refuses an entry whose id differs.
+   The first draft of this rule hashed fewer fields and did not count its lists, so a command that
+   ended in the strings an artifact contributes hashed like that artifact, and two assignments
+   that differed only in an environment variable, a mount or an advertised figure shared an
+   id; both are corrected before this record was accepted, and the known answers are pinned in
+   `conformance/dynamic-node-vectors.json`.
 7. **Artifacts are fetched only on an assignment**, pinned by size and SHA-256, resumable, and
    never published under their path before the digest is verified (spec 20).
 8. **A failed placement is not retried into the same hole** for the permanent reasons
-   (`launch_failed`, `probe_failed`, `disk_full`, `measure_failed`) on this gateway's lifetime,
-   extending spec 43's never-retry rule for out-of-memory and no-fit loads; the reasons that say
-   nothing about the profile (`engine_exited`, `artifact_unavailable`, `digest_mismatch`) expire
-   after 600 s, and `refused` is never recorded. Failures are recorded and shown.
+   (`launch_failed`, `probe_failed`, `measure_failed`) on this gateway's lifetime, extending spec
+   43's never-retry rule for out-of-memory and no-fit loads; the reasons that say nothing about the
+   profile (`engine_exited`, `artifact_unavailable`, `digest_mismatch`, `disk_full`,
+   `runtime_unavailable`) expire after 600 s. A full disk comes back and a stopped docker daemon
+   or an unreachable registry says nothing about a profile, so retiring a good placement for the
+   gateway's life on them would leave the node idle until a restart (`disk_full` was permanent in
+   the first draft of this record and is corrected). `refused` is never recorded as a failure,
+   but the same (node, model, profile) is not placed again for 60 s after a refusal, doubling to
+   600 s, and the operator view shows it. A holding its node never reports is dropped after 300 s
+   as a transient failure, and an engine found beyond a model's `replicas` is stopped. Failures
+   are recorded and shown.
 9. **One engine per dynamic node** in this version, dialled at an operator-named address.
    Link-only dynamic nodes and co-residency are follow-ups, recorded in the specification's
    non-goals.
@@ -94,6 +115,8 @@ has no quality score. Operational: the desired-model file, the drafts directory 
 
 ## Proof status
 
+The deployment-id layout has known answers that the reference implementation's unit test asserts
+and `python3 conformance/runner.py` recomputes independently (`conformance/dynamic-node-vectors.json`).
 The reference implementation carries unit tests (`iw-core::dynamic_node`,
 `iw-gateway::dynamic_provisioner`, `iw-cli::dynamic_node`), HTTP tests against the real
 handlers on loopback (`iw-gateway/tests/dynamic_nodes.rs`) and a scripted-gateway test of the
@@ -107,7 +130,10 @@ operator asked for, are **owed** by `P5-T35` and recorded in `OPEN_GATES.md`.
 A fleet where the same node must hold two engines (co-residency), or where dynamic nodes sit
 behind NAT, revisits decision 9. A measured case where a drafted profile without a quality score
 served worse than a rejected shipped one revisits decision 4's default of not requiring a
-quality suite. The profile quantization gate compares a profile's `quantization` with the `quant`
-qualifier of the model id the operator configured; if spec 61's rule that a consumer never derives
-quantization from an id string is read to cover configuration, the desired model carries the token
-as its own member instead.
+quality suite. The quantization of a desired model is read from the `quant` qualifier of the
+model id the operator configured, not from a model id a node advertised. Spec 61 (the `quantization`
+member of its profile facts, line 40) says a consumer never derives quantization by parsing an id
+string; the gateway's configuration is the operator's own statement, not a producer's evidence, so
+the reference reads it there, and the tension stays documented here rather than resolved: if spec
+61's rule is read to cover configuration, the desired model carries the token as its own member
+instead.

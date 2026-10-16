@@ -389,9 +389,10 @@ Unsatisfied, and recorded `owed` by `P5-T35`, feature `IW-DYNNODE-001`:
   scripted-gateway tests for every rule of the specification; no dynamic node has fetched real
   weights, launched a real profile through docker and served requests through its gateway, and no
   independent review has run;
-- the two deployments the operator asked for (`qwen3.8-27b-modality-vision-quant-q8_k_xl` and
-  `qwen3.8-flash_next-modality-vision-quant-q8_k_xl`, 120k to 260k context, every card on one
-  R9700 host) have no shipped runtime profile with Q8 evidence at that depth: the reference
+- the two deployments the operator asked for (`qwen3.8-27b-modality-vision-quant-q8_k_xl` on two
+  cards and `qwen3.8-flash_next-modality-vision-quant-q8_0` on eight, plain `q8_0` because the
+  upstream repository publishes no `UD-Q8_K_XL` build (decision record); 120k to 260k context,
+  every card on one R9700 host) have no shipped runtime profile with Q8 evidence at that depth: the reference
   configuration lists them as measurement candidates, so the first assignment on a real host is a
   `measure`, and the draft it yields has no quality block. Serving from a draft is permitted by
   the reference only where the desired model does not require a quality suite; no draft has been
@@ -400,8 +401,13 @@ Unsatisfied, and recorded `owed` by `P5-T35`, feature `IW-DYNNODE-001`:
   node registered to it is recorded hardware-only and assigned nothing;
 - link-only dynamic nodes (behind NAT) and two engines on one dynamic node are non-goals of this
   version; a dynamic node is dialled at an operator-named address;
-- the reference node fetches over `file://` and `http(s)://` only; the site-connector cache tiers
-  of specs/27 are not consulted;
+- the reference node fetches over `file://` (only under an operator-configured source root) and
+  `http(s)://` only; the site-connector cache tiers of specs/27 are not consulted;
+- the node behaviours recorded in specs/64 section 5 (the `file://` source root, the HTTP source
+  restrictions, the content store, read-only confined `$ARTIFACTS` mounts, a `stop` that cancels
+  an in-flight assignment, the node's own trimming of its report) come from the node branch of the
+  reference implementation, which is not merged; they were not read against that code when this
+  specification was last revised, and no test drives them against this specification;
 - `conformance/node_join.py` still answers `assignments: []` for every registration, which
   remains correct for a registration that does not negotiate the capability; no vector drives a
   negotiated registration against a running gateway.

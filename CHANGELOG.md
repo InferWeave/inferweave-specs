@@ -137,16 +137,56 @@ every registration that has not negotiated a capability that fills it.
   heartbeat member `provisioning` (`schemas/v1/requests/node-provisioning-status.json`);
   `node-register-response.json` now allows up to 8 assignment entries.
 - Rules: desired state repeated until the node agrees, withdrawal explicit, unknown entries
-  skipped; a derived `dep_` deployment id; pinned, resumable, digest-verified artifacts; only
-  profiles with decode evidence at 90% of the context floor serve, unmeasured candidates are
-  measured first and drafted; every card of an engine on one node; nothing is placed on a
-  registration before its first `provisioning` report; only operator-enrolled credentials are
-  provisioned; a permanent failure (`launch_failed`, `probe_failed`, `disk_full`,
-  `measure_failed`) is not retried into the same placement while the gateway runs, a transient
-  one (`engine_exited`, `artifact_unavailable`, `digest_mismatch`) expires after 600 seconds and
-  `refused` is never recorded; a restarted gateway adopts what a node reports; spec 47 §6.12
-  keeps `provisioning` on a hardware-only heartbeat when the capability is in force.
-- Fixtures under `fixtures/valid` and `fixtures/invalid`; operator view `GET /iw/v1/dynamic`.
+  skipped; pinned, resumable, digest-verified artifacts; only profiles with decode evidence at 90%
+  of the context floor serve, unmeasured candidates are measured first and drafted; every card of
+  an engine on one node; nothing is placed on a registration before its first `provisioning`
+  report; only operator-enrolled credentials are provisioned; spec 47 §6.12 keeps `provisioning`
+  on a hardware-only heartbeat when the capability is in force.
+- The `dep_` deployment id is derived, never typed, as one SHA-256 over length-prefixed strings and
+  count-prefixed lists: the model id, the profile name and version, the whole launch block
+  (image, digest, command, environment in key order, privileges, mounts, shm size, engine,
+  backend, label), the artifacts' paths and digests and, for a `serve`, the advert figures. A
+  node recomputes it and refuses an entry whose id differs. Three known answers
+  (`conformance/dynamic-node-vectors.json`) are recomputed by `conformance/runner.py`.
+- Failure classes: `launch_failed`, `probe_failed` and `measure_failed` are permanent (not
+  retried into the same placement while the gateway runs); `engine_exited`,
+  `artifact_unavailable`, `digest_mismatch`, `disk_full` and the new reason `runtime_unavailable`
+  (the container runtime is down, an image pull failed, a container name collided, a non-space
+  filesystem error) expire after 600 seconds. `refused` is never a failure, but the same
+  (node, model, profile) is not placed again for 60 seconds, doubling to 600. A holding its node
+  never reports is dropped after 300 seconds as a transient failure; an engine beyond a model's
+  `replicas` is sent a `stop`; of the active statuses a node reports for one model at most one is
+  adopted, and a report is read for at most 64 entries.
+- Plan order: quality tier, then measured decode at the floor, then profile name and version.
+  The size of the serving group is not a key; on equal best scores the smaller quality tolerance
+  sets the tier, as the shared profile ranking does. The idle reasons are `occupied`,
+  `no_matching_profile`, `no_qualified_profile`, `failed_before`, `measuring_elsewhere`,
+  `replicas_met`, `awaiting_status` and `refused_recently`.
+- Bounds a gateway enforces: the `dynamic` member is at most 64 KiB as sent (unknown members
+  count) and keeps to the schema's field bounds, with a 400 message cut to 200 characters; a
+  measure candidate's name leaves room for `<candidate>-draft-<id>` within 128 characters (at
+  most 71); a `measure` matrix has `maxTokens` of at least 2, concurrency at most 256 and each
+  depth at least 10 x (`maxTokens` + 16); artifact paths do not collide on disk (`a` and `a/b`,
+  `x` and `x.part`, `m.gguf` and `m.gguf.sha256`) and their sizes add up within 64 bits;
+  `advert.slots` is at most 4294967295; a node ignores unknown advert members. A draft of an
+  allowed candidate is admitted when `profilesAllow` is set; a draft is matched to the host's
+  facts as they were when the `measure` was assigned; the operator view marks drafts and what is
+  served from them `experimental` and lists `refusals`.
+- Node behaviour recorded in the specification: a `file://` source is read only under an
+  operator-configured source root; HTTP sources never target loopback or link-local addresses,
+  follow at most three redirects and never downgrade from https to http; `$ARTIFACTS` mounts are
+  read-only and confined to the deployment's directory; a node may reuse a verified file of the
+  same size and SHA-256 from another deployment; a `stop` cancels an in-flight assignment; a node
+  cuts status messages to 512 characters and keeps its report within 64 KiB, oldest terminal
+  statuses first.
+- A boot token of at most 12 base-36 characters (hash of clock, process id and a random value)
+  replaces the start time in seconds in assignment ids.
+- Specification corrections made before this entry was accepted: the first draft of the
+  deployment-id rule did not count its lists (a command ending in the strings an artifact
+  contributes hashed like that artifact) and left out environment, privileges, mounts, shm size,
+  engine, backend, label and the advert; `disk_full` was listed as permanent.
+- Fixtures under `fixtures/valid` and `fixtures/invalid`, one valid and several invalid for the
+  new rules; operator view `GET /iw/v1/dynamic`.
 
 ## 1.0.0 — initial protocol (in progress)
 

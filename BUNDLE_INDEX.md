@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,121,340 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,127,578 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -26,14 +26,14 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `.semgrepignore` — `81c5def09b50` — ~86t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `1990cc5d3030` — ~3,202t
+- `CHANGELOG.md` — `68f53ff2c6c4` — ~4,060t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `f2ebd7a07764` — ~12,658t
+- `OPEN_GATES.md` — `15fbea86703d` — ~12,818t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -76,7 +76,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
-- `contracts/canonical-task-graph.json` — `55fb490895f7` — ~36,798t
+- `contracts/canonical-task-graph.json` — `da355f9314f1` — ~37,044t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~167t
 - `contracts/deployment-manifest.image.example.yaml` — `94c2bd1e9061` — ~577t
@@ -118,7 +118,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-12-dynamic-alias-authority.md` — `da2d9267f07f` — ~520t
 - `decisions/2026-10-12-farm-gateway-zero-capacity-registration.md` — `dc2e67481da6` — ~638t
 - `decisions/2026-10-12-model-intelligence-ui-cohesion.md` — `aaa0263e7798` — ~660t
-- `decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` — `f5eb43dc8430` — ~2,023t
+- `decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` — `b9735ab20a83` — ~2,610t
 - `decisions/2026-10-15-link-upstream-role.md` — `39973a699b66` — ~382t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `468dc44cd437` — ~4,192t
@@ -486,7 +486,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/runtime-observation-report.json` — `a2e472f63798` — ~281t
 - `fixtures/valid/seat.json` — `226b3cc299f9` — ~19t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `b1051c2bceea` — ~3,031t
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `c54b2f245181` — ~26,641t
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `bfc2d4273ec2` — ~26,884t
 - `implementation/CANONICAL_TASK_INDEX.md` — `f6e21e626a5e` — ~3,712t
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
@@ -689,7 +689,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` — `daf4e6db8873` — ~6,241t
 - `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` — `39a580af16ea` — ~6,678t
 - `specs/63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS.md` — `3ae270316b23` — ~4,040t
-- `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` — `f827168b11db` — ~8,108t
+- `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` — `34c058ffbaeb` — ~11,958t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `99f922c820cb` — ~544t
@@ -849,7 +849,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-5/P5-T32.md` — `e40ac49dd0c8` — ~483t
 - `tasks/phase-5/P5-T33.md` — `3b69e5031fde` — ~635t
 - `tasks/phase-5/P5-T34.md` — `7491e8f30dae` — ~642t
-- `tasks/phase-5/P5-T35.md` — `05e11ccddc22` — ~946t
+- `tasks/phase-5/P5-T35.md` — `3cd16bd7894d` — ~1,240t
 - `tasks/phase-A/A-T01.md` — `8300274295bc` — ~255t
 - `tasks/phase-A/A-T02.md` — `5440d59b1574` — ~271t
 - `tasks/phase-A/A-T03.md` — `95ae59475969` — ~245t
