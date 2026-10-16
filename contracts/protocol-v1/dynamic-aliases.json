@@ -454,6 +454,7 @@
         "embedding_dimensions",
         "output_schema",
         "min_precision_class",
+        "precision_table_version",
         "quantization",
         "privacy",
         "residency",
