@@ -814,3 +814,66 @@ Nothing here opens a production gate. Every Rust statement below is about defaul
   unit-tested only); the Go acceptor decision and the feature-ID decision of the decision record; the `transit`
   grant; a deployment. The 200-response bodies remain the node's bytes after redaction of known members only.
 
+
+### Update 2026-10-16 (final): what is merged, deployed and still owed for specs 56, 61, 62 and 63
+
+This section supersedes the "open follow-up" wording above. Nothing here opens a production gate: every spec 62 and
+spec 63 behaviour is default-off, and no catalog row is `verified`.
+
+* **Spec 63 (Rust, merged: InferWeave/inferweave #1024, #1051, #1062, #1072):** the acceptor executor, TLS 1.3
+  channel-binding exporter, N-upstream dialer, success-response redaction (an allow-list at every level, `model`
+  replaced by the id the key requested, `logprobs`/`usage` reduced to known members), the per-key token budget
+  (cancel before the head and streams without usage are charged their reservation or what was observed, whichever is
+  larger), the declared class (`meta.traffic_class`, sent only when the ack says `reads_traffic_class`), the
+  non-recording assertion, the relay circuit breaker and bandwidth bound, and the drain wait. Four independent
+  security reviews (rounds on #1051, #1062, #1072) found and closed: Cancel-id memory exhaustion, TLS early-data
+  stall, a disconnect that did not cancel the node request, the body-form probe marker, a blocking reader, request-id
+  collisions across clients, a `logprobs` clone, and two token-budget bypasses. Still **owed**: the items in the
+  "spec 63 residuals" section above (durable counters and dedupe, measured numbers, HTTPS fallback and principal
+  reconciliation, schemas and vectors for the new members, audit of other content stores, the Go acceptor and
+  feature-ID decisions, the `transit` grant). The 200-response body is no longer "the node's bytes": it is reduced
+  to the allow-list.
+* **Spec 62 (Rust, merged: #1022, #1041, #1070, #1075, #1077, #1078; specs #291, #293):** the hosting wire path
+  (`iw.provisioning/2` only for peers authenticated with a spec 63 key, `hosting/<principal>` namespace, operator
+  routes require the admin secret, egress hosts clamped to the owner's policy) and the node-side executor
+  (`iw-weight-fetch`: egress and port pinned on every hop, credential to the first hop only, digest verified before
+  rename, caps during the stream, resume from a `.part` file hashed whole, HF `_id` bound to the claimed
+  repository id, network address vetting helper, driver watchdog and abandon path, resolve off the lock with
+  tickets, rate and concurrency bounds, a deterministic lock-order test). Five independent review rounds closed a
+  repository-id binding hole, an unpinned port, a hung-read wedge, a resolve-under-lock stall, a lock-order
+  deadlock between the driver and the operator API, and cache and rate-limit abuse. **UNSATISFIED / owed:** no
+  production `ObjectFetcher` (DNS vetting, pinned connect, redirect handling are specified in the trait but
+  nothing implements them, so the downloader has only run against fakes), no installer flag, no real profile, load
+  or validation hooks (nothing reaches `READY`), no production outbound `HostingPeerChannel` (so `hosting/ask` is
+  404), no capacity-signal discovery (`acquirable`), no per-key hosting role (a dedicated keys file is required
+  instead), no console endpoint (the spec defines none), the Go console rendering of required test 9, the
+  operator-audience plan with eviction handles, licence checks for local sources, and a measured default for every
+  number. Every required test of spec 62 beyond the controller and the pure slice stays **owed** until a real
+  fetcher runs.
+* **Spec 61 (Rust #1021, #1029, #1039, #1062; specs #289, #290):** the contract and schema additions now exist
+  (precision-class table with an additivity check, ad-hoc request and response schemas with `resolution_tree` and
+  `unmet`, the three precision reason codes, conformance fixtures; acceptance entries 30 to 35 stay `owed` with
+  partial evidence). `selection.precision_table_version` is **validation-only**: it checks that the named table is
+  held but classification still uses each candidate's own advertised table version, which is harmless while only
+  table 1 exists and becomes a real gap when a second version does. A malformed ad-hoc selection is now 400
+  `INVALID_CAPABILITY` (InferWeave/inferweave #1073) instead of 503.
+* **Spec 56 (Rust #1063, #1073, #1074; specs #294):** node-attested runtime observations: an executor node
+  (`--engine-catalogue`) sends a bounded, sequence-fenced snapshot of its own engines over the authenticated link
+  (register and heartbeat), the gateway ingests it only from the current authenticated connection and only for the
+  authenticated node, and for a row the owner policy already grants the alias inventory shows READY with
+  `node-attested:<node>` provenance (confidence stays `Advertised`; capacity comes from gateway state). Producer
+  side: a durable generation and epoch journal (0600, write-ahead sequence ceiling), UNLOADED tombstones, a new
+  epoch before the owner's fence budget (spec 56 §2.1: nothing is forgotten within an epoch), and a paced
+  `runtimeObservations.resync` diagnostic (5 minutes, doubling to one hour). Registration by an unknown or
+  unproven node is a uniform 401, not a 400 that reveals which node ids hold credentials. **UNSATISFIED / owed:**
+  no qualification verifier (the spec leaves the evidence store and record format undefined, so `qualification_id`
+  and `owner_policy_id` stay opaque and nothing becomes `verified`); only executor nodes send observations, so the
+  lab's `node join --model` nodes stay `UNKNOWN`; zero clock-skew tolerance (fails closed, as the spec requires);
+  the gateway keeps observations in memory only; the owner remembers only 8 retired epochs; the one line that
+  passes the producer into the join-loop re-registration decision has no running-loop test; same-epoch
+  re-registration is not exercised against a real executor and gateway.
+* **Lab deployment (2026-10-16):** the bender lab gateway (`iw-lab-gateway`, built from `main` after #1078) runs
+  with `--no-builtin-models` (#1066). Nodes `node_9d943655cf39cd3d` (Qwen) and `node_acf41c7185b8782a` (beast)
+  re-attach after a restart (first attempt `node not enrolled`, then admitted). An ad-hoc resolve returns both as
+  `advertised`, excluded and unselectable. Not deployed: any spec 62 or spec 63 behaviour (flags off), farm and the
+  other bender nodes (not joined to the lab gateway).
