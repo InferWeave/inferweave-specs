@@ -1,0 +1,18 @@
+repository_sha: {inferweave: 7171259, inferweave-specs: e99d655, inferweave-gateway: fb5310d}
+note: static audit; see 10-AUDIT-SYNTHESIS.md matrix and evidence/audit-parts/*.md for cites
+capabilities:
+  - {id: RESOURCE-LEDGER, status: partial, decision: extend, owner: inferweave, workstream: W1}
+  - {id: CPU-ONLY-NODE, status: broken, decision: fix, owner: inferweave, workstream: W1}
+  - {id: UNIFIED-MEMORY, status: missing, decision: new-in-existing-module, owner: inferweave, workstream: W1}
+  - {id: RESERVATIONS, status: partial, decision: extend, owner: inferweave, workstream: W1}
+  - {id: UNIVERSAL-RUNTIME, status: duplicated, decision: consolidate, owner: inferweave, workstream: W2}
+  - {id: HOT-SWAP, status: partial, decision: extend, owner: inferweave, workstream: W2}
+  - {id: ARTIFACT-CACHE, status: broken, decision: fix, owner: inferweave, workstream: W2}
+  - {id: CPU-GPU-HYBRID, status: missing, decision: extend, owner: inferweave, workstream: W3}
+  - {id: REBALANCER-AUTHORITY, status: duplicated, decision: consolidate, owner: inferweave, workstream: W3/W6}
+  - {id: FEDERATED-PROVISIONING, status: partial, decision: extend, owner: inferweave, workstream: W4}
+  - {id: SLURM-APPTAINER, status: partial, decision: extend, owner: inferweave, workstream: W4}
+  - {id: BENCHMARK-OPTIMIZATION, status: duplicated, decision: consolidate, owner: inferweave, workstream: W5}
+  - {id: ALIASES-ROUTING, status: complete, decision: reuse, owner: inferweave}
+  - {id: GATEWAY-UI, status: partial, decision: extend, owner: inferweave-gateway, workstream: W6}
+  - {id: SDKS, status: unknown, decision: generated-clients-only, owner: inferweave}

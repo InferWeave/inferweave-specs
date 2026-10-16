@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,191,444 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,220,745 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -160,6 +160,26 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/specs/dynamic-context-capabilities/README.md` — `c38c57320a3b` — ~759t
 - `docs/specs/dynamic-context-capabilities/SOURCES.md` — `a2b1685d6af2` — ~808t
 - `docs/specs/dynamic-context-capabilities/manifest.json` — `e046a933c103` — ~233t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/01-AUDIT.md` — `e4f89b7f5120` — ~242t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/02-ARCHITECTURE.md` — `7510385188d7` — ~183t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/03-RESOURCE-LEDGER.md` — `5229d65c9a38` — ~249t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/04-UNIVERSAL-RUNTIME.md` — `7902fdd4f5b3` — ~308t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/05-PLACEMENT-PROFILES.md` — `861406f4a3aa` — ~249t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/06-FEDERATION-SLURM.md` — `fc98e3b4c958` — ~228t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/07-UI-OBSERVABILITY.md` — `4c9847892248` — ~171t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/08-TEST-ROLLOUT.md` — `0657fb5f2617` — ~221t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/09-AGENT-PLAN.md` — `1a2153820300` — ~174t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/10-AUDIT-SYNTHESIS.md` — `f7f1bfed4e3a` — ~2,506t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/11-WORKSTREAM-PROMPTS.md` — `d86ea4049d73` — ~1,438t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/README.md` — `820756c29f93` — ~147t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/START_HERE_PROMPT.md` — `3032c76256d8` — ~275t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/evidence/audit-parts/gateway-ui.md` — `d1144caed02e` — ~5,279t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/evidence/audit-parts/rust-resources-scheduling.md` — `066044ec3040` — ~6,264t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/evidence/audit-parts/rust-runtime-federation-slurm.md` — `b15b9e0dd211` — ~6,568t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/evidence/audit-parts/specs-and-prs.md` — `7563ee83739e` — ~4,209t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/evidence/capability-ledger.yaml` — `f4ec3bc47681` — ~415t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/wireframes/deployment-view.md` — `b46a16369ac8` — ~93t
+- `docs/specs/inferweave-unified-runtime-provisioning-20261015/inferweave-unified-runtime-provisioning/wireframes/resource-view.md` — `55ca8e17d345` — ~82t
 - `docs/specs/model-intelligence-kit/MASTER_SPEC.md` — `d2f8c9a01d3e` — ~4,594t
 - `docs/superpowers/plans/2026-09-23-backpressure-actions-load-report.md` — `906fed45439c` — ~6,262t
 - `docs/superpowers/plans/2026-10-08-node-hardware-registration.md` — `f22c7646d2ee` — ~947t
