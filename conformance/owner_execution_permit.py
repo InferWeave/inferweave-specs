@@ -8,8 +8,14 @@ from pathlib import Path
 from jsonschema import Draft7Validator
 
 try:  # jsonschema >= 4.18 ships `referencing`; the legacy RefResolver mis-scopes sibling refs there
+    import inspect
+
     from referencing import Registry, Resource
     from referencing.jsonschema import DRAFT7
+
+    # `referencing` can be installed next to an older jsonschema; use it only if the validator takes it.
+    if "registry" not in inspect.signature(Draft7Validator).parameters:
+        Registry = None
 except ImportError:  # older jsonschema: RefResolver is not broken, and `referencing` is absent
     Registry = None
 import alias_edge_delegation as edge

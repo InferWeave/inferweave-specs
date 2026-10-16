@@ -46,7 +46,7 @@
   "conformance/node-join-vectors.json": "d7aa10218ed6810aa500b8017c7f84cdd0f051bae345ff4c4f59da2ec0c16095",
   "conformance/node_join.py": "60615886834546157e079338e0cfe572bed73b5526a028b2c1ab439feb111f25",
   "conformance/owner-execution-permit-vectors.json": "df73b72d7d7c3ccc950288c6bffcd75f821ca026cc353af6180182d5422f6a37",
-  "conformance/owner_execution_permit.py": "55ae27ec355f50ad58d1fc2910c2902fececaee8d8a5086c9591ea63c5d3a050",
+  "conformance/owner_execution_permit.py": "2a204b3f4fdaa0a5b1471298edfd595c412cde197686098c0079b48226a79be8",
   "conformance/release-manifest.yaml": "f1864185a73924a878ade698387ee03c705eaeb1d0b47495da7e4783cb1532b5",
   "conformance/runner.py": "9d9e051fb9cf81fc0d0c55fe86b05cf75892dc44639268d5bd207050c689e842",
   "conformance/runtime-family-vectors.json": "e9182c76245d0289ddc30ed052fe4b70b323517796a13b3796a099ff0fcccc19",
