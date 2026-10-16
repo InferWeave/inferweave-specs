@@ -975,3 +975,40 @@ spec 63 behaviour is default-off, and no catalog row is `verified`.
   re-attach after a restart (first attempt `node not enrolled`, then admitted). An ad-hoc resolve returns both as
   `advertised`, excluded and unselectable. Not deployed: any spec 62 or spec 63 behaviour (flags off), farm and the
   other bender nodes (not joined to the lab gateway).
+
+### Update 2026-10-16 (spec 62 peer channel, `acquirable`, discovery): what is proven and what is still owed
+
+Nothing here opens a production gate: every behaviour is default-off (`--provision-hosting-peers-file`), the
+owner's hosting wire is a separate flag, and no executor reaches `READY`.
+
+* **Proven (Rust, InferWeave/inferweave #1101, each by a test that fails when the control is removed,
+  checked by mutation):** the production outbound `HostingPeerChannel` over the weight downloader's own HTTPS core
+  (own DNS, every address vetted, connect to the vetted address, TLS 1.3, webpki roots, SNI = host, port 443 only,
+  no proxy, no redirect followed, no decompression), against loopback TLS with a test CA (the dial override exists
+  under `cfg(test)` only); refusal of loopback, private, link-local, metadata and mixed answers; a peer is a
+  configuration key, never a host (an unknown name sends nothing); each peer's bearer is read per exchange from a
+  `0600` file of this user and goes to that peer's host only; a redirect is an error and is not followed; only a 200
+  is a reply; replies are capped at 1 MiB by declared length, by streamed length and by a total body deadline;
+  a closed-schema peers file with duplicate keys, duplicate names, address literals, ports, paths and queries
+  refused at startup; duplicate object keys in a reply refused; a reply on another major refused; the owner's
+  `acquirable` (derivation and every withholding condition), its closed wire shape, and its consumer rules; bounded,
+  parallel, cached discovery over the same channel and an owner-gated operator route for it (admin secret only).
+* **Specification defect found and fixed in this change (spec 62, "Relation to aliases"):** the text placed
+  `acquirable` "in the capacity signal" and judged it by `sequence`/`observed_at`, but the delivered code never
+  sends `ProvisionCapacity` to a peer, so the member had no carrier and no member names. This change records the
+  carrier (the owner's `provision.capabilities` reply on `iw.provisioning/2`), the member names, the withholding
+  rules and the freshness rule (receipt time, bounded cache). A future implementer following the old text literally
+  would have had to invent all four.
+* **UNSATISFIED / owed:** (1) nothing in the live alias-resolution path reads a discovered `acquirable`, so no alias
+  candidate is marked `PROVISIONABLE` from it yet (a discovery answer exists and `Willingness::provisionable_for`
+  is tested, but that is not reachability); (2) the owner's operator-audience plan with eviction handles and
+  `FITS_AFTER_EVICTION`: the pure verdict and its redaction exist and are tested in `iw-core`, but the production
+  planner has no source of runtime memory reports, so the verdict is unreachable, and the text leaves undefined the
+  handle format and lifetime, how the owner's operator authenticates to receive handles, which route returns them, what
+  an "authorized requester" is, and what a requester who is told the plan "as if no other tenant's model existed"
+  may rely on when the owner would in fact have to evict (that requester is told `FITS` for a plan the owner can
+  honour only by unloading something); (3) the channel reaches port 443 only, so an owner must be fronted by a
+  TLS terminator on 443 (the gateway's own TLS listener is a link port); no end-to-end run against a real owner
+  over TLS exists; (4) the inbound side still parses with `serde_json::Value` (a duplicate key on a request or
+  heartbeat is not refused); (5) the freshness of an `acquirable` answer is receipt time only, with no
+  `sequence`; (6) every other required test of spec 62 stays owed as recorded above.
