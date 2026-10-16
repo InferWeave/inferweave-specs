@@ -55,6 +55,7 @@ MAP = {
     "dynamic-alias-catalog": "aliases/catalog.json",
     "dynamic-alias-validate-request": "aliases/validate-request.json",
     "dynamic-alias-simulate-request": "aliases/simulate-request.json",
+    "dynamic-alias-adhoc-resolution": "aliases/adhoc-resolution.json",
     "dynamic-alias-error": "aliases/error.json",
     "dynamic-alias-history": "aliases/history.json",
     "dynamic-alias-validation": "aliases/validation.json",

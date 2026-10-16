@@ -130,8 +130,18 @@ Rules:
   `unknown` is also `EXCLUDED`. Absent is never treated as "not in the deny set".
 * Spec 54 step 4 applies: a request may only *strengthen* (raise `min_precision_class`, shrink
   `quantization_allow`, grow `quantization_deny`); weakening is a safe failure.
-* **Conflict** is evaluated against the table version pinned in the alias revision (or, for an
-  ad-hoc selection, in the request) and fails `INVALID_CAPABILITY`: an allow set that is empty
+* **Pin.** The table version is the optional integer member `precision_table_version` of the
+  `selection` object (`schemas/v1/aliases/contract.json#/definitions/selection`), so a published
+  alias revision and an ad-hoc request carry it in the same place. Absent, the version is the
+  validating producer's current table; a producer that wants a revision's validity fixed states the
+  pin. A pin that the validating producer does not hold, a pin of 0, and a pin beside none of the
+  three precision members are rejected as `INVALID_CAPABILITY`: an unheld table cannot be checked
+  against, and a pin on nothing does nothing. The pin is **validation-only**: it changes only the conflict check below. It
+  never reclassifies a candidate; resolution classifies and verifies each candidate by the table
+  version that candidate advertises (above). It applies to the selection's own requirement and to
+  a request's `required` alike (the table checked against), but the "pin beside no precision
+  member" rule is judged on the selection alone, never on a request's `required`.
+* **Conflict** is evaluated against the table version pinned as above and fails `INVALID_CAPABILITY`: an allow set that is empty
   after removing the deny set; an allow set none of whose tokens can meet `min_precision_class`
   under that version (tokens of class `unknown` count as unable). A token classified in a later
   table version never changes the validity of an already-published revision.
@@ -359,8 +369,18 @@ All are **owed**; none is `proven`. Each must fail if its control is removed.
 
 ## Proof status
 
-Everything in this specification is **proposed** and **owed**: no schema, fixture, producer,
-consumer or test exists. The precision-class table is a classification of nominal width; the
+Contract artifacts now exist: `schemas/v1/aliases/precision-classes.json`, the `selection` member
+and the ad-hoc body on `resolve-request.json` and `simulate-request.json`, the `adhoc_resolution`
+response schema with `resolution_tree` and `unmet`, the new frozen vocabularies in
+`contracts/protocol-v1/dynamic-aliases.json` and acceptance entries 30 to 34 in
+`contracts/dynamic-alias-acceptance.json`. These prove the **shape** only. The Rust producer
+(InferWeave/inferweave #1021, #1029, #1039) implements the rules and its wire is checked against
+these schemas by its own conformance tests; everything else below stays **owed**: no Go consumer
+beyond fixtures (required test 5), no measured response size for the bounds, no measured memory
+report so `capacity` never appears in production.
+
+The remainder of this specification is **proposed** and **owed** where no test says otherwise;
+before the artifacts above nothing was written. The precision-class table is a classification of nominal width; the
 `capacity` shortfall depends on owner reporting that is not yet universal; and the tree bounds
 (64 models, 16 `unmet` entries per node, 16 allowed tokens, 32-character tokens) are *design
 limits chosen for bounded responses*, not measurements, each to be confirmed against a measured
