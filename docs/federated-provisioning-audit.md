@@ -1,6 +1,6 @@
 # InferWeave Federated Model Provisioning — Phase 0 Audit & Gap Matrix
 
-Status: **Item 5 (operator API + persisted owner-policy store) delivered & merged** (`inferweave/inferweave` PR #916, branch `feat/provisioning-item5`). This completes the owner's management half of Phase 2's approval flow: an owner-gated gateway API (`/iw/v1/provision/operator/...`) to read/update the owner policy, list the pending approval queue, and approve/reject reservations, plus a durable owner-policy store that survives restart. Prior milestones: Phase 1 (observe-only slice) merged as PR #863 (merge `75a6ee94`); Phase 2 (approval-required activation) merged as PR #881 (merge `6a227e09`). Items 1-4 and workstreams B, C, D, E done, plus item 5's gateway API + policy store; autonomous mode remains later-phase.
+Status: **Autonomous bounded admission (Item 6) delivered & merged** (`inferweave/inferweave` PR #918, branch `feat/provisioning-autonomous`). This closes the admission gap: under an `autonomous` owner policy with explicit bounds, a reservation that fits is auto-approved on reserve (no operator action), and one that doesn't fit defers to the operator queue (fail closed, never auto-refused). Prior milestones: Item 5 (operator API + persisted owner-policy store, PR #916) gave the owner the management half of Phase 2's approval flow (owner-gated `/iw/v1/provision/operator/...` API + durable policy store); Phase 2 (approval-required activation) merged as PR #881 (merge `6a227e09`); Phase 1 (observe-only slice) merged as PR #863 (merge `75a6ee94`). Items 1-5 + autonomous mode done; the GUI (WS H) remains later-phase.
 Date: 2026-10-12
 Author: pi agent (in-session, mission pipeline unavailable due to orchestration store lock).
 Scope: `inferweave/inferweave`, `inferweave/inferweave-specs`, `metabolomics-us/inferweave-gateway`.
@@ -63,7 +63,7 @@ exists but the federated-provisioning behavior is absent. **Missing** = no sourc
 | Disabled by default; no silent opt-in | **Missing** | No `disabled/advertise_only/approval_required/autonomous` mode enum anywhere. |
 | Policy-filtered capacity signals | **Partial** | Advert/capacity exist; no per-provider policy filter, no per-parent allowlist, no local reserve, no quota object. |
 | Approval-required mode | **Partial** | Federation has operator *enrollment* approval (`EnrollmentStatus::PendingApproval`, `Registry::approve`) but that is peer identity, not deployment approval. |
-| Autonomous bounded admission | **Missing** | Autoscaler is owner-side; no remote-request-driven admission under owner policy. |
+| Autonomous bounded admission | **Delivered (Item 6)** | Auto-approval on reserve under an `autonomous` policy with explicit `maxConcurrent`/`maxTotalVram`/`perParentQuota` bounds; out-of-bounds defers to the operator queue (fail closed). See the Item 6 status section. |
 | Remote cannot change opt-in/policy | **Missing** | No opt-in concept, hence no such guard (must be added with the feature). |
 | Local clients outrank upstream | **Missing** | No upstream-vs-local priority model exists. |
 
@@ -321,7 +321,7 @@ gateway prove: endpoint absent (404) without a transport; negotiate→
 request→offer over the wire (200); a parent outside the allowlist refused
 (403) on request, fail closed.
 
-Item 5 (operator API + persisted owner-policy store) delivered in PR #916; see the Item 5 status section below. Remaining (later workstreams): the GUI that calls the operator API, and autonomous mode.
+Item 5 (operator API + persisted owner-policy store) delivered in PR #916; autonomous bounded admission delivered in PR #918 — see the Item 6 status section below. Remaining (later workstream): the GUI that calls the operator API (WS H).
 
 ### Status — Phase 2: approval-required activation (2026-10-11)
 
@@ -363,7 +363,7 @@ approval-required activation, HTTP round-trip, client approval/rejection;
 updated gate and `may_activate` tests. Full `iw-gateway` lib (315) and
 `gateway_e2e` (29) suites green; clippy clean on the changed modules.
 
-Item 5 (operator API + persisted owner-policy store) delivered in PR #916; see the Item 5 status section below. Remaining (later workstreams): the GUI that calls the operator API, and autonomous mode.
+Item 5 (operator API + persisted owner-policy store) delivered in PR #916; autonomous bounded admission delivered in PR #918 — see the Item 6 status section below. Remaining (later workstream): the GUI that calls the operator API (WS H).
 
 ---
 
@@ -423,4 +423,66 @@ approve/reject, status, route parsing), store policy round-trip + malformed-
 file refusal, and gateway e2e operator endpoints (policy read/persist, status,
 empty approvals, owner gating). Full `iw-gateway` lib (361) and `gateway_e2e`
 suites green; clippy clean on the changed modules. Remaining later-phase work:
-the GUI that calls this API (WS H) and autonomous mode.
+the GUI that calls this API (WS H).
+
+---
+
+## 7. Status — Item 6: autonomous bounded admission (2026-10-13)
+
+Implemented on `feat/provisioning-autonomous` and merged via PR #918. This
+closes the admission gap identified in the §2 gap matrix (autonomous bounded
+admission was previously **Missing**). Under an `autonomous` owner policy with
+explicit bounds, the controller auto-approves a reservation on reserve when it
+fits; when it does not (or the bounds are absent), the reservation stays
+`Reserved` and waits in the operator approval queue — fail closed, never
+auto-refused.
+
+- `crates/iw-core/src/provisioning.rs` — `(Autonomous, Action::Activate)` now
+  returns `Allowed` at the policy level (the gate stays stateless);
+  `Refusal::AutonomousUnavailable` is removed. `OwnerPolicy` gains the
+  bounded-admission fields `max_concurrent: Option<u32>`,
+  `max_total_vram: Option<u64>`, and `per_parent_quota:
+  BTreeMap<String, PerParentQuota>` (all serde camelCase, `#[serde(default)]`,
+  fail-closed: absent → `None`/empty). New `PerParentQuota` struct with
+  `max_concurrent` and `max_total_vram` caps.
+- `crates/iw-gateway/src/provision_controller.rs` — the requester's named
+  budget (`ProvisionRequest.budget_vram_bytes`) is carried through the offer
+  (`OfferRecord.budget_vram_bytes`, additive `#[serde(default)]`) to the
+  reservation (`approved_budget_vram_bytes`). `on_reserve` now returns
+  `(Reservation, ProvisionMessage, Option<ProvisionMessage>)` and, when the
+  policy is `Autonomous` and `fits_autonomous_bounds` passes, reuses the
+  existing `approve()` machinery to auto-approve (`Reserved → Approved`,
+  `policy_revision = 0`) and returns the approval as the third tuple element.
+  `fits_autonomous_bounds` is fail-closed: no requester budget or *no bounds
+  configured at all* → defer; it counts live (Approved/Activating/Ready)
+  reservations against `max_concurrent`, the sum of granted budgets against
+  `max_total_vram`, and each parent's quota. Snapshot format stays
+  `iw.provisioning.controller/2` (no `Reservation`/`OfferRecord` layout break).
+- `crates/iw-gateway/src/provision_transport.rs` — the `Reserve` dispatch
+  appends the auto-approval to `outbound` when present, so the parent receives
+  both the reserve confirmation and the auto-approval in one reply. No
+  parent-side client change was needed (`on_approval` already handles
+  `Approved`; `activate()` works from `Reserved` or `Approved`).
+- No new operator endpoints: auto-approved reservations flow to `Approved` and
+  appear in the existing status/approvals views; bounded-out reservations wait
+  in the operator queue exactly as in approval-required mode.
+
+Fail-closed decisions: autonomous admission is only permitted under an
+*explicit* bound set (empty bounds defer everything); a reservation over any
+cap, or with no requester-named budget, defers rather than auto-refuses; a
+policy-revision counter is deferred to a hardening phase (`policy_revision = 0`
+for auto-approval, matching the operator path's initial value). Non-goals in
+this slice: local reserve, preemption, per-parent VRAM caps distinct from
+quota, cross-process failover fencing, and the GUI.
+
+Tests: gate (`Autonomous + Activate → Allowed`), `OwnerPolicy`/`PerParentQuota`
+serde + fail-closed defaults, controller auto-approve/defer matrix (within
+bounds, over concurrent cap, over VRAM cap, over per-parent quota, no budget,
+empty bounds, bounded-out waits for operator approval), transport relay
+(autonomous reserve → `reserve` + `approval` outbound; approval-required →
+`reserve` only), an HTTP round-trip that drives request-with-budget → offer →
+reserve → auto-approval → activate with no operator action, and a gateway e2e
+that PUTs an autonomous bounded policy and verifies it persists across a
+restart. Full `iw-gateway` lib (379) and `gateway_e2e` (33) suites green;
+clippy clean on the changed modules. Remaining later-phase work: the GUI that
+calls the operator API (WS H), then hardening per §15.
