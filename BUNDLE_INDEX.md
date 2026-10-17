@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,288,078 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,288,431 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -430,6 +430,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/invalid/mission-event-summary-too-long.json` — `437bac0447f1` — ~305t
 - `fixtures/invalid/mission-event-unknown-field.json` — `2b67ba03022b` — ~243t
 - `fixtures/invalid/mission-event-unknown-progress-kind.json` — `b001309c8813` — ~239t
+- `fixtures/invalid/mission-event-zero-sequence.json` — `e767702b90aa` — ~238t
 - `fixtures/invalid/node-assignment-escaping-artifact.json` — `edf2d2aa8b9e` — ~652t
 - `fixtures/invalid/node-assignment-measure-artifact-sizes-overflow.json` — `a2c4b6457f61` — ~582t
 - `fixtures/invalid/node-assignment-measure-artifacts-collide-dir-and-file.json` — `4968c7f61431` — ~576t
@@ -687,10 +688,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/deployments/deployment-identity.json` — `98275ce12856` — ~494t
 - `schemas/v1/deployments/deployment.json` — `289f311f3402` — ~245t
 - `schemas/v1/errors/error.json` — `f51bf4cb1ade` — ~419t
-- `schemas/v1/events/event.json` — `b9dceb3eaee4` — ~259t
+- `schemas/v1/events/event.json` — `9794f3dae6d4` — ~259t
 - `schemas/v1/events/gpu-memory-event.json` — `5ee1409e1eba` — ~3,450t
 - `schemas/v1/events/metric.json` — `f0e7c4912328` — ~321t
-- `schemas/v1/events/mission-event.json` — `b1b5e970ccc5` — ~1,002t
+- `schemas/v1/events/mission-event.json` — `b3be17163bca` — ~1,030t
 - `schemas/v1/events/runtime-observation-event.json` — `c2fccfb239c7` — ~120t
 - `schemas/v1/jobs/job.json` — `24b3b974eca4` — ~581t
 - `schemas/v1/jobs/progress.json` — `d35037a65603` — ~112t
@@ -830,7 +831,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` — `3659d1492b01` — ~10,487t
 - `specs/58_MODEL_INTELLIGENCE_UI_COHESION.md` — `3e42b409a63f` — ~3,385t
 - `specs/59_LINK_HTTP_JSON.md` — `c18801c541c2` — ~3,152t
-- `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` — `7b7c75b158fd` — ~3,108t
+- `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` — `4fc9e27aded3` — ~3,135t
 - `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` — `77414c142add` — ~7,385t
 - `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` — `943ff4bb28a1` — ~7,197t
 - `specs/63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS.md` — `b716bb40dbb4` — ~8,187t
@@ -1023,7 +1024,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_jobs_endpoint.py` — `36a80b52a28b` — ~348t
 - `tests/smoke/test_link_http_json.py` — `64efbf92dbbb` — ~2,494t
 - `tests/smoke/test_link_upstream.py` — `f88b403f5168` — ~2,223t
-- `tests/smoke/test_mission_event_contract.py` — `f6575d97c05d` — ~2,343t
+- `tests/smoke/test_mission_event_contract.py` — `2d4757dd6a57` — ~2,403t
 - `tests/smoke/test_native_inference.py` — `543c3f136b34` — ~805t
 - `tests/smoke/test_native_pipeline_job.py` — `05f6834e9671` — ~609t
 - `tests/smoke/test_pipelines.py` — `34e64210adfd` — ~901t
