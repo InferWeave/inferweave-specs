@@ -157,9 +157,10 @@ above) and rejects any other, so a field a producer believes is binding is never
 
 Rules:
 
-1. `sequence` is a non-negative integer, monotonic per `mission_id`. Monotonicity across events is
-   consumer behaviour: a consumer ignores an event whose `sequence` is not above its checkpoint
-   for that mission and records the gap. The schema cannot check it.
+1. `sequence` is a positive integer: the first event of a mission has `sequence` 1 (matching the
+   R-PROTO evaluation-journal sequence), and it is monotonic per `mission_id`. Monotonicity across
+   events is consumer behaviour: a consumer ignores an event whose `sequence` is not above its
+   checkpoint for that mission and records the gap. The schema cannot check it.
 2. **Liveness and progress are separate fields.** `last_heartbeat_at` records that the producer
    is alive. `last_progress_at` records the last useful progress and moves only when
    `progress_kind` names real work. A heartbeat-only event updates `last_heartbeat_at` and leaves
