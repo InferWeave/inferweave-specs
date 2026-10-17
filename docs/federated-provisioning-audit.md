@@ -1,6 +1,6 @@
 # InferWeave Federated Model Provisioning — Phase 0 Audit & Gap Matrix
 
-Status: **Autonomous bounded admission (Item 6) delivered & merged** (`inferweave/inferweave` PR #918, branch `feat/provisioning-autonomous`). This closes the admission gap: under an `autonomous` owner policy with explicit bounds, a reservation that fits is auto-approved on reserve (no operator action), and one that doesn't fit defers to the operator queue (fail closed, never auto-refused). Prior milestones: Item 5 (operator API + persisted owner-policy store, PR #916) gave the owner the management half of Phase 2's approval flow (owner-gated `/iw/v1/provision/operator/...` API + durable policy store); Phase 2 (approval-required activation) merged as PR #881 (merge `6a227e09`); Phase 1 (observe-only slice) merged as PR #863 (merge `75a6ee94`). Items 1-5 + autonomous mode done; the GUI (WS H) remains later-phase.
+Status: **Autonomous bounded admission (Item 6) delivered & merged** (`inferweave/inferweave` PR #918, branch `feat/provisioning-autonomous`). This closes the admission gap: under an `autonomous` owner policy with explicit bounds, a reservation that fits is auto-approved on reserve (no operator action), and one that doesn't fit defers to the operator queue (fail closed, never auto-refused). Prior milestones: Item 5 (operator API + persisted owner-policy store, PR #916) gave the owner the management half of Phase 2's approval flow (owner-gated `/iw/v1/provision/operator/...` API + durable policy store); Phase 2 (approval-required activation) merged as PR #881 (merge `6a227e09`); Phase 1 (observe-only slice) merged as PR #863 (merge `75a6ee94`). Items 1-5 + autonomous mode + the GUI (WS H) done. The console GUI shipped as WS H across both edges: the Rust node link now routes operator control ops (`/iw/v1/provision/operator/...`) from the linked node to the co-located gateway (`inferweave/inferweave` PR #1108), and the gateway console gains an operator-only provisioning surface — owner-policy editing and a live approval queue with approve/reject (`metabolomics-us/inferweave-gateway` PR #583).
 Date: 2026-10-12
 Author: pi agent (in-session, mission pipeline unavailable due to orchestration store lock).
 Scope: `inferweave/inferweave`, `inferweave/inferweave-specs`, `metabolomics-us/inferweave-gateway`.
@@ -142,8 +142,8 @@ exists but the federated-provisioning behavior is absent. **Missing** = no sourc
 | Fleet view | **Present** | gateway web console. |
 | Provision wizard (registry/digest/runtime/profile/replicas/priority/constraints) | **Missing** | No provisioning wizard. |
 | Placement preview (candidates, VRAM est., cold-start, reject reasons, dry-run caveats) | **Partial** | Gateway `placement`/`capacityplan` size; no federated candidate preview. |
-| Owner settings (opt-in, allowlists, caps, reserve, quotas, preemption, emergency stop) | **Missing** | No settings surface. |
-| Approval queue (exact proposal, resource impact, TTL, approve/reject) | **API present; GUI missing** | Operator API exposes the pending-approval queue (`GET /iw/v1/provision/operator/approvals`) and approve/reject; a GUI consuming it is later-phase (WS H). |
+| Owner settings (opt-in, allowlists, caps, reserve, quotas, preemption, emergency stop) | **Present (WS H)** | Console `provisioningConsole.ts` `initProvisioning` builds the owner-policy form (opt-in, allowlists, caps) from `GET /policy` and PUTs updates; operator-only (`data-operator-only`). |
+| Approval queue (exact proposal, resource impact, TTL, approve/reject) | **Present (WS H)** | Console `initApprovals` lists the pending-approval queue (`GET /iw/v1/provision/operator/approvals`) and drives approve/reject via a shared `<dialog>`; operator-only. |
 | Live deployment lifecycle | **Partial** | Gateway lifecycle/stateplane; not the provisioning states. |
 | Federation topology | **Partial** | Topology exists (`topology.rs`, gateway `link`); no provisioning provenance display. |
 | Audit/history | **Partial** | `audit.rs`; no provisioning audit UI. |
@@ -202,7 +202,7 @@ acceptance criteria for Phase 1:
    downloads/loads) — **WS A/B/D**.
 4. Dry-run planner reusing `route_preview` primitives for federated
    candidate eligibility/rejection reasons — **WS F**.
-5. GUI inventory + owner-policy controls — **WS H**.
+5. GUI inventory + owner-policy controls — **WS H delivered** (owner-policy form + approval queue in the gateway console; Rust node-link routing of operator control ops).
 
 Phase 1 must pass: non-opted-in peers unchanged and non-provisionable;
 advertise-only never downloads/loads; disabled default; no GUI scheduling
@@ -321,7 +321,7 @@ gateway prove: endpoint absent (404) without a transport; negotiate→
 request→offer over the wire (200); a parent outside the allowlist refused
 (403) on request, fail closed.
 
-Item 5 (operator API + persisted owner-policy store) delivered in PR #916; autonomous bounded admission delivered in PR #918 — see the Item 6 status section below. Remaining (later workstream): the GUI that calls the operator API (WS H).
+Item 5 (operator API + persisted owner-policy store) delivered in PR #916; autonomous bounded admission delivered in PR #918 — see the Item 6 status section below. The GUI that calls the operator API (WS H) was then delivered: Rust node-link routing (PR #1108) + gateway console owner-policy/approval surface (PR #583).
 
 ### Status — Phase 2: approval-required activation (2026-10-11)
 
@@ -363,7 +363,7 @@ approval-required activation, HTTP round-trip, client approval/rejection;
 updated gate and `may_activate` tests. Full `iw-gateway` lib (315) and
 `gateway_e2e` (29) suites green; clippy clean on the changed modules.
 
-Item 5 (operator API + persisted owner-policy store) delivered in PR #916; autonomous bounded admission delivered in PR #918 — see the Item 6 status section below. Remaining (later workstream): the GUI that calls the operator API (WS H).
+Item 5 (operator API + persisted owner-policy store) delivered in PR #916; autonomous bounded admission delivered in PR #918 — see the Item 6 status section below. The GUI that calls the operator API (WS H) was then delivered: Rust node-link routing (PR #1108) + gateway console owner-policy/approval surface (PR #583).
 
 ---
 
@@ -422,8 +422,9 @@ Tests: operator handler unit tests (policy get/set + persist, approvals list,
 approve/reject, status, route parsing), store policy round-trip + malformed-
 file refusal, and gateway e2e operator endpoints (policy read/persist, status,
 empty approvals, owner gating). Full `iw-gateway` lib (361) and `gateway_e2e`
-suites green; clippy clean on the changed modules. Remaining later-phase work:
-the GUI that calls this API (WS H).
+suites green; clippy clean on the changed modules. The GUI that calls this API
+(WS H) followed: Rust node-link routing (PR #1108) + gateway console
+owner-policy/approval surface (PR #583).
 
 ---
 
@@ -484,5 +485,7 @@ empty bounds, bounded-out waits for operator approval), transport relay
 reserve → auto-approval → activate with no operator action, and a gateway e2e
 that PUTs an autonomous bounded policy and verifies it persists across a
 restart. Full `iw-gateway` lib (379) and `gateway_e2e` (33) suites green;
-clippy clean on the changed modules. Remaining later-phase work: the GUI that
-calls the operator API (WS H), then hardening per §15.
+clippy clean on the changed modules. The GUI that calls the operator API
+(WS H) was delivered (Rust node-link routing PR #1108; gateway console
+owner-policy/approval surface PR #583); remaining later-phase work is
+hardening per §15.
