@@ -1,0 +1,136 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/node-reconcile/facts.json",
+  "title": "Managed node reconciliation facts",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "runtime",
+    "host",
+    "artifactRoot",
+    "gpus"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "runtime": {
+      "const": "docker-compose"
+    },
+    "host": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ramGib",
+        "shmGib",
+        "freeBytes"
+      ],
+      "properties": {
+        "ramGib": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "shmGib": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "freeBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "artifactRoot": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "\\S"
+    },
+    "gpus": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "gpuId",
+          "serial",
+          "vendor",
+          "model",
+          "vramMib",
+          "pcieGen",
+          "busy"
+        ],
+        "properties": {
+          "gpuId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "\\S"
+          },
+          "serial": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "\\S"
+          },
+          "vendor": {
+            "enum": [
+              "nvidia",
+              "amd"
+            ]
+          },
+          "model": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "pattern": "\\S"
+          },
+          "vramMib": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "pcieGen": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "busy": {
+            "type": "boolean"
+          },
+          "computeCapability": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "major",
+              "minor",
+              "basis"
+            ],
+            "properties": {
+              "major": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              },
+              "minor": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 255
+              },
+              "basis": {
+                "const": "measured"
+              }
+            }
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 256
+    }
+  }
+}

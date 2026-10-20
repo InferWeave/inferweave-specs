@@ -70,3 +70,13 @@ link_upstream_profile:
   capability: iw.link-upstream/1
   artifact_runner: tests/smoke/test_link_upstream.py
   production_proof: owed
+
+# Spec64 managed persistent onboarding; legacy dynamic-node proof is not inherited.
+node_reconcile_profile:
+  feature: IW-DYNNODE-002
+  canonical_task: P5-T38
+  capability: iw.node-reconcile/1
+  requires: iw.dynamic-node/1
+  artifact_runner: tests/smoke/test_node_reconcile.py
+  implementation_acceptance: contracts/node-reconcile.json
+  production_proof: owed

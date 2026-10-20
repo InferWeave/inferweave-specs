@@ -1196,6 +1196,20 @@
       ]
     },
     {
+      "id": "IW-DYNNODE-002",
+      "name": "Managed persistent node onboarding, qualification and durable reconciliation (iw.node-reconcile/1)",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "gateway+node",
+      "canonical_tasks": [
+        "P5-T38"
+      ],
+      "contracts": [
+        "contracts/node-reconcile.json"
+      ]
+    },
+    {
       "id": "IW-STORE-001",
       "name": "InferWeave Storage Phase 1: content-addressed model store with signed iwg1 grants, native and S3 read-only front ends, network exposure and single-writer rules, digest index, quarantine and a multi-source stager (iw.store/1, Protocol 1.1.0)",
       "phase": 5,

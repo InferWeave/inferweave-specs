@@ -848,6 +848,8 @@ def validate():
     errors.extend(observability_capacity.contract_errors(ROOT))
     import request_observations
     errors.extend(request_observations.contract_errors(ROOT))
+    import node_reconcile
+    errors.extend(node_reconcile.contract_errors(ROOT))
     return features, tasks, errors
 
 
@@ -1036,6 +1038,10 @@ def self_test():
     request_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_request_observations.py")], capture_output=True, text=True)
     if request_test.returncode:
         print(request_test.stdout + request_test.stderr)
+        return 1
+    reconcile_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_node_reconcile.py")], capture_output=True, text=True)
+    if reconcile_test.returncode:
+        print(reconcile_test.stdout + reconcile_test.stderr)
         return 1
     file_mutations = 1 + len(gpu_breaks) + len(semantic)
     print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "

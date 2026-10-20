@@ -2254,6 +2254,28 @@ Rules:
 - a write to the S3 front end succeeds only for a key granted write and only for an object whose SHA-256 and size equal the pin, publishes by atomic rename after verification and deletes the part file otherwise
 - a store reachable only through a rendezvous accepts no inbound connection, and the grant and signature checks are unchanged
 
+### P5-T38 — Managed persistent node onboarding, qualification and durable reconciliation
+**Context:** `C85`
+**Depends on:** P5-T35, P1-T23, P1-T20B, P3-T25
+**Features:** IW-DYNNODE-002
+**Read:** specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md, specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md, specs/20_NODE_AUTOCONFIG_DISCOVERY.md, specs/26_RESOURCE_IDENTITY_REDISCOVERY.md, specs/36_GPU_WATCHDOG_RESCUE.md, specs/39_INFERENCE_RUNTIME_TUNING.md, specs/43_GPU_PLACEMENT_HOT_SWAP.md, specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md
+
+**Outcome:** Implement iw.node-reconcile/1 in the Rust monorepo: a persistent Compose owner automatically reconciles stable mixed-GPU inventory, honest telemetry, one instance per deployment per node, durable assignment execution, bounded watchdog recovery and policy-scoped qualification. Reuse existing HTTP registration/heartbeat, assignment and provisioning schemas without weakening legacy behavior. Nibbler clean-install, real process signals, host reboot, gateway restart and full authorization/admission-path evidence must pass before managed serving is claimed ready.
+
+**Required tests:**
+- ONB-01: clean installation and idempotent rerun use persistent Linux Compose without Apptainer; real owner-to-sibling host-loopback connectivity is proven before GPU qualification
+- ONB-02: mixed Pascal/Turing inventory retains per-card stable identities across reordering and reboot, and the pinned compatible runtime executes on every qualified card
+- ONB-03: unnegotiated or unenrolled peers cannot provision; idle hardware and control status never advertise serving offers
+- ONB-04: automatic policy-scoped qualification runs verified artifacts through real authorization, admission, correctness, context and cancellation/reuse checks before readiness
+- ONB-05: throughput drafts, missing or expired evidence, fingerprint drift, absent attestation, stale status, unhealthy watchdog or quarantine cannot publish through adoption or settle; permits enforce exact identity, scope, expiry and atomic request budgets
+- ONB-06: distinct deployments use disjoint homogeneous groups; a second assignment for an identical deployment is refused before executor translation and never becomes an implicit span
+- ONB-07: elective stop/replacement drains before unload and preserves healthy-instance floors; severe faults immediately withdraw unsafe capacity and expose any floor deficit
+- ONB-08: bounded rescue preserves actual known-good artifacts, never invents a rollback target, and persists exhausted attempts and quarantine across node and gateway restart
+- ONB-09: real subprocess SIGTERM, SIGINT and graceful owner drop preserve attested containers and durable claims for adoption; explicit retirement withdraws, drains and unloads; host reboot preserves identity and avoids duplicate engines
+- ONB-10: gateway restart reconciles durable holdings and qualification evidence after a fresh report, invalidates prior permits and requires a fresh full-path probe before publication
+- ONB-11: managed link-only inference and cancellation work through reconnect without duplicated placement or exposed unauthenticated engine ports
+- ONB-12: exact-commit and digest-pinned Nibbler installation/restart/recovery evidence, independent review and required checks pass before normal merge; offline contract tests never substitute for runtime or hardware proof
+
 ### B-T01 — Runtime families and typed capabilities
 **Context:** `C75`
 **Depends on:** none
