@@ -1,0 +1,2 @@
+OK: 105 features, 171 canonical tasks, DAG valid
+OK: 12 registry mutations and 7 file mutations, every guard rejects its known-bad input

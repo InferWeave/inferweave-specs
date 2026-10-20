@@ -413,3 +413,21 @@ all-terminal mapping checks are **proven** by `tests/smoke/test_failure_rollups.
 and the fixture/vector validator. Runtime database transaction, restart, all-three-
 resolution seal/prune/watermark fencing, bounded ingestion and per-cell public
 privacy tests remain **owed**; this offline proof does not close those gates.
+
+### Private HTTP carrier for normalized observations
+
+The additive private carrier is `contracts/private-observability.json` and
+`openapi/private-observability.{yaml,md}` (AC-PRIVATEOBS-01..06). Its single-event
+POST binds a current authenticated gateway-role node to an authorized source,
+retained producer epoch and trusted lineage; its GETs expose validated internal
+diagnostics and exact parent/failure bundles only to existing operator authority.
+Enforce the 64 KiB event bound before generic body buffering, reject duplicate
+security headers before map collapse, and acknowledge only durable acceptance or
+identical durable replay. Event/rollup/failure v1 shapes remain frozen.
+
+Publisher outbox identities survive restart until ACK; independent capture/drop
+checkpoints establish coverage, never accepted-row counts. Bounded snapshot
+pagination preserves query identity and parent revisions, with explicit missing
+companions and read health. All routes default disabled; production collection
+requires paired generation, atomic revision/seal/prune and persisted late-ingest
+fences first. Public publication authority and retention scope are unchanged.

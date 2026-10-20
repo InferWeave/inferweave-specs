@@ -122,7 +122,8 @@
         "contracts/inference-stream-reliability.json",
         "contracts/observability-capacity.json",
         "contracts/request-observation.json",
-        "schemas/v1/events/request-observation-failure-rollup.json"
+        "schemas/v1/events/request-observation-failure-rollup.json",
+        "contracts/private-observability.json"
       ]
     },
     {
@@ -444,7 +445,8 @@
         "contracts/model-intelligence-acceptance.json",
         "contracts/observability-capacity.json",
         "contracts/request-observation.json",
-        "schemas/v1/events/request-observation-failure-rollup.json"
+        "schemas/v1/events/request-observation-failure-rollup.json",
+        "contracts/private-observability.json"
       ]
     },
     {
@@ -463,7 +465,8 @@
         "openapi/model-intelligence.yaml",
         "contracts/observability-capacity.json",
         "contracts/request-observation.json",
-        "schemas/v1/events/request-observation-failure-rollup.json"
+        "schemas/v1/events/request-observation-failure-rollup.json",
+        "contracts/private-observability.json"
       ]
     },
     {

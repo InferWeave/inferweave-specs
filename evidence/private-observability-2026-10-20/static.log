@@ -1,0 +1,6 @@
+All checks passed!
+PASS AST conformance/private_observability.py
+PASS AST tests/smoke/test_private_observability.py
+PASS AST conformance/runner.py
+PASS AST scripts/validate_specs.py
+LSP: tsc skipped: no tsconfig found; Python LSP unavailable

@@ -1,0 +1,180 @@
+FFFF..EE.FFFF....FFFFFFF..
+======================================================================
+ERROR: test_extreme_exponents_are_controlled_decode_errors (__main__.PrivateObservabilityTests.test_extreme_exponents_are_controlled_decode_errors) (exponent='9999999999999999999')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 111, in test_extreme_exponents_are_controlled_decode_errors
+    self.api.decode_event(('{"value":1e' + exponent + '}').encode())
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/conformance/private_observability.py", line 40, in decode_event
+    return decode(wire, 65536)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/conformance/private_observability.py", line 33, in decode
+    return failure_rollups.normalize_parent(json.loads(text, object_pairs_hook=pairs,
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 359, in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+decimal.InvalidOperation: [<class 'decimal.InvalidOperation'>]
+
+======================================================================
+ERROR: test_extreme_exponents_are_controlled_decode_errors (__main__.PrivateObservabilityTests.test_extreme_exponents_are_controlled_decode_errors) (exponent='-9999999999999999999')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 111, in test_extreme_exponents_are_controlled_decode_errors
+    self.api.decode_event(('{"value":1e' + exponent + '}').encode())
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/conformance/private_observability.py", line 40, in decode_event
+    return decode(wire, 65536)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/conformance/private_observability.py", line 33, in decode
+    return failure_rollups.normalize_parent(json.loads(text, object_pairs_hook=pairs,
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/__init__.py", line 359, in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/json/decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+decimal.InvalidOperation: [<class 'decimal.InvalidOperation'>]
+
+======================================================================
+FAIL: test_ambiguous_framing_and_comma_credentials_are_refused (__main__.PrivateObservabilityTests.test_ambiguous_framing_and_comma_credentials_are_refused) (framing='content-length plus transfer-encoding')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 115, in test_ambiguous_framing_and_comma_credentials_are_refused
+    self.assertTrue(self.api.header_errors([('Content-Length', '10'), ('Transfer-Encoding', 'chunked')]))
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_ambiguous_framing_and_comma_credentials_are_refused (__main__.PrivateObservabilityTests.test_ambiguous_framing_and_comma_credentials_are_refused) (name='Authorization')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 118, in test_ambiguous_framing_and_comma_credentials_are_refused
+    self.assertTrue(self.api.header_errors([(name, 'one,two')]))
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_ambiguous_framing_and_comma_credentials_are_refused (__main__.PrivateObservabilityTests.test_ambiguous_framing_and_comma_credentials_are_refused) (name='X-InferWeave-Admin')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 118, in test_ambiguous_framing_and_comma_credentials_are_refused
+    self.assertTrue(self.api.header_errors([(name, 'one,two')]))
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_ambiguous_framing_and_comma_credentials_are_refused (__main__.PrivateObservabilityTests.test_ambiguous_framing_and_comma_credentials_are_refused) (name='X-InferWeave-Node')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 118, in test_ambiguous_framing_and_comma_credentials_are_refused
+    self.assertTrue(self.api.header_errors([(name, 'one,two')]))
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_pages_are_strictly_sorted_including_identity_ties (__main__.PrivateObservabilityTests.test_pages_are_strictly_sorted_including_identity_ties) (kind='diagnostics', order='identity tie')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 136, in test_pages_are_strictly_sorted_including_identity_ties
+    self.assertTrue(self.api.page_errors(page, kind, ROOT))
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_pages_are_strictly_sorted_including_identity_ties (__main__.PrivateObservabilityTests.test_pages_are_strictly_sorted_including_identity_ties) (kind='diagnostics', order='chronological')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 146, in test_pages_are_strictly_sorted_including_identity_ties
+    self.assertTrue(self.api.page_errors(page, kind, ROOT))
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_pages_are_strictly_sorted_including_identity_ties (__main__.PrivateObservabilityTests.test_pages_are_strictly_sorted_including_identity_ties) (kind='rollups', order='identity tie')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 136, in test_pages_are_strictly_sorted_including_identity_ties
+    self.assertTrue(self.api.page_errors(page, kind, ROOT))
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_pages_are_strictly_sorted_including_identity_ties (__main__.PrivateObservabilityTests.test_pages_are_strictly_sorted_including_identity_ties) (kind='rollups', order='chronological')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 146, in test_pages_are_strictly_sorted_including_identity_ties
+    self.assertTrue(self.api.page_errors(page, kind, ROOT))
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_reliability_selectors_are_exact_frozen_enums (__main__.PrivateObservabilityTests.test_reliability_selectors_are_exact_frozen_enums)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 171, in test_reliability_selectors_are_exact_frozen_enums
+    self.assertEqual([], self.api.query_errors(base + selectors, 'diagnostics'))
+AssertionError: Lists differ: [] != ['unknown or duplicate scalar parameter', [76 chars]ter']
+
+Second list contains 3 additional elements.
+First extra element 0:
+'unknown or duplicate scalar parameter'
+
+- []
++ ['unknown or duplicate scalar parameter',
++  'unknown or duplicate scalar parameter',
++  'unknown or duplicate scalar parameter']
+
+======================================================================
+FAIL: test_retention_uses_server_snapshot_clock_not_query_width (__main__.PrivateObservabilityTests.test_retention_uses_server_snapshot_clock_not_query_width) (kind='diagnostics', age=604800)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 166, in test_retention_uses_server_snapshot_clock_not_query_width
+    self.assertEqual(valid, not errors, errors)
+AssertionError: False != True : []
+
+======================================================================
+FAIL: test_retention_uses_server_snapshot_clock_not_query_width (__main__.PrivateObservabilityTests.test_retention_uses_server_snapshot_clock_not_query_width) (kind='diagnostics', age=604801)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 166, in test_retention_uses_server_snapshot_clock_not_query_width
+    self.assertEqual(valid, not errors, errors)
+AssertionError: False != True : []
+
+======================================================================
+FAIL: test_retention_uses_server_snapshot_clock_not_query_width (__main__.PrivateObservabilityTests.test_retention_uses_server_snapshot_clock_not_query_width) (kind='diagnostics', age=-1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 166, in test_retention_uses_server_snapshot_clock_not_query_width
+    self.assertEqual(valid, not errors, errors)
+AssertionError: False != True : []
+
+======================================================================
+FAIL: test_retention_uses_server_snapshot_clock_not_query_width (__main__.PrivateObservabilityTests.test_retention_uses_server_snapshot_clock_not_query_width) (kind='rollups', age=7776000)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 166, in test_retention_uses_server_snapshot_clock_not_query_width
+    self.assertEqual(valid, not errors, errors)
+AssertionError: False != True : []
+
+======================================================================
+FAIL: test_retention_uses_server_snapshot_clock_not_query_width (__main__.PrivateObservabilityTests.test_retention_uses_server_snapshot_clock_not_query_width) (kind='rollups', age=7776001)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 166, in test_retention_uses_server_snapshot_clock_not_query_width
+    self.assertEqual(valid, not errors, errors)
+AssertionError: False != True : []
+
+======================================================================
+FAIL: test_retention_uses_server_snapshot_clock_not_query_width (__main__.PrivateObservabilityTests.test_retention_uses_server_snapshot_clock_not_query_width) (kind='rollups', age=-1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 166, in test_retention_uses_server_snapshot_clock_not_query_width
+    self.assertEqual(valid, not errors, errors)
+AssertionError: False != True : []
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.177s
+
+FAILED (failures=15, errors=2)
