@@ -39,6 +39,7 @@ import runtime_observations  # noqa: E402
 import dynamic_nodes  # noqa: E402
 import observability_capacity  # noqa: E402
 import request_observations  # noqa: E402
+import node_reconcile  # noqa: E402
 import alias_execution  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
@@ -639,6 +640,12 @@ def main():
     )
     args = parser.parse_args()
     failures = 0
+    reconcile_errors = node_reconcile.contract_errors(ROOT)
+    for error in reconcile_errors:
+        print("FAIL  " + error)
+    failures += len(reconcile_errors)
+    if not reconcile_errors:
+        print("PASS  managed node reconciliation (offline; runtime/host/release proof owed)")
     http_errors = link_http_json.check_vectors(ROOT)
     for error in http_errors:
         print("FAIL  " + error)

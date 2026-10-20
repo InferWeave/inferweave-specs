@@ -1,0 +1,201 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/node-reconcile/status.json",
+  "title": "Managed node reconciliation status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "generation",
+    "records"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "assignmentId",
+          "deployment",
+          "gpuIds",
+          "phase",
+          "health",
+          "watchdog",
+          "recovery",
+          "reason"
+        ],
+        "properties": {
+          "assignmentId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-zA-Z0-9._-]+$"
+          },
+          "deployment": {
+            "type": "string",
+            "pattern": "^dep_[0-9a-f]{64}$"
+          },
+          "gpuIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "maxItems": 256,
+            "uniqueItems": true
+          },
+          "phase": {
+            "enum": [
+              "held",
+              "fetching",
+              "starting",
+              "qualifying",
+              "serving",
+              "draining",
+              "recovering",
+              "quarantined",
+              "stopped",
+              "failed"
+            ]
+          },
+          "health": {
+            "enum": [
+              "unknown",
+              "healthy",
+              "unhealthy"
+            ]
+          },
+          "attestation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "environmentFingerprint",
+              "imageDigest",
+              "effectiveConfigDigest"
+            ],
+            "properties": {
+              "environmentFingerprint": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "\\S",
+                "description": "Opaque exact identity of the existing qualification environment; compare verbatim, never treat this identifier as authority."
+              },
+              "imageDigest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "effectiveConfigDigest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          },
+          "watchdog": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "state",
+              "generation"
+            ],
+            "properties": {
+              "state": {
+                "enum": [
+                  "active",
+                  "inactive",
+                  "quarantined"
+                ]
+              },
+              "generation": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            }
+          },
+          "recovery": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "attempts",
+              "limit",
+              "knownGoodDeployment"
+            ],
+            "properties": {
+              "attempts": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 16
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 16
+              },
+              "knownGoodDeployment": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^dep_[0-9a-f]{64}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          "reason": {
+            "enum": [
+              "none",
+              "malformed",
+              "capability_missing",
+              "enrollment_required",
+              "owner_untrusted",
+              "duplicate_gpu",
+              "duplicate_assignment",
+              "duplicate_deployment",
+              "gpu_overlap",
+              "gpu_unknown",
+              "gpu_busy",
+              "incompatible_group",
+              "status_stale",
+              "attestation_missing",
+              "fingerprint_mismatch",
+              "qualification_missing",
+              "qualification_stale",
+              "scope_denied",
+              "watchdog_inactive",
+              "quarantined",
+              "recovery_exhausted",
+              "permit_denied",
+              "runtime_unavailable",
+              "awaiting_assignment",
+              "draining",
+              "requalification_required",
+              "floor_would_break",
+              "no_known_good",
+              "assignment_mismatch",
+              "profile_mismatch"
+            ]
+          }
+        }
+      },
+      "minItems": 0,
+      "maxItems": 8
+    }
+  }
+}

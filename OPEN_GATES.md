@@ -433,6 +433,31 @@ fleet, TLS (or a tunnel) is approved for any non-private path, and an operator d
 
 ## Dynamic nodes and gateway-driven provisioning (specs/64) — 2026-10-15
 
+### Managed persistent onboarding extension — 2026-10-20
+
+**BLOCKED for a claim of deployed/production-ready managed capability.** The operator has
+authorized implementation, independent review, normal merge, and disposable Nibbler
+installation/reset/qualification/restart work under
+[`decisions/2026-10-20-node-onboarding.md`](decisions/2026-10-20-node-onboarding.md).
+This bounded authorization permits the work to proceed; it does not mark its evidence complete
+and opens no unrelated host reset or global catalogue activation.
+
+`IW-DYNNODE-002` / `P5-T38` owns `iw.node-reconcile/1`, its strict `reconcile` control members,
+per-card mixed-host facts, one-instance-per-deployment ownership, durable assignment/recovery
+state and policy-scoped qualification/publication. `contracts/node-reconcile.json` acceptance
+ONB-01 through ONB-12 is entirely `owed`: implementation, operator UI, clean install, actual
+Pascal/Turing execution, real SIGTERM/SIGINT/graceful drop, host reboot, gateway restart,
+watchdog/floor/rollback/quarantine, link inference/cancellation, and exact-artifact independent
+release evidence. Schema fixtures and the offline decision oracle are contract checks only.
+
+A throughput draft, healthy endpoint or restored container is insufficient for readiness.
+Adoption and settle require current trusted qualification and watchdog generation; exhausted
+attempts remain binding even when a status is terminal. Old owner permits are invalid after
+restart. No synthetic fixture grants production authority. The original P5-T35 Beast evidence
+below remains limited to its original `iw.dynamic-node/1` capability.
+
+### Original dynamic-node capability
+
 **BLOCKED for production use.** `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` defines the
 `iw.dynamic-node/1` capability, the `dynamic` register member, the first non-empty `assignments`
 entries (`serve`, `measure`, `stop`) on the register and heartbeat responses, the heartbeat

@@ -1,0 +1,277 @@
+{
+  "facts": {
+    "version": 1,
+    "runtime": "docker-compose",
+    "host": {
+      "ramGib": 64,
+      "shmGib": 32,
+      "freeBytes": 100000000000
+    },
+    "artifactRoot": "/srv/inferweave/artifacts",
+    "gpus": [
+      {
+        "gpuId": "gpu-pascal-a",
+        "serial": "GPU-gpu-pascal-a",
+        "vendor": "nvidia",
+        "model": "GeForce GTX 1080 Ti",
+        "vramMib": 11264,
+        "pcieGen": 3,
+        "busy": false,
+        "computeCapability": {
+          "major": 6,
+          "minor": 1,
+          "basis": "measured"
+        }
+      },
+      {
+        "gpuId": "gpu-pascal-b",
+        "serial": "GPU-gpu-pascal-b",
+        "vendor": "nvidia",
+        "model": "GeForce GTX 1080 Ti",
+        "vramMib": 11264,
+        "pcieGen": 3,
+        "busy": false,
+        "computeCapability": {
+          "major": 6,
+          "minor": 1,
+          "basis": "measured"
+        }
+      },
+      {
+        "gpuId": "gpu-turing",
+        "serial": "GPU-gpu-turing",
+        "vendor": "nvidia",
+        "model": "GeForce RTX 2080 Ti",
+        "vramMib": 11264,
+        "pcieGen": 3,
+        "busy": false,
+        "computeCapability": {
+          "major": 7,
+          "minor": 5,
+          "basis": "measured"
+        }
+      }
+    ]
+  },
+  "status": {
+    "version": 1,
+    "generation": 1,
+    "records": [
+      {
+        "assignmentId": "singleton-pascal",
+        "deployment": "dep_69db99934fa3a6240af3bf3d44c95b81d94d89f4db13e19036803731fda09013",
+        "gpuIds": [
+          "gpu-pascal-a"
+        ],
+        "phase": "serving",
+        "health": "healthy",
+        "attestation": {
+          "environmentFingerprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "imageDigest": "sha256:3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c",
+          "effectiveConfigDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        "watchdog": {
+          "state": "active",
+          "generation": 1
+        },
+        "recovery": {
+          "attempts": 2,
+          "limit": 2,
+          "knownGoodDeployment": null
+        },
+        "reason": "none"
+      }
+    ]
+  },
+  "control": {
+    "version": 1,
+    "ownerEpoch": "owner-1",
+    "policyId": "nibbler-policy",
+    "qualifications": [
+      {
+        "nodeId": "nibbler-fixture",
+        "ownerEpoch": "owner-1",
+        "policyId": "nibbler-policy",
+        "scopeId": "nibbler-serving",
+        "assignmentId": "singleton-pascal",
+        "deployment": "dep_69db99934fa3a6240af3bf3d44c95b81d94d89f4db13e19036803731fda09013",
+        "gpuIds": [
+          "gpu-pascal-a"
+        ],
+        "environmentFingerprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidenceId": "singleton-pascal-evidence",
+        "validUntil": 1200,
+        "watchdogGeneration": 1,
+        "authorizationProbeId": "singleton-pascal-probe"
+      }
+    ],
+    "permits": []
+  },
+  "assignments": [
+    {
+      "kind": "serve",
+      "version": 1,
+      "id": "singleton-pascal",
+      "deployment": "dep_69db99934fa3a6240af3bf3d44c95b81d94d89f4db13e19036803731fda09013",
+      "model": "qwen3.8-27b-modality-vision-quant-q8_k_xl",
+      "gpuIds": [
+        "gpu-pascal-a"
+      ],
+      "profile": {
+        "name": "singleton-pascal-profile",
+        "version": 1,
+        "match": {
+          "gpu": {
+            "vendor": "nvidia",
+            "model": [
+              "GeForce GTX 1080 Ti"
+            ],
+            "count": 1,
+            "vramMibMin": 8192
+          },
+          "host": {
+            "ramGibMin": 32,
+            "pcieGenMin": 3
+          },
+          "model": {
+            "family": "qwen3.8",
+            "name": "qwen3.8-27b"
+          },
+          "serves": {
+            "slots": 1,
+            "contextPerSlotMin": 229376
+          }
+        },
+        "launch": {
+          "label": "llamacpp-vulkan-q8-vision-tp2",
+          "engine": "llama.cpp",
+          "backend": "vulkan",
+          "image": "ghcr.io/ggml-org/llama.cpp",
+          "digest": "sha256:3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c",
+          "command": [
+            "--model",
+            "/models/Qwen3.8-27B-UD-Q8_K_XL.gguf",
+            "--mmproj",
+            "/models/mmproj-F16.gguf",
+            "--ctx-size",
+            "229376",
+            "--parallel",
+            "1",
+            "--flash-attn",
+            "on",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8080"
+          ],
+          "mounts": [
+            {
+              "host": "$ARTIFACTS",
+              "container": "/models",
+              "readOnly": true
+            }
+          ]
+        },
+        "quantization": "q8_k_xl",
+        "evidence": [
+          {
+            "run": "r9700-q8-vision-measure",
+            "date": "2026-10-15",
+            "context": 229376,
+            "concurrency": 1,
+            "decodeTps": 31.4,
+            "prefillTps": 412.0,
+            "ttftP50Ms": 557000.0
+          }
+        ],
+        "probe": {
+          "readyTimeoutSec": 1800,
+          "longPromptTokens": 100000
+        }
+      },
+      "artifacts": [
+        {
+          "path": "Qwen3.8-27B-UD-Q8_K_XL.gguf",
+          "bytes": 31457991680,
+          "sha256": "af36ecb6b5db1407953345b746c14ac93f0657dda413910b4348683a2d990377",
+          "sources": [
+            "file:///quobyte/metabolomicsgrp/it/llm/hf-cache/hub/models--unsloth--Qwen3.8-27B-GGUF/snapshots/4ca720788d1e01f1bff70c033e0d0028fd02e502/Qwen3.8-27B-UD-Q8_K_XL.gguf",
+            "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/4ca720788d1e01f1bff70c033e0d0028fd02e502/Qwen3.8-27B-UD-Q8_K_XL.gguf"
+          ]
+        },
+        {
+          "path": "mmproj-F16.gguf",
+          "bytes": 927607488,
+          "sha256": "cbb841a9ee0636b2ec172f5bb8df2ea8dfeb01e90fe7c6126581d662a0b4e43e",
+          "sources": [
+            "https://huggingface.co/unsloth/Qwen3.8-27B-GGUF/resolve/4ca720788d1e01f1bff70c033e0d0028fd02e502/mmproj-F16.gguf"
+          ]
+        }
+      ],
+      "advert": {
+        "slots": 1,
+        "contextSupported": 262144,
+        "maxContextTokens": 229376,
+        "kvBytesPerToken": 65536,
+        "tools": true
+      }
+    }
+  ],
+  "context": {
+    "offered": [
+      "iw.dynamic-node/1",
+      "iw.node-reconcile/1"
+    ],
+    "accepted": [
+      "iw.dynamic-node/1",
+      "iw.node-reconcile/1"
+    ],
+    "enrolled": true,
+    "ownerAuthenticated": true,
+    "nodeId": "nibbler-fixture",
+    "ownerEpoch": "owner-1",
+    "policyId": "nibbler-policy",
+    "allowedDeployments": [
+      "dep_69db99934fa3a6240af3bf3d44c95b81d94d89f4db13e19036803731fda09013"
+    ],
+    "now": 1000,
+    "reportAgeMs": 0,
+    "servingScopes": [
+      "nibbler-serving"
+    ],
+    "qualificationScopes": [
+      "nibbler-qualification"
+    ],
+    "evidence": [
+      {
+        "nodeId": "nibbler-fixture",
+        "ownerEpoch": "owner-1",
+        "policyId": "nibbler-policy",
+        "scopeId": "nibbler-serving",
+        "assignmentId": "singleton-pascal",
+        "deployment": "dep_69db99934fa3a6240af3bf3d44c95b81d94d89f4db13e19036803731fda09013",
+        "gpuIds": [
+          "gpu-pascal-a"
+        ],
+        "environmentFingerprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "evidenceId": "singleton-pascal-evidence",
+        "validUntil": 1200,
+        "watchdogGeneration": 1,
+        "authorizationProbeId": "singleton-pascal-probe",
+        "checks": [
+          "artifact_integrity",
+          "device_isolation",
+          "runtime_attestation",
+          "context_envelope",
+          "correctness",
+          "cancellation_reuse",
+          "watchdog_recovery",
+          "authorized_admission"
+        ],
+        "imageDigest": "sha256:3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c",
+        "effectiveConfigDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    ],
+    "permits": []
+  }
+}

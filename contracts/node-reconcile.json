@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "capability": "iw.node-reconcile/1",
+  "required_capabilities": [
+    "iw.dynamic-node/1",
+    "iw.node-reconcile/1"
+  ],
+  "specs": [
+    "64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING"
+  ],
+  "features": [
+    "IW-DYNNODE-002"
+  ],
+  "proof_status": "owed",
+  "proof_scope": "Offline schemas and conformance only; new implementation, Nibbler hardware, restart, recovery and release proof owed. P5-T35 Beast proof is unchanged.",
+  "transport": {
+    "register_request": {
+      "method": "POST",
+      "path": "/v1/node/register",
+      "member": "reconcile",
+      "schema": "schemas/v1/node-reconcile/facts.json"
+    },
+    "heartbeat_request": {
+      "method": "POST",
+      "path": "/v1/node/heartbeat",
+      "member": "reconcile",
+      "schema": "schemas/v1/node-reconcile/status.json"
+    },
+    "register_and_heartbeat_response": {
+      "member": "reconcile",
+      "schema": "schemas/v1/node-reconcile/control.json"
+    },
+    "qualification_header": "X-InferWeave-Qualification-Permit",
+    "qualification_permit_schema": "schemas/v1/node-reconcile/permit.json"
+  },
+  "bounds": {
+    "member_bytes": 65536,
+    "max_gpus": 256,
+    "max_assignments": 8,
+    "max_report_age_ms": 300000,
+    "max_permit_lifetime_seconds": 300,
+    "max_permit_requests": 64,
+    "max_recovery_attempts": 16
+  },
+  "status_phase": [
+    "held",
+    "fetching",
+    "starting",
+    "qualifying",
+    "serving",
+    "draining",
+    "recovering",
+    "quarantined",
+    "stopped",
+    "failed"
+  ],
+  "reason_codes": [
+    "none",
+    "malformed",
+    "capability_missing",
+    "enrollment_required",
+    "owner_untrusted",
+    "duplicate_gpu",
+    "duplicate_assignment",
+    "duplicate_deployment",
+    "gpu_overlap",
+    "gpu_unknown",
+    "gpu_busy",
+    "incompatible_group",
+    "status_stale",
+    "attestation_missing",
+    "fingerprint_mismatch",
+    "qualification_missing",
+    "qualification_stale",
+    "scope_denied",
+    "watchdog_inactive",
+    "quarantined",
+    "recovery_exhausted",
+    "permit_denied",
+    "runtime_unavailable",
+    "awaiting_assignment",
+    "draining",
+    "requalification_required",
+    "floor_would_break",
+    "no_known_good",
+    "assignment_mismatch",
+    "profile_mismatch"
+  ],
+  "required_checks": [
+    "artifact_integrity",
+    "device_isolation",
+    "runtime_attestation",
+    "context_envelope",
+    "correctness",
+    "cancellation_reuse",
+    "watchdog_recovery",
+    "authorized_admission"
+  ],
+  "ownership": {
+    "instances_per_node_deployment": 1,
+    "same_assignment_replay": "idempotent",
+    "second_assignment_same_deployment": "refused_before_executor",
+    "explicit_span": "one_assignment_with_exact_qualified_group",
+    "identical_profile_replicas": "deferred_until_instance_identity_propagates"
+  },
+  "shutdown": {
+    "suspend": [
+      "persist_claims",
+      "withdraw_readiness",
+      "detach_attested_containers",
+      "exit"
+    ],
+    "retire": [
+      "withdraw_admission",
+      "bounded_drain",
+      "unload_owned_container",
+      "release_claims"
+    ],
+    "paths": [
+      "dynamic_node::Executor::drop",
+      "profile_launch::ContainerEngine::drop",
+      "leaving::SIGTERM",
+      "dynamic_node::SIGINT_cleanup"
+    ],
+    "publication_guards": [
+      "engine_executor::adopt_running",
+      "engine_executor::settle_with"
+    ]
+  },
+  "runtime": {
+    "persistent": "docker-compose",
+    "first_increment_os": "linux",
+    "owner_network_mode": "host",
+    "engine_bind": "127.0.0.1",
+    "network_proof_precedes_gpu_qualification": true
+  },
+  "acceptance": [
+    {
+      "id": "ONB-01",
+      "proof_status": "owed",
+      "scenario": "clean installation and idempotent rerun use persistent Linux Compose without Apptainer; real owner-to-sibling host-loopback connectivity is proven before GPU qualification"
+    },
+    {
+      "id": "ONB-02",
+      "proof_status": "owed",
+      "scenario": "mixed Pascal/Turing inventory retains per-card stable identities across reordering and reboot, and the pinned compatible runtime executes on every qualified card"
+    },
+    {
+      "id": "ONB-03",
+      "proof_status": "owed",
+      "scenario": "unnegotiated or unenrolled peers cannot provision; idle hardware and control status never advertise serving offers"
+    },
+    {
+      "id": "ONB-04",
+      "proof_status": "owed",
+      "scenario": "automatic policy-scoped qualification runs verified artifacts through real authorization, admission, correctness, context and cancellation/reuse checks before readiness"
+    },
+    {
+      "id": "ONB-05",
+      "proof_status": "owed",
+      "scenario": "throughput drafts, missing or expired evidence, fingerprint drift, absent attestation, stale status, unhealthy watchdog or quarantine cannot publish through adoption or settle; permits enforce exact identity, scope, expiry and atomic request budgets"
+    },
+    {
+      "id": "ONB-06",
+      "proof_status": "owed",
+      "scenario": "distinct deployments use disjoint homogeneous groups; a second assignment for an identical deployment is refused before executor translation and never becomes an implicit span"
+    },
+    {
+      "id": "ONB-07",
+      "proof_status": "owed",
+      "scenario": "elective stop/replacement drains before unload and preserves healthy-instance floors; severe faults immediately withdraw unsafe capacity and expose any floor deficit"
+    },
+    {
+      "id": "ONB-08",
+      "proof_status": "owed",
+      "scenario": "bounded rescue preserves actual known-good artifacts, never invents a rollback target, and persists exhausted attempts and quarantine across node and gateway restart"
+    },
+    {
+      "id": "ONB-09",
+      "proof_status": "owed",
+      "scenario": "real subprocess SIGTERM, SIGINT and graceful owner drop preserve attested containers and durable claims for adoption; explicit retirement withdraws, drains and unloads; host reboot preserves identity and avoids duplicate engines"
+    },
+    {
+      "id": "ONB-10",
+      "proof_status": "owed",
+      "scenario": "gateway restart reconciles durable holdings and qualification evidence after a fresh report, invalidates prior permits and requires a fresh full-path probe before publication"
+    },
+    {
+      "id": "ONB-11",
+      "proof_status": "owed",
+      "scenario": "managed link-only inference and cancellation work through reconnect without duplicated placement or exposed unauthenticated engine ports"
+    },
+    {
+      "id": "ONB-12",
+      "proof_status": "owed",
+      "scenario": "exact-commit and digest-pinned Nibbler installation/restart/recovery evidence, independent review and required checks pass before normal merge; offline contract tests never substitute for runtime or hardware proof"
+    }
+  ],
+  "canonical_tasks": [
+    "P5-T38"
+  ]
+}

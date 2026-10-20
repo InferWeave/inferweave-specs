@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "scope": "Offline decision vectors. context is trusted harness input, never a transport member; all hardware/profile/token values are synthetic.",
+  "cases": [
+    {
+      "id": "ready",
+      "path": "fixtures/node-reconcile/valid/ready.json",
+      "reasons": [],
+      "readyCount": 1,
+      "executeCount": 1
+    },
+    {
+      "id": "mixed-inventory-idle",
+      "path": "fixtures/node-reconcile/valid/mixed-inventory-idle.json",
+      "reasons": [],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "explicit-span",
+      "path": "fixtures/node-reconcile/valid/explicit-span.json",
+      "reasons": [],
+      "readyCount": 1,
+      "executeCount": 1
+    },
+    {
+      "id": "distinct-deployments",
+      "path": "fixtures/node-reconcile/valid/distinct-deployments.json",
+      "reasons": [],
+      "readyCount": 2,
+      "executeCount": 2
+    },
+    {
+      "id": "qualification-permit",
+      "path": "fixtures/node-reconcile/valid/qualification-permit.json",
+      "reasons": [],
+      "readyCount": 0,
+      "executeCount": 1
+    },
+    {
+      "id": "unnegotiated",
+      "path": "fixtures/node-reconcile/invalid/unnegotiated.json",
+      "reasons": [
+        "capability_missing"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "unenrolled",
+      "path": "fixtures/node-reconcile/invalid/unenrolled.json",
+      "reasons": [
+        "enrollment_required"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "duplicate-gpu",
+      "path": "fixtures/node-reconcile/invalid/duplicate-gpu.json",
+      "reasons": [
+        "duplicate_gpu"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "forged-ready",
+      "path": "fixtures/node-reconcile/invalid/forged-ready.json",
+      "reasons": [
+        "malformed"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "missing-attestation",
+      "path": "fixtures/node-reconcile/invalid/missing-attestation.json",
+      "reasons": [
+        "attestation_missing"
+      ],
+      "readyCount": 0,
+      "executeCount": 1
+    },
+    {
+      "id": "stale-qualification",
+      "path": "fixtures/node-reconcile/invalid/stale-qualification.json",
+      "reasons": [
+        "qualification_stale"
+      ],
+      "readyCount": 0,
+      "executeCount": 1
+    },
+    {
+      "id": "stale-status",
+      "path": "fixtures/node-reconcile/invalid/stale-status.json",
+      "reasons": [
+        "status_stale"
+      ],
+      "readyCount": 0,
+      "executeCount": 1
+    },
+    {
+      "id": "quarantined-health-success",
+      "path": "fixtures/node-reconcile/invalid/quarantined-health-success.json",
+      "reasons": [
+        "quarantined"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "missing-owner-evidence",
+      "path": "fixtures/node-reconcile/invalid/missing-owner-evidence.json",
+      "reasons": [
+        "qualification_missing"
+      ],
+      "readyCount": 0,
+      "executeCount": 1
+    },
+    {
+      "id": "watchdog-inactive",
+      "path": "fixtures/node-reconcile/invalid/watchdog-inactive.json",
+      "reasons": [
+        "watchdog_inactive"
+      ],
+      "readyCount": 0,
+      "executeCount": 1
+    },
+    {
+      "id": "status-bound",
+      "path": "fixtures/node-reconcile/invalid/status-bound.json",
+      "reasons": [
+        "malformed"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "unknown-number",
+      "path": "fixtures/node-reconcile/invalid/unknown-number.json",
+      "reasons": [
+        "malformed"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "boolean-version",
+      "path": "fixtures/node-reconcile/invalid/boolean-version.json",
+      "reasons": [
+        "malformed"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "unknown-version",
+      "path": "fixtures/node-reconcile/invalid/unknown-version.json",
+      "reasons": [
+        "malformed"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "scope-forged",
+      "path": "fixtures/node-reconcile/invalid/scope-forged.json",
+      "reasons": [
+        "qualification_missing",
+        "scope_denied"
+      ],
+      "readyCount": 0,
+      "executeCount": 1
+    },
+    {
+      "id": "recovery-exhausted",
+      "path": "fixtures/node-reconcile/invalid/recovery-exhausted.json",
+      "reasons": [
+        "recovery_exhausted"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "duplicate-deployment",
+      "path": "fixtures/node-reconcile/invalid/duplicate-deployment.json",
+      "reasons": [
+        "duplicate_deployment"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "overlapping-groups",
+      "path": "fixtures/node-reconcile/invalid/overlapping-groups.json",
+      "reasons": [
+        "gpu_overlap"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "mixed-model-span",
+      "path": "fixtures/node-reconcile/invalid/mixed-model-span.json",
+      "reasons": [
+        "incompatible_group",
+        "profile_mismatch"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    },
+    {
+      "id": "forged-permit",
+      "path": "fixtures/node-reconcile/invalid/forged-permit.json",
+      "reasons": [
+        "permit_denied"
+      ],
+      "readyCount": 0,
+      "executeCount": 1
+    },
+    {
+      "id": "replayed-permit",
+      "path": "fixtures/node-reconcile/invalid/replayed-permit.json",
+      "reasons": [
+        "permit_denied"
+      ],
+      "readyCount": 0,
+      "executeCount": 1
+    },
+    {
+      "id": "duplicate-key",
+      "path": "fixtures/node-reconcile/invalid/duplicate-key.json",
+      "reasons": [
+        "malformed"
+      ],
+      "readyCount": 0,
+      "executeCount": 0
+    }
+  ]
+}
