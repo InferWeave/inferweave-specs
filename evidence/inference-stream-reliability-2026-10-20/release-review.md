@@ -43,3 +43,16 @@ window, with the existing worker SIF, weights, identities and unrelated CDN/S3
 services preserved. New gateways must report the merged revision and independent
 timeout settings, restore their parent routes, and pass serving probes before
 the rollout is reported successful.
+
+## Persistence fixture gap closed
+
+Test-only commit `efe0d866` drains bounded EOF, explicitly waits for the mock
+node to hold its seat, supplies distinct logical request IDs and asserts exact
+per-prompt facts. The repaired tests passed 2/2 against the candidate and 2/2
+against unchanged `de7619b6` production code. Targeted strict Clippy and formatting
+passed, and independent source review approved the stronger assertions.
+
+The original baseline fixtures happened to pass while logging the same duplicate
+attempt error, so a deterministic baseline failure was not reproduced. The
+corrected fixtures close the timing/identity test gap; true repeated-ID attempt
+accounting remains a separate pre-existing behavior, not a hidden product fix.

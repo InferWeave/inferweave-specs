@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,301,563 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,301,794 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `ab7b92f34413` — ~21,221t
+- `OPEN_GATES.md` — `ada58e9b68af` — ~21,267t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -203,7 +203,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/dynamic-nodes-r9700-2026-10-16/ADVERSARIAL_REVIEW.md` — `7780d885eaf4` — ~2,387t
 - `evidence/dynamic-nodes-r9700-2026-10-16/REPORT.md` — `66316fd98de2` — ~2,014t
 - `evidence/inference-stream-reliability-2026-10-20/README.md` — `a40f70bffc65` — ~5,872t
-- `evidence/inference-stream-reliability-2026-10-20/release-review.md` — `5660b92b0d9c` — ~727t
+- `evidence/inference-stream-reliability-2026-10-20/release-review.md` — `6aed284301ff` — ~912t
 - `evidence/inference-stream-reliability-2026-10-20/rust-canary.json` — `d2ec8ffdae7e` — ~493t
 - `evidence/inference-stream-reliability-2026-10-20/rust.md` — `3ce87559a7c0` — ~1,650t
 - `evidence/link-upstream-key-probe-2026-10-15/README.md` — `a1d5861d03c5` — ~169t

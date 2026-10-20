@@ -1096,8 +1096,11 @@ The pinned Rust release passed a 35-second synthetic prefill on a Hive CPU
 allocation; Zapp's Go candidate passed loopback diagnostics checks. These are not
 production-serving rollout or GPU qualification evidence.
 
+The two persistence fixture failures are closed by test-only `efe0d866`:
+repaired fixtures passed against both the candidate and unchanged upstream
+production code. See the release-review evidence for exact scope; true repeated-ID
+accounting remains separate and was not changed here.
+
 **Owed:** new timed end-to-end error injection in each Link mode, three live-GPU
-cases, resolution/baseline establishment for two explicitly enabled optional
-persistence checks that failed, production activation and comparable-traffic
-post-rollout measurement. A 180-second idle default is an operational policy,
+cases, production activation and comparable-traffic post-rollout measurement. A 180-second idle default is an operational policy,
 not a measured hardware envelope. No production or qualification gate is opened.
