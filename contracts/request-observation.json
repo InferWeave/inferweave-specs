@@ -1,0 +1,252 @@
+{
+  "schema_version": 1,
+  "event_schema": "schemas/v1/events/request-observation.json",
+  "rollup_schema": "schemas/v1/events/request-observation-rollup.json",
+  "domain": "internal_normalized_observability_only",
+  "features": [
+    "IW-OBS-001",
+    "IW-TEL-001",
+    "IW-BENCH-002"
+  ],
+  "canonical_tasks": [
+    "P1-T20",
+    "P2-T03"
+  ],
+  "datasets": [
+    "production",
+    "controlled",
+    "unknown"
+  ],
+  "observation_kinds": [
+    "ingress_terminal",
+    "attempt_terminal",
+    "hop_terminal"
+  ],
+  "lineage_scopes": [
+    "trusted",
+    "local_unlinked"
+  ],
+  "statuses": [
+    "success",
+    "service_failure",
+    "rejected",
+    "cancelled",
+    "unknown"
+  ],
+  "basis": [
+    "measured",
+    "derived",
+    "estimated",
+    "declared",
+    "unknown",
+    "unsupported"
+  ],
+  "measurement_sources": [
+    "local_monotonic",
+    "engine_reported",
+    "http_first_token_proxy",
+    "runtime_usage",
+    "tokenizer",
+    "configuration",
+    "legacy_unknown",
+    "unknown",
+    "unsupported"
+  ],
+  "phases": [
+    "local_queue",
+    "route_processing",
+    "connection_acquire",
+    "dns",
+    "tcp_connect",
+    "tls_handshake",
+    "upload",
+    "writer_queue",
+    "upstream_wait",
+    "response_headers",
+    "first_sse_event",
+    "first_useful_output",
+    "first_visible_output",
+    "engine_prefill",
+    "engine_decode",
+    "engine_execution",
+    "completion",
+    "link_rtt",
+    "unattributed"
+  ],
+  "token_fields": [
+    "input_total",
+    "output_total",
+    "cached_input",
+    "context_consumed",
+    "context_limit",
+    "processed_prefill_tokens",
+    "decode_output_tokens"
+  ],
+  "reason_code_sources": [
+    {
+      "path": "contracts/protocol-v1/error-taxonomy.json",
+      "key": "codes"
+    },
+    {
+      "path": "contracts/protocol-v1/link-http-json.json",
+      "key": "failure_codes"
+    },
+    {
+      "path": "contracts/inference-stream-reliability.json",
+      "key": "failure_codes"
+    }
+  ],
+  "histograms": {
+    "version": 1,
+    "bin_semantics": "disjoint (previous_bound, bound], initial lower bound inclusive zero; last bin overflow",
+    "milliseconds": [
+      1,
+      5,
+      10,
+      25,
+      50,
+      100,
+      250,
+      500,
+      1000,
+      2500,
+      5000,
+      10000,
+      30000,
+      60000,
+      180000,
+      600000,
+      1800000
+    ],
+    "tokens": [
+      0,
+      128,
+      512,
+      2048,
+      8192,
+      32768,
+      131072,
+      524288,
+      2097152
+    ]
+  },
+  "limits": {
+    "event_bytes": 65536,
+    "rollup_bytes": 65536,
+    "timings_per_event": 32,
+    "metrics_per_rollup": 128,
+    "gpu_ids": 64
+  },
+  "identity": {
+    "event": [
+      "source_gateway_id",
+      "producer_epoch",
+      "event_id"
+    ],
+    "replay": "same identity plus same normalized payload is no-op; conflicting payload refused",
+    "rollup": [
+      "source_gateway_id",
+      "producer_epoch",
+      "rollup_id"
+    ],
+    "revision": "replacement, never an additive delta"
+  },
+  "retention": {
+    "namespace": "new_observability_family",
+    "aggregate_days": 90,
+    "diagnostic_days": 7,
+    "legacy": "unchanged; no retroactive purge",
+    "sealed_replay": "retain dedupe/seal evidence through retained aggregates; reject expired windows"
+  },
+  "acceptance": [
+    {
+      "id": "AC-REQOBS-01",
+      "scenario": "Retries and forwarding hops yield one terminal ingress outcome, separate execution attempts and hop counts; reused caller IDs do not deduplicate ingress.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-REQOBS-02",
+      "scenario": "Identical replay is idempotent across restarts; conflicting payload identity is rejected; pruning diagnostics cannot recreate expired or sealed windows.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-REQOBS-03",
+      "scenario": "HTTP200 followed by stream failure is failure; cancellation, rejection, unknown and active state do not become success.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-REQOBS-04",
+      "scenario": "Unknown and unsupported tokens/timings remain distinct from observed zero; HTTP TTFT proxy never becomes true engine prefill.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-REQOBS-05",
+      "scenario": "Bounded monotonic spans preserve inclusive parent waits and local exclusive phases without cross-clock arithmetic or biased-trace rate inference.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-REQOBS-06",
+      "scenario": "Exact observed configuration, dataset and provenance gate merging; missing GPU/artifact data stays unknown.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-REQOBS-07",
+      "scenario": "Fixed-bin histograms and sums merge only compatible disjoint rows; known/missing counts, ratios, coverage and drops remain explicit.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-REQOBS-08",
+      "scenario": "Internal schema refuses request content and arbitrary settings; it is never a public response or a new export API.",
+      "proof_status": "owed"
+    }
+  ],
+  "metric_names": [
+    "local_queue_ms",
+    "route_processing_ms",
+    "connection_acquire_ms",
+    "dns_ms",
+    "tcp_connect_ms",
+    "tls_handshake_ms",
+    "upload_ms",
+    "writer_queue_ms",
+    "upstream_wait_ms",
+    "response_headers_ms",
+    "first_sse_event_ms",
+    "first_useful_output_ms",
+    "first_visible_output_ms",
+    "engine_prefill_ms",
+    "engine_decode_ms",
+    "engine_execution_ms",
+    "completion_ms",
+    "link_rtt_ms",
+    "unattributed_ms",
+    "input_total_tokens",
+    "output_total_tokens",
+    "cached_input_tokens",
+    "context_consumed_tokens",
+    "context_limit_tokens",
+    "processed_prefill_tokens",
+    "decode_output_tokens"
+  ],
+  "phase_semantics": {
+    "local_queue": "interval",
+    "route_processing": "interval",
+    "connection_acquire": "interval",
+    "dns": "interval",
+    "tcp_connect": "interval",
+    "tls_handshake": "interval",
+    "upload": "interval",
+    "writer_queue": "interval",
+    "upstream_wait": "inclusive_wait",
+    "response_headers": "offset_from_start",
+    "first_sse_event": "offset_from_start",
+    "first_useful_output": "offset_from_start",
+    "first_visible_output": "offset_from_start",
+    "engine_prefill": "interval",
+    "engine_decode": "interval",
+    "engine_execution": "interval",
+    "completion": "offset_from_start",
+    "link_rtt": "round_trip",
+    "unattributed": "interval"
+  }
+}

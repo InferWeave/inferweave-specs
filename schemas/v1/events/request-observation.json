@@ -1,0 +1,1075 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/events/request-observation.json",
+  "title": "Internal normalized terminal request observation",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "iw.observability.request/1"
+    },
+    "visibility": {
+      "const": "internal"
+    },
+    "metric_definition_version": {
+      "const": 1
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "source_gateway_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "producer_epoch": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "dataset": {
+      "enum": [
+        "production",
+        "controlled",
+        "unknown"
+      ]
+    },
+    "benchmark_sample_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]+$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "observation_kind": {
+      "enum": [
+        "ingress_terminal",
+        "attempt_terminal",
+        "hop_terminal"
+      ]
+    },
+    "sampling": {
+      "enum": [
+        "all_terminal",
+        "diagnostic_only"
+      ]
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "enum": [
+            "trusted",
+            "local_unlinked"
+          ]
+        },
+        "logical_request_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attempt_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parent_attempt_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hop_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parent_hop_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trace_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transport_request_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ingress_gateway_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "logical_request_id",
+        "attempt_id",
+        "parent_attempt_id",
+        "hop_id",
+        "parent_hop_id",
+        "trace_id",
+        "transport_request_id",
+        "ingress_gateway_id"
+      ]
+    },
+    "attribution": {
+      "$ref": "#/definitions/attribution"
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "success",
+            "service_failure",
+            "rejected",
+            "cancelled",
+            "unknown"
+          ]
+        },
+        "http_status": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 599
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completion": {
+          "enum": [
+            "protocol_success",
+            "protocol_failure",
+            "pre_execution_rejected",
+            "cancelled",
+            "unobserved"
+          ]
+        },
+        "reason_code": {
+          "enum": [
+            "none",
+            "unknown",
+            "PROTOCOL_VERSION_UNSUPPORTED",
+            "FEATURE_UNSUPPORTED",
+            "MODEL_NOT_FOUND",
+            "MODEL_UNAVAILABLE",
+            "MODEL_NO_CAPACITY",
+            "MODEL_LOADING",
+            "MODEL_FAILED",
+            "NO_COMPATIBLE_WORKER",
+            "NO_CAPACITY",
+            "QUEUE_FULL",
+            "NODE_UNAVAILABLE",
+            "RUNTIME_UNAVAILABLE",
+            "RUNTIME_CRASHED",
+            "ALLOCATION_PENDING",
+            "ALLOCATION_PREEMPTED",
+            "ALLOCATION_TERMINATED",
+            "DEADLINE_EXCEEDED",
+            "REQUEST_CANCELLED",
+            "UPSTREAM_UNAVAILABLE",
+            "BACKEND_UNREACHABLE",
+            "BACKEND_TIMEOUT",
+            "BACKEND_STREAM_FAILED",
+            "CLIENT_CANCELLED",
+            "INVALID_UPSTREAM_RESPONSE",
+            "inference_idle_timeout",
+            "inference_request_timeout"
+          ]
+        },
+        "layer": {
+          "enum": [
+            "ingress",
+            "gateway",
+            "link",
+            "node",
+            "backend",
+            "unknown",
+            "none"
+          ]
+        },
+        "phase": {
+          "enum": [
+            "queue",
+            "connect",
+            "prefill",
+            "decode",
+            "execution",
+            "unknown",
+            "none"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "http_status",
+        "completion",
+        "reason_code",
+        "layer",
+        "phase"
+      ]
+    },
+    "timings": {
+      "type": "array",
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "span_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]+$"
+          },
+          "parent_span_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]+$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "phase": {
+            "enum": [
+              "local_queue",
+              "route_processing",
+              "connection_acquire",
+              "dns",
+              "tcp_connect",
+              "tls_handshake",
+              "upload",
+              "writer_queue",
+              "upstream_wait",
+              "response_headers",
+              "first_sse_event",
+              "first_useful_output",
+              "first_visible_output",
+              "engine_prefill",
+              "engine_decode",
+              "engine_execution",
+              "completion",
+              "link_rtt",
+              "unattributed"
+            ]
+          },
+          "measurement": {
+            "$ref": "#/definitions/quantity"
+          },
+          "clock": {
+            "enum": [
+              "local_monotonic",
+              "producer_monotonic",
+              "unknown"
+            ]
+          },
+          "semantics": {
+            "enum": [
+              "interval",
+              "inclusive_wait",
+              "offset_from_start",
+              "round_trip"
+            ]
+          }
+        },
+        "required": [
+          "span_id",
+          "parent_span_id",
+          "phase",
+          "measurement",
+          "clock",
+          "semantics"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "local_queue"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "route_processing"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "connection_acquire"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "dns"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "tcp_connect"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "tls_handshake"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "upload"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "writer_queue"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "upstream_wait"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "inclusive_wait"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "response_headers"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "offset_from_start"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "first_sse_event"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "offset_from_start"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "first_useful_output"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "offset_from_start"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "first_visible_output"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "offset_from_start"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "engine_prefill"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "engine_decode"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "engine_execution"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "completion"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "offset_from_start"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "link_rtt"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "round_trip"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "phase": {
+                  "const": "unattributed"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "semantics": {
+                  "const": "interval"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "input_total": {
+          "$ref": "#/definitions/quantity"
+        },
+        "output_total": {
+          "$ref": "#/definitions/quantity"
+        },
+        "cached_input": {
+          "$ref": "#/definitions/quantity"
+        },
+        "context_consumed": {
+          "$ref": "#/definitions/quantity"
+        },
+        "context_limit": {
+          "$ref": "#/definitions/quantity"
+        },
+        "processed_prefill_tokens": {
+          "$ref": "#/definitions/quantity"
+        },
+        "decode_output_tokens": {
+          "$ref": "#/definitions/quantity"
+        }
+      },
+      "required": [
+        "input_total",
+        "output_total",
+        "cached_input",
+        "context_consumed",
+        "context_limit",
+        "processed_prefill_tokens",
+        "decode_output_tokens"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "visibility",
+    "metric_definition_version",
+    "event_id",
+    "source_gateway_id",
+    "producer_epoch",
+    "sequence",
+    "observed_at",
+    "dataset",
+    "benchmark_sample_id",
+    "observation_kind",
+    "sampling",
+    "lineage",
+    "attribution",
+    "outcome",
+    "timings",
+    "tokens"
+  ],
+  "definitions": {
+    "quantity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "basis": {
+          "enum": [
+            "measured",
+            "derived",
+            "estimated",
+            "declared",
+            "unknown",
+            "unsupported"
+          ]
+        },
+        "source": {
+          "enum": [
+            "local_monotonic",
+            "engine_reported",
+            "http_first_token_proxy",
+            "runtime_usage",
+            "tokenizer",
+            "configuration",
+            "legacy_unknown",
+            "unknown",
+            "unsupported"
+          ]
+        }
+      },
+      "required": [
+        "basis",
+        "source"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "basis": {
+                "enum": [
+                  "unknown",
+                  "unsupported"
+                ]
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "value"
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "value"
+            ]
+          }
+        }
+      ]
+    },
+    "attribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "model_artifact_digest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "quantization": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tokenizer_revision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runtime_instance_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runtime_name": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runtime_version": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runtime_image_digest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deployment_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "configuration_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resource_profile_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "workload_profile_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cluster_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "node_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gpu_sku": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "load_generation": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gpu_count": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "gpu_resource_ids": {
+          "anyOf": [
+            {
+              "type": "array",
+              "maxItems": 64,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[\\x21-\\x7e]+$"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "model_id",
+        "model_artifact_digest",
+        "quantization",
+        "tokenizer_revision",
+        "runtime_instance_id",
+        "runtime_name",
+        "runtime_version",
+        "runtime_image_digest",
+        "deployment_fingerprint",
+        "configuration_fingerprint",
+        "resource_profile_id",
+        "workload_profile_id",
+        "cluster_id",
+        "node_id",
+        "gpu_sku",
+        "load_generation",
+        "gpu_count",
+        "gpu_resource_ids"
+      ]
+    }
+  }
+}

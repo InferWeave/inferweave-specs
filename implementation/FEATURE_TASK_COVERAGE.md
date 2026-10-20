@@ -129,3 +129,7 @@ Existing feature/task mappings remain in force. The bounded cross-cutting
 acceptance mapping for specs 04/09/23/42/43/46/58/64 and P1-T05/P1-T20/
 P2-T03/P1-T21/P2-T18/P5-T30..32 is `contracts/observability-capacity.json`.
 New runtime and rollout proof remains owed.
+
+The internal request-observation extension maps IW-OBS-001/IW-TEL-001/IW-BENCH-002
+to existing P1-T20/P2-T03 and specs09/23/58 through
+`contracts/request-observation.json` (AC-REQOBS-01..08, runtime proof owed).

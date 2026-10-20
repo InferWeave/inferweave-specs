@@ -217,3 +217,87 @@ policy overrides. Existing warehouse/request/benchmark records, legacy 730/365-d
 policies, shared caches and backups retain their existing policy. This change
 authorizes no retroactive purge; changing them requires a separate reviewed
 retention migration.
+
+## Internal request-observation rollups
+
+`contracts/request-observation.json` and
+`schemas/v1/events/request-observation-rollup.json` define the internal
+`iw.observability.rollup/1` domain consumed by Rust storage/normalization.
+No new public or export endpoint is defined. Go-local edge windows remain
+explicitly local and cannot become a second global warehouse.
+
+A rollup has an immutable source_gateway_id/producer_epoch/rollup_id identity,
+revision, metric_definition_version, exact attribution, dataset,
+observation_kind and lineage_scope. revision replaces that row atomically;
+replaying it never adds another delta. Same revision with changed payload is
+rejected. Later revisions preserve dimensions/window and coverage.counter_epoch and advance as_of;
+sealed rows cannot be revised through ordinary ingestion. Event identities and
+terminal-fact uniqueness are checked before aggregation (spec09), including
+replays after restart and repeated caller transport IDs.
+
+Windows are UTC half-open [window_start, window_end), aligned to 300/3600/86400
+seconds for 5m/1h/1d. Boundaries use canonical whole-second UTC timestamps
+without fractional seconds; interval/grid checks use exact duration arithmetic.
+as_of is at least window_end. A sealed row is finalized;
+unsealed rows may receive late valid events before the owner's persisted sealing
+watermark. Beyond a seal or the retained horizon, late replay is rejected and
+counted, not used to recreate expired diagnostics or double-count aggregates.
+No numeric lateness allowance is invented here. Sealing/deduplication evidence
+must outlive the retained aggregate it protects. Pruning 7-day diagnostics must
+not delete/rebuild away independent 90-day materialized rows.
+
+counts contains success/service_failure/rejected/cancelled/unknown and total.
+Each ratio preserves its numerator and denominator using spec09's definitions.
+Each optional metric row identifies metric, unit, basis and measurement source,
+plus eligible_count, known_count, missing_count, unsupported_count, sum and a
+versioned histogram. For each included metric, provenance rows partition all
+terminal observations exactly; every row has eligible = known + missing +
+unsupported. An absent metric means not reported, never zero. Aggregate sum=0
+with known_count=0 is the empty accumulator, not evidence of a zero measurement.
+A mean requires positive known_count and uses sum/known_count. Known sources and
+estimated/declared sources are kept in separate provenance rows. Phase semantics
+are part of metric_definition_version through the frozen phase-to-semantics map;
+an interval cannot be merged into an offset metric with the same phase name.
+Rollups apply the same exact GPU resource-count reconciliation as events.
+
+Histograms use the frozen bounds in `contracts/request-observation.json`:
+non-cumulative disjoint integer bins (previous bound, current bound], with zero
+included in the first bin and a final overflow bin. Counts sum to known_count;
+sums must be consistent with the occupied intervals. Millisecond and token
+histograms have separate v1 boundaries. Merge only identical metric/unit/bin
+version/source/basis/dataset and compatible exact attribution/counting scope.
+Merge counts and sums with checked integer arithmetic, then derive quantile
+intervals; do not average p95s or means without sample weights, invent within-bin
+precision, or merge arbitrary differently bounded histograms. No scalar percentile
+is an authoritative rollup input.
+
+The initial composable unit is one source/producer epoch/counter epoch over
+nonoverlapping windows, preserving configuration and provenance. Adjacent 5m
+windows can contribute to a complete hour; incomplete coverage remains explicit.
+Overlapping revisions/5m-vs-1h windows cannot be added. A fleet projection needs
+prior canonical event deduplication and a separately accounted union of source
+coverage; summing per-source durations or hop totals is not a global denominator.
+Different configuration, dataset or counter-reset boundaries remain separate
+rows. Broader comparisons cannot reinterpret unknown attribution as a wildcard.
+
+coverage identifies status, counter_epoch, covered_ms, unknown_ms,
+expected_events (nullable), accepted_events and nullable dropped_events,
+write_failures, duplicates_ignored, replay_conflicts, late_events_rejected,
+trace_sampled_events, trace_dropped_events and ingestion_lag_ms. Covered and
+unknown duration partition the window; accepted_events equals total. Expected
+is the independently observed eligible terminal population, not a copy invented
+from stored rows. Complete coverage requires a known expected count equal to
+accepted and no known/unknown recording loss or conflict. Unknown counter values
+are null, never zero. Counter values apply to this row's source/window, not
+since-start totals silently assigned to every bucket. Trace sampling/loss is
+separate from all-terminal recording; biased diagnostic traces cannot establish
+unbiased request rates. Capture/write/query work stays bounded and cannot block
+admission; 64 KiB rows, 128 metric provenance rows and the existing bounded writer
+and query policies apply.
+
+These new-family records alone use 7-day diagnostic / 90-day aggregate retention.
+Legacy 730/365-day history, existing benchmark evidence, static configuration
+catalogs and shared backup policy remain unchanged. No retroactive purge or
+new content recording is authorized; a separate reviewed migration and deletion
+authorization is required for legacy retention changes. Runtime, PostgreSQL,
+restart, sealing and retention proof for AC-REQOBS-01..08 remains **owed**.

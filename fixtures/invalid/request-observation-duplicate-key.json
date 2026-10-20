@@ -1,0 +1,101 @@
+{
+  "schema": "iw.observability.request/1",
+  "visibility": "internal",
+  "metric_definition_version": 1,
+  "event_id": "ingress-event",
+  "source_gateway_id": "edge",
+  "producer_epoch": "edge-epoch",
+  "sequence": 1,
+  "observed_at": "2026-10-20T00:04:00Z",
+  "dataset": "production",
+  "benchmark_sample_id": null,
+  "observation_kind": "ingress_terminal",
+  "sampling": "all_terminal",
+  "lineage": {
+    "scope": "trusted",
+    "logical_request_id": "logical-1",
+    "attempt_id": null,
+    "parent_attempt_id": null,
+    "hop_id": null,
+    "parent_hop_id": null,
+    "trace_id": null,
+    "transport_request_id": "client-reused-id",
+    "ingress_gateway_id": "edge"
+  },
+  "attribution": {
+    "model_id": "fixture-model",
+    "model_artifact_digest": "sha256:fixture-artifact",
+    "quantization": null,
+    "tokenizer_revision": null,
+    "runtime_instance_id": "fixture-runtime",
+    "runtime_name": "llama.cpp",
+    "runtime_version": "fixture-version",
+    "runtime_image_digest": null,
+    "deployment_fingerprint": "fixture-deployment",
+    "configuration_fingerprint": "fixture-config",
+    "resource_profile_id": null,
+    "workload_profile_id": "fixture-chat",
+    "cluster_id": null,
+    "node_id": "fixture-node",
+    "gpu_sku": "fixture-GPU",
+    "load_generation": null,
+    "gpu_count": 1,
+    "gpu_resource_ids": [
+      "fixture-node/gpu0"
+    ]
+  },
+  "outcome": {
+    "status": "service_failure", "status": "success",
+    "http_status": 200,
+    "completion": "protocol_success",
+    "reason_code": "none",
+    "layer": "none",
+    "phase": "none"
+  },
+  "timings": [
+    {
+      "span_id": "span-completion",
+      "parent_span_id": null,
+      "phase": "completion",
+      "measurement": {
+        "basis": "measured",
+        "source": "local_monotonic",
+        "value": 1000
+      },
+      "clock": "local_monotonic",
+      "semantics": "offset_from_start"
+    }
+  ],
+  "tokens": {
+    "input_total": {
+      "basis": "measured",
+      "source": "runtime_usage",
+      "value": 0
+    },
+    "output_total": {
+      "basis": "measured",
+      "source": "runtime_usage",
+      "value": 10
+    },
+    "cached_input": {
+      "basis": "unknown",
+      "source": "unknown"
+    },
+    "context_consumed": {
+      "basis": "unknown",
+      "source": "unknown"
+    },
+    "context_limit": {
+      "basis": "unknown",
+      "source": "unknown"
+    },
+    "processed_prefill_tokens": {
+      "basis": "unknown",
+      "source": "unknown"
+    },
+    "decode_output_tokens": {
+      "basis": "unknown",
+      "source": "unknown"
+    }
+  }
+}

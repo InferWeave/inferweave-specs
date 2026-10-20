@@ -167,3 +167,168 @@ Headers/useful-output/completion durations share the local attempt-start origin;
 queue and upstream wait are separately measured intervals and may overlap other
 measures, so consumers must not sum them into an invented total. New field names
 require a versioned contract update; arbitrary timing label strings are forbidden.
+
+## Normalized request observations (internal domain v1)
+
+`contracts/request-observation.json` and
+`schemas/v1/events/request-observation.json` define
+`iw.observability.request/1`; the companion rollup schema defines
+`iw.observability.rollup/1`. These are additive internal normalized domain
+records feeding the existing Rust warehouse, not new HTTP/export APIs, Link
+carriers, or public response schemas. Existing wire contracts remain unchanged.
+Rust owns global normalization; the existing Go gateway contributes its own
+bounded edge observations and authorized reads under the observability ADR.
+New runtime acceptance AC-REQOBS-01..08 is **owed**.
+
+Every record is closed-schema, `visibility: internal`, at most 64 KiB, and
+rejects duplicate JSON keys recursively before decoding. IDs are bounded
+canonical metadata (128 printable ASCII characters), never arbitrary caller
+labels, request/response text, errors, environment maps or addresses. The
+visibility marker is not an authorization grant. Internal node/GPU identities
+require existing operator authorization and MUST NOT be served publicly.
+Publication remains a separate allowlisted projection under spec58; this
+contract introduces no publication policy or public serializer.
+
+### Terminal identity, dataset and counting
+
+A terminal event carries event_id, source_gateway_id, producer_epoch, sequence,
+observed_at and metric_definition_version. The immutable event key is
+(source_gateway_id, producer_epoch, event_id). Replay preserves the original
+key and payload, including across a writer restart. Identical replay is a no-op;
+a different payload under that key is rejected and counted. Event sequence aids
+ordering but is not request identity. Wall time buckets observations; it cannot
+establish a measured cross-machine duration.
+
+observation_kind is one of ingress_terminal, attempt_terminal, hop_terminal.
+The lineage object contains scope, logical_request_id, attempt_id,
+parent_attempt_id, hop_id, parent_hop_id, trace_id, transport_request_id and
+ingress_gateway_id. All identity fields are explicit nullable values; missing
+historical lineage stays null. A trusted logical ID is minted once by the entry
+gateway and remains unique across restarts. Reusing a caller's transport or trace
+ID does not reuse that logical ID. Trusted attempts/hops have their own unique
+attempt identity; a forward hop also has hop_id. Authenticated source binding
+and trusted parent propagation establish lineage; client-supplied strings do not.
+
+Only ingress_gateway_id emits that logical request's ingress_terminal event.
+Physical execution attempts emit attempt_terminal; forwarding/retry-dispatch
+observations that do not own execution emit hop_terminal, even if they have a
+local attempt ID. Within each source, terminal logical/attempt/hop identities
+are unique across restarts. A second event ID for the same trusted terminal fact
+is rejected rather than counted again. Cross-hop reobservation relays the
+original event or produces a separately typed hop event; it never manufactures
+another ingress outcome. A batch call is one ingress request, regardless of
+item count. Active/unfinalized work belongs to live state and does not become
+historical success/failure through this terminal-only schema.
+
+Lineage scope local_unlinked permits historical local evidence but forbids
+claimed global logical ID, ingress owner or parent linkage. Its rates are
+explicitly local; it cannot be included in trusted logical-request totals.
+The sampling value all_terminal means the producer offers every terminal record
+in that scope; losses remain explicit. diagnostic_only is a biased trace sample
+and is excluded from reliability/throughput rate denominators.
+
+Dataset is production, controlled or unknown. controlled requires the existing
+canonical benchmark_sample_id; other datasets leave it null. Dataset assignment
+comes from the trusted execution path, never a caller hint. Unknown historical
+origin is not relabeled production. No rollup or percentile distribution mixes
+these datasets.
+
+### Outcomes and missing evidence
+
+outcome.status is success, service_failure, rejected, cancelled or unknown.
+Separate http_status (nullable), completion, reason_code, layer and phase
+preserve the distinction between transport status and protocol completion.
+Success requires protocol_success with reason none; HTTP 200 alone proves
+nothing. A 200 stream ending in BACKEND_STREAM_FAILED is service_failure.
+Cancellation requires cancelled completion; rejection requires confirmed
+pre_execution_rejected. Unknown completion is unobserved. Transport failure
+may establish a failed client-visible request while remote execution remains
+unobserved; it does not prove the backend stopped.
+
+reason_code reuses the exact frozen protocol error taxonomy, Link HTTP failure
+codes and inference-stream timeout codes, plus explicit none/unknown. Layer is
+ingress/gateway/link/node/backend/unknown/none, and phase is
+queue/connect/prefill/decode/execution/unknown/none. Queue timeout is represented
+by its existing deadline code plus queue phase, rather than a new error string.
+Do not extract causes from free-form error text.
+
+Success share is successful / (success + service_failure + rejected + cancelled).
+Service failure rate is service_failure / (success + service_failure).
+Unknown has its own count, and a zero denominator means an unknown ratio, not
+zero. These definitions apply independently to each observation kind and
+lineage scope; they never turn an execution attempt or hop into another user.
+Inference success is not evidence of task-quality success.
+
+### Monotonic phases, tokens and attribution
+
+The normalized container maps the earlier timing vocabulary to bounded timings
+spans and rollup metric names ending in `_ms`. A record has at most 32 spans,
+with unique span_id and phase, nullable local parent_span_id, measurement,
+clock and semantics. Parent references stay inside that event and are acyclic;
+parent hop/attempt IDs establish cross-process lineage separately. No raw clock
+ticks are compared between processes.
+
+`contracts/request-observation.json` freezes phase names for local queue,
+route processing, connection acquisition, DNS/TCP/TLS, upload, writer queue,
+upstream wait, headers, first SSE event, first useful output, first visible
+output, engine prefill/decode/execution, completion, link RTT and unattributed
+cost. Each measurement is `{value?, basis, source}` in integer milliseconds.
+Unknown/unsupported forbids value; measured zero remains a known sample.
+Known durations require a local_monotonic or producer_monotonic clock.
+Semantics is frozen per phase by contracts/request-observation.json: headers,
+first SSE/useful/visible output and completion are offset_from_start; upstream
+wait is inclusive_wait; link RTT is round_trip; all remaining phases are interval.
+A producer cannot change semantics while retaining the same phase/metric name.
+Offsets use that producer's request-start origin; parent inclusive waits already
+contain child queue/execution, and must not be added to child intervals. Link
+round trips include scheduling/ack cost and are not pure network latency.
+TLS/connect setup on a reused connection is not charged again to each request.
+Missing phases are unknown, never fabricated zero-cost spans.
+
+Engine prefill/decode/execution intervals require measured engine_reported
+provenance and the engine's monotonic clock. An HTTP first-token proxy is only
+first_useful_output with offset_from_start semantics. TTFT includes upstream
+queue/network work and cannot become engine_prefill. Existing benchmark records
+that assigned TTFT to prefill without proof remain proxy/legacy-unknown evidence;
+this contract authorizes no retroactive conversion. First SSE/headers/keepalive,
+first useful output and first visible answer remain separate observations.
+
+Tokens retain input_total, output_total, cached_input, context_consumed,
+context_limit, processed_prefill_tokens and decode_output_tokens as quantities
+with the same explicit basis and a finite source. They describe tokens, not SSE
+chunks or characters. Cached input is a subset of total input; decode output is
+a subset of total output. Never add either subset to its total. Unknown usage
+and unsupported non-text token metrics have no numeric value. Configuration
+limits are declared limits, not observed context consumed. True prefill rate
+uses engine-processed tokens and engine-prefill duration; decode rate uses its
+matching decoded-token count and interval. Partial/unknown denominators stay
+visible. Aggregate output throughput uses exact reported output and covered
+wall-clock duration, not a sum of overlapping per-request execution times.
+
+Attribution captures nullable model/artifact/quantization/tokenizer,
+runtime instance/name/version/image, deployment/configuration fingerprint,
+resource/workload profile, cluster/node, GPU SKU/count/resource set and load
+generation at observation time. Null means unknown, never "all configurations".
+An empty known GPU set means CPU-only; null means missing attribution. Known
+GPU count and resource set agree. Reuse canonical configuration identities; no
+raw launch/environment/settings map is permitted. Never join an old event to
+today's mutable configuration or infer GPU placement from a model name. Missing
+exact identities exclude hardware ranking while preserving health evidence.
+
+### Existing capacity HTTP carrier
+
+The negotiated capability is `iw.observability-capacity/1` (hyphenated to match
+federation capability grammar). On an authenticated node HTTP heartbeat, the
+optional top-level `observabilityCapacity` member carries the unchanged canonical
+`iw.observability.capacity/1` node snapshot. The capability token and payload
+schema identifier are deliberately different. Decode the raw member strictly,
+including recursive duplicate-key rejection, before accepting it under the
+current authenticated node registration. A successful HTTP registration rotates
+the producer epoch every time; a prior incarnation cannot regain freshness by
+replay. Existing node/fleet schemas and ownership checks remain unchanged.
+
+The current producer carrier is HTTP only; a Link carrier is unsupported and its
+operational proof remains owed. Unowned physical exporters may report observed
+hardware but cannot claim available owner CPU or serving offers. This transport
+record does not close deployment/registration/admission proof gates. See
+`contracts/observability-capacity.json` transport metadata.

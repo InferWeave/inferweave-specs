@@ -1,0 +1,97 @@
+{
+  "schema": "iw.observability.request/1",
+  "visibility": "internal",
+  "metric_definition_version": 1,
+  "event_id": "ingress-event",
+  "source_gateway_id": "edge",
+  "producer_epoch": "edge-epoch",
+  "sequence": 1,
+  "observed_at": "2026-10-20T00:04:00Z",
+  "dataset": "production",
+  "benchmark_sample_id": null,
+  "observation_kind": "ingress_terminal",
+  "sampling": "all_terminal",
+  "lineage": {
+    "scope": "local_unlinked",
+    "logical_request_id": null,
+    "attempt_id": null,
+    "parent_attempt_id": null,
+    "hop_id": null,
+    "parent_hop_id": null,
+    "trace_id": null,
+    "transport_request_id": null,
+    "ingress_gateway_id": null
+  },
+  "attribution": {
+    "model_id": null,
+    "model_artifact_digest": null,
+    "quantization": null,
+    "tokenizer_revision": null,
+    "runtime_instance_id": null,
+    "runtime_name": null,
+    "runtime_version": null,
+    "runtime_image_digest": null,
+    "deployment_fingerprint": null,
+    "configuration_fingerprint": null,
+    "resource_profile_id": null,
+    "workload_profile_id": null,
+    "cluster_id": null,
+    "node_id": null,
+    "gpu_sku": null,
+    "load_generation": null,
+    "gpu_count": null,
+    "gpu_resource_ids": null
+  },
+  "outcome": {
+    "status": "unknown",
+    "http_status": 200,
+    "completion": "unobserved",
+    "reason_code": "unknown",
+    "layer": "unknown",
+    "phase": "unknown"
+  },
+  "timings": [
+    {
+      "span_id": "span-completion",
+      "parent_span_id": null,
+      "phase": "completion",
+      "measurement": {
+        "basis": "measured",
+        "source": "local_monotonic",
+        "value": 1000
+      },
+      "clock": "local_monotonic",
+      "semantics": "offset_from_start"
+    }
+  ],
+  "tokens": {
+    "input_total": {
+      "basis": "unknown",
+      "source": "unknown"
+    },
+    "output_total": {
+      "basis": "unknown",
+      "source": "unknown"
+    },
+    "cached_input": {
+      "basis": "unknown",
+      "source": "unknown"
+    },
+    "context_consumed": {
+      "basis": "unknown",
+      "source": "unknown"
+    },
+    "context_limit": {
+      "basis": "unsupported",
+      "source": "unsupported"
+    },
+    "processed_prefill_tokens": {
+      "basis": "unknown",
+      "source": "unknown"
+    },
+    "decode_output_tokens": {
+      "basis": "unknown",
+      "source": "unknown"
+    }
+  }
+}

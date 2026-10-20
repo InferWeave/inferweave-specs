@@ -846,6 +846,8 @@ def validate():
     errors.extend(observation_module.check_vectors(ROOT))
     import observability_capacity
     errors.extend(observability_capacity.contract_errors(ROOT))
+    import request_observations
+    errors.extend(request_observations.contract_errors(ROOT))
     return features, tasks, errors
 
 
@@ -1030,6 +1032,10 @@ def self_test():
     capacity_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_observability_capacity.py")], capture_output=True, text=True)
     if capacity_test.returncode:
         print(capacity_test.stdout + capacity_test.stderr)
+        return 1
+    request_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_request_observations.py")], capture_output=True, text=True)
+    if request_test.returncode:
+        print(request_test.stdout + request_test.stderr)
         return 1
     file_mutations = 1 + len(gpu_breaks) + len(semantic)
     print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "
