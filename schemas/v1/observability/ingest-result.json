@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/observability/ingest-result.json",
+  "title": "Private observability ingest-result",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "iw.observability.ingest-result/1"
+    },
+    "visibility": {
+      "const": "internal"
+    },
+    "status": {
+      "enum": [
+        "accepted",
+        "replay"
+      ]
+    },
+    "source_gateway_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "producer_epoch": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    }
+  },
+  "required": [
+    "schema",
+    "visibility",
+    "status",
+    "source_gateway_id",
+    "producer_epoch",
+    "event_id"
+  ]
+}

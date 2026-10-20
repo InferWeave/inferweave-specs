@@ -846,6 +846,8 @@ def validate():
     errors.extend(observation_module.check_vectors(ROOT))
     import observability_capacity
     errors.extend(observability_capacity.contract_errors(ROOT))
+    import private_observability
+    errors.extend(private_observability.contract_errors(ROOT))
     import request_observations
     errors.extend(request_observations.contract_errors(ROOT))
     import node_reconcile
@@ -1042,6 +1044,10 @@ def self_test():
     failure_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_failure_rollups.py")], capture_output=True, text=True)
     if failure_test.returncode:
         print(failure_test.stdout + failure_test.stderr)
+        return 1
+    private_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_private_observability.py")], capture_output=True, text=True)
+    if private_test.returncode:
+        print(private_test.stdout + private_test.stderr)
         return 1
     reconcile_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_node_reconcile.py")], capture_output=True, text=True)
     if reconcile_test.returncode:

@@ -1,0 +1,16 @@
+PASS  private observability HTTP (offline; runtime carrier/persistence proof owed)
+PASS  managed node reconciliation (offline; runtime/host/release proof owed)
+PASS  Link HTTP JSON vectors (offline; production proof owed)
+PASS  Link upstream vectors (offline; production proof owed)
+PASS  alias execution vectors (offline only; HTTP/DB/node proof owed)
+PASS  runtime observation vectors (offline producer facts; no admission proof)
+PASS  dynamic-node deployment-id vectors (reproduced from the reference layout; node proof owed)
+PASS  native-link binding vectors (exact registration and Link incarnation)
+PASS  native-link response vectors (status and exact body proof)
+PASS  runtime-family embeddings
+PASS  runtime-family reranking
+PASS  runtime-family prediction
+PASS  runtime-family stt
+PASS  runtime-family rag
+INFO  native HTTP: NOT RUN (contract-only validation; pass --live-base-url for operational qualification)
+OK: conformance fixtures validate, node-join vectors agree and OpenAPI refs resolve

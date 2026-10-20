@@ -653,6 +653,7 @@ Rules:
 - AC-OBS-01..05: idempotent event lineage, distinct attempts, timing provenance and read-only context offers never grant admission
 - AC-REQOBS-01..06/08: terminal ingress/attempt/hop identity, immutable replay, HTTP200 stream failures, missing values and monotonic engine/proxy provenance remain bounded and content-free
 - AC-REQOBS-09: bounded failure companion conserves status marginals and correlated timeout phases with exact-parent fingerprint, atomic three-resolution revision/seal/prune, persistent late-ingest fence and per-cell privacy evidence
+- AC-PRIVATEOBS-01..06: private gateway-authenticated bounded durable ingest, operator snapshot reads, independent capture coverage and default-off paired generator/sealing gate (contracts/private-observability.json)
 
 ### P1-T20A — GPU/runtime watchdog detection and incident classification
 **Context:** `C75`
@@ -839,6 +840,7 @@ Rules:
 - AC-OBS-06: bounded content-free new-family-only 90-day aggregate/7-day diagnostic retention preserves source and coverage without purging legacy records or shared backups
 - AC-REQOBS-01/06..08: exact-dimension dataset-separated fixed-bin rollups preserve counts, ratios, coverage, replay/seal identity and new-family-only retention
 - AC-REQOBS-09: bounded failure companion conserves status marginals and correlated timeout phases with exact-parent fingerprint, atomic three-resolution revision/seal/prune, persistent late-ingest fence and per-cell privacy evidence
+- AC-PRIVATEOBS-01..06: private gateway-authenticated bounded durable ingest, operator snapshot reads, independent capture coverage and default-off paired generator/sealing gate (contracts/private-observability.json)
 
 ### P2-T04 — Model candidate registry and feasibility filter
 **Context:** `C70`

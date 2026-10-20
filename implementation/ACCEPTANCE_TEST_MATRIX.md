@@ -112,3 +112,16 @@
 | AC-MI-05 | No demand, unknown state intervals and scheduler reclaim | Unknown is not available; explicit time denominator; linked GPU/worker/logical-request interruption and recovery; **owed** |
 | AC-MI-06 | Unauthenticated reads, forged tenant headers, private scope, shared exports and old facts | Explicit operator grants; unsupported private scopes fail closed; bounded redacted responses and additive unknown history; **owed** |
 | AC-MI-07 | Every existing route/action at desktop/tablet/mobile, light/dark and accessible states | Retained workflows/roles/preferences; coherent shared UI, real-data provenance, no fixture fallback and source/dist parity; **owed** |
+
+## Private normalized observability HTTP (2026-10-20)
+
+IW-OBS-001/IW-TEL-001/IW-BENCH-002; P1-T20/P2-T03; spec23;
+`contracts/private-observability.json` AC-PRIVATEOBS-01..06.
+
+| Proof | Status | Evidence / remaining work |
+|---|---|---|
+| Offline strict decoding, source/header boundary examples, bounded queries and nested private DTO validation | proven | `tests/smoke/test_private_observability.py`; red/green logs under `evidence/private-observability-2026-10-20/` |
+| Actual HTTP pre-buffer size/auth and current producer/epoch/lineage binding | owed | Runtime parser and auth-race tests |
+| Durable outbox/ACK/replay and independent expected/loss coverage | owed | Restart, saturation and checkpoint integration |
+| Consistent bounded private snapshots and exact parent/failure reads | owed | Concurrent database and cursor tests |
+| Paired generation, atomic seal/prune and persistent late-ingest fence before collection enablement | owed | Real persistence integration; all routes default disabled |

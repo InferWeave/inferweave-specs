@@ -12,3 +12,11 @@ additive operator read API and typed response/unsupported branches. Evidence and
 remaining requirements are in `evidence/model-intelligence-2026-10-12/README.md`.
 Current Go access is operator-only through its existing middleware; normative
 shared operational and verified private tenant/user grants remain owed.
+
+## Private normalized observability carrier
+
+`private-observability.yaml` and `private-observability.md` define a default-off
+single-event producer ingest and operator-only diagnostic/rollup reads. Separate
+response envelopes reference the frozen internal event/rollup/failure schemas.
+Offline proof and runtime debts: `evidence/private-observability-2026-10-20/README.md`
+and AC-PRIVATEOBS-01..06 in `contracts/private-observability.json`.

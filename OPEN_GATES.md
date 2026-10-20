@@ -1194,3 +1194,22 @@ reporting and independently observed coverage. Public projection requires
 per-published-cell principal/cohort evidence, suppression and reconstruction
 resistance; this companion gives no publication authority. Legacy 730/365-day
 retention and shared backups remain unchanged. No runtime gate closes here.
+
+### Update 2026-10-20: private normalized telemetry HTTP carrier
+
+The additive `contracts/private-observability.json` and
+`openapi/private-observability.{yaml,md}` define current gateway-authenticated
+single-event durable ingest and operator-only bounded snapshot reads. Offline
+strict decoding, header/source/epoch boundary examples and DTO fixture checks
+are recorded in `evidence/private-observability-2026-10-20/README.md`.
+
+**UNSATISFIED / owed:** AC-PRIVATEOBS-01..06 real HTTP pre-buffer byte and
+credential-header bounds, current-registration/revocation/epoch/lineage races,
+durable outbox and ACK replay across restart, database concurrency and cursor
+snapshots, source-independent population/loss checkpoints, and integration with
+the atomic parent/failure generator and persistent seal/late-ingest fences.
+Production collection remains default-off until those generator/fence prerequisites
+are proven. No public/cohort authority, deployed warehouse, complete coverage,
+new deployment target, legacy retention change or automatic public DTO projection
+is established by the private carrier. Existing 7/90-day new-family and 730/365-day
+legacy scope stays unchanged; existing authorized rollout boundaries remain in force.

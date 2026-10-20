@@ -1,0 +1,61 @@
+FFFFFFF
+======================================================================
+FAIL: test_contract_guard_and_mutations (__main__.PrivateObservabilityTests.test_contract_guard_and_mutations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 16, in setUp
+    self.assertIsNotNone(importlib.util.find_spec('private_observability'), 'private HTTP contract validator missing')
+AssertionError: unexpectedly None : private HTTP contract validator missing
+
+======================================================================
+FAIL: test_duplicate_security_headers_are_case_insensitive (__main__.PrivateObservabilityTests.test_duplicate_security_headers_are_case_insensitive)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 16, in setUp
+    self.assertIsNotNone(importlib.util.find_spec('private_observability'), 'private HTTP contract validator missing')
+AssertionError: unexpectedly None : private HTTP contract validator missing
+
+======================================================================
+FAIL: test_ingest_cannot_supply_coverage_clocks_or_public_grants (__main__.PrivateObservabilityTests.test_ingest_cannot_supply_coverage_clocks_or_public_grants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 16, in setUp
+    self.assertIsNotNone(importlib.util.find_spec('private_observability'), 'private HTTP contract validator missing')
+AssertionError: unexpectedly None : private HTTP contract validator missing
+
+======================================================================
+FAIL: test_pages_validate_nested_dtos_and_failure_parent (__main__.PrivateObservabilityTests.test_pages_validate_nested_dtos_and_failure_parent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 16, in setUp
+    self.assertIsNotNone(importlib.util.find_spec('private_observability'), 'private HTTP contract validator missing')
+AssertionError: unexpectedly None : private HTTP contract validator missing
+
+======================================================================
+FAIL: test_producer_binding_is_separate_from_claims (__main__.PrivateObservabilityTests.test_producer_binding_is_separate_from_claims)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 16, in setUp
+    self.assertIsNotNone(importlib.util.find_spec('private_observability'), 'private HTTP contract validator missing')
+AssertionError: unexpectedly None : private HTTP contract validator missing
+
+======================================================================
+FAIL: test_query_bounds_and_no_unknown_or_duplicate_scalar (__main__.PrivateObservabilityTests.test_query_bounds_and_no_unknown_or_duplicate_scalar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 16, in setUp
+    self.assertIsNotNone(importlib.util.find_spec('private_observability'), 'private HTTP contract validator missing')
+AssertionError: unexpectedly None : private HTTP contract validator missing
+
+======================================================================
+FAIL: test_transport_is_bounded_strict_utf8_recursive_json (__main__.PrivateObservabilityTests.test_transport_is_bounded_strict_utf8_recursive_json)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/wohlgemuth/IdeaProjects/.worktrees/iw-observability-specs/tests/smoke/test_private_observability.py", line 16, in setUp
+    self.assertIsNotNone(importlib.util.find_spec('private_observability'), 'private HTTP contract validator missing')
+AssertionError: unexpectedly None : private HTTP contract validator missing
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.002s
+
+FAILED (failures=7)

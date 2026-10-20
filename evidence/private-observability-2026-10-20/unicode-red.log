@@ -1,0 +1,19 @@
+FF
+======================================================================
+FAIL: test_surrogate_keys (__main__.UnicodeKeys.test_surrogate_keys) (wire=b'{"\\ud800":1}')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 8, in test_surrogate_keys
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_surrogate_keys (__main__.UnicodeKeys.test_surrogate_keys) (wire=b'{"nested":{"\\udfff":0}}')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<stdin>", line 8, in test_surrogate_keys
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (failures=2)

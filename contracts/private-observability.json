@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "domain": "private_normalized_observability_http_only",
+  "features": [
+    "IW-OBS-001",
+    "IW-TEL-001",
+    "IW-BENCH-002"
+  ],
+  "canonical_tasks": [
+    "P1-T20",
+    "P2-T03"
+  ],
+  "defaults": {
+    "enabled": false
+  },
+  "openapi": "openapi/private-observability.yaml",
+  "event_schema": "schemas/v1/events/request-observation.json",
+  "routes": {
+    "ingest": "/iw/v1/observability/events",
+    "rollups": "/iw/v1/observability/rollups",
+    "diagnostics": "/iw/v1/observability/diagnostics"
+  },
+  "authentication": {
+    "ingest_role": "gateway",
+    "node_header": "x-inferweave-node",
+    "producer_credential": "Authorization: Bearer <persistent node credential>",
+    "read_authority": "existing control.is_admin via x-inferweave-admin OR Authorization Bearer; exactly one",
+    "singleton_headers": [
+      "authorization",
+      "x-inferweave-admin",
+      "x-inferweave-node",
+      "x-inferweave-service",
+      "x-inferweave-actor",
+      "x-inferweave-actor-operator",
+      "x-inferweave-actor-groups"
+    ],
+    "service_actor_grants": false
+  },
+  "limits": {
+    "event_bytes": 65536,
+    "response_bytes": 16777216,
+    "query_bytes": 8192,
+    "default_limit": 25,
+    "max_limit": 100,
+    "cursor_bytes": 1024,
+    "snapshot_lifetime_seconds": 300,
+    "diagnostic_window_seconds": 604800,
+    "rollup_window_seconds": 7776000,
+    "authorized_epochs_per_source": 16,
+    "outbox_events": 1024,
+    "outbox_payload_bytes": 67108864
+  },
+  "filters": [
+    "source_gateway_id",
+    "model_id",
+    "cluster_id",
+    "runtime_instance_id",
+    "gpu_resource_id"
+  ],
+  "error_statuses": {
+    "INVALID_REQUEST": 400,
+    "UNAUTHENTICATED": 401,
+    "FORBIDDEN": 403,
+    "FEATURE_DISABLED": 404,
+    "METHOD_NOT_ALLOWED": 405,
+    "REPLAY_CONFLICT": 409,
+    "WINDOW_SEALED": 409,
+    "WINDOW_EXPIRED": 410,
+    "CURSOR_EXPIRED": 410,
+    "PAYLOAD_TOO_LARGE": 413,
+    "UNSUPPORTED_MEDIA_TYPE": 415,
+    "BUSY": 429,
+    "UNAVAILABLE": 503
+  },
+  "successful_ingest": {
+    "accepted": 201,
+    "replay": 200
+  },
+  "cache_control": "private, no-store",
+  "retention": {
+    "aggregate_days": 90,
+    "diagnostic_days": 7,
+    "legacy": "unchanged 730/365; no retroactive purge"
+  },
+  "acceptance": [
+    {
+      "id": "AC-PRIVATEOBS-01",
+      "scenario": "Real HTTP rejects duplicate credentials and oversized body before generic buffering; strict UTF-8 recursive duplicate-key decoder and existing event semantics.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-PRIVATEOBS-02",
+      "scenario": "Current gateway registration, credential, source/node binding, authorized epoch and trusted lineage; operator-only reads reject client and service-actor claims.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-PRIVATEOBS-03",
+      "scenario": "Durable acceptance and replay survive restart; conflicts, expired/sealed windows, bounded pressure and storage failure cannot acknowledge dropped data.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-PRIVATEOBS-04",
+      "scenario": "Source durable outbox preserves identity until acknowledgement and bounded loss counters preserve epoch/window; all-terminal coverage uses independent expected counts.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-PRIVATEOBS-05",
+      "scenario": "Snapshot-bound bounded reads preserve exact parent/failure and validated diagnostics, filters, stable pagination and explicit unavailable/coverage state.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-PRIVATEOBS-06",
+      "scenario": "Atomic parent/failure generation/sealing/pruning and persisted late-ingest watermark precede production collection; default disabled; no public eligibility or cohort authority.",
+      "proof_status": "owed"
+    }
+  ],
+  "selector_filters": {
+    "dataset": [
+      "production",
+      "controlled",
+      "unknown"
+    ],
+    "observation_kind": [
+      "ingress_terminal",
+      "attempt_terminal",
+      "hop_terminal"
+    ],
+    "lineage_scope": [
+      "trusted",
+      "local_unlinked"
+    ]
+  }
+}

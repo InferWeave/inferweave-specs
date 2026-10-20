@@ -1,0 +1,6 @@
+{
+  "schema": "iw.observability.error/1",
+  "visibility": "internal",
+  "code": "BUSY",
+  "retry_after_seconds": 1
+}
