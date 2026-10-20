@@ -1,0 +1,35 @@
+{
+  "source_revision": "70553036ae44fd7c570252ec8ccab19eb6440df4",
+  "artifact_sha256": "a3dae1eec456d9dc5dc16c80db2ac394db994ac9fce43dc5f9852a484d9cc5ba",
+  "artifact_kind": "x86_64-unknown-linux-musl static-pie release",
+  "environment": "Hive isolated CPU allocation; no production credentials, database, nodes, GPUs or public registration",
+  "slurm_job_id": "24958748",
+  "slurm_account": "metabolomicsgrp",
+  "slurm_partition": "high",
+  "requested_cpus": 2,
+  "requested_memory": "2G",
+  "requested_time": "00:05:00",
+  "node": "hive-as-11-2-38",
+  "job_state": "COMPLETED",
+  "exit_code": "0:0",
+  "job_elapsed": "00:00:42",
+  "observed_result": {
+    "checks": [
+      {"active_streams": 0, "case": "client_cancel", "passed": true},
+      {"active_streams": 0, "case": "prefill", "elapsed_seconds": 35.032, "passed": true},
+      {"active_streams": 0, "case": "idle", "elapsed_seconds": 1.045, "passed": true},
+      {"active_streams": 0, "case": "deadline", "elapsed_seconds": 3.007, "passed": true}
+    ],
+    "exceeds_former_30s_cutoff": true,
+    "loopback_only": true,
+    "passed": true,
+    "prefill_delay_seconds": 35,
+    "statistics_auth_checked": true
+  },
+  "source_script": "InferWeave/inferweave scripts/inference-stream-smoke.py at source_revision",
+  "retained_staging_directory": "/quobyte/metabolomicsgrp/it/llm/state/stream-canary-70553036.jbauCr",
+  "stdout": "/quobyte/metabolomicsgrp/it/llm/logs/iw-stream-canary-24958748.out",
+  "stderr": "/quobyte/metabolomicsgrp/it/llm/logs/iw-stream-canary-24958748.err",
+  "scope_limit": "Synthetic raw HTTP canary only. Production serving rollout, comparable traffic measurements, and new timed end-to-end failure injection for every Link mode remain owed.",
+  "earlier_harness_failure": "Job 24958740 exited before running the candidate because cluster modules initialization references unset MANPATH under nounset. Wrapper now initializes modules before enabling nounset; no serving code change."
+}

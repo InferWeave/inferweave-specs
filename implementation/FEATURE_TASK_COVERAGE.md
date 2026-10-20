@@ -117,3 +117,8 @@ IW-BENCH-002 (P2-T03), IW-REC-001/IW-REC-002 (P2-T05/P2-T07/P2-T08),
 IW-EVENT-001 (P2-T10), and IW-ECON-001 (P2-T16). Their feature-registry
 contract links and task cards trace the added acceptance. No new feature or
 dependency order is introduced; new proof remains owed.
+
+Stream incident diagnostic acceptance AC-STREAM-01..08 extends IW-OBS-001 and
+IW-OBS-002 in `contracts/inference-stream-reliability.json`; P1-T20 owns stream
+timeout/correlation diagnostics, and P1-T12A owns admission scope/metadata
+observability. Proof and deployment status remain explicit in OPEN_GATES.
