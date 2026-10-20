@@ -249,3 +249,13 @@ Live evidence:
 - on a multi-GPU node under load, swapping a GPU to a second instance of another model while a
   healthy instance of the donor model exists elsewhere: no model's healthy count falls below its
   floor at any sample, and every decision and phase event is recorded.
+
+## Read-only telemetry and Nibbler qualification boundary
+
+The 2026-10-20 observability approval includes evaluating the already registered
+Nibbler for dynamic capacity. A hardware-only registration does not qualify it
+as a serving instance, swap donor or availability-floor replacement. New capacity
+observations and context offers are read-only inputs, never placement commands.
+Only the existing owner rebalancer may act, after the runtime/executor, full-path
+admission, watchdog/rollback and applicable floor/dwell proofs pass. Spec64's
+single-engine restrictions remain; this approval does not add a live-swap path.

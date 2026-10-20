@@ -299,6 +299,7 @@ Rules:
 - sensor unsupported semantics
 - sample ingestion
 - bounded frequency/backpressure
+- AC-OBS-04/08: measured CPU entitlement and per-GPU NVIDIA observe telemetry preserve unknown/unsupported; AMD proof remains separate
 
 ### P1-T06 — Immutable deployment manifest and node advertisement
 **Context:** `C65`
@@ -649,6 +650,7 @@ Rules:
 - AC-STREAM-01..08: useful-output/prefill timeout separation, distinct failure codes, cross-hop correlation, bounded authenticated diagnostics and admission isolation (contracts/inference-stream-reliability.json)
 - MI-01 separate transport/attempt/logical/task outcomes and denominators through retries, cancellation and missing data
 - MI-03 SLO-qualified observed capacity bins reject sparse, mismatched and extrapolated load; unknown users remain unknown
+- AC-OBS-01..05: idempotent event lineage, distinct attempts, timing provenance and read-only context offers never grant admission
 
 ### P1-T20A — GPU/runtime watchdog detection and incident classification
 **Context:** `C75`
@@ -711,6 +713,7 @@ Rules:
 - no misleading pooled VRAM totals
 - MI-06 existing routes/actions/permissions and pause/focus preferences survive desktop/tablet/mobile and theme checks
 - MI-06 live/empty/error/unsupported provenance, accessible filters/exports and source/dist parity
+- AC-OBS-03..05: stale/unowned capacity is unavailable; CPU entitlement, idle GPUs, per-card VRAM and shared-pool context offers remain separate
 
 ### P1-T21A — Machine-checked presentation policy
 **Context:** `C65`
@@ -831,6 +834,7 @@ Rules:
 - retention test
 - MI-05 additive nullable facts and bounded query/rollup coverage preserve unknown historical values
 - MI-05 every analytics route rejects missing/invalid operator identity and tenant-header escalation; shared reports redact private data
+- AC-OBS-06: bounded content-free new-family-only 90-day aggregate/7-day diagnostic retention preserves source and coverage without purging legacy records or shared backups
 
 ### P2-T04 — Model candidate registry and feasibility filter
 **Context:** `C70`
@@ -1035,6 +1039,7 @@ Rules:
 - UI E2E
 - measured/predicted labels
 - dimension filters
+- AC-OBS-07: public GPU profiles use existing Next.js apps/web with private-field redaction, sparse-cohort suppression and context/fingerprint provenance
 
 ### P2-T19 — Resumable benchmark DAG core
 **Context:** `C75`
@@ -2117,6 +2122,7 @@ Rules:
 - an older node's telemetry and heartbeat parse unchanged and a malformed report never refuses the carrier
 - topology v2 carries no GPU-memory member
 - NVIDIA and AMD producers report physical memory measured on real hardware
+- AC-OBS-08: unchanged memory report in NVIDIA observe mode requires real pinned hardware reconciliation; no AMD qualification is inferred
 
 ### P5-T31 — GPU memory: gateway composition, reservations, pressure and fleet snapshot
 **Context:** `C85`
@@ -2133,6 +2139,7 @@ Rules:
 - pressure states follow free-after-growth with hysteresis
 - a resource relayed by two paths is counted once
 - a gateway that is not the authority never composes safeSchedulable
+- AC-OBS-03..05: typed owner capacity expires by monotonic age and epoch; duplicate/replayed snapshots and shared pools cannot multiply capacity
 
 ### P5-T32 — GPU memory: decision records, lifecycle events, OOM postmortem and placement simulation
 **Context:** `C85`
@@ -2148,6 +2155,7 @@ Rules:
 - a postmortem reconstructs the OOM without the failed runtime answering
 - a simulation leaves the ledger, the router and every allocation unchanged
 - a gateway without rebalancer authority refuses a simulation
+- AC-OBS-09: telemetry and simulation grant no Nibbler serving or placement authority before runtime qualification and applicable safety proofs
 
 ### P5-T33 — Node join: hardware-only registration, assignments and tokenless enrollment in the Rust gateway
 **Context:** `C80`

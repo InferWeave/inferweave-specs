@@ -1,0 +1,10 @@
+{
+  "schema": "iw.observability.capacity.fleet/1",
+  "source_gateway_id": "fixture-root",
+  "producer_epoch": "fixture-root-epoch",
+  "sequence": 1,
+  "generated_at": "2026-10-20T00:00:00Z",
+  "served_age_ms": 0,
+  "node_count": 0,
+  "nodes": []
+}

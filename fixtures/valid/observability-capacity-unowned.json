@@ -1,0 +1,43 @@
+{
+  "schema": "iw.observability.capacity/1",
+  "producer_epoch": "fixture-epoch-1",
+  "sequence": 1,
+  "observed_at": "2026-10-20T00:00:00Z",
+  "source_gateway_id": "fixture-gw",
+  "owner_gateway_id": null,
+  "node_id": "fixture-node",
+  "received_age_ms": 100,
+  "validity_ms": 30000,
+  "status": "unavailable",
+  "cpu": {
+    "physical_cores": {
+      "basis": "unknown",
+      "source": "fixture"
+    },
+    "logical_cpus": {
+      "basis": "unknown",
+      "source": "fixture"
+    },
+    "affinity_logical_cpus": {
+      "basis": "unknown",
+      "source": "fixture"
+    },
+    "quota_millicores": {
+      "basis": "unknown",
+      "source": "fixture"
+    },
+    "owner_budget_millicores": {
+      "basis": "unknown",
+      "source": "fixture"
+    },
+    "reserved_millicores": {
+      "basis": "unknown",
+      "source": "fixture"
+    },
+    "available_millicores": {
+      "basis": "unknown",
+      "source": "fixture"
+    }
+  },
+  "serving_offers": []
+}

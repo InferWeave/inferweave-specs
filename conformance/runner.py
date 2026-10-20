@@ -37,11 +37,14 @@ import dynamic_aliases  # noqa: E402
 import alias_edge_delegation  # noqa: E402
 import runtime_observations  # noqa: E402
 import dynamic_nodes  # noqa: E402
+import observability_capacity  # noqa: E402
 import alias_execution  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
 # fixture basename -> schema rel path (relative to schemas/v1)
 MAP = {
+    "observability-capacity-fleet": "resources/observability-capacity-fleet.json",
+    "observability-capacity": "resources/observability-capacity.json",
     "alias-link-request": "requests/link-alias-request.json",
     "alias-consume-dispatch": "requests/link-consume-dispatch.json",
     "alias-consume-dispatch-ack": "requests/link-consume-dispatch-ack.json",
@@ -187,7 +190,14 @@ def validate_fixture(path, must_pass, schema_rel=None):
         print(f"FAIL  {rel}: no schema mapped for fixture name '{stem}'")
         return False
     wire = path.read_bytes()
-    if schema_rel == "requests/runtime-observation-report.json":
+    if schema_rel in ("resources/observability-capacity.json", "resources/observability-capacity-fleet.json"):
+        try:
+            fixture = observability_capacity.decode(wire)
+        except (ValueError, UnicodeDecodeError) as error:
+            if must_pass:
+                print(f"FAIL  {rel}: {error}")
+            return not must_pass
+    elif schema_rel == "requests/runtime-observation-report.json":
         try:
             fixture = runtime_observations.decode_report(wire)
         except (ValueError, UnicodeDecodeError) as error:
@@ -198,6 +208,10 @@ def validate_fixture(path, must_pass, schema_rel=None):
         fixture = json.loads(wire)
     errors = list(validator(schema_rel).iter_errors(fixture))
     semantic_errors = []
+    if schema_rel == "resources/observability-capacity-fleet.json" and not errors:
+        semantic_errors.extend(observability_capacity.fleet_errors(fixture))
+    if schema_rel == "resources/observability-capacity.json" and not errors:
+        semantic_errors.extend(observability_capacity.semantic_errors(fixture))
     if schema_rel == "deployments/deployment.json" and not errors:
         try:
             expected = runtime_protocol.canonical_deployment_key(fixture["manifest"])

@@ -125,3 +125,45 @@ deployment fingerprint, node/service pseudonym or signed identity as appropriate
 Generate signed aggregate snapshots with freshness metadata. Public UI never silently displays stale state as live.
 
 At scale, browsers receive aggregates/faceted counts/cursor pagination, never millions of raw provider records.
+
+## Persisted metadata and performance lineage
+
+The 2026-10-20 [ADR](../decisions/2026-10-20-observability-capacity.md) and
+`contracts/observability-capacity.json` add AC-OBS-01..09. Immutable event_id
+identifies one observation; retransmitting that event is idempotent. Distinct
+attempt_id values are distinct physical attempts under logical_request_id;
+trace/request IDs correlate transport hops but do not collapse retries. An edge
+reobserving a downstream event preserves its origin identity instead of creating
+a second global event. Missing lineage stays unknown, never inferred from text,
+wall-clock proximity or a reused client request ID. Logical, attempt and hop
+counts have separate denominators and declared recording coverage.
+
+Durations use monotonic local clocks and milliseconds with source/basis. Record
+local queue, upstream wait, response headers, first useful output and completion
+separately; first headers is not TTFT. Do not subtract unsynchronized clocks or
+infer remote prefill/decode from edge timings. Unknown downstream measurements
+remain unknown. Existing spec58 metric envelopes and finite failure vocabularies
+apply; request IDs and arbitrary model/error text never become metric labels.
+
+For the new observability family only, initial policy retains its content-free
+aggregate history for 90 days and its bounded operator diagnostic metadata for
+7 days, using explicitly namespaced records in existing storage/rollup paths.
+These defaults apply only to that new family and its derived caches/exports;
+they do not shorten legacy request/benchmark retention (including existing
+730/365-day policies), alter shared backup lifetimes, or authorize retroactive
+purge. Any migration of existing records, caches or backups requires a separate
+reviewed retention migration with its own deletion authorization. Shorter tenant
+policies apply within the new family. Queue, batch, query-window, page, grouping and byte
+limits must be finite and visible. Drop/eviction/coverage counters and store
+failure are explicit; recording never blocks inference admission. Prompt/output
+bodies, credentials and private identities are excluded from public data.
+
+The frozen metadata names are event_id, logical_request_id, attempt_id, trace_id,
+transport_request_id and source_gateway_id. Optional unavailable lineage fields
+are omitted, not synthesized. Timing names are local_queue_ms, upstream_wait_ms,
+response_headers_ms, first_useful_output_ms and completion_ms. Each uses the
+quantity provenance shape (value/basis/source), with unknown values absent.
+Headers/useful-output/completion durations share the local attempt-start origin;
+queue and upstream wait are separately measured intervals and may overlap other
+measures, so consumers must not sum them into an invented total. New field names
+require a versioned contract update; arbitrary timing label strings are forbidden.

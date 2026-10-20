@@ -180,3 +180,13 @@ do. Reference implementation: `metabolomics-us/inferweave-gateway`.
 `02` public/native API · `04` capacity/admission · `05` routing/affinity · `06`
 backpressure/return-to-sender · `09` observability · `23` telemetry vocabulary ·
 `38` conformance method · `41` inter-gateway capacity requests.
+
+## Additive read-only capacity disclosure
+
+A site exposing `iw.observability.capacity/1` uses the separate schema in
+`schemas/v1/resources/observability-capacity.json`, authenticated owner-scoped
+reads, and spec04 freshness/entitlement/offer semantics. It never adds members
+to topology v2 or turns `Capacity.requests` into a fixed-slot grant. A consumer
+adapts the authoritative answer and preserves missing/stale/unsupported states.
+The 2026-10-20 observability ADR permits existing Go edge observation persistence;
+it grants no global metrics, reservation or dynamic-provisioner authority.

@@ -1104,3 +1104,35 @@ accounting remains separate and was not changed here.
 **Owed:** new timed end-to-end error injection in each Link mode, three live-GPU
 cases, production activation and comparable-traffic post-rollout measurement. A 180-second idle default is an operational policy,
 not a measured hardware envelope. No production or qualification gate is opened.
+
+### Update 2026-10-20: observability implementation and scoped rollout authorization
+
+The operator approved the observability-performance design/plan, implementation,
+independent review, merge and conditional deployment on the existing
+Zapp/Farm/Hive/Whiteale path, plus qualification of already registered Nibbler.
+The authority and exact boundaries are recorded in
+`decisions/2026-10-20-observability-capacity.md`. This supersedes an earlier
+absence of permission only within that scope; no prior evidence debt is erased.
+
+**UNSATISFIED / owed:** AC-OBS-01..09 in
+`contracts/observability-capacity.json`: runtime idempotency and request lineage;
+local/remote timing provenance; CPU entitlement and owner-scoped context offers;
+bounded authenticated persistence and retention; public privacy/cohort review;
+real NVIDIA observe-mode reconciliation; production smoke/rollback and comparable
+traffic measurements. Schema/fixture validation proves shape only. AMD hardware
+proof remains owed independently. Spec46 shadow/on placement is not authorized
+by telemetry restoration. Public profiles must use existing Next.js apps/web;
+Go remains the existing operator adapter plus bounded own-edge observations.
+
+Nibbler hardware registration is not serving qualification. A Go root lacking
+spec64 cannot issue dynamic assignments. Rust ownership/executor, actual-profile
+qualification, full-path admission, watchdog, rollback and floor safeguards
+remain owed before Nibbler can contribute routable or rebalanceable capacity.
+The new-family policy defaults (90/7 days retention, maximum 5-minute snapshot validity,
+30 requests / 5 principals for public cohorts) are not measured envelopes or
+privacy proof. No new control is recorded as proven by this specification patch.
+
+Observability retention is scoped only to explicitly namespaced new-family
+records and their derived caches/exports. Existing 730/365-day policies, legacy
+records and shared backups are unchanged; retroactive purge requires a separate
+reviewed migration and deletion authorization.
