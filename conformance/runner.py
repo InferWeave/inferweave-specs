@@ -38,11 +38,14 @@ import alias_edge_delegation  # noqa: E402
 import runtime_observations  # noqa: E402
 import dynamic_nodes  # noqa: E402
 import observability_capacity  # noqa: E402
+import request_observations  # noqa: E402
 import alias_execution  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
 # fixture basename -> schema rel path (relative to schemas/v1)
 MAP = {
+    "request-observation-rollup": "events/request-observation-rollup.json",
+    "request-observation": "events/request-observation.json",
     "observability-capacity-fleet": "resources/observability-capacity-fleet.json",
     "observability-capacity": "resources/observability-capacity.json",
     "alias-link-request": "requests/link-alias-request.json",
@@ -190,7 +193,14 @@ def validate_fixture(path, must_pass, schema_rel=None):
         print(f"FAIL  {rel}: no schema mapped for fixture name '{stem}'")
         return False
     wire = path.read_bytes()
-    if schema_rel in ("resources/observability-capacity.json", "resources/observability-capacity-fleet.json"):
+    if schema_rel in ("events/request-observation.json", "events/request-observation-rollup.json"):
+        try:
+            fixture = request_observations.decode(wire)
+        except (ValueError, UnicodeDecodeError) as error:
+            if must_pass:
+                print(f"FAIL  {rel}: {error}")
+            return not must_pass
+    elif schema_rel in ("resources/observability-capacity.json", "resources/observability-capacity-fleet.json"):
         try:
             fixture = observability_capacity.decode(wire)
         except (ValueError, UnicodeDecodeError) as error:
@@ -208,6 +218,11 @@ def validate_fixture(path, must_pass, schema_rel=None):
         fixture = json.loads(wire)
     errors = list(validator(schema_rel).iter_errors(fixture))
     semantic_errors = []
+    if schema_rel == "events/request-observation.json" and not errors:
+        semantic_errors.extend(request_observations.event_errors(fixture))
+    if schema_rel == "events/request-observation-rollup.json" and not errors:
+        contract = json.loads((ROOT / "contracts/request-observation.json").read_text())
+        semantic_errors.extend(request_observations.rollup_errors(fixture, contract))
     if schema_rel == "resources/observability-capacity-fleet.json" and not errors:
         semantic_errors.extend(observability_capacity.fleet_errors(fixture))
     if schema_rel == "resources/observability-capacity.json" and not errors:

@@ -223,3 +223,25 @@ Initial publication thresholds are 30 requests and 5 distinct principals per
 cohort, with small/unknown cohorts suppressed and policy version disclosed.
 Those defaults are not universal privacy proof; cross-filter differencing and
 linkability require independent review before production publication.
+
+## Internal terminal-observation foundation (2026-10-20)
+
+`contracts/request-observation.json` supplies the additive normalized
+RequestObservation/rollup domain for MI-01/MI-03/MI-05 under specs09/23. Rust
+owns canonical event/terminal-fact deduplication, outcome normalization and
+mergeable warehouse rows. Go contributes bounded own-edge observations and
+adapts authorized reads. Existing Next.js/public ownership is unchanged.
+
+Ingress, execution attempts and forwarding hops have independent denominators;
+HTTP 200 with failed stream completion is not success. Production, controlled
+and unknown datasets remain separate. True engine prefill/decode requires engine
+interval provenance; proxy TTFT and legacy unknown data cannot be relabeled.
+Missing exact configuration/GPU attribution stays unknown. Numerators,
+denominators, known/missing sample counts, fixed-bin histogram counts, recording
+coverage and losses remain visible through existing authorized projections.
+
+These are internal records with private lineage and resource identifiers, not
+public DTOs or a new export API. Public serialization still requires the existing
+allowlisted publication review; this extension changes no privacy thresholds.
+New-family-only retention is 90 days aggregates / 7 days diagnostics, with legacy
+records/caches and shared backups unchanged. All new runtime acceptance is owed.

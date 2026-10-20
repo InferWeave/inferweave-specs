@@ -12,7 +12,9 @@ def decode(wire):
                 raise ValueError('duplicate JSON object key: ' + key)
             result[key] = value
         return result
-    return json.loads(wire, object_pairs_hook=unique_object)
+    def reject_nonfinite(value):
+        raise ValueError("non-finite JSON number: " + value)
+    return json.loads(wire, object_pairs_hook=unique_object, parse_constant=reject_nonfinite)
 
 
 def pool_errors(nodes):

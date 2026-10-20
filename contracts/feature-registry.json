@@ -120,7 +120,8 @@
       "contracts": [
         "contracts/model-intelligence-acceptance.json",
         "contracts/inference-stream-reliability.json",
-        "contracts/observability-capacity.json"
+        "contracts/observability-capacity.json",
+        "contracts/request-observation.json"
       ]
     },
     {
@@ -440,7 +441,8 @@
       ],
       "contracts": [
         "contracts/model-intelligence-acceptance.json",
-        "contracts/observability-capacity.json"
+        "contracts/observability-capacity.json",
+        "contracts/request-observation.json"
       ]
     },
     {
@@ -457,7 +459,8 @@
       "contracts": [
         "contracts/model-intelligence-acceptance.json",
         "openapi/model-intelligence.yaml",
-        "contracts/observability-capacity.json"
+        "contracts/observability-capacity.json",
+        "contracts/request-observation.json"
       ]
     },
     {

@@ -1136,3 +1136,20 @@ Observability retention is scoped only to explicitly namespaced new-family
 records and their derived caches/exports. Existing 730/365-day policies, legacy
 records and shared backups are unchanged; retroactive purge requires a separate
 reviewed migration and deletion authorization.
+
+### Update 2026-10-20: internal terminal request observations and rollups
+
+The approved observability design/plan now has a bounded internal normalized
+contract in `contracts/request-observation.json`, with event and rollup schemas,
+fixtures and offline replay/histogram conformance. This adds no export/public API,
+publication policy or onboarding control. It retains Rust global authority and
+Go own-edge observation scope.
+
+**UNSATISFIED / owed:** AC-REQOBS-01..08 runtime instrumentation and trusted
+lineage propagation, immutable replay/terminal-fact identity across restart,
+HTTP200 stream-failure classification, phase/token provenance, exact historical
+configuration/GPU attribution, bounded nonblocking persistence, real PostgreSQL
+rollup/seal/replay/retention tests and coverage/drop reconciliation. Offline
+schema/fixture/reference checks do not prove a deployed warehouse or loss-free
+recording. Only new-family diagnostics/aggregates use 7/90-day retention; legacy
+history and shared backups remain unchanged. No runtime gate closes here.

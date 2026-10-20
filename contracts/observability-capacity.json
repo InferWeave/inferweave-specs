@@ -167,5 +167,15 @@
       "workload_profile"
     ],
     "aggregation": "never_sum_alternative_offers"
+  },
+  "transport": {
+    "capability": "iw.observability-capacity/1",
+    "http_heartbeat_member": "observabilityCapacity",
+    "payload_schema": "iw.observability.capacity/1",
+    "decoding": "raw strict JSON; recursively reject duplicate keys",
+    "producer_epoch": "rotate on every successful HTTP registration; never refresh an old incarnation",
+    "current_carrier": "authenticated node HTTP heartbeat",
+    "link_carrier": "unsupported; operational proof owed",
+    "unowned_observer": "physical observations only; available CPU and serving offers unknown/unavailable"
   }
 }
