@@ -135,7 +135,8 @@
     "rollup_bytes": 65536,
     "timings_per_event": 32,
     "metrics_per_rollup": 128,
-    "gpu_ids": 64
+    "gpu_ids": 64,
+    "failure_rollup_bytes": 65536
   },
   "identity": {
     "event": [
@@ -198,6 +199,11 @@
       "id": "AC-REQOBS-08",
       "scenario": "Internal schema refuses request content and arbitrary settings; it is never a public response or a new export API.",
       "proof_status": "owed"
+    },
+    {
+      "id": "AC-REQOBS-09",
+      "scenario": "An additive bounded failure companion preserves complete reason/layer/phase marginals and correlated timeout-by-phase counts through parent-aligned 90-day retention, binds the exact canonical parent, and shares atomic revision/seal/prune and late-ingest fencing without treating absence as zero or granting public exposure.",
+      "proof_status": "owed"
     }
   ],
   "metric_names": [
@@ -248,5 +254,74 @@
     "completion": "offset_from_start",
     "link_rtt": "round_trip",
     "unattributed": "interval"
+  },
+  "failure_rollup_schema": "schemas/v1/events/request-observation-failure-rollup.json",
+  "failure_rollup": {
+    "statuses": [
+      "service_failure",
+      "rejected",
+      "cancelled",
+      "unknown"
+    ],
+    "reason_codes": [
+      "unknown",
+      "PROTOCOL_VERSION_UNSUPPORTED",
+      "FEATURE_UNSUPPORTED",
+      "MODEL_NOT_FOUND",
+      "MODEL_UNAVAILABLE",
+      "MODEL_NO_CAPACITY",
+      "MODEL_LOADING",
+      "MODEL_FAILED",
+      "NO_COMPATIBLE_WORKER",
+      "NO_CAPACITY",
+      "QUEUE_FULL",
+      "NODE_UNAVAILABLE",
+      "RUNTIME_UNAVAILABLE",
+      "RUNTIME_CRASHED",
+      "ALLOCATION_PENDING",
+      "ALLOCATION_PREEMPTED",
+      "ALLOCATION_TERMINATED",
+      "DEADLINE_EXCEEDED",
+      "REQUEST_CANCELLED",
+      "UPSTREAM_UNAVAILABLE",
+      "BACKEND_UNREACHABLE",
+      "BACKEND_TIMEOUT",
+      "BACKEND_STREAM_FAILED",
+      "CLIENT_CANCELLED",
+      "INVALID_UPSTREAM_RESPONSE",
+      "inference_idle_timeout",
+      "inference_request_timeout"
+    ],
+    "layers": [
+      "ingress",
+      "gateway",
+      "link",
+      "node",
+      "backend",
+      "unknown",
+      "none"
+    ],
+    "phases": [
+      "queue",
+      "connect",
+      "prefill",
+      "decode",
+      "execution",
+      "unknown",
+      "none"
+    ],
+    "timeout_reason_codes": [
+      "DEADLINE_EXCEEDED",
+      "BACKEND_TIMEOUT",
+      "inference_idle_timeout",
+      "inference_request_timeout"
+    ],
+    "schema": "iw.observability.failure-rollup/1",
+    "parent_fingerprint": "sha256 of iw-parent-canonical-json/1 UTF-8 bytes",
+    "coverage": "inherited from exact parent; unavailable companion is not zero",
+    "sampling": "deduplicated all_terminal only",
+    "retention_days": 90,
+    "pair_lifecycle": "atomic replacement, seal and prune at 300/3600/86400 seconds",
+    "public_authority": "none; per-published-cell privacy evidence and suppression required"
   }
 }

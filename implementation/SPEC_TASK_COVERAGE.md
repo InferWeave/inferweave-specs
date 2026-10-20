@@ -82,4 +82,4 @@ New runtime and rollout proof remains owed.
 
 The internal request-observation extension maps IW-OBS-001/IW-TEL-001/IW-BENCH-002
 to existing P1-T20/P2-T03 and specs09/23/58 through
-`contracts/request-observation.json` (AC-REQOBS-01..08, runtime proof owed).
+`contracts/request-observation.json` (AC-REQOBS-01..09, runtime proof owed).

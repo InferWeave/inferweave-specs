@@ -274,6 +274,8 @@ def contract_errors(root):
         validators[key] = Draft7Validator(schema, resolver=RefResolver(base_uri=schema['$id'], referrer=schema, store=store), format_checker=FormatChecker())
     for kind in ('valid', 'invalid'):
         for path in (root / 'fixtures' / kind).glob('request-observation*.json'):
+            if path.stem.startswith('request-observation-failure-rollup'):
+                continue
             try:
                 value = decode(path.read_bytes())
                 is_rollup = path.stem.startswith('request-observation-rollup')
@@ -304,4 +306,6 @@ def contract_errors(root):
         pass
     if sum(r['counts']['total'] for r in replace_rollups(vectors['rollups'])) != vectors['expected_rollup_total_after_replay']:
         errors.append('rollup replay added counts twice')
+    import failure_rollups
+    errors.extend(failure_rollups.contract_errors(root))
     return errors
