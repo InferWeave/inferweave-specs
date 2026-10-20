@@ -110,6 +110,15 @@ Link every request/attempt to:
 - owner vs shared-network workload;
 - contribution/accounting units.
 
+For streaming failures, distinguish heartbeat freshness, prefill, useful-output
+inactivity and an explicit execution deadline. Preserve the serving timeout's
+allowlisted reason, effective limit and silent duration through relays; a 200
+status after committed headers is not successful completion. Operator summaries
+show both diagnostic and transport request IDs, selected serving route, recording
+coverage and counter reset time. See spec 09 and
+`contracts/inference-stream-reliability.json` for the vocabulary and acceptance
+cases. Never infer another gateway's effective limits from this gateway's config.
+
 ## Storage
 
 Use PostgreSQL initially for:

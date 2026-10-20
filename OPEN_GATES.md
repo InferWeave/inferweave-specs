@@ -1081,3 +1081,23 @@ the spec lines and the `InferWeave/inferweave@a54e0398` code it relies on, and l
 * **Spec 63 open decisions** (Go acceptor side, own feature ID, invariant 11):
   `decisions/2026-10-16-proposed-link-upstream-open-decisions.md`. The three decisions of
   `decisions/2026-10-15-link-upstream-role.md` remain open.
+
+### Update 2026-10-20: inference stream reliability incident
+
+Spec 09 now separates control freshness, prefill, useful-output inactivity and
+execution deadlines; spec 23/42 and the bounded diagnostics contract record the
+operational requirement. See `contracts/inference-stream-reliability.json`
+(AC-STREAM-01..08), IW-OBS-001/P1-T20 and IW-OBS-002/P1-T12A.
+
+Local implementation, independent source reviews, regression/API/browser tests,
+real disposable PostgreSQL reads, and isolated binary canaries are recorded in
+`evidence/inference-stream-reliability-2026-10-20/README.md` and `rust.md`.
+The pinned Rust release passed a 35-second synthetic prefill on a Hive CPU
+allocation; Zapp's Go candidate passed loopback diagnostics checks. These are not
+production-serving rollout or GPU qualification evidence.
+
+**Owed:** new timed end-to-end error injection in each Link mode, three live-GPU
+cases, resolution/baseline establishment for two explicitly enabled optional
+persistence checks that failed, production rollout approval and comparable-traffic
+post-rollout measurement. A 180-second idle default is an operational policy,
+not a measured hardware envelope. No production or qualification gate is opened.

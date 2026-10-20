@@ -503,6 +503,8 @@ Rules:
 - waiting requests appear while they wait
 - position ordering matches admission ordering
 - absent estimate reported as absent, never zero
+- rejection reason/scope counters survive queue-entry removal; effective limits and missing-metadata buckets explain saturation without exposing caller identities
+- shared credential/default subdivisions remain intentional; distinct authenticated parents cannot collapse and subdivision fan-out cannot bypass parent limits
 
 **Notes:** Recording only executing work reports an empty queue to waiting clients.
 
@@ -644,6 +646,7 @@ Rules:
 - correlation completeness
 - cancel/preemption facts
 - no prompt body in metrics
+- AC-STREAM-01..08: useful-output/prefill timeout separation, distinct failure codes, cross-hop correlation, bounded authenticated diagnostics and admission isolation (contracts/inference-stream-reliability.json)
 - MI-01 separate transport/attempt/logical/task outcomes and denominators through retries, cancellation and missing data
 - MI-03 SLO-qualified observed capacity bins reject sparse, mismatched and extrapolated load; unknown users remain unknown
 

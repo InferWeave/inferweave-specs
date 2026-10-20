@@ -118,7 +118,8 @@
         "P1-T20"
       ],
       "contracts": [
-        "contracts/model-intelligence-acceptance.json"
+        "contracts/model-intelligence-acceptance.json",
+        "contracts/inference-stream-reliability.json"
       ]
     },
     {
@@ -919,6 +920,9 @@
       "owner_component": "control-plane",
       "canonical_tasks": [
         "P1-T12A"
+      ],
+      "contracts": [
+        "contracts/inference-stream-reliability.json"
       ]
     },
     {

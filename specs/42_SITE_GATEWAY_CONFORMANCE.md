@@ -101,6 +101,14 @@ chain (B1–B5).
   stats; SHOULD: throughput (tokens incl. cached, prefill/decode rates), a
   Prometheus `/metrics` surface, capacity summary, dashboard. Telemetry is
   metadata-only, non-blocking, "unknown" never fabricated-0 (`specs/09`, `23`).
+  Stream diagnostics MUST distinguish downstream-reported inference idle and
+  execution timeouts from an observed transport failure and from client
+  cancellation. After headers commit, an HTTP 200 with a terminal SSE error is a
+  failed attempt. Correlation exposes diagnostic and transport request IDs
+  separately. Operator statistics are bounded, authenticated, content-free and
+  explicit about recording coverage, observation window, reset time and whose
+  timeout settings are known. Heartbeat freshness is not an inference timeout;
+  see spec 09 and `contracts/inference-stream-reliability.json`.
 - **C9 Chaining & bandwidth** — behave as a well-mannered link per B1–B5:
   admission-grant negotiation not payload relay, shortest data path, affinity
   first, unbuffered streaming, bounded chains.
