@@ -1098,6 +1098,6 @@ production-serving rollout or GPU qualification evidence.
 
 **Owed:** new timed end-to-end error injection in each Link mode, three live-GPU
 cases, resolution/baseline establishment for two explicitly enabled optional
-persistence checks that failed, production rollout approval and comparable-traffic
+persistence checks that failed, production activation and comparable-traffic
 post-rollout measurement. A 180-second idle default is an operational policy,
 not a measured hardware envelope. No production or qualification gate is opened.
