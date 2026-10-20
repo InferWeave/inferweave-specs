@@ -1039,6 +1039,10 @@ def self_test():
     if request_test.returncode:
         print(request_test.stdout + request_test.stderr)
         return 1
+    failure_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_failure_rollups.py")], capture_output=True, text=True)
+    if failure_test.returncode:
+        print(failure_test.stdout + failure_test.stderr)
+        return 1
     reconcile_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_node_reconcile.py")], capture_output=True, text=True)
     if reconcile_test.returncode:
         print(reconcile_test.stdout + reconcile_test.stderr)

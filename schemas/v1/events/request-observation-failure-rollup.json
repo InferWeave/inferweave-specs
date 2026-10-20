@@ -1,0 +1,585 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/events/request-observation-failure-rollup.json",
+  "title": "Internal bounded request observation failure rollup companion",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "iw.observability.failure-rollup/1"
+    },
+    "visibility": {
+      "const": "internal"
+    },
+    "parent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_gateway_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]+$"
+        },
+        "producer_epoch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]+$"
+        },
+        "rollup_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]+$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sealed": {
+          "type": "boolean"
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "source_gateway_id",
+        "producer_epoch",
+        "rollup_id",
+        "revision",
+        "sealed",
+        "fingerprint"
+      ]
+    },
+    "breakdowns": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "service_failure": {
+          "$ref": "#/definitions/breakdown"
+        },
+        "rejected": {
+          "$ref": "#/definitions/breakdown"
+        },
+        "cancelled": {
+          "$ref": "#/definitions/breakdown"
+        },
+        "unknown": {
+          "$ref": "#/definitions/breakdown"
+        }
+      },
+      "required": [
+        "service_failure",
+        "rejected",
+        "cancelled",
+        "unknown"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "visibility",
+    "parent",
+    "breakdowns"
+  ],
+  "definitions": {
+    "breakdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "reason_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "unknown": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "PROTOCOL_VERSION_UNSUPPORTED": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "FEATURE_UNSUPPORTED": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "MODEL_NOT_FOUND": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "MODEL_UNAVAILABLE": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "MODEL_NO_CAPACITY": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "MODEL_LOADING": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "MODEL_FAILED": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "NO_COMPATIBLE_WORKER": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "NO_CAPACITY": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "QUEUE_FULL": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "NODE_UNAVAILABLE": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "RUNTIME_UNAVAILABLE": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "RUNTIME_CRASHED": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "ALLOCATION_PENDING": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "ALLOCATION_PREEMPTED": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "ALLOCATION_TERMINATED": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "DEADLINE_EXCEEDED": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "REQUEST_CANCELLED": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "UPSTREAM_UNAVAILABLE": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "BACKEND_UNREACHABLE": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "BACKEND_TIMEOUT": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "BACKEND_STREAM_FAILED": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "CLIENT_CANCELLED": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "INVALID_UPSTREAM_RESPONSE": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "inference_idle_timeout": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "inference_request_timeout": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "unknown",
+            "PROTOCOL_VERSION_UNSUPPORTED",
+            "FEATURE_UNSUPPORTED",
+            "MODEL_NOT_FOUND",
+            "MODEL_UNAVAILABLE",
+            "MODEL_NO_CAPACITY",
+            "MODEL_LOADING",
+            "MODEL_FAILED",
+            "NO_COMPATIBLE_WORKER",
+            "NO_CAPACITY",
+            "QUEUE_FULL",
+            "NODE_UNAVAILABLE",
+            "RUNTIME_UNAVAILABLE",
+            "RUNTIME_CRASHED",
+            "ALLOCATION_PENDING",
+            "ALLOCATION_PREEMPTED",
+            "ALLOCATION_TERMINATED",
+            "DEADLINE_EXCEEDED",
+            "REQUEST_CANCELLED",
+            "UPSTREAM_UNAVAILABLE",
+            "BACKEND_UNREACHABLE",
+            "BACKEND_TIMEOUT",
+            "BACKEND_STREAM_FAILED",
+            "CLIENT_CANCELLED",
+            "INVALID_UPSTREAM_RESPONSE",
+            "inference_idle_timeout",
+            "inference_request_timeout"
+          ]
+        },
+        "layer_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ingress": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "gateway": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "link": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "node": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "backend": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "unknown": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "none": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "ingress",
+            "gateway",
+            "link",
+            "node",
+            "backend",
+            "unknown",
+            "none"
+          ]
+        },
+        "phase_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "queue": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "connect": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "prefill": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "decode": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "execution": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "unknown": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "none": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "queue",
+            "connect",
+            "prefill",
+            "decode",
+            "execution",
+            "unknown",
+            "none"
+          ]
+        },
+        "timeout_phase_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "DEADLINE_EXCEEDED": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "queue": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "connect": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "prefill": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "decode": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "execution": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "unknown": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "none": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "queue",
+                "connect",
+                "prefill",
+                "decode",
+                "execution",
+                "unknown",
+                "none"
+              ]
+            },
+            "BACKEND_TIMEOUT": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "queue": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "connect": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "prefill": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "decode": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "execution": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "unknown": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "none": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "queue",
+                "connect",
+                "prefill",
+                "decode",
+                "execution",
+                "unknown",
+                "none"
+              ]
+            },
+            "inference_idle_timeout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "queue": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "connect": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "prefill": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "decode": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "execution": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "unknown": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "none": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "queue",
+                "connect",
+                "prefill",
+                "decode",
+                "execution",
+                "unknown",
+                "none"
+              ]
+            },
+            "inference_request_timeout": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "queue": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "connect": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "prefill": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "decode": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "execution": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "unknown": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "none": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "queue",
+                "connect",
+                "prefill",
+                "decode",
+                "execution",
+                "unknown",
+                "none"
+              ]
+            }
+          },
+          "required": [
+            "DEADLINE_EXCEEDED",
+            "BACKEND_TIMEOUT",
+            "inference_idle_timeout",
+            "inference_request_timeout"
+          ]
+        }
+      },
+      "required": [
+        "reason_counts",
+        "layer_counts",
+        "phase_counts",
+        "timeout_phase_counts"
+      ]
+    }
+  }
+}

@@ -301,3 +301,115 @@ catalogs and shared backup policy remain unchanged. No retroactive purge or
 new content recording is authorized; a separate reviewed migration and deletion
 authorization is required for legacy retention changes. Runtime, PostgreSQL,
 restart, sealing and retention proof for AC-REQOBS-01..08 remains **owed**.
+
+### Additive failure-rollup companion
+
+`schemas/v1/events/request-observation-failure-rollup.json` defines
+`iw.observability.failure-rollup/1`, an internal companion to the unchanged
+`iw.observability.rollup/1`. The decision is
+`decisions/2026-10-20-request-failure-rollups.md`; AC-REQOBS-09 applies to
+IW-OBS-001, IW-TEL-001 and IW-BENCH-002 through P1-T20/P2-T03.
+
+The companion has exactly `schema`, `visibility`, `parent` and `breakdowns`.
+`parent` binds source_gateway_id, producer_epoch, rollup_id, revision, sealed and
+fingerprint. All dimensions, window, metric version and coverage are inherited
+from that exact parent; no companion copy can change them. A missing companion,
+parent mismatch or unsupported companion means failure breakdown **unavailable**,
+not zero; an older valid v1 parent remains readable on its own. A validated
+companion with all-zero maps and zero parent non-success counts is observed zero.
+
+`breakdowns` requires exactly service_failure, rejected, cancelled and unknown.
+Each status requires complete, closed `reason_counts`, `layer_counts` and
+`phase_counts` maps. Every value is a nonnegative safe integer; every map sums
+exactly to that status's parent count. Reasons use the existing event outcome
+reason_code enum minus `none`, including explicit `unknown`. Layers and phases
+use the complete existing event outcome enums, including `none` and `unknown`;
+`none` is valid in a non-success event's layer/phase and must not be discarded or
+reclassified. The timing-span phase vocabulary is a different vocabulary and
+must not be substituted. No free-form error text or unmappable synthetic reason
+category is introduced. These are marginals, not a general joint distribution.
+
+Each status also requires `timeout_phase_counts`: exactly DEADLINE_EXCEEDED,
+BACKEND_TIMEOUT, inference_idle_timeout and inference_request_timeout, each
+mapping every existing outcome phase to a safe integer count. Each reason row
+sums to its reason_counts value; for each phase, the sum across timeout rows
+cannot exceed phase_counts. Queue-timeout count is the checked sum of the
+`queue` cells in this table, never an intersection inferred from independent
+marginals. A missing timeout reason in source instrumentation remains unknown;
+the consumer cannot manufacture a timeout from HTTP status or elapsed time.
+
+Only validated, canonical, deduplicated `all_terminal` events in the exact parent
+cohort contribute. Diagnostic-only events never enter either denominator, and
+retries, attempts, hops, datasets and source/producer epochs keep their existing
+counting boundaries. Parent coverage has its independent expected-event/drop/
+lag evidence; a complete set of reason-map keys or an absence of failures does
+not prove complete event capture. Source capture and query-health coverage must
+remain independently visible wherever a projection presents these counts.
+
+The companion is at most 65,536 UTF-8 bytes before parsing. Reject duplicate
+object keys recursively, invalid UTF-8, nonfinite/fractional/unsafe numbers,
+unknown properties, missing map keys and integer overflow. Checked addition is
+required for each marginal, cross-table row/column and merge; refuse the entire
+pair on overflow, without clamping, wrapping or partial persistence.
+
+#### Canonical parent fingerprint
+
+`iw-parent-canonical-json/1` serializes the entire validated parent value, including
+coverage, using these fixed rules: recursively sort object keys by Unicode scalar
+value; preserve array order; emit no insignificant whitespace; use lowercase
+`true`, `false`, `null`; encode safe integer values as ordinary decimal integers
+without a plus sign, leading zeroes, fraction or exponent. Parent wire numbers
+must be parsed as exact decimals before validation/canonicalization: equivalent
+`1`, `1.0` and `1e0` normalize to `1`, and integer negative zero normalizes to `0`.
+This preserves frozen v1 mathematical-integer semantics; fractional or unsafe
+values are rejected before any binary-float rounding. Companion integer counters
+retain their strict integer-only encoding. Strings emit Unicode
+scalars directly in UTF-8, except quote and backslash use `\"` and `\\`, controls
+U+0008/0009/000A/000C/000D use `\b`/`\t`/`\n`/`\f`/`\r`, and other U+0000..001F
+use lowercase `\u00xx`. Slash is not escaped; non-ASCII characters are not
+ASCII-escaped; unpaired surrogates are refused; Unicode normalization is not
+performed. The fingerprint is `sha256:` plus lowercase hexadecimal SHA-256 of
+those bytes. Input key order and whitespace are immaterial. The fixed Unicode,
+escaping and fingerprint vectors are in
+`conformance/request-observation-failure-rollup-vectors.json`.
+
+#### Pair lifecycle, retention and publication boundary
+
+At each 300/3600/86400-second resolution, parent and companion are an atomic
+materialized pair: insert, revision replacement, sealing and prune succeed or
+fail together. Same parent identity/revision with a changed companion is a
+conflict even if its marginal totals still match. A later unsealed revision
+replaces both payloads and their fingerprint together; it never adds a delta.
+The existing immutable dimensions, monotonic as_of and counter-epoch rules
+apply. Ordinary ingestion cannot revise a sealed pair. Read a consistent pair
+snapshot, never a new parent joined to an old companion. Aggregate replacement
+across all three resolutions for one accepted terminal fact must be transactional
+with its identity/terminal-fact deduplication evidence; an injected write failure
+must leave none of the affected pairs partially updated.
+
+Retain every companion for exactly its parent's new-family aggregate lifetime
+(default 90 days, stricter owner policy wins). Pruning 7-day event diagnostics
+must leave the materialized failure companion and its parent intact. Retain seal
+and replay evidence at least through the aggregate they protect. Before accepting
+an event, consult the persisted late-ingest/sealing watermark and the retained
+window horizon for every affected resolution; reject/count an event crossing a
+closed or expired boundary atomically before any event/dedupe/pair mutation.
+Pruning a diagnostic or aggregate row never clears the fence or permits a late
+replay to recreate it. Legacy 730/365-day records and shared backups remain
+untouched. Failure companions introduce no second retention namespace or public
+export authority.
+
+Public projection, if separately authorized, needs authorized principal/cohort
+evidence and the existing privacy policy for **each published cell**, including
+status, reason, layer, phase and timeout-phase intersections. A parent cohort's
+request/principal threshold does not authorize a sparse subcell. Suppress cells
+without sufficient evidence, apply complementary suppression to prevent
+reconstruction from totals/marginals, and avoid identifier/timestamp drill-down
+that defeats aggregation. Do not store principal identities in the companion.
+There is no public endpoint or publication approval in this contract.
+
+Offline schema, vocabulary, parent-binding, conservation, strict decoding and
+all-terminal mapping checks are **proven** by `tests/smoke/test_failure_rollups.py`
+and the fixture/vector validator. Runtime database transaction, restart, all-three-
+resolution seal/prune/watermark fencing, bounded ingestion and per-cell public
+privacy tests remain **owed**; this offline proof does not close those gates.

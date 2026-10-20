@@ -332,3 +332,11 @@ operational proof remains owed. Unowned physical exporters may report observed
 hardware but cannot claim available owner CPU or serving offers. This transport
 record does not close deployment/registration/admission proof gates. See
 `contracts/observability-capacity.json` transport metadata.
+
+The additive internal `iw.observability.failure-rollup/1` companion in spec23
+retains non-success reason/layer/phase counts after 7-day diagnostics expire.
+It counts only canonical deduplicated all_terminal facts, preserves existing
+outcome vocabularies (including none layer/phase), inherits exact-parent coverage,
+and grants no public exposure authority. Its bounded timeout-by-phase table
+supplies correlated queue-timeout counts; diagnostic sampling is never a source
+for aggregate denominators. Event/rollup v1 wire shapes remain unchanged.

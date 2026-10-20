@@ -1178,3 +1178,19 @@ rollup/seal/replay/retention tests and coverage/drop reconciliation. Offline
 schema/fixture/reference checks do not prove a deployed warehouse or loss-free
 recording. Only new-family diagnostics/aggregates use 7/90-day retention; legacy
 history and shared backups remain unchanged. No runtime gate closes here.
+
+### Update 2026-10-20: retained failure-rollup companion
+
+`iw.observability.failure-rollup/1` adds offline proven schema, vocabulary,
+canonical-parent fingerprint, conserved marginal/correlated-timeout counts,
+strict bounded decoding and deduplicated all-terminal mapping checks. See
+`decisions/2026-10-20-request-failure-rollups.md` and spec23.
+
+**UNSATISFIED / owed:** AC-REQOBS-09 runtime atomic parent/companion insert,
+replacement, seal and prune across 5m/1h/1d, concurrent/restart replay conflicts,
+late-ingest watermark fences surviving diagnostic/aggregate prune, 90-day
+parent-aligned failure retention after 7-day diagnostic expiry, bounded loss
+reporting and independently observed coverage. Public projection requires
+per-published-cell principal/cohort evidence, suppression and reconstruction
+resistance; this companion gives no publication authority. Legacy 730/365-day
+retention and shared backups remain unchanged. No runtime gate closes here.

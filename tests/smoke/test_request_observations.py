@@ -16,6 +16,11 @@ class RequestObservationTests(unittest.TestCase):
         self.event = json.loads((ROOT / 'fixtures/valid/request-observation-ingress.json').read_text())
         self.rollup = json.loads((ROOT / 'fixtures/valid/request-observation-rollup.json').read_text())
 
+    def test_failure_rollup_companion_is_available_without_changing_v1(self):
+        self.assertTrue((ROOT / 'schemas/v1/events/request-observation-failure-rollup.json').is_file(),
+                        'bounded additive failure-rollup schema is missing')
+        self.assertIn('failure_rollup_schema', self.contract)
+
     def test_fixtures_and_identity_vectors(self):
         self.assertEqual([], observations.contract_errors(ROOT))
 

@@ -1135,7 +1135,8 @@
         "MI-01 separate transport/attempt/logical/task outcomes and denominators through retries, cancellation and missing data",
         "MI-03 SLO-qualified observed capacity bins reject sparse, mismatched and extrapolated load; unknown users remain unknown",
         "AC-OBS-01..05: idempotent event lineage, distinct attempts, timing provenance and read-only context offers never grant admission",
-        "AC-REQOBS-01..06/08: terminal ingress/attempt/hop identity, immutable replay, HTTP200 stream failures, missing values and monotonic engine/proxy provenance remain bounded and content-free"
+        "AC-REQOBS-01..06/08: terminal ingress/attempt/hop identity, immutable replay, HTTP200 stream failures, missing values and monotonic engine/proxy provenance remain bounded and content-free",
+        "AC-REQOBS-09: bounded failure companion conserves status marginals and correlated timeout phases with exact-parent fingerprint, atomic three-resolution revision/seal/prune, persistent late-ingest fence and per-cell privacy evidence"
       ],
       "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES.",
       "proof_status": "owed",
@@ -1478,7 +1479,8 @@
         "MI-05 additive nullable facts and bounded query/rollup coverage preserve unknown historical values",
         "MI-05 every analytics route rejects missing/invalid operator identity and tenant-header escalation; shared reports redact private data",
         "AC-OBS-06: bounded content-free new-family-only 90-day aggregate/7-day diagnostic retention preserves source and coverage without purging legacy records or shared backups",
-        "AC-REQOBS-01/06..08: exact-dimension dataset-separated fixed-bin rollups preserve counts, ratios, coverage, replay/seal identity and new-family-only retention"
+        "AC-REQOBS-01/06..08: exact-dimension dataset-separated fixed-bin rollups preserve counts, ratios, coverage, replay/seal identity and new-family-only retention",
+        "AC-REQOBS-09: bounded failure companion conserves status marginals and correlated timeout phases with exact-parent fingerprint, atomic three-resolution revision/seal/prune, persistent late-ingest fence and per-cell privacy evidence"
       ],
       "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES. Read contract: openapi/model-intelligence.yaml; bounded evidence: evidence/model-intelligence-2026-10-12/README.md.",
       "proof_status": "owed",
