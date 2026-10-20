@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/observability-capacity-fleet.json",
+  "title": "ReadOnlyObservabilityCapacityFleet",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "iw.observability.capacity.fleet/1"
+    },
+    "source_gateway_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "producer_epoch": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "served_age_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "node_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "nodes": {
+      "type": "array",
+      "maxItems": 1024,
+      "items": {
+        "$ref": "observability-capacity.json"
+      }
+    },
+    "next_cursor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    }
+  },
+  "required": [
+    "schema",
+    "source_gateway_id",
+    "producer_epoch",
+    "sequence",
+    "generated_at",
+    "served_age_ms",
+    "node_count",
+    "nodes"
+  ]
+}

@@ -524,7 +524,8 @@
       "required_tests": [
         "sensor unsupported semantics",
         "sample ingestion",
-        "bounded frequency/backpressure"
+        "bounded frequency/backpressure",
+        "AC-OBS-04/08: measured CPU entitlement and per-GPU NVIDIA observe telemetry preserve unknown/unsupported; AMD proof remains separate"
       ],
       "notes": ""
     },
@@ -1132,7 +1133,8 @@
         "no prompt body in metrics",
         "AC-STREAM-01..08: useful-output/prefill timeout separation, distinct failure codes, cross-hop correlation, bounded authenticated diagnostics and admission isolation (contracts/inference-stream-reliability.json)",
         "MI-01 separate transport/attempt/logical/task outcomes and denominators through retries, cancellation and missing data",
-        "MI-03 SLO-qualified observed capacity bins reject sparse, mismatched and extrapolated load; unknown users remain unknown"
+        "MI-03 SLO-qualified observed capacity bins reject sparse, mismatched and extrapolated load; unknown users remain unknown",
+        "AC-OBS-01..05: idempotent event lineage, distinct attempts, timing provenance and read-only context offers never grant admission"
       ],
       "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES.",
       "proof_status": "owed",
@@ -1241,7 +1243,8 @@
         "stale telemetry visible",
         "no misleading pooled VRAM totals",
         "MI-06 existing routes/actions/permissions and pause/focus preferences survive desktop/tablet/mobile and theme checks",
-        "MI-06 live/empty/error/unsupported provenance, accessible filters/exports and source/dist parity"
+        "MI-06 live/empty/error/unsupported provenance, accessible filters/exports and source/dist parity",
+        "AC-OBS-03..05: stale/unowned capacity is unavailable; CPU entitlement, idle GPUs, per-card VRAM and shared-pool context offers remain separate"
       ],
       "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES. Read contract: openapi/model-intelligence.yaml; bounded evidence: evidence/model-intelligence-2026-10-12/README.md.",
       "proof_status": "owed",
@@ -1472,7 +1475,8 @@
         "no universal TPS aggregation",
         "retention test",
         "MI-05 additive nullable facts and bounded query/rollup coverage preserve unknown historical values",
-        "MI-05 every analytics route rejects missing/invalid operator identity and tenant-header escalation; shared reports redact private data"
+        "MI-05 every analytics route rejects missing/invalid operator identity and tenant-header escalation; shared reports redact private data",
+        "AC-OBS-06: bounded content-free new-family-only 90-day aggregate/7-day diagnostic retention preserves source and coverage without purging legacy records or shared backups"
       ],
       "notes": "Model-intelligence extension proof is owed; see spec 58 and OPEN_GATES. Read contract: openapi/model-intelligence.yaml; bounded evidence: evidence/model-intelligence-2026-10-12/README.md.",
       "proof_status": "owed",
@@ -1864,7 +1868,8 @@
       "required_tests": [
         "UI E2E",
         "measured/predicted labels",
-        "dimension filters"
+        "dimension filters",
+        "AC-OBS-07: public GPU profiles use existing Next.js apps/web with private-field redaction, sparse-cohort suppression and context/fingerprint provenance"
       ],
       "notes": ""
     },
@@ -3830,7 +3835,8 @@
         "unattributed memory is present whenever physical used is known",
         "an older node's telemetry and heartbeat parse unchanged and a malformed report never refuses the carrier",
         "topology v2 carries no GPU-memory member",
-        "NVIDIA and AMD producers report physical memory measured on real hardware"
+        "NVIDIA and AMD producers report physical memory measured on real hardware",
+        "AC-OBS-08: unchanged memory report in NVIDIA observe mode requires real pinned hardware reconciliation; no AMD qualification is inferred"
       ],
       "notes": "",
       "proof_status": "owed",
@@ -3859,7 +3865,8 @@
         "a not-owned or stale GPU has no schedulable capacity",
         "pressure states follow free-after-growth with hysteresis",
         "a resource relayed by two paths is counted once",
-        "a gateway that is not the authority never composes safeSchedulable"
+        "a gateway that is not the authority never composes safeSchedulable",
+        "AC-OBS-03..05: typed owner capacity expires by monotonic age and epoch; duplicate/replayed snapshots and shared pools cannot multiply capacity"
       ],
       "notes": "",
       "proof_status": "owed",
@@ -3887,7 +3894,8 @@
         "a decision outcome is never succeeded before a measured delta exists",
         "a postmortem reconstructs the OOM without the failed runtime answering",
         "a simulation leaves the ledger, the router and every allocation unchanged",
-        "a gateway without rebalancer authority refuses a simulation"
+        "a gateway without rebalancer authority refuses a simulation",
+        "AC-OBS-09: telemetry and simulation grant no Nibbler serving or placement authority before runtime qualification and applicable safety proofs"
       ],
       "notes": "",
       "proof_status": "owed",

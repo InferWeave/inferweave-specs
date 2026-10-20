@@ -194,3 +194,26 @@ Internal authorized operators may correlate prompt IDs with performance for debu
 All telemetry/benchmark facts must reference the stable resource identity hierarchy in `26_RESOURCE_IDENTITY_REDISCOVERY.md`.
 
 Temporary Slurm allocation/worker IDs are retained as dimensions, while lifetime GPU performance history aggregates primarily by stable `gpu_id` plus hardware/software/deployment fingerprint.
+
+## Complete collection and capacity provenance
+
+The initial observability rollout restores supported inventory, runtime/model
+fingerprints and live per-GPU sensors through existing producers, then spec46
+memory in observe mode. A scalar carries its source, unit and measured/derived/
+estimated/declared/unknown/unsupported basis; unknown and unsupported have no
+numeric value. A zero requires an actual zero observation. NVIDIA validation
+must name pinned hardware/software/profile and sensor coverage; AMD validation
+remains separately owed. CPU utilization and entitlement are different measures.
+
+The read-only `iw.observability.capacity/1` schema and spec04 define entitlement
+and context offers. Use the owner's report, preserve epoch, sequence and age,
+and never deduce admission from aggregate VRAM or fleet utilization. The bounded
+edge-persistence ADR permits existing Go local observations with local coverage;
+Rust remains the global normalization and warehouse authority. Request history
+uses the spec09 event/attempt/logical lineage and provenance, not duplicate hop
+counts. Initial retention for explicitly namespaced new-family records only is 90 days
+aggregate / 7 days diagnostic metadata, with explicit coverage and stricter
+policy overrides. Existing warehouse/request/benchmark records, legacy 730/365-day
+policies, shared caches and backups retain their existing policy. This change
+authorizes no retroactive purge; changing them requires a separate reviewed
+retention migration.

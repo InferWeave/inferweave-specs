@@ -207,3 +207,19 @@ additive operator read API and typed response/unsupported branches. Evidence and
 remaining requirements are in `evidence/model-intelligence-2026-10-12/README.md`.
 Current Go access is operator-only through its existing middleware; normative
 shared operational and verified private tenant/user grants remain owed.
+
+## Scoped edge observations and public GPU profiles (2026-10-20)
+
+The [observability ADR](../decisions/2026-10-20-observability-capacity.md) narrowly
+amends the ownership paragraph: existing Go may persist its own bounded edge
+observations/local rollups with local provenance and coverage. Rust continues
+to own global metrics and capacity. New public GPU profiles belong in the
+existing Next.js `apps/web`, while the existing embedded operator pages retain
+the D-002 exception. Both render spec04 typed capacity without computing
+admission or pooling per-card VRAM. Public profiles show context/workload,
+fingerprint, observation window, coverage and freshness; private stable node
+addresses, principal IDs, exact private workload times and content are absent.
+Initial publication thresholds are 30 requests and 5 distinct principals per
+cohort, with small/unknown cohorts suppressed and policy version disclosed.
+Those defaults are not universal privacy proof; cross-filter differencing and
+linkability require independent review before production publication.

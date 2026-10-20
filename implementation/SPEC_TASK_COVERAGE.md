@@ -72,3 +72,10 @@
 | `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` | `A-T05`, `P5-T17` |
 | `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` | `P5-T35` |
 | `specs/65_INFERWEAVE_STORAGE.md` | `P5-T36`, `P5-T37` |
+
+## Observability capacity extension (2026-10-20)
+
+Existing feature/task mappings remain in force. The bounded cross-cutting
+acceptance mapping for specs 04/09/23/42/43/46/58/64 and P1-T05/P1-T20/
+P2-T03/P1-T21/P2-T18/P5-T30..32 is `contracts/observability-capacity.json`.
+New runtime and rollout proof remains owed.

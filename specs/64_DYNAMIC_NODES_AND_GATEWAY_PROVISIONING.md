@@ -610,3 +610,14 @@ implementation MUST pass; they are `conformance/dynamic-node-vectors.json`, reco
 `conformance/runner.py`, together with the valid and invalid fixtures for the assignment rules a
 schema cannot express (the derived id, the matrix floor, artifact collisions and size overflow,
 the card count), which `conformance/dynamic_nodes.py` checks.
+
+## Nibbler observability rollout scope (2026-10-20)
+
+The operator's observability approval authorizes qualification work on the
+already registered Nibbler, not a claim of serving readiness. A Go root without
+this spec's provisioner leaves it hardware-only. Dynamic serving requires the
+Rust owner/executor, profile evidence on the actual placement, a real full
+admission-path request and the watchdog/rollback safety gates. A read-only
+capacity report can expose inventory and unknown serving capacity meanwhile;
+it cannot fabricate assignments or advertise an unqualified runtime as ready.
+See the observability ADR and AC-OBS-09. All new operational proof is owed.

@@ -122,3 +122,10 @@ Stream incident diagnostic acceptance AC-STREAM-01..08 extends IW-OBS-001 and
 IW-OBS-002 in `contracts/inference-stream-reliability.json`; P1-T20 owns stream
 timeout/correlation diagnostics, and P1-T12A owns admission scope/metadata
 observability. Proof and deployment status remain explicit in OPEN_GATES.
+
+## Observability capacity extension (2026-10-20)
+
+Existing feature/task mappings remain in force. The bounded cross-cutting
+acceptance mapping for specs 04/09/23/42/43/46/58/64 and P1-T05/P1-T20/
+P2-T03/P1-T21/P2-T18/P5-T30..32 is `contracts/observability-capacity.json`.
+New runtime and rollout proof remains owed.

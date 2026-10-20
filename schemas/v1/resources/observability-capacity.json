@@ -1,0 +1,426 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/resources/observability-capacity.json",
+  "title": "ReadOnlyObservabilityCapacity",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "iw.observability.capacity/1"
+    },
+    "producer_epoch": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_gateway_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "owner_gateway_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]+$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "node_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[\\x21-\\x7e]+$"
+    },
+    "received_age_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "validity_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 300000
+    },
+    "status": {
+      "enum": [
+        "fresh",
+        "stale",
+        "unavailable"
+      ]
+    },
+    "gpu_memory": {
+      "$ref": "gpu-memory-report.json"
+    },
+    "cpu": {
+      "type": "object",
+      "properties": {
+        "physical_cores": {
+          "$ref": "#/definitions/quantity"
+        },
+        "logical_cpus": {
+          "$ref": "#/definitions/quantity"
+        },
+        "affinity_logical_cpus": {
+          "$ref": "#/definitions/quantity"
+        },
+        "quota_millicores": {
+          "$ref": "#/definitions/quantity"
+        },
+        "owner_budget_millicores": {
+          "$ref": "#/definitions/quantity"
+        },
+        "reserved_millicores": {
+          "$ref": "#/definitions/quantity"
+        },
+        "available_millicores": {
+          "$ref": "#/definitions/quantity"
+        }
+      },
+      "required": [
+        "physical_cores",
+        "logical_cpus",
+        "affinity_logical_cpus",
+        "quota_millicores",
+        "owner_budget_millicores",
+        "reserved_millicores",
+        "available_millicores"
+      ],
+      "additionalProperties": false
+    },
+    "serving_offers": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "properties": {
+          "offer_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]+$"
+          },
+          "capacity_pool_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]+$"
+          },
+          "owner_epoch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]+$"
+          },
+          "runtime_instance_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]+$"
+          },
+          "deployment_fingerprint": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]+$"
+          },
+          "resource_profile_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]+$"
+          },
+          "workload_profile": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[\\x21-\\x7e]+$"
+          },
+          "load_generation": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "gpu_resource_ids": {
+            "type": "array",
+            "maxItems": 64,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[\\x21-\\x7e]+$"
+            }
+          },
+          "requested_context_tokens": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "max_output_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "additional_requests": {
+            "$ref": "#/definitions/quantity"
+          },
+          "basis": {
+            "enum": [
+              "measured",
+              "derived",
+              "estimated",
+              "declared",
+              "unknown",
+              "unsupported"
+            ]
+          },
+          "status": {
+            "enum": [
+              "fresh",
+              "stale",
+              "unavailable"
+            ]
+          },
+          "valid_for_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 300000
+          },
+          "exclusion_reasons": {
+            "type": "array",
+            "maxItems": 9,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "stale",
+                "unowned",
+                "unknown_capacity",
+                "unsupported",
+                "unqualified",
+                "draining",
+                "quarantined",
+                "context_limit",
+                "reservation_conflict"
+              ]
+            }
+          }
+        },
+        "required": [
+          "offer_id",
+          "capacity_pool_id",
+          "owner_epoch",
+          "runtime_instance_id",
+          "deployment_fingerprint",
+          "resource_profile_id",
+          "workload_profile",
+          "load_generation",
+          "gpu_resource_ids",
+          "requested_context_tokens",
+          "max_output_tokens",
+          "additional_requests",
+          "basis",
+          "status",
+          "valid_for_ms",
+          "exclusion_reasons"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "stale",
+                    "unavailable"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "additional_requests": {
+                  "properties": {
+                    "basis": {
+                      "enum": [
+                        "unknown",
+                        "unsupported"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "fresh"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "valid_for_ms": {
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "producer_epoch",
+    "sequence",
+    "observed_at",
+    "source_gateway_id",
+    "owner_gateway_id",
+    "node_id",
+    "received_age_ms",
+    "validity_ms",
+    "status",
+    "cpu",
+    "serving_offers"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "basis": {
+          "enum": [
+            "measured",
+            "derived",
+            "estimated",
+            "declared",
+            "unknown",
+            "unsupported"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[\\x21-\\x7e]+$"
+        }
+      },
+      "required": [
+        "basis",
+        "source"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "basis": {
+                "enum": [
+                  "unknown",
+                  "unsupported"
+                ]
+              }
+            }
+          },
+          "then": {
+            "not": {
+              "required": [
+                "value"
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "value"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "anyOf": [
+          {
+            "properties": {
+              "owner_gateway_id": {
+                "type": "null"
+              }
+            }
+          },
+          {
+            "properties": {
+              "status": {
+                "enum": [
+                  "stale",
+                  "unavailable"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "then": {
+        "properties": {
+          "serving_offers": {
+            "maxItems": 0
+          },
+          "cpu": {
+            "properties": {
+              "available_millicores": {
+                "properties": {
+                  "basis": {
+                    "enum": [
+                      "unknown",
+                      "unsupported"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "fresh"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "validity_ms": {
+            "minimum": 1
+          }
+        }
+      }
+    }
+  ]
+}
