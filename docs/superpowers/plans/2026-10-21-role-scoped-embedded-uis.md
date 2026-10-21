@@ -3,8 +3,8 @@
 **Goal:** Each Rust role (node, relay, gateway) serves its own limited UI over its own state, sharing
 one stylesheet and class vocabulary, so Go gateway pages can be retired one at a time.
 
-**Decision record:** `decisions/2026-10-21-role-scoped-embedded-uis.md` (Proposed; awaiting operator
-acceptance). Do not start Task 1 until it is accepted.
+**Decision record:** `decisions/2026-10-21-role-scoped-embedded-uis.md` (Accepted for implementation by the operator, 2026-10-21;
+Task 1 may start).
 
 **Architecture:** No new stack. Node and gateway: the #410 server-rendered Rust module
 `crates/iw-cli/src/ui/`. Relay: the existing Preact + htm relay console. Shared contract: the
