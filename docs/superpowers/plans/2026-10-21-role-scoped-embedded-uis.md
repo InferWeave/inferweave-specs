@@ -63,6 +63,27 @@ un-gated in the Go repo today), with committed baselines.
 When Tasks 5 and 6 reach parity for the listed pages, mark the Go UI read-only, then remove it with
 the Go gateway. Out of scope until the operator approves the Go gateway's retirement.
 
+## Task 1 result: extraction boundary (Go `web/` at `feat/node-systemone-adverts`, 2026-10-21)
+
+Source is `metabolomics-us/inferweave-gateway/web/src`, esbuild + TypeScript, no framework; build is
+`node build.mjs`, check is `tsc --noEmit`, with 39 Playwright scripts in `web/tools` (not in CI).
+
+| Module | Lines | Decision |
+|---|---|---|
+| `shared/theme.css`, `shared/theme.ts` | 1405, 44 | **Move to `shared`.** Single token source and dark-mode switch. |
+| `shared/api.ts` | 226 | **Move to `shared`.** `getJSON`, cache, dedupe, timeout, `poll`, `panelPoll`, stale/provenance states. Role-neutral, no endpoint paths. |
+| `shared/nav.ts` | 125 | **Move to `shared`.** Depends only on `api.ts`; make the nav groups a per-role input. |
+| `shared/charts.ts` | 828 | **Move to `shared`.** Depends only on `api.ts`. |
+| `shared/network.css` | 250 | **Move to `shared`** after a check that its selectors are not gateway-only. |
+| `shared/webVitals.ts` | 73 | **Move to `shared`;** the `/console/api/web-vitals` target becomes a per-role setting. |
+| `console/stream.ts` (SSE client) | n/a | **Move to `shared`;** make the stream URL and event kinds per-role. |
+| `shared/models.ts`, `modalities.ts`, `modelLinks.ts`, `usageFormat.ts` | 96, 77, 38, 225 | **Stay in the gateway entry point.** They are gateway concepts and hard-code `/console/api/*` paths. |
+| `console/*.ts` (about 40 pages) and `portal/*` | n/a | **Gateway entry point only.** |
+
+Open before Task 2: confirm `network.css` and `charts.ts` carry no gateway-only assumptions, and
+decide whether the portal (per-user quickstart/keys/usage) is a fourth entry point or part of the
+gateway one.
+
 ## Findings (2026-10-21, read-only check of `InferWeave/inferweave` at 83ff68aa)
 
 - **Gateway:** no `/console` or `/console/api/*` route and no embedded-asset serving anywhere in
