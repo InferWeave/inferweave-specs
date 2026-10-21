@@ -1,9 +1,9 @@
 # ADR — Role-scoped embedded operator UIs (gateway, node, relay)
 
-**Status:** Accepted for implementation (operator instruction, 2026-10-21)  
+**Status:** Proposed (returned from "Accepted for implementation" on 2026-10-21: the acceptance rested on an incomplete survey, see Prior art)  
 **Decision owner:** operator  
 **Date:** 2026-10-21  
-**Authorizes:** building the design in the plan
+**Authorizes:** nothing until accepted. If accepted: building the design in the plan
 `docs/superpowers/plans/2026-10-21-role-scoped-embedded-uis.md`. It does not authorize deployment,
 exposure beyond loopback, or removal of the Go gateway.  
 **Relationship:** `re-decides` the single-surface wording of D-002 (narrow existing-system exception,
@@ -25,6 +25,27 @@ knows fleet routing, admission, usage, keys and approvals. A relay knows its ups
 routes. The Go UI's `/console/api/*` views were composed from a registry that competes with Rust as a
 source of truth (see the 2026-10-16 gateway-UI audit); a UI that can only call its own process's typed
 API cannot repeat that.
+
+## Prior art this record did not account for
+
+The first draft said no Rust role serves a UI and assumed the Go gateway retires. Both were wrong or
+unreconciled. Found afterwards in `InferWeave/inferweave`:
+
+- **#410 (merged 2026-09-19), `crates/iw-cli/src/ui/`:** one Rust module renders server-side HTML with
+  no JavaScript for node, gateway, edge and orchestrator; only the data differs per role. Its stated
+  rule is that the stylesheet is the cross-language contract and components do not cross languages.
+  Only the dev preview (`node-ui-preview`) mounts it; no production binary does.
+- **Relay console design (`docs/superpowers/specs/2026-10-07-relay-console-design.md`):** vendored
+  Preact + htm, no build step, embedded in `iw-relay-http`. `feat/relay-console` is 108 commits ahead
+  of and 449 behind main, with no PR. `dashboard.rs` on main is the older inline dashboard.
+- **#1013 (merged 2026-10-17):** makes the Rust gateway the only gateway and **the Go gateway the
+  frontend** (OIDC, sessions, console BFF, embedded web bundle). This conflicts with the premise below
+  that the Go UI retires with the Go gateway. If the operator's intent is retirement, this record must
+  name and re-decide #1013; it may not do so by implication.
+- **Provisioning console plan (2026-10-16):** adds operator sections to the Go-edge console.
+
+Decision 2 below (a TypeScript workspace extracted from Go `web/`) is therefore a third design beside
+#410 and the relay console. It stays Proposed until the operator chooses.
 
 ## Decision
 

@@ -9,7 +9,7 @@ redaction, a11y helpers) and three entry points (`gateway`, `node`, `relay`). Ea
 a bundle that its Rust binary embeds and serves from `/console`. Wire types are generated from Rust
 schemas by `schema-gen`. Nothing here adds a second frontend or a new storage service.
 
-**Decision record:** `decisions/2026-10-21-role-scoped-embedded-uis.md` (accepted for implementation).
+**Decision record:** `decisions/2026-10-21-role-scoped-embedded-uis.md` (Proposed; returned from accepted. **Do not start Task 2 onward.** See the record's Prior art section: #410, the relay console design and #1013 are unreconciled with this plan).
 
 ## Global constraints
 
@@ -92,9 +92,9 @@ gateway one.
   `routes/events`, `profiles`, `profiles/decisions`, `community`, `dynamic`, `model-intelligence/*`,
   and `provision/operator/{status,approvals,approve,reject,policy,hosting/*}`. Dispatch is not
   completeness: handler behaviour is still unverified.
-- **Node:** `iw-node` and `inferweave node join` expose no HTTP listener. They only scrape the
+- **Node:** `iw-node` and `inferweave node join` expose no HTTP listener in production. A server-rendered node page exists (`iw-cli/src/ui`, #410) but only the dev preview mounts it. They only scrape the
   engine's `/metrics` and `/health`. Task 3 must add a node-local read API first.
-- **Relay:** already has an embedded dashboard (see Task 4).
+- **Relay:** already has an embedded dashboard (see Task 4), and a larger console is designed and partly built on `feat/relay-console` (not merged).
 
 ## Open questions
 
