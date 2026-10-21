@@ -9,8 +9,7 @@ redaction, a11y helpers) and three entry points (`gateway`, `node`, `relay`). Ea
 a bundle that its Rust binary embeds and serves from `/console`. Wire types are generated from Rust
 schemas by `schema-gen`. Nothing here adds a second frontend or a new storage service.
 
-**Decision record:** `decisions/2026-10-21-role-scoped-embedded-uis.md` (Proposed; do not start
-Task 2 onward until it is accepted for implementation).
+**Decision record:** `decisions/2026-10-21-role-scoped-embedded-uis.md` (accepted for implementation).
 
 ## Global constraints
 
@@ -40,8 +39,10 @@ log lines, drain. Serves from the node's own API only. Needs a node-local read A
 exist; add it to the node, additively. Gate: a11y, responsive and screenshot checks per route.
 
 ### Task 4: Relay UI
-Pages: upstream gateways, route weights, per-credential traffic, health. Retire the dependency on a
-farm tunnel in its examples. Gate as Task 3.
+`crates/iw-relay-http/src/dashboard.rs` already serves a self-contained dashboard at `/` and
+`/dashboard` (118 lines, inline CSS with its own dark palette) over `/api/overview`, `/api/gateways`,
+`/api/requests`, `/api/tunnel`. Port it onto the shared tokens and components rather than writing a
+new one; keep its API. Gate as Task 3.
 
 ### Task 5: Gateway UI on Rust
 Serve the ported `web/` bundle from the Rust gateway at `/console`, backed by `/iw/v1/*` and
@@ -62,9 +63,19 @@ un-gated in the Go repo today), with committed baselines.
 When Tasks 5 and 6 reach parity for the listed pages, mark the Go UI read-only, then remove it with
 the Go gateway. Out of scope until the operator approves the Go gateway's retirement.
 
+## Findings (2026-10-21, read-only check of `InferWeave/inferweave` at 83ff68aa)
+
+- **Gateway:** no `/console` or `/console/api/*` route and no embedded-asset serving anywhere in
+  `crates/`. The `/iw/v1/*` read endpoints are all dispatched in `crates/iw-gateway/src/server.rs`:
+  `topology`, `gpu-memory`, `occupancy`, `autoscaler`, `admission`, `federation`, `routes`,
+  `routes/events`, `profiles`, `profiles/decisions`, `community`, `dynamic`, `model-intelligence/*`,
+  and `provision/operator/{status,approvals,approve,reject,policy,hosting/*}`. Dispatch is not
+  completeness: handler behaviour is still unverified.
+- **Node:** `iw-node` and `inferweave node join` expose no HTTP listener. They only scrape the
+  engine's `/metrics` and `/health`. Task 3 must add a node-local read API first.
+- **Relay:** already has an embedded dashboard (see Task 4).
+
 ## Open questions
 
-- Does the Rust gateway already serve any `/console/api/*` route? (Not checked.)
-- Is there a node-local HTTP API to build the node UI on, or must one be added?
-- Which Rust handlers behind `/iw/v1/{profiles/decisions,occupancy,provision/operator/*}` are
-  complete? The 2026-10-16 audit left this unverified.
+- Which gateway handlers return real data rather than empty views? Verify per page in Task 5/6.
+- Shape and auth of the node-local read API (Task 3).

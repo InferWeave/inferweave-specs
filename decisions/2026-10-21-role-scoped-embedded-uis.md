@@ -1,9 +1,9 @@
 # ADR — Role-scoped embedded operator UIs (gateway, node, relay)
 
-**Status:** Proposed  
+**Status:** Accepted for implementation (operator instruction, 2026-10-21)  
 **Decision owner:** operator  
 **Date:** 2026-10-21  
-**Authorizes:** nothing until accepted. If accepted for design: the design in the plan
+**Authorizes:** building the design in the plan
 `docs/superpowers/plans/2026-10-21-role-scoped-embedded-uis.md`. It does not authorize deployment,
 exposure beyond loopback, or removal of the Go gateway.  
 **Relationship:** `re-decides` the single-surface wording of D-002 (narrow existing-system exception,
@@ -61,4 +61,5 @@ Go behaviour before Rust parity is proven, or any change to alias authority (Rus
 
 ## Owed
 
-Review by the operator; the matching gate row in `OPEN_GATES.md` if accepted for production.
+Independent review of the implementation; the matching gate row in `OPEN_GATES.md` before any
+production acceptance.
