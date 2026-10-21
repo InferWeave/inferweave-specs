@@ -1,102 +1,63 @@
 # Role-scoped embedded UIs Implementation Plan
 
-**Goal:** Give the Rust gateway, node and relay each an embedded operator UI limited to the state it
-owns, built from one shared design system and component package, so the Go gateway UI can be retired
-with the Go gateway.
+**Goal:** Each Rust role (node, relay, gateway) serves its own limited UI over its own state, sharing
+one stylesheet and class vocabulary, so Go gateway pages can be retired one at a time.
 
-**Architecture:** One TypeScript workspace. A `shared` package (tokens, nav, API client, SSE, panels,
-redaction, a11y helpers) and three entry points (`gateway`, `node`, `relay`). Each entry point builds
-a bundle that its Rust binary embeds and serves from `/console`. Wire types are generated from Rust
-schemas by `schema-gen`. Nothing here adds a second frontend or a new storage service.
+**Decision record:** `decisions/2026-10-21-role-scoped-embedded-uis.md` (Proposed; awaiting operator
+acceptance). Do not start Task 1 until it is accepted.
 
-**Decision record:** `decisions/2026-10-21-role-scoped-embedded-uis.md` (Proposed; returned from accepted. **Do not start Task 2 onward.** See the record's Prior art section: #410, the relay console design and #1013 are unreconciled with this plan).
+**Architecture:** No new stack. Node and gateway: the #410 server-rendered Rust module
+`crates/iw-cli/src/ui/`. Relay: the existing Preact + htm relay console. Shared contract: the
+stylesheet and class names.
 
 ## Global constraints
 
-- Each UI calls only its own process's typed API and event stream.
-- Rust computes; TypeScript renders. Unknown, unsupported, stale and zero are distinct states.
-- Loopback by default. Config is YAML only; no environment variables.
-- Existing Go UI is frozen to fixes; port behaviour, do not redesign it.
-- Every route is covered by the machine-checked presentation policy (spec 10): default and narrow
-  viewport, forced-colors, reduced-motion, wired or fixture, unsupported. A route missing from the
-  policy fails the check.
+- Each UI reads only its own process's state or typed API. Rust computes; pages render.
+- Unknown, unsupported, stale and zero are distinct on screen.
+- Loopback by default; YAML config only; no environment variables.
+- No fetch of external resources (no CDN, font URL or script); a test asserts it, as in #410.
+- Work in a worktree off `origin/main`; the main checkout carries unrelated uncommitted changes.
 
 ## Tasks
 
-### Task 1: Audit and decide the extraction boundary
-Read-only. List what in Go `web/src/shared` (api.ts, nav.ts, stream.ts, theme.css, theme.ts) is
-role-neutral. Confirm the gateway repo's source/dist parity check and Playwright tools. Output: the
-list of modules that move to `shared`, and the endpoints each role's API already exposes.
+### Task 1: Mount the node page in production
+`inferweave node join` serves `ui::node_page` on a loopback listener from the node's own state
+(engine, slots, KV, GPU memory, join and link status, health). Today only `node-ui-preview`
+(`entry/dev_node_ui.rs`) mounts it. Add the listener address to the node's YAML config. Gate: the
+existing `ui` tests plus a test that the page renders with the node down and with the engine
+unhealthy; no external resource referenced.
 
-### Task 2: Shared package and build
-Create the workspace, move the role-neutral modules, generate wire types with `schema-gen`, and add a
-bundle-parity CI step per entry point. Gate: `tsc`, build, and bundle parity pass for an empty
-`node` entry point.
+### Task 2: Land the relay console
+Assess `feat/relay-console` (108 ahead, 449 behind, no PR). Rebase or re-apply onto `origin/main`,
+open a PR, and move its colour tokens onto the shared stylesheet. Gate: its own tests plus the
+vendored-file hash test.
 
-### Task 3: Node UI (first, smallest)
-Pages: engine and model state, slots and KV, GPU memory, join and link status, health and recent
-log lines, drain. Serves from the node's own API only. Needs a node-local read API if one does not
-exist; add it to the node, additively. Gate: a11y, responsive and screenshot checks per route.
+### Task 3: Gateway read pages
+Add server-rendered pages to the Rust gateway for views backed by existing `/iw/v1/*` handlers:
+topology, GPU memory, occupancy, autoscaler, admission, federation, routes, profiles and decisions,
+operator approvals. Verify per page that the handler returns real data, not an empty view. Gate:
+accessibility and narrow-viewport checks per page.
 
-### Task 4: Relay UI
-`crates/iw-relay-http/src/dashboard.rs` already serves a self-contained dashboard at `/` and
-`/dashboard` (118 lines, inline CSS with its own dark palette) over `/api/overview`, `/api/gateways`,
-`/api/requests`, `/api/tunnel`. Port it onto the shared tokens and components rather than writing a
-new one; keep its API. Gate as Task 3.
+### Task 4: Reconcile the stylesheet
+Make `ui/style.rs` the source of truth; map Go `web/src/shared/theme.css` tokens to it; record the
+mapping. Gate: a check that the class vocabulary used by node, relay and gateway pages is a subset of
+the shared one.
 
-### Task 5: Gateway UI on Rust
-Serve the ported `web/` bundle from the Rust gateway at `/console`, backed by `/iw/v1/*` and
-`/inferweave/v1/*` read adapters (topology, gpu-memory, aliases, alias-capabilities, events). Port
-pages in this order: overview, models, usage, keys, nodes, routing, topology, GPU memory. Gate: a
-page is done when its data comes from Rust and its Go counterpart is no longer the only source.
+### Task 5: Chart-heavy pages decision
+Decide, with the operator, how usage, topology and model-performance pages are served from Rust (see
+the record's Open section). Out of scope until then.
 
-### Task 6: Missing spec-07 views
-New, on Rust typed APIs only: CPU/RAM/unified memory with allocatable/reserved/free, NUMA,
-deployment stages, federation approvals and leases, Slurm wait reasons, placement and fallback
-decision history, benchmark evidence. Each view shows `unsupported` until its Rust API exists.
+### Task 6: Go page retirement
+Per page: when a Rust replacement passes the same checks, remove that page from Go. Removing the Go
+gateway itself is a separate operator decision.
 
-### Task 7: CI gates
-Run the Playwright accessibility, responsive and screenshot-diff checks per bundle in CI (they are
-un-gated in the Go repo today), with committed baselines.
+## Findings (2026-10-21, `InferWeave/inferweave` origin/main da636235)
 
-### Task 8: Go UI retirement
-When Tasks 5 and 6 reach parity for the listed pages, mark the Go UI read-only, then remove it with
-the Go gateway. Out of scope until the operator approves the Go gateway's retirement.
-
-## Task 1 result: extraction boundary (Go `web/` at `feat/node-systemone-adverts`, 2026-10-21)
-
-Source is `metabolomics-us/inferweave-gateway/web/src`, esbuild + TypeScript, no framework; build is
-`node build.mjs`, check is `tsc --noEmit`, with 39 Playwright scripts in `web/tools` (not in CI).
-
-| Module | Lines | Decision |
-|---|---|---|
-| `shared/theme.css`, `shared/theme.ts` | 1405, 44 | **Move to `shared`.** Single token source and dark-mode switch. |
-| `shared/api.ts` | 226 | **Move to `shared`.** `getJSON`, cache, dedupe, timeout, `poll`, `panelPoll`, stale/provenance states. Role-neutral, no endpoint paths. |
-| `shared/nav.ts` | 125 | **Move to `shared`.** Depends only on `api.ts`; make the nav groups a per-role input. |
-| `shared/charts.ts` | 828 | **Move to `shared`.** Depends only on `api.ts`. |
-| `shared/network.css` | 250 | **Move to `shared`** after a check that its selectors are not gateway-only. |
-| `shared/webVitals.ts` | 73 | **Move to `shared`;** the `/console/api/web-vitals` target becomes a per-role setting. |
-| `console/stream.ts` (SSE client) | n/a | **Move to `shared`;** make the stream URL and event kinds per-role. |
-| `shared/models.ts`, `modalities.ts`, `modelLinks.ts`, `usageFormat.ts` | 96, 77, 38, 225 | **Stay in the gateway entry point.** They are gateway concepts and hard-code `/console/api/*` paths. |
-| `console/*.ts` (about 40 pages) and `portal/*` | n/a | **Gateway entry point only.** |
-
-Open before Task 2: confirm `network.css` and `charts.ts` carry no gateway-only assumptions, and
-decide whether the portal (per-user quickstart/keys/usage) is a fourth entry point or part of the
-gateway one.
-
-## Findings (2026-10-21, read-only check of `InferWeave/inferweave` at 83ff68aa)
-
-- **Gateway:** no `/console` or `/console/api/*` route and no embedded-asset serving anywhere in
-  `crates/`. The `/iw/v1/*` read endpoints are all dispatched in `crates/iw-gateway/src/server.rs`:
-  `topology`, `gpu-memory`, `occupancy`, `autoscaler`, `admission`, `federation`, `routes`,
-  `routes/events`, `profiles`, `profiles/decisions`, `community`, `dynamic`, `model-intelligence/*`,
-  and `provision/operator/{status,approvals,approve,reject,policy,hosting/*}`. Dispatch is not
-  completeness: handler behaviour is still unverified.
-- **Node:** `iw-node` and `inferweave node join` expose no HTTP listener in production. A server-rendered node page exists (`iw-cli/src/ui`, #410) but only the dev preview mounts it. They only scrape the
-  engine's `/metrics` and `/health`. Task 3 must add a node-local read API first.
-- **Relay:** already has an embedded dashboard (see Task 4), and a larger console is designed and partly built on `feat/relay-console` (not merged).
-
-## Open questions
-
-- Which gateway handlers return real data rather than empty views? Verify per page in Task 5/6.
-- Shape and auth of the node-local read API (Task 3).
+- Gateway: no `/console` route; the `/iw/v1/*` read endpoints for Task 3 are all dispatched in
+  `crates/iw-gateway/src/server.rs`. Dispatch is not completeness.
+- Node: no production HTTP listener; `ui::node_page` is mounted only by the dev preview.
+- Relay: `dashboard.rs` (inline page) on main; the larger console is on `feat/relay-console`.
+- Go `web/`: shared modules are `theme.css`, `theme.ts`, `api.ts`, `nav.ts`, `charts.ts`,
+  `network.css`, `webVitals.ts`; `models.ts`, `modalities.ts`, `modelLinks.ts` and `usageFormat.ts`
+  are gateway concepts with hard-coded `/console/api/*` paths. 39 Playwright scripts in `web/tools`
+  are not run in CI.

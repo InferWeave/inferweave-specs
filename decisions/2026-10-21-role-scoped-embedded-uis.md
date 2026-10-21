@@ -1,86 +1,83 @@
 # ADR — Role-scoped embedded operator UIs (gateway, node, relay)
 
-**Status:** Proposed (returned from "Accepted for implementation" on 2026-10-21: the acceptance rested on an incomplete survey, see Prior art)  
+**Status:** Proposed  
 **Decision owner:** operator  
 **Date:** 2026-10-21  
-**Authorizes:** nothing until accepted. If accepted: building the design in the plan
-`docs/superpowers/plans/2026-10-21-role-scoped-embedded-uis.md`. It does not authorize deployment,
-exposure beyond loopback, or removal of the Go gateway.  
+**Authorizes:** nothing until accepted. If accepted: building the plan in
+`docs/superpowers/plans/2026-10-21-role-scoped-embedded-uis.md`. Never deployment, exposure beyond
+loopback, or removal of the Go gateway.  
 **Relationship:** `re-decides` the single-surface wording of D-002 (narrow existing-system exception,
-amended 2026-10-12) and `re-decides` the "extend the existing gateway UI" scope of spec 58 and
-`07-UI-OBSERVABILITY.md`. Every other invariant of those records stands, including: no second
-frontend, no Go templates for new products, new dashboards/portals/explorers/Workbench stay
-Next.js + TypeScript, Rust owns every calculation, and the public dashboard never administers
-provider nodes.
+amended 2026-10-12) and the "extend the existing gateway UI" scope of spec 58 and
+`07-UI-OBSERVABILITY.md`; and `re-decides` the end state of #1013 (`InferWeave/inferweave`,
+2026-10-17: "Go becomes the frontend") from *permanent frontend* to *frontend until Rust parity, then
+retired*. Every other invariant of those records stands: no Go templates for new products, new
+dashboards/portals/explorers/Workbench stay Next.js + TypeScript, Rust owns every calculation, the
+public dashboard never administers provider nodes, alias authority is Rust only.
 
 ## Context
 
-D-002 permits one embedded operator UI: the one in the Go site gateway
-(`metabolomics-us/inferweave-gateway`). The Go gateway is being retired and superseded by the Rust
-gateway (`InferWeave/inferweave`). No Rust gateway, node or relay serves a UI today: the local
-gateways on bender return a JSON 404 for `/`, `/console` and `/console/api/me`.
-
 Each Rust role owns a different slice of state. A node knows its engine, slots, KV and GPU. A gateway
 knows fleet routing, admission, usage, keys and approvals. A relay knows its upstream gateways and
-routes. The Go UI's `/console/api/*` views were composed from a registry that competes with Rust as a
-source of truth (see the 2026-10-16 gateway-UI audit); a UI that can only call its own process's typed
-API cannot repeat that.
+routes. The operator's intent (2026-10-21): each role serves its own limited UI, all sharing one look
+and components where practical, and the Go gateway is eventually retired and superseded by the Rust
+gateway.
 
-## Prior art this record did not account for
+What already exists in `InferWeave/inferweave` (found 2026-10-21, after a first draft of this record
+missed it):
 
-The first draft said no Rust role serves a UI and assumed the Go gateway retires. Both were wrong or
-unreconciled. Found afterwards in `InferWeave/inferweave`:
-
-- **#410 (merged 2026-09-19), `crates/iw-cli/src/ui/`:** one Rust module renders server-side HTML with
-  no JavaScript for node, gateway, edge and orchestrator; only the data differs per role. Its stated
-  rule is that the stylesheet is the cross-language contract and components do not cross languages.
-  Only the dev preview (`node-ui-preview`) mounts it; no production binary does.
-- **Relay console design (`docs/superpowers/specs/2026-10-07-relay-console-design.md`):** vendored
-  Preact + htm, no build step, embedded in `iw-relay-http`. `feat/relay-console` is 108 commits ahead
-  of and 449 behind main, with no PR. `dashboard.rs` on main is the older inline dashboard.
-- **#1013 (merged 2026-10-17):** makes the Rust gateway the only gateway and **the Go gateway the
-  frontend** (OIDC, sessions, console BFF, embedded web bundle). This conflicts with the premise below
-  that the Go UI retires with the Go gateway. If the operator's intent is retirement, this record must
-  name and re-decide #1013; it may not do so by implication.
-- **Provisioning console plan (2026-10-16):** adds operator sections to the Go-edge console.
-
-Decision 2 below (a TypeScript workspace extracted from Go `web/`) is therefore a third design beside
-#410 and the relay console. It stays Proposed until the operator chooses.
+- **#410 (2026-09-19), `crates/iw-cli/src/ui/`:** one Rust module renders server-side HTML with no
+  JavaScript for node, gateway, edge and orchestrator pages. Only data differs per role. The
+  stylesheet is the cross-language contract; components are deliberately not shared across languages.
+  Only the dev preview `node-ui-preview` mounts it. No production binary serves it.
+- **Relay console:** design on main (`docs/superpowers/specs/2026-10-07-relay-console-design.md`),
+  vendored Preact + htm, no build step, embedded in `iw-relay-http`. Built on `feat/relay-console`
+  (108 commits ahead of main, 449 behind, no PR). `dashboard.rs` on main is the older inline page.
+- **#1013 (2026-10-17):** Rust gateway becomes the only gateway; Go keeps sign-in, sessions, the
+  console backend-for-frontend and the embedded web bundle.
+- **Go gateway `web/`:** esbuild TypeScript, about 40 pages, the richest UI today. It is the only
+  place charts, topology, usage and key pages exist.
 
 ## Decision
 
-1. Each Rust role (**gateway**, **node**, **relay**) may embed its own operator UI, limited to the
-   state that role owns. This is the same exception D-002 grants the Go site gateway, extended to
-   those roles. It is not authority for any other browser application.
-2. There is **one frontend codebase and one design system**. A shared package holds tokens
-   (`theme.css`), navigation, the API client (poll, cache, stale handling), the SSE client, panels,
-   redaction and accessibility helpers. Each role has its own entry point and builds its own bundle;
-   a binary embeds only its own bundle. The existing Go `web/` bundle is the starting point for the
-   shared package and the gateway entry point.
-3. A role UI calls **only its own process's typed API** and event stream. A node bundle does not
-   call fleet endpoints; a relay bundle does not call node endpoints. Wire types are generated from
-   the Rust schemas (`schema-gen`), not hand-copied.
-4. Rust owns every measure. TypeScript renders and formats; it does not recompute capacity,
-   eligibility, ranking or fit.
-5. Node and relay UIs bind to loopback by default. Serving beyond loopback requires explicit
-   configuration and authentication. Configuration is YAML only; no environment variables.
-6. The Go gateway UI is frozen to fixes. It is retired with the Go gateway, after the Rust gateway
-   bundle reaches parity for the pages in the plan, and not before.
+1. **No new frontend stack.** Roles use what already exists, joined by one shared stylesheet.
+2. **Node:** the #410 server-rendered Rust pages, mounted in `inferweave node join` on a loopback
+   listener, reading only that node's own state. No JavaScript.
+3. **Relay:** land the existing relay console (Preact + htm, no build step) from `feat/relay-console`,
+   rebased onto main, rather than rewriting it. Its tokens move to the shared stylesheet.
+4. **Gateway:** the Rust gateway serves server-rendered read pages (#410 style) over its own `/iw/v1/*`
+   endpoints for the views that exist as Rust data (topology, GPU memory, occupancy, autoscaler,
+   admission, federation, routes, profiles, operator approvals). The Go gateway keeps the rich
+   console, sign-in and sessions until a Rust page exists for each Go page it would replace.
+5. **One contract across roles:** the stylesheet (`crates/iw-cli/src/ui/style.rs` is the source) and
+   the class names. The Go `web/` `theme.css` tokens are reconciled to it. Components are not shared
+   across languages.
+6. **Retirement:** the Go gateway is retired by migrating pages, not by a flag day. #1013's "Go is the
+   frontend" holds until each page has a Rust replacement that passes the same accessibility checks;
+   then that page's Go code is removed. Removing Go is a separate operator decision.
+7. Every served UI binds to loopback by default. Serving beyond loopback needs explicit YAML
+   configuration and authentication. No environment variables.
+
+## Open
+
+- Whether server-rendered pages are enough for the gateway's chart-heavy pages (usage, topology,
+  model performance). Decision 4 covers only the views that are tables, status and approvals. If
+  charts need client-side code, a follow-up record must say what and where.
+- Whether `feat/relay-console` can be rebased: 449 commits behind main.
 
 ## Rejected
 
-- **One bundle served by every role:** ships fleet code in a node and invites the node UI to reach
-  for fleet state it does not own.
-- **A separate Next.js admin app per role:** a second frontend, rejected by D-002 and spec 58.
-- **Fork the Go UI per role:** divergent copies of tokens, nav and client within a release.
-- **Move the UI into the public dashboard:** the public dashboard is read-only and public-safe.
+- **A new TypeScript workspace with a bundle per role** (the first draft): a third design beside #410
+  and the relay console, without evidence #410's approach cannot serve the Rust roles.
+- **One bundle served by every role:** ships fleet code in a node.
+- **A Next.js admin app per role:** a second frontend, rejected by D-002 and spec 58.
+- **Rewriting the relay console as server-rendered pages:** discards 108 commits for no gain.
 
 ## Does not authorize
 
-Production rollout, exposure on a non-loopback address, new fleet-wide node endpoints, removal of
-Go behaviour before Rust parity is proven, or any change to alias authority (Rust only).
+Production rollout, exposure on a non-loopback address, new fleet-wide node endpoints, removal of Go
+behaviour before Rust parity per page, or any change to alias authority.
 
 ## Owed
 
-Independent review of the implementation; the matching gate row in `OPEN_GATES.md` before any
-production acceptance.
+Operator acceptance; independent review of the implementation; the matching gate row in
+`OPEN_GATES.md` before production acceptance.
