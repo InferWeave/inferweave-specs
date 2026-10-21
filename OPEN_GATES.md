@@ -552,3 +552,18 @@ sources, complete task/logical linkage, sustained current hardware capacity and
 qualified production evaluation imports remain **owed**. Before/theme-after
 reports are bounded slices; final integrated route/browser/screenshots and
 source/dist evidence are still owed at this checkpoint. No production gate closes.
+
+## YAML-only configuration (invariant 44) — partially satisfied
+
+The **gateway** satisfies invariant 44 in `InferWeave/inferweave` PR #1140 (**not merged** as of
+2026-10-21; hive and fleet launchers outside that repository are not converted): one YAML file
+via `--config`, strict keys and ranges, a refusal that names any `IW_*` or `INFERWEAVE_*`
+variable that is set, secrets by file path, a default file held equal to the built-in defaults by
+a test, a source scan that fails when an environment read is reintroduced, and the effective
+configuration at `GET /internal/config` behind the metrics bearer. zapp's gateway runs a build
+of that branch; no other deployment does.
+
+Invariant 44 remains **unsatisfied** for every other binary: `inferweave` (node, join, probe,
+cluster init), `iw-relay`, `iw-protocol-http`, the diffusion, image and System One workers,
+`iw-drain`, `iw-store` and `schema-gen` still read `IW_*` / `INFERWEAVE_*` variables, as do the
+launchers' own knobs. Converting them, and any deployment of the gateway change, are **owed**.

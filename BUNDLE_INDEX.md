@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,017,175 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,017,996 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `2a3adde4f3b8` — ~9,327t
+- `OPEN_GATES.md` — `9911d2c94685` — ~9,591t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -426,7 +426,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `implementation/TOPOLOGICAL_ORDER.md` — `db63d2e0bd70` — ~367t
 - `openapi/README.md` — `2cec122d644f` — ~207t
 - `openapi/inferweave-v1.yaml` — `364453281a7f` — ~14,509t
-- `openapi/model-intelligence.md` — `87fa71e8e832` — ~1,809t
+- `openapi/model-intelligence.md` — `87fa71e8e832` — ~2,163t
 - `openapi/model-intelligence.yaml` — `ef5983db9e38` — ~16,418t
 - `pi/CANONICAL_TASK_EXECUTION.md` — `f79136f6e85c` — ~469t
 - `pi/CONTEXT_PACK_CHECKLIST.md` — `8a9c95b7ec3d` — ~200t
@@ -538,7 +538,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `scripts/test_validate_specs.py` — `45b7fd4b5ecc` — ~6,695t
 - `scripts/validate_specs.py` — `45e6bfce2be5` — ~11,673t
 - `solana/DEVNET_ONLY.md` — `1a8ea96fcc58` — ~136t
-- `specs/00_INVARIANTS.md` — `e21827e64179` — ~1,478t
+- `specs/00_INVARIANTS.md` — `bd7aa26a3e2d` — ~1,681t
 - `specs/01_REPOSITORIES_AND_OWNERSHIP.md` — `e52f5e6e8112` — ~735t
 - `specs/02_PROTOCOL_AND_API.md` — `b7db68077f03` — ~542t
 - `specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md` — `2e0dd828a616` — ~1,971t
