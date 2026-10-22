@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,543,699 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,543,749 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -107,7 +107,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/model-intelligence-acceptance.json` — `f7e876b6d9ca` — ~1,198t
 - `contracts/node-reconcile.json` — `e98cbb3e4173` — ~1,693t
 - `contracts/observability-capacity.json` — `b5b9d947fb42` — ~1,420t
-- `contracts/private-attempt-metrics.json` — `7457e387a67b` — ~520t
+- `contracts/private-attempt-metrics.json` — `dafbd5209af5` — ~542t
 - `contracts/private-observability.json` — `98f95bb2ee93` — ~1,023t
 - `contracts/prompt-record.example.json` — `8b199a55dc53` — ~137t
 - `contracts/protocol-v1/alias-execution.json` — `ca41b93ec234` — ~1,367t
@@ -163,7 +163,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/federated-provisioning-audit.md` — `ce321d70bacd` — ~9,209t
 - `docs/federation.md` — `dfe0a66eaf91` — ~320t
 - `docs/lifecycle.md` — `d17f7ed1827f` — ~408t
-- `docs/private-attempt-metrics.md` — `98268393304b` — ~1,135t
+- `docs/private-attempt-metrics.md` — `abc726945dd1` — ~1,163t
 - `docs/scheduling.md` — `743fddcd8bda` — ~412t
 - `docs/security.md` — `9bd1af6513b2` — ~423t
 - `docs/site-gateway-capabilities.md` — `8637e4b149b8` — ~2,228t
