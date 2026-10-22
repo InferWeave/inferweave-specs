@@ -1222,3 +1222,11 @@ external-node envelopes exist as draft pull requests under
 Nothing is merged or deployed. Provider billing, provider API calls and exposure beyond loopback stay BLOCKED.
 Independent review: BLOCKED (see the independent review gate). Screenshot baselines are recorded from a
 real Rust stack with a labelled test-double engine on one host; they are not production evidence.
+
+### 2026-10-22: private local attempt metrics contract
+
+The additive `contracts/private-attempt-metrics.json` describes bounded
+IW-OBS-001 / IW-TEL-001 operator diagnostics, not public request history or a
+warehouse. Runtime instrumented transport coverage, independent review and
+production activation remain **owed**. New endpoint publication is private
+Bearer-only; no public/cohort, fleet-completeness or private-carrier gate opens.
