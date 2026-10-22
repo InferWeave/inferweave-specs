@@ -431,3 +431,22 @@ pagination preserves query identity and parent revisions, with explicit missing
 companions and read health. All routes default disabled; production collection
 requires paired generation, atomic revision/seal/prune and persisted late-ingest
 fences first. Public publication authority and retention scope are unchanged.
+
+## Bounded private attempt metrics
+
+IW-OBS-001 / IW-TEL-001 may expose local terminal admitted execution-attempt
+observations through the operator-only `GET /internal/requests/metrics` surface
+under existing `secrets.metrics_token_file` bearer authorization. The additive contract is
+[`private-attempt-metrics.json`](../contracts/private-attempt-metrics.json), with
+semantics and limits in [the operator note](../docs/private-attempt-metrics.md).
+These counters do not claim logical-request deduplication, fleet completeness,
+inference success from transport success, durable warehouse history or public
+publication authority. Missing/estimated usage cannot become reported tokens.
+
+Operational basis: on 2026-10-22 the active Hive Rust gateway served scheduler,
+trust and image families on `/iw/metrics`, but not the historical Go gateway's
+model request/token/duration families; its `/metrics` and orchestrator metrics
+paths returned 404. Restoring that scrape cannot reconstruct unrecorded request
+measurements. The private accumulator instead consumes existing monotonic
+completion observations before best-effort ledger persistence. No gate closes
+from this specification. Public `/iw/metrics` is unchanged.

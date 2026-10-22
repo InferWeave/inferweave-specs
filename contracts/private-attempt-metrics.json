@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "features": [
+    "IW-OBS-001",
+    "IW-TEL-001"
+  ],
+  "canonical_tasks": [
+    "P1-T20"
+  ],
+  "surface": {
+    "method": "GET",
+    "path": "/internal/requests/metrics",
+    "audience": "operator",
+    "credential": "secrets.metrics_token_file bearer",
+    "disabled_status": 404,
+    "unauthenticated_status": 401,
+    "wrong_method_status": 405
+  },
+  "population": "locally observed terminal admitted execution attempts; retries are distinct attempts, not logical requests",
+  "exclusions": [
+    "early authentication/admission refusals",
+    "unobserved remote/direct-node attempts",
+    "crash-lost terminal observations"
+  ],
+  "outcomes": [
+    "completed",
+    "node_error",
+    "stream_error",
+    "client_disconnected",
+    "client_cancelled",
+    "node_unreachable",
+    "upstream_rejected",
+    "other"
+  ],
+  "directions": [
+    "input",
+    "output"
+  ],
+  "usage_bases": [
+    "reported",
+    "estimated",
+    "missing",
+    "unsupported",
+    "invalid"
+  ],
+  "model_limits": {
+    "maximum_values": 64,
+    "maximum_utf8_bytes": 256,
+    "overflow": "__overflow__",
+    "membership": "first observed until accumulator restart"
+  },
+  "duration_seconds_buckets": [
+    0.1,
+    1,
+    5,
+    15,
+    60,
+    180,
+    600,
+    1800,
+    "+Inf"
+  ],
+  "metrics": {
+    "inferweave_gateway_attempts_total": [
+      "model",
+      "outcome"
+    ],
+    "inferweave_gateway_attempt_duration_seconds": [
+      "model"
+    ],
+    "inferweave_gateway_attempt_invalid_duration_total": [
+      "model"
+    ],
+    "inferweave_gateway_attempt_reported_tokens_total": [
+      "model",
+      "direction"
+    ],
+    "inferweave_gateway_attempt_usage_observations_total": [
+      "model",
+      "direction",
+      "basis"
+    ],
+    "inferweave_gateway_attempt_overflow_total": [],
+    "inferweave_gateway_attempt_metrics_start_time_seconds": [],
+    "inferweave_gateway_attempt_metrics_info": [
+      "metric_definition_version"
+    ]
+  },
+  "proof_status": "owed",
+  "gates_unchanged": [
+    "production activation",
+    "public/cohort publication",
+    "private warehouse carrier",
+    "durable exactly-once population coverage"
+  ],
+  "model_dimension": "canonical model selected by observing gateway after local alias resolution; no claim about deeper peer resolution"
+}
