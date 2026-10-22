@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,540,095 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,541,513 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -146,6 +146,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-20-private-observability-http.md` — `64abde66f588` — ~642t
 - `decisions/2026-10-20-request-failure-rollups.md` — `29a5f2553c4e` — ~594t
 - `decisions/2026-10-21-role-scoped-embedded-uis.md` — `0171d46ed303` — ~1,302t
+- `decisions/2026-10-22-gateway-history-store-and-network-views.md` — `3aec54c26aaf` — ~1,418t
 - `decisions/2026-10-22-status-envelope-cpu-node-and-gateway-session.md` — `432541ce56cb` — ~645t
 - `decisions/2026-10-22-status-ui-javascript-and-charts.md` — `21d470c8d508` — ~809t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t

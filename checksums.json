@@ -127,6 +127,7 @@
   "decisions/2026-10-20-private-observability-http.md": "64abde66f588cea54672421f58d609a85e9d414acc4bee9318569c6adc8196a9",
   "decisions/2026-10-20-request-failure-rollups.md": "29a5f2553c4e705ea0921fd19080e777c963a4d9036bbacb7b972240d19e5c1a",
   "decisions/2026-10-21-role-scoped-embedded-uis.md": "0171d46ed30342feb806562965043c32b977edec2eee6502a97185555dde0310",
+  "decisions/2026-10-22-gateway-history-store-and-network-views.md": "3aec54c26aaf2efc0e09a642ad94d2d5e2cbba05ece2c0f189fe6adba3ca0e5c",
   "decisions/2026-10-22-status-envelope-cpu-node-and-gateway-session.md": "432541ce56cb0b624740217735b8451297b8e57c4b65beee4af13936e9e2584f",
   "decisions/2026-10-22-status-ui-javascript-and-charts.md": "21d470c8d508d27e3ab4c9f527c9089112a71061607ed476762ea701c284ce36",
   "decisions/ADR_TEMPLATE.md": "377f554a7e0fc1a4681c27125e4809532adff0b9390f73835264482a592325cf",
