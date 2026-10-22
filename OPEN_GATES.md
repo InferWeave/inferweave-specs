@@ -1213,3 +1213,12 @@ are proven. No public/cohort authority, deployed warehouse, complete coverage,
 new deployment target, legacy retention change or automatic public DTO projection
 is established by the private carrier. Existing 7/90-day new-family and 730/365-day
 legacy scope stays unchanged; existing authorized rollout boundaries remain in force.
+
+## Role-scoped status UIs and external nodes (2026-10-22)
+
+**BLOCKED for production.** The node, relay and gateway status pages, the CPU-node registration path and
+external-node envelopes exist as draft pull requests under
+[`decisions/2026-10-22-status-envelope-cpu-node-and-gateway-session.md`](decisions/2026-10-22-status-envelope-cpu-node-and-gateway-session.md).
+Nothing is merged or deployed. Provider billing, provider API calls and exposure beyond loopback stay BLOCKED.
+Independent review: BLOCKED (see the independent review gate). Screenshot baselines are recorded from a
+real Rust stack with a labelled test-double engine on one host; they are not production evidence.
