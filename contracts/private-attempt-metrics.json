@@ -92,5 +92,6 @@
     "public/cohort publication",
     "private warehouse carrier",
     "durable exactly-once population coverage"
-  ]
+  ],
+  "model_dimension": "canonical model selected by observing gateway after local alias resolution; no claim about deeper peer resolution"
 }

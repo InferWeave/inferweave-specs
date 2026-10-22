@@ -34,6 +34,9 @@ Outcome vocabulary is `completed`, `node_error`, `stream_error`,
 become labels. Original source facts retain their original vocabulary. No
 inference-success ratio is derived from transport success.
 
+The `model` label is the canonical model selected by this gateway after its
+local alias resolution, not the requested alias or a claim about deeper peers.
+
 The initial policy admits at most 64 model label values of at most 256 UTF-8
 bytes, plus one overflow group; these are explicit operational bounds, not
 measured envelopes. A reserved `__overflow__`, empty or oversized model goes to
