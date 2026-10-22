@@ -3,7 +3,7 @@
 IW-OBS-001 / IW-TEL-001: `GET /internal/requests/metrics` exposes process-local
 observations of terminal **admitted execution attempts**, not logical requests,
 users, task correctness or complete fleet traffic. It requires the existing
-`IW_METRICS_TOKEN` as a Bearer credential. No token configured returns 404;
+`secrets.metrics_token_file` as a Bearer credential. No token configured returns 404;
 missing/wrong credentials return 401; authenticated non-GET returns 405. The
 public `/iw/metrics` remains unchanged. This does not enable the default-off
 private warehouse carrier or any public/cohort projection.
@@ -25,6 +25,7 @@ are observations, not durable replay or exactly-once warehouse history.
 | `inferweave_gateway_attempt_reported_tokens_total{model,direction}` | Provider-reported total input or output tokens only. Totals/subsets are never added together. Absent until a reported observation exists; reported zero is zero. |
 | `inferweave_gateway_attempt_usage_observations_total{model,direction,basis}` | Coverage counts: `reported`, `estimated`, `missing`, `unsupported`, `invalid`. Absent/invalid raw usage stays missing at the capture boundary. |
 | `inferweave_gateway_attempt_overflow_total` | Attempts aggregated under `__overflow__` after model attribution bounds. |
+| `inferweave_gateway_attempt_metrics_info{metric_definition_version}` | Frozen metric semantics version (`1`). |
 | `inferweave_gateway_attempt_metrics_start_time_seconds` | Accumulator creation Unix time; explains counter resets. |
 
 Outcome vocabulary is `completed`, `node_error`, `stream_error`,

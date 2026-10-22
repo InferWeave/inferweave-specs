@@ -11,7 +11,7 @@
     "method": "GET",
     "path": "/internal/requests/metrics",
     "audience": "operator",
-    "credential": "IW_METRICS_TOKEN bearer",
+    "credential": "secrets.metrics_token_file bearer",
     "disabled_status": 404,
     "unauthenticated_status": 401,
     "wrong_method_status": 405
@@ -81,7 +81,10 @@
       "basis"
     ],
     "inferweave_gateway_attempt_overflow_total": [],
-    "inferweave_gateway_attempt_metrics_start_time_seconds": []
+    "inferweave_gateway_attempt_metrics_start_time_seconds": [],
+    "inferweave_gateway_attempt_metrics_info": [
+      "metric_definition_version"
+    ]
   },
   "proof_status": "owed",
   "gates_unchanged": [

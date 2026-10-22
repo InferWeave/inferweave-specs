@@ -436,7 +436,7 @@ fences first. Public publication authority and retention scope are unchanged.
 
 IW-OBS-001 / IW-TEL-001 may expose local terminal admitted execution-attempt
 observations through the operator-only `GET /internal/requests/metrics` surface
-under existing `IW_METRICS_TOKEN` bearer authorization. The additive contract is
+under existing `secrets.metrics_token_file` bearer authorization. The additive contract is
 [`private-attempt-metrics.json`](../contracts/private-attempt-metrics.json), with
 semantics and limits in [the operator note](../docs/private-attempt-metrics.md).
 These counters do not claim logical-request deduplication, fleet completeness,
