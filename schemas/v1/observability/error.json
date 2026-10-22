@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/observability/error.json",
+  "title": "Private observability error",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "iw.observability.error/1"
+    },
+    "visibility": {
+      "const": "internal"
+    },
+    "code": {
+      "enum": [
+        "INVALID_REQUEST",
+        "UNAUTHENTICATED",
+        "FORBIDDEN",
+        "FEATURE_DISABLED",
+        "METHOD_NOT_ALLOWED",
+        "REPLAY_CONFLICT",
+        "WINDOW_SEALED",
+        "WINDOW_EXPIRED",
+        "CURSOR_EXPIRED",
+        "PAYLOAD_TOO_LARGE",
+        "UNSUPPORTED_MEDIA_TYPE",
+        "BUSY",
+        "UNAVAILABLE"
+      ]
+    },
+    "retry_after_seconds": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "visibility",
+    "code",
+    "retry_after_seconds"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "code": {
+            "enum": [
+              "BUSY",
+              "UNAVAILABLE"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "retry_after_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 60
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "retry_after_seconds": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

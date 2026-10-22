@@ -844,6 +844,14 @@ def validate():
     observation_module = importlib.util.module_from_spec(observation_spec)
     observation_spec.loader.exec_module(observation_module)
     errors.extend(observation_module.check_vectors(ROOT))
+    import observability_capacity
+    errors.extend(observability_capacity.contract_errors(ROOT))
+    import private_observability
+    errors.extend(private_observability.contract_errors(ROOT))
+    import request_observations
+    errors.extend(request_observations.contract_errors(ROOT))
+    import node_reconcile
+    errors.extend(node_reconcile.contract_errors(ROOT))
     return features, tasks, errors
 
 
@@ -1024,6 +1032,26 @@ def self_test():
     upstream_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_link_upstream.py")], capture_output=True, text=True)
     if upstream_test.returncode:
         print(upstream_test.stdout + upstream_test.stderr)
+        return 1
+    capacity_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_observability_capacity.py")], capture_output=True, text=True)
+    if capacity_test.returncode:
+        print(capacity_test.stdout + capacity_test.stderr)
+        return 1
+    request_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_request_observations.py")], capture_output=True, text=True)
+    if request_test.returncode:
+        print(request_test.stdout + request_test.stderr)
+        return 1
+    failure_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_failure_rollups.py")], capture_output=True, text=True)
+    if failure_test.returncode:
+        print(failure_test.stdout + failure_test.stderr)
+        return 1
+    private_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_private_observability.py")], capture_output=True, text=True)
+    if private_test.returncode:
+        print(private_test.stdout + private_test.stderr)
+        return 1
+    reconcile_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_node_reconcile.py")], capture_output=True, text=True)
+    if reconcile_test.returncode:
+        print(reconcile_test.stdout + reconcile_test.stderr)
         return 1
     file_mutations = 1 + len(gpu_breaks) + len(semantic)
     print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "

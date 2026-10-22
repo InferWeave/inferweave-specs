@@ -207,3 +207,41 @@ additive operator read API and typed response/unsupported branches. Evidence and
 remaining requirements are in `evidence/model-intelligence-2026-10-12/README.md`.
 Current Go access is operator-only through its existing middleware; normative
 shared operational and verified private tenant/user grants remain owed.
+
+## Scoped edge observations and public GPU profiles (2026-10-20)
+
+The [observability ADR](../decisions/2026-10-20-observability-capacity.md) narrowly
+amends the ownership paragraph: existing Go may persist its own bounded edge
+observations/local rollups with local provenance and coverage. Rust continues
+to own global metrics and capacity. New public GPU profiles belong in the
+existing Next.js `apps/web`, while the existing embedded operator pages retain
+the D-002 exception. Both render spec04 typed capacity without computing
+admission or pooling per-card VRAM. Public profiles show context/workload,
+fingerprint, observation window, coverage and freshness; private stable node
+addresses, principal IDs, exact private workload times and content are absent.
+Initial publication thresholds are 30 requests and 5 distinct principals per
+cohort, with small/unknown cohorts suppressed and policy version disclosed.
+Those defaults are not universal privacy proof; cross-filter differencing and
+linkability require independent review before production publication.
+
+## Internal terminal-observation foundation (2026-10-20)
+
+`contracts/request-observation.json` supplies the additive normalized
+RequestObservation/rollup domain for MI-01/MI-03/MI-05 under specs09/23. Rust
+owns canonical event/terminal-fact deduplication, outcome normalization and
+mergeable warehouse rows. Go contributes bounded own-edge observations and
+adapts authorized reads. Existing Next.js/public ownership is unchanged.
+
+Ingress, execution attempts and forwarding hops have independent denominators;
+HTTP 200 with failed stream completion is not success. Production, controlled
+and unknown datasets remain separate. True engine prefill/decode requires engine
+interval provenance; proxy TTFT and legacy unknown data cannot be relabeled.
+Missing exact configuration/GPU attribution stays unknown. Numerators,
+denominators, known/missing sample counts, fixed-bin histogram counts, recording
+coverage and losses remain visible through existing authorized projections.
+
+These are internal records with private lineage and resource identifiers, not
+public DTOs or a new export API. Public serialization still requires the existing
+allowlisted publication review; this extension changes no privacy thresholds.
+New-family-only retention is 90 days aggregates / 7 days diagnostics, with legacy
+records/caches and shared backups unchanged. All new runtime acceptance is owed.

@@ -1,0 +1,9 @@
+{
+  "schema": "iw.observability.ingest-result/1",
+  "visibility": "internal",
+  "status": "accepted",
+  "source_gateway_id": "edge",
+  "producer_epoch": "edge-epoch",
+  "event_id": "ingress-event",
+  "public_eligible": true
+}

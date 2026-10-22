@@ -37,11 +37,23 @@ import dynamic_aliases  # noqa: E402
 import alias_edge_delegation  # noqa: E402
 import runtime_observations  # noqa: E402
 import dynamic_nodes  # noqa: E402
+import observability_capacity  # noqa: E402
+import request_observations  # noqa: E402
+import failure_rollups  # noqa: E402
+import private_observability  # noqa: E402
+import node_reconcile  # noqa: E402
 import alias_execution  # noqa: E402
 SCHEMA_DIR = ROOT / "schemas" / "v1"
 
 # fixture basename -> schema rel path (relative to schemas/v1)
 MAP = {
+    **{"private-observability-" + kind: "observability/" + kind + ".json"
+       for kind in ("ingest-result", "error", "rollups", "diagnostics")},
+    "request-observation-failure-rollup": "events/request-observation-failure-rollup.json",
+    "request-observation-rollup": "events/request-observation-rollup.json",
+    "request-observation": "events/request-observation.json",
+    "observability-capacity-fleet": "resources/observability-capacity-fleet.json",
+    "observability-capacity": "resources/observability-capacity.json",
     "alias-link-request": "requests/link-alias-request.json",
     "alias-consume-dispatch": "requests/link-consume-dispatch.json",
     "alias-consume-dispatch-ack": "requests/link-consume-dispatch-ack.json",
@@ -187,7 +199,29 @@ def validate_fixture(path, must_pass, schema_rel=None):
         print(f"FAIL  {rel}: no schema mapped for fixture name '{stem}'")
         return False
     wire = path.read_bytes()
-    if schema_rel == "requests/runtime-observation-report.json":
+    if schema_rel.startswith("observability/"):
+        try:
+            fixture = private_observability.decode(wire)
+        except (ValueError, UnicodeDecodeError) as error:
+            if must_pass:
+                print(f"FAIL  {rel}: {error}")
+            return not must_pass
+    elif schema_rel in ("events/request-observation.json", "events/request-observation-rollup.json", "events/request-observation-failure-rollup.json"):
+        try:
+            decoder = failure_rollups.decode if schema_rel == "events/request-observation-failure-rollup.json" else request_observations.decode
+            fixture = decoder(wire)
+        except (ValueError, UnicodeDecodeError) as error:
+            if must_pass:
+                print(f"FAIL  {rel}: {error}")
+            return not must_pass
+    elif schema_rel in ("resources/observability-capacity.json", "resources/observability-capacity-fleet.json"):
+        try:
+            fixture = observability_capacity.decode(wire)
+        except (ValueError, UnicodeDecodeError) as error:
+            if must_pass:
+                print(f"FAIL  {rel}: {error}")
+            return not must_pass
+    elif schema_rel == "requests/runtime-observation-report.json":
         try:
             fixture = runtime_observations.decode_report(wire)
         except (ValueError, UnicodeDecodeError) as error:
@@ -198,6 +232,20 @@ def validate_fixture(path, must_pass, schema_rel=None):
         fixture = json.loads(wire)
     errors = list(validator(schema_rel).iter_errors(fixture))
     semantic_errors = []
+    if schema_rel in ("observability/rollups.json", "observability/diagnostics.json") and not errors:
+        semantic_errors.extend(private_observability.page_errors(fixture, Path(schema_rel).stem, ROOT))
+    if schema_rel == "events/request-observation.json" and not errors:
+        semantic_errors.extend(request_observations.event_errors(fixture))
+    if schema_rel == "events/request-observation-rollup.json" and not errors:
+        contract = json.loads((ROOT / "contracts/request-observation.json").read_text())
+        semantic_errors.extend(request_observations.rollup_errors(fixture, contract))
+    if schema_rel == "events/request-observation-failure-rollup.json" and not errors:
+        parent = failure_rollups.decode_parent((ROOT / "fixtures/valid/request-observation-rollup-failures.json").read_bytes())
+        semantic_errors.extend(failure_rollups.pair_errors(fixture, parent, ROOT))
+    if schema_rel == "resources/observability-capacity-fleet.json" and not errors:
+        semantic_errors.extend(observability_capacity.fleet_errors(fixture))
+    if schema_rel == "resources/observability-capacity.json" and not errors:
+        semantic_errors.extend(observability_capacity.semantic_errors(fixture))
     if schema_rel == "deployments/deployment.json" and not errors:
         try:
             expected = runtime_protocol.canonical_deployment_key(fixture["manifest"])
@@ -610,6 +658,18 @@ def main():
     )
     args = parser.parse_args()
     failures = 0
+    private_errors = private_observability.contract_errors(ROOT)
+    for error in private_errors:
+        print("FAIL  " + error)
+    failures += len(private_errors)
+    if not private_errors:
+        print("PASS  private observability HTTP (offline; runtime carrier/persistence proof owed)")
+    reconcile_errors = node_reconcile.contract_errors(ROOT)
+    for error in reconcile_errors:
+        print("FAIL  " + error)
+    failures += len(reconcile_errors)
+    if not reconcile_errors:
+        print("PASS  managed node reconciliation (offline; runtime/host/release proof owed)")
     http_errors = link_http_json.check_vectors(ROOT)
     for error in http_errors:
         print("FAIL  " + error)

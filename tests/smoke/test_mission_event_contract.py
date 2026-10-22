@@ -96,7 +96,11 @@ CASES = {
         required_in_both("event_id")),
     "mission-event-negative-sequence": (
         FULL, put("sequence", -1),
-        {("minimum", ("sequence",), "-1 is less than the minimum of 0")},
+        {("minimum", ("sequence",), "-1 is less than the minimum of 1")},
+        [remove_from(MISSION, SEQUENCE, "minimum"), remove_from(ENVELOPE, SEQUENCE, "minimum")]),
+    "mission-event-zero-sequence": (
+        FULL, put("sequence", 0),
+        {("minimum", ("sequence",), "0 is less than the minimum of 1")},
         [remove_from(MISSION, SEQUENCE, "minimum"), remove_from(ENVELOPE, SEQUENCE, "minimum")]),
     "mission-event-string-sequence": (
         FULL, put("sequence", "124"),

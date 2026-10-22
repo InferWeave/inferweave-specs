@@ -101,6 +101,14 @@ chain (B1–B5).
   stats; SHOULD: throughput (tokens incl. cached, prefill/decode rates), a
   Prometheus `/metrics` surface, capacity summary, dashboard. Telemetry is
   metadata-only, non-blocking, "unknown" never fabricated-0 (`specs/09`, `23`).
+  Stream diagnostics MUST distinguish downstream-reported inference idle and
+  execution timeouts from an observed transport failure and from client
+  cancellation. After headers commit, an HTTP 200 with a terminal SSE error is a
+  failed attempt. Correlation exposes diagnostic and transport request IDs
+  separately. Operator statistics are bounded, authenticated, content-free and
+  explicit about recording coverage, observation window, reset time and whose
+  timeout settings are known. Heartbeat freshness is not an inference timeout;
+  see spec 09 and `contracts/inference-stream-reliability.json`.
 - **C9 Chaining & bandwidth** — behave as a well-mannered link per B1–B5:
   admission-grant negotiation not payload relay, shortest data path, affinity
   first, unbuffered streaming, bounded chains.
@@ -172,3 +180,13 @@ do. Reference implementation: `metabolomics-us/inferweave-gateway`.
 `02` public/native API · `04` capacity/admission · `05` routing/affinity · `06`
 backpressure/return-to-sender · `09` observability · `23` telemetry vocabulary ·
 `38` conformance method · `41` inter-gateway capacity requests.
+
+## Additive read-only capacity disclosure
+
+A site exposing `iw.observability.capacity/1` uses the separate schema in
+`schemas/v1/resources/observability-capacity.json`, authenticated owner-scoped
+reads, and spec04 freshness/entitlement/offer semantics. It never adds members
+to topology v2 or turns `Capacity.requests` into a fixed-slot grant. A consumer
+adapts the authoritative answer and preserves missing/stale/unsupported states.
+The 2026-10-20 observability ADR permits existing Go edge observation persistence;
+it grants no global metrics, reservation or dynamic-provisioner authority.

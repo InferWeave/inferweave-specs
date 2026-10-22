@@ -51,9 +51,9 @@
       "format": "date-time"
     },
     "sequence": {
-      "description": "Monotonic per mission_id; monotonicity is consumer behaviour (specs/60).",
+      "description": "Monotonic per mission_id, starting at 1 (the first event of a mission has sequence 1, matching the R-PROTO evaluation-journal sequence); monotonicity is consumer behaviour (specs/60).",
       "type": "integer",
-      "minimum": 0
+      "minimum": 1
     },
     "trace_id": {
       "type": "string",

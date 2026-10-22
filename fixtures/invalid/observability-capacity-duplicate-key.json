@@ -1,0 +1,75 @@
+{
+  "schema": "iw.observability.capacity/1",
+  "producer_epoch": "fixture-epoch-1",
+  "sequence": 1,
+  "observed_at": "2026-10-20T00:00:00Z",
+  "source_gateway_id": "fixture-gw",
+  "owner_gateway_id": "fixture-owner",
+  "node_id": "fixture-node",
+  "received_age_ms": 100,
+  "validity_ms": 30000,
+  "status": "stale", "status": "fresh",
+  "cpu": {
+    "physical_cores": {
+      "basis": "measured",
+      "source": "fixture",
+      "value": 16
+    },
+    "logical_cpus": {
+      "basis": "measured",
+      "source": "fixture",
+      "value": 32
+    },
+    "affinity_logical_cpus": {
+      "basis": "measured",
+      "source": "fixture",
+      "value": 8
+    },
+    "quota_millicores": {
+      "basis": "measured",
+      "source": "fixture",
+      "value": 6000
+    },
+    "owner_budget_millicores": {
+      "basis": "derived",
+      "source": "fixture",
+      "value": 5000
+    },
+    "reserved_millicores": {
+      "basis": "measured",
+      "source": "fixture",
+      "value": 1000
+    },
+    "available_millicores": {
+      "basis": "derived",
+      "source": "fixture",
+      "value": 4000
+    }
+  },
+  "serving_offers": [
+    {
+      "offer_id": "fixture-offer",
+      "capacity_pool_id": "fixture-pool",
+      "owner_epoch": "fixture-owner-epoch",
+      "runtime_instance_id": "fixture-runtime",
+      "load_generation": 1,
+      "deployment_fingerprint": "fixture-deployment",
+      "resource_profile_id": "fixture-profile",
+      "gpu_resource_ids": [
+        "fixture-node/gpu0"
+      ],
+      "requested_context_tokens": 8192,
+      "max_output_tokens": 1024,
+      "workload_profile": "fixture-chat",
+      "additional_requests": {
+        "basis": "estimated",
+        "source": "fixture",
+        "value": 2
+      },
+      "basis": "estimated",
+      "status": "fresh",
+      "valid_for_ms": 10000,
+      "exclusion_reasons": []
+    }
+  ]
+}

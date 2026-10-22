@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "spec": "specs/09_OBSERVABILITY_RECEIPTS.md",
+  "features": ["IW-OBS-001", "IW-OBS-002"],
+  "canonical_tasks": ["P1-T05", "P1-T12A", "P1-T20"],
+  "failure_codes": ["inference_idle_timeout", "inference_request_timeout"],
+  "units": {"durations": "milliseconds", "timestamps": "UTC", "counters": "attempts"},
+  "configuration": {
+    "IW_INFERENCE_IDLE_TIMEOUT_SECS": {"default": 180, "finite_positive": true},
+    "IW_INFERENCE_REQUEST_TIMEOUT_SECS": {"default": 1800, "finite_positive": true},
+    "heartbeat_freshness": "independent; do not relax to extend inference"
+  },
+  "progress": {
+    "meaningful": ["nonempty_content", "nonempty_reasoning", "tool_or_function_delta"],
+    "not_meaningful": ["http_headers", "sse_comment", "keepalive", "role_only", "empty_metadata"],
+    "before_meaningful_output": "retain bounded prefill allowance",
+    "after_meaningful_output": "only meaningful output refreshes inactivity",
+    "request_deadline": "independent of activity; queue budgets are not execution deadlines"
+  },
+  "operator_endpoints": [
+    {"path": "/iw/v1/inference/streams", "owner": "serving_gateway", "audience": "admin", "source": "bounded_since_process_start"},
+    {"path": "/console/api/reliability", "owner": "site_gateway", "audience": "operator", "source": "bounded_local_recorded_attempts"},
+    {"path": "/iw/v1/reliability", "owner": "site_gateway", "audience": "operator", "source": "bounded_local_recorded_attempts"},
+    {"path": "/iw/v1/admission", "owner": "site_gateway", "audience": "authenticated_client", "source": "aggregate_only_no_private_identity_maps"}
+  ],
+  "acceptance": [
+    {"id": "AC-STREAM-01", "scenario": "metadata followed by long prefill survives the former 30-second cutoff", "proof_status": "owed"},
+    {"id": "AC-STREAM-02", "scenario": "reasoning and tool-only deltas count as useful output; comments and role-only events do not", "proof_status": "owed"},
+    {"id": "AC-STREAM-03", "scenario": "silence and execution deadlines produce distinct errors across raw HTTP and Link paths", "proof_status": "owed"},
+    {"id": "AC-STREAM-04", "scenario": "client cancellation and node disconnect release resources promptly", "proof_status": "owed"},
+    {"id": "AC-STREAM-05", "scenario": "midstream failure preserves valid framing, failed accounting and no success marker", "proof_status": "owed"},
+    {"id": "AC-STREAM-06", "scenario": "operator diagnostics authenticate, bound retention, redact content and expose reset/coverage/config provenance", "proof_status": "owed"},
+    {"id": "AC-STREAM-07", "scenario": "distinct authenticated users remain isolated; shared credentials and missing subdivisions preserve parent fairness", "proof_status": "owed"},
+    {"id": "AC-STREAM-08", "scenario": "diagnostic and transport IDs remain distinct through recent-error UI and downstream logs", "proof_status": "owed"}
+  ]
+}

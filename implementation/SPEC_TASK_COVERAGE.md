@@ -5,7 +5,7 @@
 | `specs/00_INVARIANTS.md` | `P0-T01`, `P0-T01A`, `P0-T02`, `P0-T12`, `P1-T24`, `P1-T25`, `P5-T09`, `P3-T23` |
 | `specs/01_REPOSITORIES_AND_OWNERSHIP.md` | `P0-T01`, `P0-T12` |
 | `specs/02_PROTOCOL_AND_API.md` | `P0-T02`, `P0-T06`, `P0-T06A`, `P1-T08`, `P1-T09`, `P1-T10`, `P1-T24`, `P2-T13`, `P4-T09`, `P5-T18`, `P5-T22` |
-| `specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md` | `P0-T06`, `P1-T01`, `P1-T02`, `P1-T02A`, `P1-T03`, `P1-T06`, `P1-T06A`, `P1-T06B`, `P1-T09`, `P1-T12B`, `P1-T13A`, `P3-T03`, `P1-T06C`, `P3-T23`, `P3-T24`, `P5-T33`, `P5-T34` |
+| `specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md` | `P0-T06`, `P1-T01`, `P1-T02`, `P1-T02A`, `P1-T03`, `P1-T06`, `P1-T06A`, `P1-T06B`, `P1-T09`, `P1-T12B`, `P1-T13A`, `P3-T03`, `P1-T06C`, `P3-T23`, `P3-T24`, `P5-T33`, `P5-T34`, `P5-T38` |
 | `specs/04_CAPACITY_ADMISSION_SEATS.md` | `P1-T06A`, `P1-T11`, `P1-T11A`, `P1-T11B`, `P1-T12`, `P1-T12A`, `P1-T14`, `P1-T19`, `P1-T24`, `P5-T14`, `P5-T15`, `P5-T19`, `P5-T31` |
 | `specs/05_ROUTING_AFFINITY.md` | `P1-T13`, `P1-T13A`, `P1-T14`, `P1-T15`, `P1-T24`, `P2-T14`, `P3-T23`, `P5-T22` |
 | `specs/06_BACKPRESSURE_RETURN_TO_SENDER.md` | `P0-T02`, `P1-T10`, `P1-T11A`, `P1-T12`, `P1-T12A`, `P1-T19`, `P1-T25`, `P5-T14`, `P3-T24`, `P5-T22` |
@@ -22,13 +22,13 @@
 | `specs/17_SCALING_HA_REGIONS.md` | `P5-T01`, `P5-T02`, `P5-T03`, `P5-T06`, `P5-T07`, `P5-T08` |
 | `specs/18_SOLANA_DEV_ACCOUNTING.md` | `P2-T16`, `D-T01` |
 | `specs/19_CI_CD_LIVING_SPECS.md` | `P4-T06`, `P4-T14`, `P5-T10` |
-| `specs/20_NODE_AUTOCONFIG_DISCOVERY.md` | `P0-T04`, `P1-T04`, `P1-T23`, `P5-T36` |
+| `specs/20_NODE_AUTOCONFIG_DISCOVERY.md` | `P0-T04`, `P1-T04`, `P1-T23`, `P5-T36`, `P5-T38` |
 | `specs/21_FEDERATION_ROLES.md` | `P5-T04`, `P5-T05`, `P5-T08`, `P5-T11`, `P5-T12`, `P5-T16`, `P5-T21` |
 | `specs/22_PROMPT_LEDGER.md` | `P0-T05`, `P1-T07`, `P1-T08`, `P1-T08A` |
 | `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md` | `P0-T04`, `P0-T05`, `P0-T06`, `P1-T04`, `P1-T05`, `P1-T20`, `P2-T01`, `P2-T02`, `P2-T03`, `P2-T23`, `P5-T20` |
 | `specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md` | `P2-T04`, `P2-T05`, `P2-T06`, `P2-T07`, `P2-T08`, `P2-T09`, `P2-T18`, `P2-T22`, `P5-T20` |
 | `specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md` | `P3-T03`, `P3-T04`, `P3-T05`, `P3-T06`, `P3-T07`, `P3-T09`, `P3-T10`, `P3-T21`, `P5-T35` |
-| `specs/26_RESOURCE_IDENTITY_REDISCOVERY.md` | `P1-T01`, `P1-T04`, `P1-T06B`, `P1-T20C`, `P3-T01`, `P3-T05`, `P3-T21`, `P2-T23` |
+| `specs/26_RESOURCE_IDENTITY_REDISCOVERY.md` | `P1-T01`, `P1-T04`, `P1-T06B`, `P1-T20C`, `P3-T01`, `P3-T05`, `P3-T21`, `P2-T23`, `P5-T38` |
 | `specs/27_SITE_CONNECTOR_ARTIFACT_CACHE.md` | `P3-T01`, `P3-T02`, `P3-T08`, `P3-T09`, `P3-T11`, `P3-T21`, `P5-T37` |
 | `specs/28_BOOTSTRAP_INIT_CLIENT.md` | `P0-T03`, `P0-T04`, `P0-T07`, `P0-T08`, `P0-T10`, `P0-T11`, `P0-T11A`, `P0-T12`, `P1-T02`, `P1-T22`, `P1-T23`, `P3-T09`, `P3-T10`, `P3-T11`, `P3-T19`, `P3-T20`, `P3-T22`, `P5-T10` |
 | `specs/29_MCP_SERVERS.md` | `P3-T16`, `P3-T17`, `P3-T18`, `P3-T18A`, `P3-T19`, `P3-T22`, `P4-T05` |
@@ -38,18 +38,18 @@
 | `specs/33_RESUMABLE_BENCHMARK_DAG.md` | `P2-T19`, `P3-T07` |
 | `specs/34_PROMPT_STORE_TIERING.md` | `P0-T05`, `P1-T07`, `P3-T12` |
 | `specs/35_CLUSTER_SIMULATOR_CHAOS.md` | `P0-T08`, `P2-T20`, `P2-T21`, `P5-T06`, `P5-T08`, `P5-T32` |
-| `specs/36_GPU_WATCHDOG_RESCUE.md` | `P1-T20A`, `P1-T20B`, `P1-T20C`, `P3-T18A`, `P3-T24`, `P5-T32` |
+| `specs/36_GPU_WATCHDOG_RESCUE.md` | `P1-T20A`, `P1-T20B`, `P1-T20C`, `P3-T18A`, `P3-T24`, `P5-T32`, `P5-T38` |
 | `specs/37_CONTAINER_DEPLOYMENT_STANDARD.md` | `P0-T11A`, `P1-T12B`, `P1-T20B`, `P1-T22`, `P1-T23`, `P3-T09`, `P3-T10`, `P3-T11` |
 | `specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md` | `P0-T01A`, `P0-T06A`, `P1-T08A`, `P3-T25`, `P5-T18`, `P5-T23` |
-| `specs/39_INFERENCE_RUNTIME_TUNING.md` | `P1-T06C`, `P3-T24`, `P5-T35` |
+| `specs/39_INFERENCE_RUNTIME_TUNING.md` | `P1-T06C`, `P3-T24`, `P5-T35`, `P5-T38` |
 | `specs/40_NETWORK_TOPOLOGY_GRAPH.md` | `P2-T23`, `P2-T24`, `P5-T11`, `P5-T12`, `P5-T13`, `P5-T36` |
 | `specs/41_INTER_GATEWAY_CAPACITY_REQUESTS.md` | `P5-T14`, `P5-T15`, `P5-T16`, `P5-T17`, `P5-T21` |
 | `specs/42_SITE_GATEWAY_CONFORMANCE.md` | `P5-T23` |
-| `specs/43_GPU_PLACEMENT_HOT_SWAP.md` | `P3-T23`, `P3-T24`, `P3-T25`, `P5-T31`, `P5-T35` |
+| `specs/43_GPU_PLACEMENT_HOT_SWAP.md` | `P3-T23`, `P3-T24`, `P3-T25`, `P5-T31`, `P5-T35`, `P5-T38` |
 | `specs/44_CORE_PROTOCOL.md` | `P5-T18`, `P5-T19`, `P5-T20`, `P5-T21`, `P5-T22`, `P5-T23` |
 | `specs/45_PROTOCOL_V1.md` | `P5-T24`, `P5-T25`, `P5-T26`, `P5-T27`, `P5-T28`, `P5-T29`, `P5-T30`, `P5-T33`, `P5-T34`, `B-T02`, `P5-T36` |
 | `specs/46_GPU_MEMORY_INTELLIGENCE.md` | `P5-T30`, `P5-T31`, `P5-T32` |
-| `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` | `P5-T33`, `P5-T34`, `B-T02`, `P5-T35`, `P5-T36`, `P5-T37` |
+| `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` | `P5-T33`, `P5-T34`, `B-T02`, `P5-T35`, `P5-T36`, `P5-T37`, `P5-T38` |
 | `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` | `B-T01` |
 | `specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md` | `B-T02` |
 | `specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md` | `B-T03` |
@@ -70,5 +70,20 @@
 | `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` | `P2-T14` |
 | `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` | `A-T01`, `A-T03`, `A-T05`, `A-T07` |
 | `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` | `A-T05`, `P5-T17` |
-| `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` | `P5-T35` |
+| `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` | `P5-T35`, `P5-T38` |
 | `specs/65_INFERWEAVE_STORAGE.md` | `P5-T36`, `P5-T37` |
+
+## Observability capacity extension (2026-10-20)
+
+Existing feature/task mappings remain in force. The bounded cross-cutting
+acceptance mapping for specs 04/09/23/42/43/46/58/64 and P1-T05/P1-T20/
+P2-T03/P1-T21/P2-T18/P5-T30..32 is `contracts/observability-capacity.json`.
+New runtime and rollout proof remains owed.
+
+The internal request-observation extension maps IW-OBS-001/IW-TEL-001/IW-BENCH-002
+to existing P1-T20/P2-T03 and specs09/23/58 through
+`contracts/request-observation.json` (AC-REQOBS-01..09, runtime proof owed).
+
+Spec23's private normalized HTTP carrier extends P1-T20/P2-T03 through
+`contracts/private-observability.json` (AC-PRIVATEOBS-01..06), retaining the existing
+feature/task dependency order and explicit owed runtime proofs.

@@ -2,13 +2,16 @@
 
 ## Status
 
-**SPECIFICATION — PROPOSED; BLOCKED for production use.** This document defines the first
+**Legacy dynamic-node contract accepted; managed reconciliation extension requires new proof.** This document defines the first
 non-empty entry shape of the `assignments` member that
 `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` §5.1 reserved, the capability that puts it in
 force, the facts a node sends to earn one, and the status it reports while carrying one out. It is
-additive to InferWeave Protocol 1.1.0. Every required test is recorded `owed` by canonical task
-`P5-T35` (feature `IW-DYNNODE-001`); see `OPEN_GATES.md`. The decision record is
-`decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` (Proposed).
+additive to InferWeave Protocol 1.1.0. Canonical task `P5-T35` records the original
+`iw.dynamic-node/1` implementation and Beast hardware proof; its accepted decision is
+`decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md`. That evidence does not authorize
+production traffic from a draft or prove the new `iw.node-reconcile/1` extension in section 11.
+The new implementation and Nibbler operational acceptance remain `owed`; see
+`decisions/2026-10-20-node-onboarding.md` and `OPEN_GATES.md` for bounded authorization.
 
 The key words MUST, MUST NOT, SHOULD and MAY are used as in RFC 2119.
 
@@ -565,6 +568,10 @@ each holding served from a draft carries `"experimental": true` (section 8).
 
 ## 8. What this does not do
 
+These limits describe a registration negotiating only the legacy `iw.dynamic-node/1` contract.
+Section 11 explicitly replaces selected limits only while `iw.node-reconcile/1` is also in
+force; it does not reinterpret the legacy schemas or transfer the original hardware proof.
+
 - No link-only dynamic node: the engine's port is published on the address the operator names
   on the node (`--endpoint-host`, required, an address without port or scheme; the node neither
   detects it nor takes it from an assignment) and the node advertises `<endpoint-host>:<port>`
@@ -599,7 +606,8 @@ ignores a member of the facts it does not know (section 4).
 
 ## 10. Required tests
 
-Recorded `owed` by `P5-T35`; see the task card and `contracts/canonical-task-graph.json`.
+The original contract is recorded `proven` within `P5-T35`'s existing Beast proof scope; see the
+task card. New managed-onboarding acceptance in section 11 is separately `owed`.
 The reference implementation's unit and HTTP tests (`iw-core::dynamic_node`,
 `iw-gateway::dynamic_provisioner`, `iw-gateway/tests/dynamic_nodes.rs`,
 `iw-cli::dynamic_node`, `iw-cli::join` dynamic mode) exercise every rule above against
@@ -610,3 +618,203 @@ implementation MUST pass; they are `conformance/dynamic-node-vectors.json`, reco
 `conformance/runner.py`, together with the valid and invalid fixtures for the assignment rules a
 schema cannot express (the derived id, the matrix floor, artifact collisions and size overflow,
 the card count), which `conformance/dynamic_nodes.py` checks.
+
+## Nibbler observability rollout scope (2026-10-20)
+
+The operator's observability approval authorizes qualification work on the
+already registered Nibbler, not a claim of serving readiness. A Go root without
+this spec's provisioner leaves it hardware-only. Dynamic serving requires the
+Rust owner/executor, profile evidence on the actual placement, a real full
+admission-path request and the watchdog/rollback safety gates. A read-only
+capacity report can expose inventory and unknown serving capacity meanwhile;
+it cannot fabricate assignments or advertise an unqualified runtime as ready.
+See the observability ADR and AC-OBS-09. All new operational proof is owed.
+
+## 11. Managed persistent onboarding (`iw.node-reconcile/1`)
+
+This extension is defined by `contracts/node-reconcile.json` and
+`schemas/v1/node-reconcile/{facts,status,control,permit}.json`. It reuses existing HTTP control
+endpoints, assignment entries and provisioning status. It does not define another public API.
+Its operator authorization is `decisions/2026-10-20-node-onboarding.md`; all new implementation,
+Nibbler hardware/restart/recovery and release acceptance remains owed.
+Feature `IW-DYNNODE-002` and canonical task `P5-T38` own this extension separately from P5-T35.
+
+### 11.1 Negotiation and transport
+
+Both the node offer and the current registration's gateway response MUST name
+`iw.dynamic-node/1` and `iw.node-reconcile/1`. Operator enrollment is still required before any
+provisioning. A key-only identity earns no executable assignment. Negotiation is repeated on
+every re-registration; the node MUST NOT infer support from a version string or a previous
+connection. This first managed mode applies to Linux persistent Docker/Compose hosts.
+
+| Message | New top-level member | Schema |
+| --- | --- | --- |
+| `POST /v1/node/register` request | `reconcile` | `schemas/v1/node-reconcile/facts.json` |
+| `POST /v1/node/heartbeat` request | `reconcile` | `schemas/v1/node-reconcile/status.json` |
+| Register and heartbeat response | `reconcile` | `schemas/v1/node-reconcile/control.json` |
+
+The managed register request omits the legacy `dynamic` member: inventing a homogeneous host
+model for mixed cards is forbidden. A new gateway uses `reconcile` facts only after both
+capabilities and enrollment are in force. This overrides section 3's missing-`dynamic` rule
+only for that managed registration. An older gateway ignores the extension, sees no legacy
+dynamic facts and assigns nothing. The node remains inventory-only when managed negotiation
+fails; it MUST NOT silently downgrade to legacy provisioning.
+
+`assignments` and `provisioning` keep their existing entry schemas and deployment-ID derivation.
+The new heartbeat member augments lifecycle/attestation state; it does not add `ready` or new
+phase variants to `ProvisionStatus`. For an active assignment present in both members, id,
+deployment when present, and exact GPU set MUST agree. Legacy provisioning phase reports the
+actual fetch/runtime activity; the managed record separately represents drain/recovery and
+qualification. In particular legacy `serving` means an engine is running, not that managed
+publication is allowed. A first valid provisioning report is still required before placement.
+Malformed managed records cannot refresh managed readiness or enable assignments, even if the
+underlying heartbeat is otherwise valid. Return the existing bounded `400 bad_request` for a
+malformed register member; heartbeat handling may accept liveness but must fail closed for the
+invalid managed snapshot.
+
+Each extension member is at most 65,536 UTF-8 bytes before decoding and after compact
+serialization, with at most 256 inventory cards and eight active records, permits or
+qualification entries. JSON object keys MUST be unique at every depth. Unknown fields,
+unsupported versions, non-finite numbers, boolean-as-integer values and wrong field types are
+rejected under the strict extension schemas. Every integer is bounded at or below
+9,007,199,254,740,991; exact narrower bounds are in the schemas. Unknown values are absent when
+optional, never a fabricated zero. Errors use the closed `reason_codes` vocabulary, never
+arbitrary remote output or credentials. Existing legacy leniency is unchanged.
+
+On an authenticated response, `control.ownerEpoch` identifies the current owner incarnation and
+`policyId` names the operator-installed bounded policy. They cannot be supplied by the node as
+authority. The response's qualification/permit arrays are a complete snapshot for that owner:
+an empty array withdraws those publication/probe permissions, but never means stop/unload.
+Missing assignments still mean no change. Empty/missing managed control or loss of negotiation
+cannot increase readiness. Only the current authenticated owner session may update these
+snapshots; responses from superseded registrations must be ignored. A restarted owner establishes
+a new epoch and reissues permissions only after durable-state and residency reconciliation.
+
+### 11.2 Inventory, groups and instance identity
+
+Register facts contain host RAM/shared-memory/free-storage quantities, the permitted artifact
+root, runtime `docker-compose`, and per-card stable `gpuId`, serial, vendor, model, VRAM, PCIe
+generation and external-owner `busy` status. Optional NVIDIA `computeCapability` is an actual
+measurement with `basis: measured`, never inferred from the model label. Stable identities and
+serials must be unique. Every registered card remains visible whether or not a compatible
+profile exists.
+
+One assignment names one homogeneous compatible group on this node, with the profile's exact
+GPU count. Mixed-model groups, missing or external-busy cards, overlapping live claims, and
+profiles that exceed host/card budgets are refused before execution. Different deployments may
+use disjoint groups. There is at most **one live instance per deployment per node**. Reject a
+second assignment id for an already-held deployment before translating into executor card
+assignments; repeated delivery of the same assignment id and exact immutable payload is
+idempotent. Independent same-deployment singleton requests MUST NOT be combined into a span.
+An explicit span is one assignment naming its exact qualified group. Multiple identical-profile
+singletons on the same node are deferred until a separate instance identity reaches claims,
+executor, registration, telemetry and routing. Immutable deployment IDs MUST NOT be altered to
+evade the limit. These checks include both fresh desired assignments and existing durable claims.
+
+### 11.3 Durable status, adoption and publication
+
+The managed heartbeat status carries a persisted `generation` and up to eight `records` keyed by
+assignment identity. Generation increases on durable claim/lifecycle changes and is not reset on
+process restart. The gateway rejects a lower generation within the same node identity or an
+equal generation with conflicting durable content; current sensor health may change without
+creating a new claim. Re-enrollment following an explicitly authorized identity reset is separate
+from ordinary restart. Each record contains exact deployment/GPU set, lifecycle phase, health,
+watchdog state/generation, bounded recovery attempts/limit, optional known-good deployment,
+closed reason and optional runtime attestation. The schema's phases are runtime observations,
+never node-authored publication permissions.
+
+`environmentFingerprint` is the exact existing qualification-environment identifier, compared
+verbatim; it is not a signature or authority claim. The associated evidence MUST bind hardware,
+driver, runtime/model identity and effective launch settings. `imageDigest` and
+`effectiveConfigDigest` attest the inspected immutable runtime/configuration. The deployment hash
+and separately bound GPU set remain mandatory; none of these identifiers alone proves execution.
+
+Adoption retains ownership/ports and measured residency. It MUST NOT publish capacity on health
+alone. Both `engine_executor::adopt_running` and `engine_executor::settle_with` need the same
+qualification predicate before advertisement. A complete current owner qualification record
+must match independently retained evidence for node, epoch, policy/scope, assignment, deployment,
+exact GPU set, environment, authorization probe and watchdog generation. The installed policy
+must allow ordinary serving within that named scope. A record with no trusted evidence, an
+expired `validUntil`, changed fingerprint, missing attestation, inactive watchdog, exhausted
+recovery budget, quarantine or report age at least 300,000 ms produces no serving readiness.
+Implementations may impose a shorter freshness limit; they cannot extend the cap. Measure age
+from receipt using a local monotonic clock, not a node-supplied timestamp.
+
+All required checks named in `contracts/node-reconcile.json` must have successful evidence:
+artifact integrity, device isolation, runtime attestation, context envelope, correctness,
+cancellation/capacity reuse, watchdog recovery and authorized admission. A throughput-only draft
+is a candidate, never automatic ordinary routing approval. Material configuration change invokes
+the existing requalification rules. Owner restart invalidates prior permits; retained qualification
+evidence can be reused only after exact residency/configuration checks and a fresh full-path
+authorization probe produce a new current-epoch record. Node restart has the same publication
+gate even when the engine remains healthy.
+
+### 11.4 Qualification permits on the existing inference path
+
+The owner response may carry `permits` matching `permit.json`. Each permit has fixed purpose
+`inferweave.node-qualification/1`, a cryptographically random 256-bit opaque token rendered as
+64 lowercase hex characters, permit id, enrolled node id, owner epoch, installed policy and
+scope, assignment, deployment, exact GPU set, environment, issue/expiry times and request budget.
+Lifetime is at most 300 seconds and budget at most 64 requests, with stricter installed limits
+permitted. Issue only for a locally authorized qualifying candidate with a live watchdog and an
+unexhausted recovery budget.
+
+The controlled probe supplies this token in `X-InferWeave-Qualification-Permit` on the existing
+authenticated inference path. It MUST still pass ordinary authentication, license/privacy,
+resource reservation, context and node admission checks. The only exception is eligibility for
+the explicitly bound qualification candidate while public serving discovery remains closed.
+The receiving node validates the token against permissions received from its authenticated
+owner, never against a request's self-described claims. The owner independently validates the
+same stored permit and scope when dispatching. Each validates exact bindings, active owner
+epoch, expiry and budget before admission. Spend the budget atomically before dispatch;
+reconnect/retry never replenishes it. Reject unknown, revoked, expired, mismatched or exhausted
+permits. An existing idempotent request identity may retrieve its existing outcome but cannot
+cause another dispatch. Normal cancel/reservation-release behavior applies to a failed probe.
+
+Tokens travel only over confidential authenticated control/inference transport. Persist only the
+verification material needed for bounded replay protection, never print tokens in logs, receipt
+metadata, public views or evidence artifacts. An owner restart revokes old permits; it does not
+recreate their budget. Public requests cannot acquire a permit by setting a header or `ready`
+field. The offline checker models trusted stored permit equality; it does not prove randomness,
+transport protection, authentication or atomic runtime budget consumption.
+
+### 11.5 Recovery, shutdown and floors
+
+One persistent Rust owner holds the lock for assignment mutation and watchdog recovery. Persist
+claims and attempt counters before mutation. Managed process suspension/restart (SIGTERM,
+SIGINT or graceful drop) persists claims, withdraws readiness and detaches attested containers
+for adoption. Explicit retirement withdraws admission, drains within a bounded budget, unloads
+the exact owned container and then releases claims. Change all relevant destructor/signal paths;
+changing only startup cleanup cannot implement this distinction. The existing startup sweep
+only removes owned exited/created/dead containers and must respect recoverable claims.
+
+Preserve known-good pinned artifacts across replacement. Bounded rollback requires an actual
+known-good target and fresh revalidation; failed first qualification with no such target cannot
+invent one. Quarantine and suppression survive node/gateway restart. A healthy-floor check
+precedes elective stop/replacement; starting, stale, warming, draining and quarantined engines
+do not count. Severe faults immediately withdraw unsafe capacity even when this creates a floor
+deficit. Automatic physical GPU resets and host reboots are not default recovery actions.
+
+For the first Linux increment, the Compose owner uses `network_mode: host`; sibling engines
+remain published only to host `127.0.0.1`, matching the existing link engine router. Prove actual
+owner-container reachability to a sibling engine before hardware qualification. A YAML-only test
+does not prove connectivity. Full node-link inference/cancellation and reconnect are required
+before declaring link-only managed serving proven.
+
+### 11.6 Evidence and compatibility obligations
+
+`conformance/node_reconcile.py`, `conformance/node-reconcile-vectors.json` and
+`tests/smoke/test_node_reconcile.py` exercise strict parsing, negotiation, mixed inventory,
+explicit spans, duplicate deployments, overlap, spoofed readiness, stale/missing attestation,
+quarantine and bounded permit contexts. Fixtures under `fixtures/node-reconcile/` are offline
+test cases: their `context` member represents independent trusted owner state and is **not** a
+wire field or node-supplied authority. All runtime/profile values are synthetic and make no
+claim that the illustrated profile fits the illustrated GPU.
+
+Implementation acceptance ONB-01 through ONB-12 remains owed: clean installation/idempotency,
+per-card identity and compatible execution, idle inventory, full-path automatic qualification,
+negative readiness gates, disjoint ownership, drain/floors, recovery/quarantine, real subprocess
+SIGTERM/SIGINT/graceful-drop plus host reboot, gateway restart, link-only inference/cancellation,
+and exact-artifact independent review/release. Existing legacy schemas and P5-T35 proof remain
+unchanged. Registry/task coverage and validator/runner/bundle integration trace these checks
+through `IW-DYNNODE-002` / `P5-T38`; this section alone cannot close an operational gate.

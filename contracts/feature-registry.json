@@ -118,7 +118,12 @@
         "P1-T20"
       ],
       "contracts": [
-        "contracts/model-intelligence-acceptance.json"
+        "contracts/model-intelligence-acceptance.json",
+        "contracts/inference-stream-reliability.json",
+        "contracts/observability-capacity.json",
+        "contracts/request-observation.json",
+        "schemas/v1/events/request-observation-failure-rollup.json",
+        "contracts/private-observability.json"
       ]
     },
     {
@@ -134,7 +139,8 @@
       ],
       "contracts": [
         "contracts/model-intelligence-acceptance.json",
-        "openapi/model-intelligence.yaml"
+        "openapi/model-intelligence.yaml",
+        "contracts/observability-capacity.json"
       ]
     },
     {
@@ -436,7 +442,11 @@
         "P1-T20"
       ],
       "contracts": [
-        "contracts/model-intelligence-acceptance.json"
+        "contracts/model-intelligence-acceptance.json",
+        "contracts/observability-capacity.json",
+        "contracts/request-observation.json",
+        "schemas/v1/events/request-observation-failure-rollup.json",
+        "contracts/private-observability.json"
       ]
     },
     {
@@ -452,7 +462,11 @@
       ],
       "contracts": [
         "contracts/model-intelligence-acceptance.json",
-        "openapi/model-intelligence.yaml"
+        "openapi/model-intelligence.yaml",
+        "contracts/observability-capacity.json",
+        "contracts/request-observation.json",
+        "schemas/v1/events/request-observation-failure-rollup.json",
+        "contracts/private-observability.json"
       ]
     },
     {
@@ -464,6 +478,9 @@
       "owner_component": "control-plane",
       "canonical_tasks": [
         "P2-T18"
+      ],
+      "contracts": [
+        "contracts/observability-capacity.json"
       ]
     },
     {
@@ -919,6 +936,9 @@
       "owner_component": "control-plane",
       "canonical_tasks": [
         "P1-T12A"
+      ],
+      "contracts": [
+        "contracts/inference-stream-reliability.json"
       ]
     },
     {
@@ -1153,6 +1173,9 @@
         "P5-T30",
         "P5-T31",
         "P5-T32"
+      ],
+      "contracts": [
+        "contracts/observability-capacity.json"
       ]
     },
     {
@@ -1176,6 +1199,20 @@
       "owner_component": "gateway+node",
       "canonical_tasks": [
         "P5-T35"
+      ]
+    },
+    {
+      "id": "IW-DYNNODE-002",
+      "name": "Managed persistent node onboarding, qualification and durable reconciliation (iw.node-reconcile/1)",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "gateway+node",
+      "canonical_tasks": [
+        "P5-T38"
+      ],
+      "contracts": [
+        "contracts/node-reconcile.json"
       ]
     },
     {

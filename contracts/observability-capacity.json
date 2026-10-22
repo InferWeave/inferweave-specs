@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "capacity_schema": "schemas/v1/resources/observability-capacity.json",
+  "specs": [
+    "04_CAPACITY_ADMISSION_SEATS",
+    "09_OBSERVABILITY_RECEIPTS",
+    "23_GLOBAL_TELEMETRY_BENCHMARKS",
+    "42_SITE_GATEWAY_CONFORMANCE",
+    "43_GPU_PLACEMENT_HOT_SWAP",
+    "46_GPU_MEMORY_INTELLIGENCE",
+    "58_MODEL_INTELLIGENCE_UI_COHESION",
+    "64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING"
+  ],
+  "features": [
+    "IW-OBS-001",
+    "IW-TEL-001",
+    "IW-BENCH-002",
+    "IW-UI-001",
+    "IW-UI-002",
+    "IW-GPUMEM-001"
+  ],
+  "canonical_tasks": [
+    "P1-T05",
+    "P1-T20",
+    "P2-T03",
+    "P1-T21",
+    "P2-T18",
+    "P5-T30",
+    "P5-T31",
+    "P5-T32"
+  ],
+  "basis": [
+    "measured",
+    "derived",
+    "estimated",
+    "declared",
+    "unknown",
+    "unsupported"
+  ],
+  "status": [
+    "fresh",
+    "stale",
+    "unavailable"
+  ],
+  "exclusion_reasons": [
+    "stale",
+    "unowned",
+    "unknown_capacity",
+    "unsupported",
+    "unqualified",
+    "draining",
+    "quarantined",
+    "context_limit",
+    "reservation_conflict"
+  ],
+  "policy_defaults": {
+    "aggregate_retention_days": 90,
+    "diagnostic_retention_days": 7,
+    "max_capacity_validity_ms": 300000,
+    "public_min_requests": 30,
+    "public_min_principals": 5
+  },
+  "acceptance": [
+    {
+      "id": "AC-OBS-01",
+      "scenario": "Duplicate event delivery is idempotent, distinct attempts remain distinct, and logical requests deduplicate across hops without invented lineage.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-OBS-02",
+      "scenario": "Timing measurements distinguish local queue, upstream wait, headers, first useful output and full completion; absent downstream timing remains unknown.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-OBS-03",
+      "scenario": "Read-only capacity never reserves; stale, unowned, replayed and expired observations cannot grant admission.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-OBS-04",
+      "scenario": "CPU availability respects cpuset, cgroup quota and owner budget with held reserves deducted once; unknown never becomes zero.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-OBS-05",
+      "scenario": "Per-GPU physical idle, free VRAM, CPU entitlement and context-specific offers stay separate; neither GPU memory nor shared pool offers are summed into schedulable capacity.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-OBS-06",
+      "scenario": "Authenticated metadata persistence, rollups, queries, buffers and labels are bounded, content-free and disclose coverage, drops, retention and provenance.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-OBS-07",
+      "scenario": "Public Next.js GPU profiles suppress private identifiers and sparse cohorts; policy thresholds are not a privacy proof.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-OBS-08",
+      "scenario": "NVIDIA observe rollout reconciles real per-GPU sensors and spec46 memory; AMD remains owed until separately measured.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-OBS-09",
+      "scenario": "Nibbler dynamic serving requires Rust owner/executor, qualified full-path request, watchdog, rollback and availability-floor proof; hardware registration alone yields no serving claim.",
+      "proof_status": "owed"
+    }
+  ],
+  "lineage_fields": [
+    "event_id",
+    "logical_request_id",
+    "attempt_id",
+    "trace_id",
+    "transport_request_id",
+    "source_gateway_id"
+  ],
+  "timing_fields": [
+    "local_queue_ms",
+    "upstream_wait_ms",
+    "response_headers_ms",
+    "first_useful_output_ms",
+    "completion_ms"
+  ],
+  "units": {
+    "cpu_inventory": "cores_or_logical_cpus",
+    "cpu_entitlement": "millicores",
+    "durations": "milliseconds",
+    "context": "tokens",
+    "additional_requests": "requests",
+    "gpu_memory": "bytes_via_spec46"
+  },
+  "fleet_schema": "schemas/v1/resources/observability-capacity-fleet.json",
+  "endpoint": {
+    "method": "GET",
+    "path": "/iw/v1/observability/capacity",
+    "audience": "admin",
+    "response_schema": "iw.observability.capacity.fleet/1",
+    "query": [
+      "node_id",
+      "cursor",
+      "limit"
+    ],
+    "max_nodes_per_page": 1024,
+    "max_snapshot_bytes": 33554432,
+    "pagination": "spec46 pinned snapshot semantics; snake_case fields; filter-bound cursor"
+  },
+  "retention_scope": {
+    "namespace": "new_observability_family",
+    "existing_records": "unchanged",
+    "existing_caches_and_shared_backups": "unchanged",
+    "retroactive_purge": "requires_separate_reviewed_migration_and_deletion_authorization"
+  },
+  "pool_identity": {
+    "scope": "fleet_unique_owner_assigned_shared_budget",
+    "same_pool_requires": [
+      "owner_gateway_id",
+      "owner_epoch"
+    ],
+    "alternative_offer_dimensions": [
+      "runtime_instance_id",
+      "deployment_fingerprint",
+      "resource_profile_id",
+      "gpu_resource_ids",
+      "requested_context_tokens",
+      "max_output_tokens",
+      "workload_profile"
+    ],
+    "aggregation": "never_sum_alternative_offers"
+  },
+  "transport": {
+    "capability": "iw.observability-capacity/1",
+    "http_heartbeat_member": "observabilityCapacity",
+    "payload_schema": "iw.observability.capacity/1",
+    "decoding": "raw strict JSON; recursively reject duplicate keys",
+    "producer_epoch": "rotate on every successful HTTP registration; never refresh an old incarnation",
+    "current_carrier": "authenticated node HTTP heartbeat",
+    "link_carrier": "unsupported; operational proof owed",
+    "unowned_observer": "physical observations only; available CPU and serving offers unknown/unavailable"
+  }
+}

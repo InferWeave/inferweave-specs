@@ -299,6 +299,7 @@ Rules:
 - sensor unsupported semantics
 - sample ingestion
 - bounded frequency/backpressure
+- AC-OBS-04/08: measured CPU entitlement and per-GPU NVIDIA observe telemetry preserve unknown/unsupported; AMD proof remains separate
 
 ### P1-T06 — Immutable deployment manifest and node advertisement
 **Context:** `C65`
@@ -503,6 +504,8 @@ Rules:
 - waiting requests appear while they wait
 - position ordering matches admission ordering
 - absent estimate reported as absent, never zero
+- rejection reason/scope counters survive queue-entry removal; effective limits and missing-metadata buckets explain saturation without exposing caller identities
+- shared credential/default subdivisions remain intentional; distinct authenticated parents cannot collapse and subdivision fan-out cannot bypass parent limits
 
 **Notes:** Recording only executing work reports an empty queue to waiting clients.
 
@@ -644,8 +647,13 @@ Rules:
 - correlation completeness
 - cancel/preemption facts
 - no prompt body in metrics
+- AC-STREAM-01..08: useful-output/prefill timeout separation, distinct failure codes, cross-hop correlation, bounded authenticated diagnostics and admission isolation (contracts/inference-stream-reliability.json)
 - MI-01 separate transport/attempt/logical/task outcomes and denominators through retries, cancellation and missing data
 - MI-03 SLO-qualified observed capacity bins reject sparse, mismatched and extrapolated load; unknown users remain unknown
+- AC-OBS-01..05: idempotent event lineage, distinct attempts, timing provenance and read-only context offers never grant admission
+- AC-REQOBS-01..06/08: terminal ingress/attempt/hop identity, immutable replay, HTTP200 stream failures, missing values and monotonic engine/proxy provenance remain bounded and content-free
+- AC-REQOBS-09: bounded failure companion conserves status marginals and correlated timeout phases with exact-parent fingerprint, atomic three-resolution revision/seal/prune, persistent late-ingest fence and per-cell privacy evidence
+- AC-PRIVATEOBS-01..06: private gateway-authenticated bounded durable ingest, operator snapshot reads, independent capture coverage and default-off paired generator/sealing gate (contracts/private-observability.json)
 
 ### P1-T20A — GPU/runtime watchdog detection and incident classification
 **Context:** `C75`
@@ -708,6 +716,7 @@ Rules:
 - no misleading pooled VRAM totals
 - MI-06 existing routes/actions/permissions and pause/focus preferences survive desktop/tablet/mobile and theme checks
 - MI-06 live/empty/error/unsupported provenance, accessible filters/exports and source/dist parity
+- AC-OBS-03..05: stale/unowned capacity is unavailable; CPU entitlement, idle GPUs, per-card VRAM and shared-pool context offers remain separate
 
 ### P1-T21A — Machine-checked presentation policy
 **Context:** `C65`
@@ -828,6 +837,10 @@ Rules:
 - retention test
 - MI-05 additive nullable facts and bounded query/rollup coverage preserve unknown historical values
 - MI-05 every analytics route rejects missing/invalid operator identity and tenant-header escalation; shared reports redact private data
+- AC-OBS-06: bounded content-free new-family-only 90-day aggregate/7-day diagnostic retention preserves source and coverage without purging legacy records or shared backups
+- AC-REQOBS-01/06..08: exact-dimension dataset-separated fixed-bin rollups preserve counts, ratios, coverage, replay/seal identity and new-family-only retention
+- AC-REQOBS-09: bounded failure companion conserves status marginals and correlated timeout phases with exact-parent fingerprint, atomic three-resolution revision/seal/prune, persistent late-ingest fence and per-cell privacy evidence
+- AC-PRIVATEOBS-01..06: private gateway-authenticated bounded durable ingest, operator snapshot reads, independent capture coverage and default-off paired generator/sealing gate (contracts/private-observability.json)
 
 ### P2-T04 — Model candidate registry and feasibility filter
 **Context:** `C70`
@@ -1032,6 +1045,7 @@ Rules:
 - UI E2E
 - measured/predicted labels
 - dimension filters
+- AC-OBS-07: public GPU profiles use existing Next.js apps/web with private-field redaction, sparse-cohort suppression and context/fingerprint provenance
 
 ### P2-T19 — Resumable benchmark DAG core
 **Context:** `C75`
@@ -2114,6 +2128,7 @@ Rules:
 - an older node's telemetry and heartbeat parse unchanged and a malformed report never refuses the carrier
 - topology v2 carries no GPU-memory member
 - NVIDIA and AMD producers report physical memory measured on real hardware
+- AC-OBS-08: unchanged memory report in NVIDIA observe mode requires real pinned hardware reconciliation; no AMD qualification is inferred
 
 ### P5-T31 — GPU memory: gateway composition, reservations, pressure and fleet snapshot
 **Context:** `C85`
@@ -2130,6 +2145,7 @@ Rules:
 - pressure states follow free-after-growth with hysteresis
 - a resource relayed by two paths is counted once
 - a gateway that is not the authority never composes safeSchedulable
+- AC-OBS-03..05: typed owner capacity expires by monotonic age and epoch; duplicate/replayed snapshots and shared pools cannot multiply capacity
 
 ### P5-T32 — GPU memory: decision records, lifecycle events, OOM postmortem and placement simulation
 **Context:** `C85`
@@ -2145,6 +2161,7 @@ Rules:
 - a postmortem reconstructs the OOM without the failed runtime answering
 - a simulation leaves the ledger, the router and every allocation unchanged
 - a gateway without rebalancer authority refuses a simulation
+- AC-OBS-09: telemetry and simulation grant no Nibbler serving or placement authority before runtime qualification and applicable safety proofs
 
 ### P5-T33 — Node join: hardware-only registration, assignments and tokenless enrollment in the Rust gateway
 **Context:** `C80`
@@ -2240,6 +2257,28 @@ Rules:
 - a store missing a catalogued digest replicates it from holders, a failed periodic verify deletes the blob and re-replicates it, and eviction never removes the only complete copy or a blob under a lease
 - a write to the S3 front end succeeds only for a key granted write and only for an object whose SHA-256 and size equal the pin, publishes by atomic rename after verification and deletes the part file otherwise
 - a store reachable only through a rendezvous accepts no inbound connection, and the grant and signature checks are unchanged
+
+### P5-T38 — Managed persistent node onboarding, qualification and durable reconciliation
+**Context:** `C85`
+**Depends on:** P5-T35, P1-T23, P1-T20B, P3-T25
+**Features:** IW-DYNNODE-002
+**Read:** specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md, specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md, specs/20_NODE_AUTOCONFIG_DISCOVERY.md, specs/26_RESOURCE_IDENTITY_REDISCOVERY.md, specs/36_GPU_WATCHDOG_RESCUE.md, specs/39_INFERENCE_RUNTIME_TUNING.md, specs/43_GPU_PLACEMENT_HOT_SWAP.md, specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md
+
+**Outcome:** Implement iw.node-reconcile/1 in the Rust monorepo: a persistent Compose owner automatically reconciles stable mixed-GPU inventory, honest telemetry, one instance per deployment per node, durable assignment execution, bounded watchdog recovery and policy-scoped qualification. Reuse existing HTTP registration/heartbeat, assignment and provisioning schemas without weakening legacy behavior. Nibbler clean-install, real process signals, host reboot, gateway restart and full authorization/admission-path evidence must pass before managed serving is claimed ready.
+
+**Required tests:**
+- ONB-01: clean installation and idempotent rerun use persistent Linux Compose without Apptainer; real owner-to-sibling host-loopback connectivity is proven before GPU qualification
+- ONB-02: mixed Pascal/Turing inventory retains per-card stable identities across reordering and reboot, and the pinned compatible runtime executes on every qualified card
+- ONB-03: unnegotiated or unenrolled peers cannot provision; idle hardware and control status never advertise serving offers
+- ONB-04: automatic policy-scoped qualification runs verified artifacts through real authorization, admission, correctness, context and cancellation/reuse checks before readiness
+- ONB-05: throughput drafts, missing or expired evidence, fingerprint drift, absent attestation, stale status, unhealthy watchdog or quarantine cannot publish through adoption or settle; permits enforce exact identity, scope, expiry and atomic request budgets
+- ONB-06: distinct deployments use disjoint homogeneous groups; a second assignment for an identical deployment is refused before executor translation and never becomes an implicit span
+- ONB-07: elective stop/replacement drains before unload and preserves healthy-instance floors; severe faults immediately withdraw unsafe capacity and expose any floor deficit
+- ONB-08: bounded rescue preserves actual known-good artifacts, never invents a rollback target, and persists exhausted attempts and quarantine across node and gateway restart
+- ONB-09: real subprocess SIGTERM, SIGINT and graceful owner drop preserve attested containers and durable claims for adoption; explicit retirement withdraws, drains and unloads; host reboot preserves identity and avoids duplicate engines
+- ONB-10: gateway restart reconciles durable holdings and qualification evidence after a fresh report, invalidates prior permits and requires a fresh full-path probe before publication
+- ONB-11: managed link-only inference and cancellation work through reconnect without duplicated placement or exposed unauthenticated engine ports
+- ONB-12: exact-commit and digest-pinned Nibbler installation/restart/recovery evidence, independent review and required checks pass before normal merge; offline contract tests never substitute for runtime or hardware proof
 
 ### B-T01 — Runtime families and typed capabilities
 **Context:** `C75`

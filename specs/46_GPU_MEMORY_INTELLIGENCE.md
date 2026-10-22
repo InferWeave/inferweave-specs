@@ -774,3 +774,15 @@ placement simulation, and any change to placement. See `OPEN_GATES.md`.
 
 Feature `IW-GPUMEM-001` maps to canonical tasks `P5-T30`, `P5-T31`, `P5-T32`. See
 `contracts/feature-registry.json`, `contracts/canonical-task-graph.json` and `implementation/`.
+
+## Scoped observe restoration authorization (2026-10-20)
+
+The observability ADR authorizes implementation, independent review, merge and
+conditional deployment of this existing observe lane on qualifying NVIDIA
+hardware. This supersedes "not approved" above only for that bounded observe
+rollout after proof; it does not assert any required test has passed. Existing
+report shapes, ownership, capability negotiation and accounting are unchanged.
+`iw.observability.capacity/1` may reference the unchanged report for authorized
+readers. AMD production proof, shadow/on placement changes, coresidency, real
+OOM recovery and the remaining P5-T30..32 evidence remain owed. Observe-mode
+telemetry never reserves or changes placement.

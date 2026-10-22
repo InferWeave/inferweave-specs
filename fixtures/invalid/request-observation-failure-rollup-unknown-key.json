@@ -1,0 +1,363 @@
+{
+  "schema": "iw.observability.failure-rollup/1",
+  "visibility": "internal",
+  "parent": {
+    "source_gateway_id": "edge",
+    "producer_epoch": "edge-epoch",
+    "rollup_id": "rollup-failures-1",
+    "revision": 1,
+    "sealed": true,
+    "fingerprint": "sha256:4df3d06c6b498e02bf6158c81f21df2ca23065d2fd64ae219f7d868f17e8d725"
+  },
+  "breakdowns": {
+    "service_failure": {
+      "reason_counts": {
+        "unknown": 0,
+        "PROTOCOL_VERSION_UNSUPPORTED": 0,
+        "FEATURE_UNSUPPORTED": 0,
+        "MODEL_NOT_FOUND": 0,
+        "MODEL_UNAVAILABLE": 0,
+        "MODEL_NO_CAPACITY": 0,
+        "MODEL_LOADING": 0,
+        "MODEL_FAILED": 0,
+        "NO_COMPATIBLE_WORKER": 0,
+        "NO_CAPACITY": 0,
+        "QUEUE_FULL": 0,
+        "NODE_UNAVAILABLE": 0,
+        "RUNTIME_UNAVAILABLE": 0,
+        "RUNTIME_CRASHED": 0,
+        "ALLOCATION_PENDING": 0,
+        "ALLOCATION_PREEMPTED": 0,
+        "ALLOCATION_TERMINATED": 0,
+        "DEADLINE_EXCEEDED": 0,
+        "REQUEST_CANCELLED": 0,
+        "UPSTREAM_UNAVAILABLE": 0,
+        "BACKEND_UNREACHABLE": 0,
+        "BACKEND_TIMEOUT": 2,
+        "BACKEND_STREAM_FAILED": 0,
+        "CLIENT_CANCELLED": 0,
+        "INVALID_UPSTREAM_RESPONSE": 0,
+        "inference_idle_timeout": 0,
+        "inference_request_timeout": 0,
+        "invented": 0
+      },
+      "layer_counts": {
+        "ingress": 0,
+        "gateway": 0,
+        "link": 0,
+        "node": 0,
+        "backend": 2,
+        "unknown": 0,
+        "none": 0
+      },
+      "phase_counts": {
+        "queue": 1,
+        "connect": 0,
+        "prefill": 0,
+        "decode": 0,
+        "execution": 1,
+        "unknown": 0,
+        "none": 0
+      },
+      "timeout_phase_counts": {
+        "DEADLINE_EXCEEDED": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "BACKEND_TIMEOUT": {
+          "queue": 1,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 1,
+          "unknown": 0,
+          "none": 0
+        },
+        "inference_idle_timeout": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "inference_request_timeout": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        }
+      }
+    },
+    "rejected": {
+      "reason_counts": {
+        "unknown": 0,
+        "PROTOCOL_VERSION_UNSUPPORTED": 0,
+        "FEATURE_UNSUPPORTED": 0,
+        "MODEL_NOT_FOUND": 0,
+        "MODEL_UNAVAILABLE": 0,
+        "MODEL_NO_CAPACITY": 0,
+        "MODEL_LOADING": 0,
+        "MODEL_FAILED": 0,
+        "NO_COMPATIBLE_WORKER": 0,
+        "NO_CAPACITY": 0,
+        "QUEUE_FULL": 1,
+        "NODE_UNAVAILABLE": 0,
+        "RUNTIME_UNAVAILABLE": 0,
+        "RUNTIME_CRASHED": 0,
+        "ALLOCATION_PENDING": 0,
+        "ALLOCATION_PREEMPTED": 0,
+        "ALLOCATION_TERMINATED": 0,
+        "DEADLINE_EXCEEDED": 0,
+        "REQUEST_CANCELLED": 0,
+        "UPSTREAM_UNAVAILABLE": 0,
+        "BACKEND_UNREACHABLE": 0,
+        "BACKEND_TIMEOUT": 0,
+        "BACKEND_STREAM_FAILED": 0,
+        "CLIENT_CANCELLED": 0,
+        "INVALID_UPSTREAM_RESPONSE": 0,
+        "inference_idle_timeout": 0,
+        "inference_request_timeout": 0
+      },
+      "layer_counts": {
+        "ingress": 0,
+        "gateway": 1,
+        "link": 0,
+        "node": 0,
+        "backend": 0,
+        "unknown": 0,
+        "none": 0
+      },
+      "phase_counts": {
+        "queue": 1,
+        "connect": 0,
+        "prefill": 0,
+        "decode": 0,
+        "execution": 0,
+        "unknown": 0,
+        "none": 0
+      },
+      "timeout_phase_counts": {
+        "DEADLINE_EXCEEDED": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "BACKEND_TIMEOUT": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "inference_idle_timeout": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "inference_request_timeout": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        }
+      }
+    },
+    "cancelled": {
+      "reason_counts": {
+        "unknown": 0,
+        "PROTOCOL_VERSION_UNSUPPORTED": 0,
+        "FEATURE_UNSUPPORTED": 0,
+        "MODEL_NOT_FOUND": 0,
+        "MODEL_UNAVAILABLE": 0,
+        "MODEL_NO_CAPACITY": 0,
+        "MODEL_LOADING": 0,
+        "MODEL_FAILED": 0,
+        "NO_COMPATIBLE_WORKER": 0,
+        "NO_CAPACITY": 0,
+        "QUEUE_FULL": 0,
+        "NODE_UNAVAILABLE": 0,
+        "RUNTIME_UNAVAILABLE": 0,
+        "RUNTIME_CRASHED": 0,
+        "ALLOCATION_PENDING": 0,
+        "ALLOCATION_PREEMPTED": 0,
+        "ALLOCATION_TERMINATED": 0,
+        "DEADLINE_EXCEEDED": 0,
+        "REQUEST_CANCELLED": 0,
+        "UPSTREAM_UNAVAILABLE": 0,
+        "BACKEND_UNREACHABLE": 0,
+        "BACKEND_TIMEOUT": 0,
+        "BACKEND_STREAM_FAILED": 0,
+        "CLIENT_CANCELLED": 1,
+        "INVALID_UPSTREAM_RESPONSE": 0,
+        "inference_idle_timeout": 0,
+        "inference_request_timeout": 0
+      },
+      "layer_counts": {
+        "ingress": 0,
+        "gateway": 0,
+        "link": 0,
+        "node": 0,
+        "backend": 0,
+        "unknown": 0,
+        "none": 1
+      },
+      "phase_counts": {
+        "queue": 0,
+        "connect": 0,
+        "prefill": 0,
+        "decode": 0,
+        "execution": 0,
+        "unknown": 0,
+        "none": 1
+      },
+      "timeout_phase_counts": {
+        "DEADLINE_EXCEEDED": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "BACKEND_TIMEOUT": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "inference_idle_timeout": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "inference_request_timeout": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        }
+      }
+    },
+    "unknown": {
+      "reason_counts": {
+        "unknown": 1,
+        "PROTOCOL_VERSION_UNSUPPORTED": 0,
+        "FEATURE_UNSUPPORTED": 0,
+        "MODEL_NOT_FOUND": 0,
+        "MODEL_UNAVAILABLE": 0,
+        "MODEL_NO_CAPACITY": 0,
+        "MODEL_LOADING": 0,
+        "MODEL_FAILED": 0,
+        "NO_COMPATIBLE_WORKER": 0,
+        "NO_CAPACITY": 0,
+        "QUEUE_FULL": 0,
+        "NODE_UNAVAILABLE": 0,
+        "RUNTIME_UNAVAILABLE": 0,
+        "RUNTIME_CRASHED": 0,
+        "ALLOCATION_PENDING": 0,
+        "ALLOCATION_PREEMPTED": 0,
+        "ALLOCATION_TERMINATED": 0,
+        "DEADLINE_EXCEEDED": 0,
+        "REQUEST_CANCELLED": 0,
+        "UPSTREAM_UNAVAILABLE": 0,
+        "BACKEND_UNREACHABLE": 0,
+        "BACKEND_TIMEOUT": 0,
+        "BACKEND_STREAM_FAILED": 0,
+        "CLIENT_CANCELLED": 0,
+        "INVALID_UPSTREAM_RESPONSE": 0,
+        "inference_idle_timeout": 0,
+        "inference_request_timeout": 0
+      },
+      "layer_counts": {
+        "ingress": 0,
+        "gateway": 0,
+        "link": 0,
+        "node": 0,
+        "backend": 0,
+        "unknown": 1,
+        "none": 0
+      },
+      "phase_counts": {
+        "queue": 0,
+        "connect": 0,
+        "prefill": 0,
+        "decode": 0,
+        "execution": 0,
+        "unknown": 1,
+        "none": 0
+      },
+      "timeout_phase_counts": {
+        "DEADLINE_EXCEEDED": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "BACKEND_TIMEOUT": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "inference_idle_timeout": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        },
+        "inference_request_timeout": {
+          "queue": 0,
+          "connect": 0,
+          "prefill": 0,
+          "decode": 0,
+          "execution": 0,
+          "unknown": 0,
+          "none": 0
+        }
+      }
+    }
+  }
+}

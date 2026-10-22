@@ -1,0 +1,1079 @@
+{
+  "events": [
+    {
+      "schema": "iw.observability.request/1",
+      "visibility": "internal",
+      "metric_definition_version": 1,
+      "event_id": "ingress-event",
+      "source_gateway_id": "edge",
+      "producer_epoch": "edge-epoch",
+      "sequence": 1,
+      "observed_at": "2026-10-20T00:04:00Z",
+      "dataset": "production",
+      "benchmark_sample_id": null,
+      "observation_kind": "ingress_terminal",
+      "sampling": "all_terminal",
+      "lineage": {
+        "scope": "trusted",
+        "logical_request_id": "logical-1",
+        "attempt_id": null,
+        "parent_attempt_id": null,
+        "hop_id": null,
+        "parent_hop_id": null,
+        "trace_id": null,
+        "transport_request_id": "client-reused-id",
+        "ingress_gateway_id": "edge"
+      },
+      "attribution": {
+        "model_id": "fixture-model",
+        "model_artifact_digest": "sha256:fixture-artifact",
+        "quantization": null,
+        "tokenizer_revision": null,
+        "runtime_instance_id": "fixture-runtime",
+        "runtime_name": "llama.cpp",
+        "runtime_version": "fixture-version",
+        "runtime_image_digest": null,
+        "deployment_fingerprint": "fixture-deployment",
+        "configuration_fingerprint": "fixture-config",
+        "resource_profile_id": null,
+        "workload_profile_id": "fixture-chat",
+        "cluster_id": null,
+        "node_id": "fixture-node",
+        "gpu_sku": "fixture-GPU",
+        "load_generation": null,
+        "gpu_count": 1,
+        "gpu_resource_ids": [
+          "fixture-node/gpu0"
+        ]
+      },
+      "outcome": {
+        "status": "success",
+        "http_status": 200,
+        "completion": "protocol_success",
+        "reason_code": "none",
+        "layer": "none",
+        "phase": "none"
+      },
+      "timings": [
+        {
+          "span_id": "span-completion",
+          "parent_span_id": null,
+          "phase": "completion",
+          "measurement": {
+            "basis": "measured",
+            "source": "local_monotonic",
+            "value": 1000
+          },
+          "clock": "local_monotonic",
+          "semantics": "offset_from_start"
+        }
+      ],
+      "tokens": {
+        "input_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 0
+        },
+        "output_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 10
+        },
+        "cached_input": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_consumed": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_limit": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "processed_prefill_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "decode_output_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        }
+      }
+    },
+    {
+      "schema": "iw.observability.request/1",
+      "visibility": "internal",
+      "metric_definition_version": 1,
+      "event_id": "attempt-failed",
+      "source_gateway_id": "owner",
+      "producer_epoch": "owner-epoch",
+      "sequence": 1,
+      "observed_at": "2026-10-20T00:04:00Z",
+      "dataset": "production",
+      "benchmark_sample_id": null,
+      "observation_kind": "attempt_terminal",
+      "sampling": "all_terminal",
+      "lineage": {
+        "scope": "trusted",
+        "logical_request_id": "logical-1",
+        "attempt_id": "attempt-1",
+        "parent_attempt_id": null,
+        "hop_id": null,
+        "parent_hop_id": null,
+        "trace_id": null,
+        "transport_request_id": "client-reused-id",
+        "ingress_gateway_id": "edge"
+      },
+      "attribution": {
+        "model_id": "fixture-model",
+        "model_artifact_digest": "sha256:fixture-artifact",
+        "quantization": null,
+        "tokenizer_revision": null,
+        "runtime_instance_id": "fixture-runtime",
+        "runtime_name": "llama.cpp",
+        "runtime_version": "fixture-version",
+        "runtime_image_digest": null,
+        "deployment_fingerprint": "fixture-deployment",
+        "configuration_fingerprint": "fixture-config",
+        "resource_profile_id": null,
+        "workload_profile_id": "fixture-chat",
+        "cluster_id": null,
+        "node_id": "fixture-node",
+        "gpu_sku": "fixture-GPU",
+        "load_generation": null,
+        "gpu_count": 1,
+        "gpu_resource_ids": [
+          "fixture-node/gpu0"
+        ]
+      },
+      "outcome": {
+        "status": "service_failure",
+        "http_status": 200,
+        "completion": "protocol_failure",
+        "reason_code": "BACKEND_STREAM_FAILED",
+        "layer": "backend",
+        "phase": "decode"
+      },
+      "timings": [
+        {
+          "span_id": "span-completion",
+          "parent_span_id": null,
+          "phase": "completion",
+          "measurement": {
+            "basis": "measured",
+            "source": "local_monotonic",
+            "value": 1000
+          },
+          "clock": "local_monotonic",
+          "semantics": "offset_from_start"
+        }
+      ],
+      "tokens": {
+        "input_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 0
+        },
+        "output_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 10
+        },
+        "cached_input": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_consumed": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_limit": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "processed_prefill_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "decode_output_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        }
+      }
+    },
+    {
+      "schema": "iw.observability.request/1",
+      "visibility": "internal",
+      "metric_definition_version": 1,
+      "event_id": "attempt-failed-2",
+      "source_gateway_id": "owner",
+      "producer_epoch": "owner-epoch",
+      "sequence": 2,
+      "observed_at": "2026-10-20T00:04:00Z",
+      "dataset": "production",
+      "benchmark_sample_id": null,
+      "observation_kind": "attempt_terminal",
+      "sampling": "all_terminal",
+      "lineage": {
+        "scope": "trusted",
+        "logical_request_id": "logical-1",
+        "attempt_id": "attempt-2",
+        "parent_attempt_id": "attempt-1",
+        "hop_id": null,
+        "parent_hop_id": null,
+        "trace_id": null,
+        "transport_request_id": "client-reused-id",
+        "ingress_gateway_id": "edge"
+      },
+      "attribution": {
+        "model_id": "fixture-model",
+        "model_artifact_digest": "sha256:fixture-artifact",
+        "quantization": null,
+        "tokenizer_revision": null,
+        "runtime_instance_id": "fixture-runtime",
+        "runtime_name": "llama.cpp",
+        "runtime_version": "fixture-version",
+        "runtime_image_digest": null,
+        "deployment_fingerprint": "fixture-deployment",
+        "configuration_fingerprint": "fixture-config",
+        "resource_profile_id": null,
+        "workload_profile_id": "fixture-chat",
+        "cluster_id": null,
+        "node_id": "fixture-node",
+        "gpu_sku": "fixture-GPU",
+        "load_generation": null,
+        "gpu_count": 1,
+        "gpu_resource_ids": [
+          "fixture-node/gpu0"
+        ]
+      },
+      "outcome": {
+        "status": "service_failure",
+        "http_status": 200,
+        "completion": "protocol_failure",
+        "reason_code": "BACKEND_STREAM_FAILED",
+        "layer": "backend",
+        "phase": "decode"
+      },
+      "timings": [
+        {
+          "span_id": "span-completion",
+          "parent_span_id": null,
+          "phase": "completion",
+          "measurement": {
+            "basis": "measured",
+            "source": "local_monotonic",
+            "value": 1000
+          },
+          "clock": "local_monotonic",
+          "semantics": "offset_from_start"
+        }
+      ],
+      "tokens": {
+        "input_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 0
+        },
+        "output_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 10
+        },
+        "cached_input": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_consumed": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_limit": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "processed_prefill_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "decode_output_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        }
+      }
+    },
+    {
+      "schema": "iw.observability.request/1",
+      "visibility": "internal",
+      "metric_definition_version": 1,
+      "event_id": "attempt-success",
+      "source_gateway_id": "owner",
+      "producer_epoch": "owner-epoch",
+      "sequence": 3,
+      "observed_at": "2026-10-20T00:04:00Z",
+      "dataset": "production",
+      "benchmark_sample_id": null,
+      "observation_kind": "attempt_terminal",
+      "sampling": "all_terminal",
+      "lineage": {
+        "scope": "trusted",
+        "logical_request_id": "logical-1",
+        "attempt_id": "attempt-3",
+        "parent_attempt_id": "attempt-2",
+        "hop_id": null,
+        "parent_hop_id": null,
+        "trace_id": null,
+        "transport_request_id": "client-reused-id",
+        "ingress_gateway_id": "edge"
+      },
+      "attribution": {
+        "model_id": "fixture-model",
+        "model_artifact_digest": "sha256:fixture-artifact",
+        "quantization": null,
+        "tokenizer_revision": null,
+        "runtime_instance_id": "fixture-runtime",
+        "runtime_name": "llama.cpp",
+        "runtime_version": "fixture-version",
+        "runtime_image_digest": null,
+        "deployment_fingerprint": "fixture-deployment",
+        "configuration_fingerprint": "fixture-config",
+        "resource_profile_id": null,
+        "workload_profile_id": "fixture-chat",
+        "cluster_id": null,
+        "node_id": "fixture-node",
+        "gpu_sku": "fixture-GPU",
+        "load_generation": null,
+        "gpu_count": 1,
+        "gpu_resource_ids": [
+          "fixture-node/gpu0"
+        ]
+      },
+      "outcome": {
+        "status": "success",
+        "http_status": 200,
+        "completion": "protocol_success",
+        "reason_code": "none",
+        "layer": "none",
+        "phase": "none"
+      },
+      "timings": [
+        {
+          "span_id": "span-completion",
+          "parent_span_id": null,
+          "phase": "completion",
+          "measurement": {
+            "basis": "measured",
+            "source": "local_monotonic",
+            "value": 1000
+          },
+          "clock": "local_monotonic",
+          "semantics": "offset_from_start"
+        }
+      ],
+      "tokens": {
+        "input_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 0
+        },
+        "output_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 10
+        },
+        "cached_input": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_consumed": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_limit": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "processed_prefill_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "decode_output_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        }
+      }
+    },
+    {
+      "schema": "iw.observability.request/1",
+      "visibility": "internal",
+      "metric_definition_version": 1,
+      "event_id": "hop-event",
+      "source_gateway_id": "relay",
+      "producer_epoch": "relay-epoch",
+      "sequence": 1,
+      "observed_at": "2026-10-20T00:04:00Z",
+      "dataset": "production",
+      "benchmark_sample_id": null,
+      "observation_kind": "hop_terminal",
+      "sampling": "all_terminal",
+      "lineage": {
+        "scope": "trusted",
+        "logical_request_id": "logical-1",
+        "attempt_id": "forward-attempt-1",
+        "parent_attempt_id": null,
+        "hop_id": "hop-1",
+        "parent_hop_id": null,
+        "trace_id": null,
+        "transport_request_id": "client-reused-id",
+        "ingress_gateway_id": "edge"
+      },
+      "attribution": {
+        "model_id": "fixture-model",
+        "model_artifact_digest": "sha256:fixture-artifact",
+        "quantization": null,
+        "tokenizer_revision": null,
+        "runtime_instance_id": "fixture-runtime",
+        "runtime_name": "llama.cpp",
+        "runtime_version": "fixture-version",
+        "runtime_image_digest": null,
+        "deployment_fingerprint": "fixture-deployment",
+        "configuration_fingerprint": "fixture-config",
+        "resource_profile_id": null,
+        "workload_profile_id": "fixture-chat",
+        "cluster_id": null,
+        "node_id": "fixture-node",
+        "gpu_sku": "fixture-GPU",
+        "load_generation": null,
+        "gpu_count": 1,
+        "gpu_resource_ids": [
+          "fixture-node/gpu0"
+        ]
+      },
+      "outcome": {
+        "status": "success",
+        "http_status": 200,
+        "completion": "protocol_success",
+        "reason_code": "none",
+        "layer": "none",
+        "phase": "none"
+      },
+      "timings": [
+        {
+          "span_id": "span-completion",
+          "parent_span_id": null,
+          "phase": "completion",
+          "measurement": {
+            "basis": "measured",
+            "source": "local_monotonic",
+            "value": 1000
+          },
+          "clock": "local_monotonic",
+          "semantics": "offset_from_start"
+        }
+      ],
+      "tokens": {
+        "input_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 0
+        },
+        "output_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 10
+        },
+        "cached_input": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_consumed": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_limit": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "processed_prefill_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "decode_output_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        }
+      }
+    },
+    {
+      "schema": "iw.observability.request/1",
+      "visibility": "internal",
+      "metric_definition_version": 1,
+      "event_id": "ingress-event",
+      "source_gateway_id": "edge",
+      "producer_epoch": "edge-epoch",
+      "sequence": 1,
+      "observed_at": "2026-10-20T00:04:00Z",
+      "dataset": "production",
+      "benchmark_sample_id": null,
+      "observation_kind": "ingress_terminal",
+      "sampling": "all_terminal",
+      "lineage": {
+        "scope": "trusted",
+        "logical_request_id": "logical-1",
+        "attempt_id": null,
+        "parent_attempt_id": null,
+        "hop_id": null,
+        "parent_hop_id": null,
+        "trace_id": null,
+        "transport_request_id": "client-reused-id",
+        "ingress_gateway_id": "edge"
+      },
+      "attribution": {
+        "model_id": "fixture-model",
+        "model_artifact_digest": "sha256:fixture-artifact",
+        "quantization": null,
+        "tokenizer_revision": null,
+        "runtime_instance_id": "fixture-runtime",
+        "runtime_name": "llama.cpp",
+        "runtime_version": "fixture-version",
+        "runtime_image_digest": null,
+        "deployment_fingerprint": "fixture-deployment",
+        "configuration_fingerprint": "fixture-config",
+        "resource_profile_id": null,
+        "workload_profile_id": "fixture-chat",
+        "cluster_id": null,
+        "node_id": "fixture-node",
+        "gpu_sku": "fixture-GPU",
+        "load_generation": null,
+        "gpu_count": 1,
+        "gpu_resource_ids": [
+          "fixture-node/gpu0"
+        ]
+      },
+      "outcome": {
+        "status": "success",
+        "http_status": 200,
+        "completion": "protocol_success",
+        "reason_code": "none",
+        "layer": "none",
+        "phase": "none"
+      },
+      "timings": [
+        {
+          "span_id": "span-completion",
+          "parent_span_id": null,
+          "phase": "completion",
+          "measurement": {
+            "basis": "measured",
+            "source": "local_monotonic",
+            "value": 1000
+          },
+          "clock": "local_monotonic",
+          "semantics": "offset_from_start"
+        }
+      ],
+      "tokens": {
+        "input_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 0
+        },
+        "output_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 10
+        },
+        "cached_input": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_consumed": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_limit": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "processed_prefill_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "decode_output_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        }
+      }
+    },
+    {
+      "schema": "iw.observability.request/1",
+      "visibility": "internal",
+      "metric_definition_version": 1,
+      "event_id": "ingress-event-2",
+      "source_gateway_id": "edge",
+      "producer_epoch": "edge-epoch",
+      "sequence": 2,
+      "observed_at": "2026-10-20T00:04:00Z",
+      "dataset": "production",
+      "benchmark_sample_id": null,
+      "observation_kind": "ingress_terminal",
+      "sampling": "all_terminal",
+      "lineage": {
+        "scope": "trusted",
+        "logical_request_id": "logical-2",
+        "attempt_id": null,
+        "parent_attempt_id": null,
+        "hop_id": null,
+        "parent_hop_id": null,
+        "trace_id": null,
+        "transport_request_id": "client-reused-id",
+        "ingress_gateway_id": "edge"
+      },
+      "attribution": {
+        "model_id": "fixture-model",
+        "model_artifact_digest": "sha256:fixture-artifact",
+        "quantization": null,
+        "tokenizer_revision": null,
+        "runtime_instance_id": "fixture-runtime",
+        "runtime_name": "llama.cpp",
+        "runtime_version": "fixture-version",
+        "runtime_image_digest": null,
+        "deployment_fingerprint": "fixture-deployment",
+        "configuration_fingerprint": "fixture-config",
+        "resource_profile_id": null,
+        "workload_profile_id": "fixture-chat",
+        "cluster_id": null,
+        "node_id": "fixture-node",
+        "gpu_sku": "fixture-GPU",
+        "load_generation": null,
+        "gpu_count": 1,
+        "gpu_resource_ids": [
+          "fixture-node/gpu0"
+        ]
+      },
+      "outcome": {
+        "status": "success",
+        "http_status": 200,
+        "completion": "protocol_success",
+        "reason_code": "none",
+        "layer": "none",
+        "phase": "none"
+      },
+      "timings": [
+        {
+          "span_id": "span-completion",
+          "parent_span_id": null,
+          "phase": "completion",
+          "measurement": {
+            "basis": "measured",
+            "source": "local_monotonic",
+            "value": 1000
+          },
+          "clock": "local_monotonic",
+          "semantics": "offset_from_start"
+        }
+      ],
+      "tokens": {
+        "input_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 0
+        },
+        "output_total": {
+          "basis": "measured",
+          "source": "runtime_usage",
+          "value": 10
+        },
+        "cached_input": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_consumed": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "context_limit": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "processed_prefill_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        },
+        "decode_output_tokens": {
+          "basis": "unknown",
+          "source": "unknown"
+        }
+      }
+    }
+  ],
+  "expected": {
+    "unique_events": 6,
+    "duplicates": 1,
+    "trusted_ingress_success": 2,
+    "attempt_service_failure": 2,
+    "attempt_success": 1,
+    "hops": 1
+  },
+  "conflicting_replay": {
+    "schema": "iw.observability.request/1",
+    "visibility": "internal",
+    "metric_definition_version": 1,
+    "event_id": "ingress-event",
+    "source_gateway_id": "edge",
+    "producer_epoch": "edge-epoch",
+    "sequence": 1,
+    "observed_at": "2026-10-20T00:04:00Z",
+    "dataset": "production",
+    "benchmark_sample_id": null,
+    "observation_kind": "ingress_terminal",
+    "sampling": "all_terminal",
+    "lineage": {
+      "scope": "trusted",
+      "logical_request_id": "logical-1",
+      "attempt_id": null,
+      "parent_attempt_id": null,
+      "hop_id": null,
+      "parent_hop_id": null,
+      "trace_id": null,
+      "transport_request_id": "client-reused-id",
+      "ingress_gateway_id": "edge"
+    },
+    "attribution": {
+      "model_id": "fixture-model",
+      "model_artifact_digest": "sha256:fixture-artifact",
+      "quantization": null,
+      "tokenizer_revision": null,
+      "runtime_instance_id": "fixture-runtime",
+      "runtime_name": "llama.cpp",
+      "runtime_version": "fixture-version",
+      "runtime_image_digest": null,
+      "deployment_fingerprint": "fixture-deployment",
+      "configuration_fingerprint": "fixture-config",
+      "resource_profile_id": null,
+      "workload_profile_id": "fixture-chat",
+      "cluster_id": null,
+      "node_id": "fixture-node",
+      "gpu_sku": "fixture-GPU",
+      "load_generation": null,
+      "gpu_count": 1,
+      "gpu_resource_ids": [
+        "fixture-node/gpu0"
+      ]
+    },
+    "outcome": {
+      "status": "success",
+      "http_status": 200,
+      "completion": "protocol_success",
+      "reason_code": "none",
+      "layer": "none",
+      "phase": "none"
+    },
+    "timings": [
+      {
+        "span_id": "span-completion",
+        "parent_span_id": null,
+        "phase": "completion",
+        "measurement": {
+          "basis": "measured",
+          "source": "local_monotonic",
+          "value": 1000
+        },
+        "clock": "local_monotonic",
+        "semantics": "offset_from_start"
+      }
+    ],
+    "tokens": {
+      "input_total": {
+        "basis": "measured",
+        "source": "runtime_usage",
+        "value": 0
+      },
+      "output_total": {
+        "basis": "measured",
+        "source": "runtime_usage",
+        "value": 999
+      },
+      "cached_input": {
+        "basis": "unknown",
+        "source": "unknown"
+      },
+      "context_consumed": {
+        "basis": "unknown",
+        "source": "unknown"
+      },
+      "context_limit": {
+        "basis": "unknown",
+        "source": "unknown"
+      },
+      "processed_prefill_tokens": {
+        "basis": "unknown",
+        "source": "unknown"
+      },
+      "decode_output_tokens": {
+        "basis": "unknown",
+        "source": "unknown"
+      }
+    }
+  },
+  "rollups": [
+    {
+      "schema": "iw.observability.rollup/1",
+      "visibility": "internal",
+      "metric_definition_version": 1,
+      "rollup_id": "rollup-1",
+      "revision": 1,
+      "source_gateway_id": "edge",
+      "producer_epoch": "edge-epoch",
+      "window_start": "2026-10-20T00:00:00Z",
+      "window_end": "2026-10-20T00:05:00Z",
+      "as_of": "2026-10-20T00:05:01Z",
+      "resolution_seconds": 300,
+      "sealed": true,
+      "dataset": "production",
+      "observation_kind": "ingress_terminal",
+      "lineage_scope": "trusted",
+      "attribution": {
+        "model_id": "fixture-model",
+        "model_artifact_digest": "sha256:fixture-artifact",
+        "quantization": null,
+        "tokenizer_revision": null,
+        "runtime_instance_id": "fixture-runtime",
+        "runtime_name": "llama.cpp",
+        "runtime_version": "fixture-version",
+        "runtime_image_digest": null,
+        "deployment_fingerprint": "fixture-deployment",
+        "configuration_fingerprint": "fixture-config",
+        "resource_profile_id": null,
+        "workload_profile_id": "fixture-chat",
+        "cluster_id": null,
+        "node_id": "fixture-node",
+        "gpu_sku": "fixture-GPU",
+        "load_generation": null,
+        "gpu_count": 1,
+        "gpu_resource_ids": [
+          "fixture-node/gpu0"
+        ]
+      },
+      "counts": {
+        "success": 1,
+        "service_failure": 0,
+        "rejected": 0,
+        "cancelled": 0,
+        "unknown": 0,
+        "total": 1
+      },
+      "ratios": {
+        "success_share": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "service_failure_rate": {
+          "numerator": 0,
+          "denominator": 1
+        }
+      },
+      "metrics": [
+        {
+          "metric": "completion_ms",
+          "unit": "milliseconds",
+          "basis": "measured",
+          "source": "local_monotonic",
+          "eligible_count": 1,
+          "known_count": 1,
+          "missing_count": 0,
+          "unsupported_count": 0,
+          "sum": 1000,
+          "histogram": {
+            "version": 1,
+            "bounds": [
+              1,
+              5,
+              10,
+              25,
+              50,
+              100,
+              250,
+              500,
+              1000,
+              2500,
+              5000,
+              10000,
+              30000,
+              60000,
+              180000,
+              600000,
+              1800000
+            ],
+            "counts": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "coverage": {
+        "status": "complete",
+        "counter_epoch": "coverage-epoch",
+        "covered_ms": 300000,
+        "unknown_ms": 0,
+        "expected_events": 1,
+        "accepted_events": 1,
+        "dropped_events": 0,
+        "write_failures": 0,
+        "duplicates_ignored": 0,
+        "replay_conflicts": 0,
+        "late_events_rejected": 0,
+        "trace_sampled_events": 0,
+        "trace_dropped_events": 0,
+        "ingestion_lag_ms": 1000
+      }
+    },
+    {
+      "schema": "iw.observability.rollup/1",
+      "visibility": "internal",
+      "metric_definition_version": 1,
+      "rollup_id": "rollup-1",
+      "revision": 1,
+      "source_gateway_id": "edge",
+      "producer_epoch": "edge-epoch",
+      "window_start": "2026-10-20T00:00:00Z",
+      "window_end": "2026-10-20T00:05:00Z",
+      "as_of": "2026-10-20T00:05:01Z",
+      "resolution_seconds": 300,
+      "sealed": true,
+      "dataset": "production",
+      "observation_kind": "ingress_terminal",
+      "lineage_scope": "trusted",
+      "attribution": {
+        "model_id": "fixture-model",
+        "model_artifact_digest": "sha256:fixture-artifact",
+        "quantization": null,
+        "tokenizer_revision": null,
+        "runtime_instance_id": "fixture-runtime",
+        "runtime_name": "llama.cpp",
+        "runtime_version": "fixture-version",
+        "runtime_image_digest": null,
+        "deployment_fingerprint": "fixture-deployment",
+        "configuration_fingerprint": "fixture-config",
+        "resource_profile_id": null,
+        "workload_profile_id": "fixture-chat",
+        "cluster_id": null,
+        "node_id": "fixture-node",
+        "gpu_sku": "fixture-GPU",
+        "load_generation": null,
+        "gpu_count": 1,
+        "gpu_resource_ids": [
+          "fixture-node/gpu0"
+        ]
+      },
+      "counts": {
+        "success": 1,
+        "service_failure": 0,
+        "rejected": 0,
+        "cancelled": 0,
+        "unknown": 0,
+        "total": 1
+      },
+      "ratios": {
+        "success_share": {
+          "numerator": 1,
+          "denominator": 1
+        },
+        "service_failure_rate": {
+          "numerator": 0,
+          "denominator": 1
+        }
+      },
+      "metrics": [
+        {
+          "metric": "completion_ms",
+          "unit": "milliseconds",
+          "basis": "measured",
+          "source": "local_monotonic",
+          "eligible_count": 1,
+          "known_count": 1,
+          "missing_count": 0,
+          "unsupported_count": 0,
+          "sum": 1000,
+          "histogram": {
+            "version": 1,
+            "bounds": [
+              1,
+              5,
+              10,
+              25,
+              50,
+              100,
+              250,
+              500,
+              1000,
+              2500,
+              5000,
+              10000,
+              30000,
+              60000,
+              180000,
+              600000,
+              1800000
+            ],
+            "counts": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "coverage": {
+        "status": "complete",
+        "counter_epoch": "coverage-epoch",
+        "covered_ms": 300000,
+        "unknown_ms": 0,
+        "expected_events": 1,
+        "accepted_events": 1,
+        "dropped_events": 0,
+        "write_failures": 0,
+        "duplicates_ignored": 0,
+        "replay_conflicts": 0,
+        "late_events_rejected": 0,
+        "trace_sampled_events": 0,
+        "trace_dropped_events": 0,
+        "ingestion_lag_ms": 1000
+      }
+    }
+  ],
+  "expected_rollup_total_after_replay": 1
+}

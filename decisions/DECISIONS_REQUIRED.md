@@ -328,3 +328,12 @@ already measures 60 requests multiplexed over roughly one connection
 (`tests/h2c.rs::http2_multiplexes_many_requests_over_one_connection`).
 
 Adopted by owner direction on 2026-09-22.
+
+## Scoped D-001/D-002 clarification — observability, 2026-10-20
+
+The [observability capacity ADR](2026-10-20-observability-capacity.md) permits
+bounded persistence of the existing Go site's own edge observations while Rust
+retains global metric/warehouse/capacity authority. New public GPU profiles use
+the existing Next.js application; existing embedded Go operator analytics retain
+the prior exception. Deployment authorization is conditional on proof, not a
+claim that production or hardware gates passed.

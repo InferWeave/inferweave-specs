@@ -37,3 +37,10 @@ Spec 63 was amended for the defects found while implementing it (see its Amendme
 Rust gateway now implements the role, default off. This changes none of the open decisions above and
 authorizes nothing new: no deployment, key issuance or production change. The two exceptions the spec
 names to spec 59 (`meta.traffic_class`, `refused` on an `upstream` link) are recorded in spec 59.
+
+## Pointer 2026-10-16
+
+Proposed answers to the open decisions above, with reasoning and consequences, are in
+`decisions/2026-10-16-proposed-link-upstream-open-decisions.md`. They are proposals that need the
+owner's acceptance; **nothing here is decided by that record**, and the three open decisions above
+remain open.

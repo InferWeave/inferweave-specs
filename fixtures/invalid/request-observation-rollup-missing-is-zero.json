@@ -1,0 +1,128 @@
+{
+  "schema": "iw.observability.rollup/1",
+  "visibility": "internal",
+  "metric_definition_version": 1,
+  "rollup_id": "rollup-1",
+  "revision": 1,
+  "source_gateway_id": "edge",
+  "producer_epoch": "edge-epoch",
+  "window_start": "2026-10-20T00:00:00Z",
+  "window_end": "2026-10-20T00:05:00Z",
+  "as_of": "2026-10-20T00:05:01Z",
+  "resolution_seconds": 300,
+  "sealed": true,
+  "dataset": "production",
+  "observation_kind": "ingress_terminal",
+  "lineage_scope": "trusted",
+  "attribution": {
+    "model_id": "fixture-model",
+    "model_artifact_digest": "sha256:fixture-artifact",
+    "quantization": null,
+    "tokenizer_revision": null,
+    "runtime_instance_id": "fixture-runtime",
+    "runtime_name": "llama.cpp",
+    "runtime_version": "fixture-version",
+    "runtime_image_digest": null,
+    "deployment_fingerprint": "fixture-deployment",
+    "configuration_fingerprint": "fixture-config",
+    "resource_profile_id": null,
+    "workload_profile_id": "fixture-chat",
+    "cluster_id": null,
+    "node_id": "fixture-node",
+    "gpu_sku": "fixture-GPU",
+    "load_generation": null,
+    "gpu_count": 1,
+    "gpu_resource_ids": [
+      "fixture-node/gpu0"
+    ]
+  },
+  "counts": {
+    "success": 1,
+    "service_failure": 0,
+    "rejected": 0,
+    "cancelled": 0,
+    "unknown": 0,
+    "total": 1
+  },
+  "ratios": {
+    "success_share": {
+      "numerator": 1,
+      "denominator": 1
+    },
+    "service_failure_rate": {
+      "numerator": 0,
+      "denominator": 1
+    }
+  },
+  "metrics": [
+    {
+      "metric": "completion_ms",
+      "unit": "milliseconds",
+      "basis": "measured",
+      "source": "local_monotonic",
+      "eligible_count": 1,
+      "known_count": 0,
+      "missing_count": 1,
+      "unsupported_count": 0,
+      "sum": 1000,
+      "histogram": {
+        "version": 1,
+        "bounds": [
+          1,
+          5,
+          10,
+          25,
+          50,
+          100,
+          250,
+          500,
+          1000,
+          2500,
+          5000,
+          10000,
+          30000,
+          60000,
+          180000,
+          600000,
+          1800000
+        ],
+        "counts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "coverage": {
+    "status": "complete",
+    "counter_epoch": "coverage-epoch",
+    "covered_ms": 300000,
+    "unknown_ms": 0,
+    "expected_events": 1,
+    "accepted_events": 1,
+    "dropped_events": 0,
+    "write_failures": 0,
+    "duplicates_ignored": 0,
+    "replay_conflicts": 0,
+    "late_events_rejected": 0,
+    "trace_sampled_events": 0,
+    "trace_dropped_events": 0,
+    "ingestion_lag_ms": 1000
+  }
+}

@@ -433,6 +433,31 @@ fleet, TLS (or a tunnel) is approved for any non-private path, and an operator d
 
 ## Dynamic nodes and gateway-driven provisioning (specs/64) — 2026-10-15
 
+### Managed persistent onboarding extension — 2026-10-20
+
+**BLOCKED for a claim of deployed/production-ready managed capability.** The operator has
+authorized implementation, independent review, normal merge, and disposable Nibbler
+installation/reset/qualification/restart work under
+[`decisions/2026-10-20-node-onboarding.md`](decisions/2026-10-20-node-onboarding.md).
+This bounded authorization permits the work to proceed; it does not mark its evidence complete
+and opens no unrelated host reset or global catalogue activation.
+
+`IW-DYNNODE-002` / `P5-T38` owns `iw.node-reconcile/1`, its strict `reconcile` control members,
+per-card mixed-host facts, one-instance-per-deployment ownership, durable assignment/recovery
+state and policy-scoped qualification/publication. `contracts/node-reconcile.json` acceptance
+ONB-01 through ONB-12 is entirely `owed`: implementation, operator UI, clean install, actual
+Pascal/Turing execution, real SIGTERM/SIGINT/graceful drop, host reboot, gateway restart,
+watchdog/floor/rollback/quarantine, link inference/cancellation, and exact-artifact independent
+release evidence. Schema fixtures and the offline decision oracle are contract checks only.
+
+A throughput draft, healthy endpoint or restored container is insufficient for readiness.
+Adoption and settle require current trusted qualification and watchdog generation; exhausted
+attempts remain binding even when a status is terminal. Old owner permits are invalid after
+restart. No synthetic fixture grants production authority. The original P5-T35 Beast evidence
+below remains limited to its original `iw.dynamic-node/1` capability.
+
+### Original dynamic-node capability
+
 **BLOCKED for production use.** `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` defines the
 `iw.dynamic-node/1` capability, the `dynamic` register member, the first non-empty `assignments`
 entries (`serve`, `measure`, `stop`) on the register and heartbeat responses, the heartbeat
@@ -553,6 +578,8 @@ fences, actual encoded-byte report bounds before parsing, physical resource-grou
 multi-GPU-loss propagation and atomic admission revalidation. A-T08 owes mixed-version live
 rollout, latency/parity and failure/recovery evidence. Working Rust observation helpers and
 local fixture success cannot close these gates or promote probes into verified tools/privacy.
+A design for the verifier's evidence store and record is **proposed, needs owner acceptance; it decides and
+authorizes nothing**: `decisions/2026-10-16-proposed-qualification-verifier.md`.
 
 ## Alias execution identity and exclusive claims (spec57) — unsatisfied
 
@@ -967,7 +994,8 @@ spec 63 behaviour is default-off, and no catalog row is `verified`.
   `runtimeObservations.resync` diagnostic (5 minutes, doubling to one hour). Registration by an unknown or
   unproven node is a uniform 401, not a 400 that reveals which node ids hold credentials. **UNSATISFIED / owed:**
   no qualification verifier (the spec leaves the evidence store and record format undefined, so `qualification_id`
-  and `owner_policy_id` stay opaque and nothing becomes `verified`); only executor nodes send observations, so the
+  and `owner_policy_id` stay opaque and nothing becomes `verified`; a design is proposed in
+  `decisions/2026-10-16-proposed-qualification-verifier.md`, which needs owner acceptance and decides nothing); only executor nodes send observations, so the
   lab's `node join --model` nodes stay `UNKNOWN`; zero clock-skew tolerance (fails closed, as the spec requires);
   the gateway keeps observations in memory only; the owner remembers only 8 retired epochs; the one line that
   passes the producer into the join-loop re-registration decision has no running-loop test; same-epoch
@@ -1009,7 +1037,8 @@ owner's hosting wire is a separate flag, and no executor reaches `READY`.
   handle format and lifetime, how the owner's operator authenticates to receive handles, which route returns them, what
   an "authorized requester" is, and what a requester who is told the plan "as if no other tenant's model existed"
   may rely on when the owner would in fact have to evict (that requester is told `FITS` for a plan the owner can
-  honour only by unloading something); (3) the channel reaches port 443 only, so an owner must be fronted by a
+  honour only by unloading something; answers are proposed in
+  `decisions/2026-10-16-proposed-hosting-operator-audience.md`, needing owner acceptance); (3) the channel reaches port 443 only, so an owner must be fronted by a
   TLS terminator on 443 (the gateway's own TLS listener is a link port); no end-to-end run against a real owner
   over TLS exists; (4) the inbound side still parses with `serde_json::Value` (a duplicate key on a request or
   heartbeat is not refused); (5) the freshness of an `acquirable` answer is receipt time only, with no
@@ -1050,9 +1079,137 @@ production gate; spec 62 and spec 63 behaviour stays default-off and is deployed
   fill the cache, concurrent operator `hosting/ask` and `hosting/discover` calls are capped at 4 (429 beyond it), and
   inbound provisioning requests refuse duplicate JSON keys. **Still owed:** the alias `PROVISIONABLE` marking from a
   discovery answer; the operator-audience plan (the spec leaves the eviction handle format, lifetime and recipient
-  undefined); real profile, load and validation hooks (they fail closed, so nothing reaches `READY`); a run against a
+  undefined; proposed answers in `decisions/2026-10-16-proposed-hosting-operator-audience.md`); real profile, load and
+  validation hooks (they fail closed, so nothing reaches `READY`; the boundary with spec 50 is proposed in
+  `decisions/2026-10-16-proposed-hosting-hook-boundary.md`); a run against a
   real owner over TLS; a large weight download through the CDN redirect chain; the per-key hosting role; the Go
   console rendering; licence checks for local sources.
-* **Not done and not mine to decide:** the Go-acceptor and feature-ID decisions of the spec 63 decision record; the
-  spec 56 qualification verifier (the spec leaves the evidence store and record format undefined); joining farm and
+* **Not done and not mine to decide:** the Go-acceptor and feature-ID decisions of the spec 63 decision record
+  (recommendations proposed in `decisions/2026-10-16-proposed-link-upstream-open-decisions.md`); the
+  spec 56 qualification verifier (the spec leaves the evidence store and record format undefined; a design is proposed in
+  `decisions/2026-10-16-proposed-qualification-verifier.md`); joining farm and
   the other bender nodes to the lab gateway; rotating the lab API key that was pasted into a chat.
+
+### Update 2026-10-16 (proposed decision records for the owed design gaps): nothing is decided
+
+Four records under `decisions/` are **Proposed, need owner acceptance, and decide and authorize nothing**. They do
+not amend any spec, open any gate or change any item above from owed to anything else. Each is design only, cites
+the spec lines and the `InferWeave/inferweave@a54e0398` code it relies on, and lists the owner's open questions.
+
+* **Spec 56 qualification verifier** (the evidence store and record `qualification_id` should resolve to):
+  `decisions/2026-10-16-proposed-qualification-verifier.md`. Still owed: all of it. No row can become `verified`.
+* **Spec 62 operator-audience plan** (eviction handle, lifetime, recipient, route, "authorized requester", what
+  `FITS` may be relied on for): `decisions/2026-10-16-proposed-hosting-operator-audience.md`. Still owed: all of it,
+  and a source of runtime memory reports; `FITS_AFTER_EVICTION` stays unreachable.
+* **Spec 62 profile and load hook boundary with spec 50**: `decisions/2026-10-16-proposed-hosting-hook-boundary.md`.
+  Still owed: real hooks; the delivered hooks still fail closed.
+* **Spec 63 open decisions** (Go acceptor side, own feature ID, invariant 11):
+  `decisions/2026-10-16-proposed-link-upstream-open-decisions.md`. The three decisions of
+  `decisions/2026-10-15-link-upstream-role.md` remain open.
+
+### Update 2026-10-20: inference stream reliability incident
+
+Spec 09 now separates control freshness, prefill, useful-output inactivity and
+execution deadlines; spec 23/42 and the bounded diagnostics contract record the
+operational requirement. See `contracts/inference-stream-reliability.json`
+(AC-STREAM-01..08), IW-OBS-001/P1-T20 and IW-OBS-002/P1-T12A.
+
+Local implementation, independent source reviews, regression/API/browser tests,
+real disposable PostgreSQL reads, and isolated binary canaries are recorded in
+`evidence/inference-stream-reliability-2026-10-20/README.md` and `rust.md`.
+The pinned Rust release passed a 35-second synthetic prefill on a Hive CPU
+allocation; Zapp's Go candidate passed loopback diagnostics checks. These are not
+production-serving rollout or GPU qualification evidence.
+
+The two persistence fixture failures are closed by test-only `efe0d866`:
+repaired fixtures passed against both the candidate and unchanged upstream
+production code. See the release-review evidence for exact scope; true repeated-ID
+accounting remains separate and was not changed here.
+
+**Owed:** new timed end-to-end error injection in each Link mode, three live-GPU
+cases, production activation and comparable-traffic post-rollout measurement. A 180-second idle default is an operational policy,
+not a measured hardware envelope. No production or qualification gate is opened.
+
+### Update 2026-10-20: observability implementation and scoped rollout authorization
+
+The operator approved the observability-performance design/plan, implementation,
+independent review, merge and conditional deployment on the existing
+Zapp/Farm/Hive/Whiteale path, plus qualification of already registered Nibbler.
+The authority and exact boundaries are recorded in
+`decisions/2026-10-20-observability-capacity.md`. This supersedes an earlier
+absence of permission only within that scope; no prior evidence debt is erased.
+
+**UNSATISFIED / owed:** AC-OBS-01..09 in
+`contracts/observability-capacity.json`: runtime idempotency and request lineage;
+local/remote timing provenance; CPU entitlement and owner-scoped context offers;
+bounded authenticated persistence and retention; public privacy/cohort review;
+real NVIDIA observe-mode reconciliation; production smoke/rollback and comparable
+traffic measurements. Schema/fixture validation proves shape only. AMD hardware
+proof remains owed independently. Spec46 shadow/on placement is not authorized
+by telemetry restoration. Public profiles must use existing Next.js apps/web;
+Go remains the existing operator adapter plus bounded own-edge observations.
+
+Nibbler hardware registration is not serving qualification. A Go root lacking
+spec64 cannot issue dynamic assignments. Rust ownership/executor, actual-profile
+qualification, full-path admission, watchdog, rollback and floor safeguards
+remain owed before Nibbler can contribute routable or rebalanceable capacity.
+The new-family policy defaults (90/7 days retention, maximum 5-minute snapshot validity,
+30 requests / 5 principals for public cohorts) are not measured envelopes or
+privacy proof. No new control is recorded as proven by this specification patch.
+
+Observability retention is scoped only to explicitly namespaced new-family
+records and their derived caches/exports. Existing 730/365-day policies, legacy
+records and shared backups are unchanged; retroactive purge requires a separate
+reviewed migration and deletion authorization.
+
+### Update 2026-10-20: internal terminal request observations and rollups
+
+The approved observability design/plan now has a bounded internal normalized
+contract in `contracts/request-observation.json`, with event and rollup schemas,
+fixtures and offline replay/histogram conformance. This adds no export/public API,
+publication policy or onboarding control. It retains Rust global authority and
+Go own-edge observation scope.
+
+**UNSATISFIED / owed:** AC-REQOBS-01..08 runtime instrumentation and trusted
+lineage propagation, immutable replay/terminal-fact identity across restart,
+HTTP200 stream-failure classification, phase/token provenance, exact historical
+configuration/GPU attribution, bounded nonblocking persistence, real PostgreSQL
+rollup/seal/replay/retention tests and coverage/drop reconciliation. Offline
+schema/fixture/reference checks do not prove a deployed warehouse or loss-free
+recording. Only new-family diagnostics/aggregates use 7/90-day retention; legacy
+history and shared backups remain unchanged. No runtime gate closes here.
+
+### Update 2026-10-20: retained failure-rollup companion
+
+`iw.observability.failure-rollup/1` adds offline proven schema, vocabulary,
+canonical-parent fingerprint, conserved marginal/correlated-timeout counts,
+strict bounded decoding and deduplicated all-terminal mapping checks. See
+`decisions/2026-10-20-request-failure-rollups.md` and spec23.
+
+**UNSATISFIED / owed:** AC-REQOBS-09 runtime atomic parent/companion insert,
+replacement, seal and prune across 5m/1h/1d, concurrent/restart replay conflicts,
+late-ingest watermark fences surviving diagnostic/aggregate prune, 90-day
+parent-aligned failure retention after 7-day diagnostic expiry, bounded loss
+reporting and independently observed coverage. Public projection requires
+per-published-cell principal/cohort evidence, suppression and reconstruction
+resistance; this companion gives no publication authority. Legacy 730/365-day
+retention and shared backups remain unchanged. No runtime gate closes here.
+
+### Update 2026-10-20: private normalized telemetry HTTP carrier
+
+The additive `contracts/private-observability.json` and
+`openapi/private-observability.{yaml,md}` define current gateway-authenticated
+single-event durable ingest and operator-only bounded snapshot reads. Offline
+strict decoding, header/source/epoch boundary examples and DTO fixture checks
+are recorded in `evidence/private-observability-2026-10-20/README.md`.
+
+**UNSATISFIED / owed:** AC-PRIVATEOBS-01..06 real HTTP pre-buffer byte and
+credential-header bounds, current-registration/revocation/epoch/lineage races,
+durable outbox and ACK replay across restart, database concurrency and cursor
+snapshots, source-independent population/loss checkpoints, and integration with
+the atomic parent/failure generator and persistent seal/late-ingest fences.
+Production collection remains default-off until those generator/fence prerequisites
+are proven. No public/cohort authority, deployed warehouse, complete coverage,
+new deployment target, legacy retention change or automatic public DTO projection
+is established by the private carrier. Existing 7/90-day new-family and 730/365-day
+legacy scope stays unchanged; existing authorized rollout boundaries remain in force.

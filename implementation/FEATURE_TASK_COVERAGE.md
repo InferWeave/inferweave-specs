@@ -99,6 +99,7 @@ Features: **92**
 | `IW-GPUMEM-001` GPU memory accounting, reservations, pressure, decision records, OOM postmortem and placement simulation on the capability-gated iw.gpu-memory family (Protocol 1.1.0) | P1 | 5 | control-plane+gateway+node+consumer | `P5-T30`, `P5-T31`, `P5-T32` |
 | `IW-NODEHW-001` Hardware-only node registration, the optional versioned hardware report, the always-present assignments array and tokenless proof enrollment as one wire contract for the Rust and Go gateways (Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T33`, `P5-T34` |
 | `IW-DYNNODE-001` Dynamic nodes: gateway-driven provisioning over the register and heartbeat responses (`iw.dynamic-node/1`), measured-profile selection, one node per engine, drafted profiles from measurements (Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T35` |
+| `IW-DYNNODE-002` Managed persistent node onboarding, qualification and durable reconciliation (`iw.node-reconcile/1`; new proof owed) | P1 | 5 | gateway+node | `P5-T38` |
 | `IW-STORE-001` InferWeave Storage Phase 1: content-addressed model store, signed iwg1 grants, native and S3 read-only front ends, digest index, quarantine and multi-source stager (`iw.store/1`, Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T36` |
 | `IW-STORE-002` InferWeave Storage Phase 2: TLS, federated grant forwarding, per-range hashes, ingest leases, replication, write path, rendezvous | P2 | 5 | gateway+node | `P5-T37` |
 | `IW-RT-001` Runtime families, typed capabilities, isolated adapters and feature negotiation | P1 | B | control-plane | `B-T01` |
@@ -117,3 +118,23 @@ IW-BENCH-002 (P2-T03), IW-REC-001/IW-REC-002 (P2-T05/P2-T07/P2-T08),
 IW-EVENT-001 (P2-T10), and IW-ECON-001 (P2-T16). Their feature-registry
 contract links and task cards trace the added acceptance. No new feature or
 dependency order is introduced; new proof remains owed.
+
+Stream incident diagnostic acceptance AC-STREAM-01..08 extends IW-OBS-001 and
+IW-OBS-002 in `contracts/inference-stream-reliability.json`; P1-T20 owns stream
+timeout/correlation diagnostics, and P1-T12A owns admission scope/metadata
+observability. Proof and deployment status remain explicit in OPEN_GATES.
+
+## Observability capacity extension (2026-10-20)
+
+Existing feature/task mappings remain in force. The bounded cross-cutting
+acceptance mapping for specs 04/09/23/42/43/46/58/64 and P1-T05/P1-T20/
+P2-T03/P1-T21/P2-T18/P5-T30..32 is `contracts/observability-capacity.json`.
+New runtime and rollout proof remains owed.
+
+The internal request-observation extension maps IW-OBS-001/IW-TEL-001/IW-BENCH-002
+to existing P1-T20/P2-T03 and specs09/23/58 through
+`contracts/request-observation.json` (AC-REQOBS-01..09, runtime proof owed).
+
+The private HTTP carrier reuses IW-OBS-001/IW-TEL-001/IW-BENCH-002 and P1-T20/P2-T03:
+`contracts/private-observability.json`, AC-PRIVATEOBS-01..06. Existing request and
+failure DTOs are unchanged; private ingest/read runtime proof remains owed.
