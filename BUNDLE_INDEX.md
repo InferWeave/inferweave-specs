@@ -1,7 +1,7 @@
 # InferWeave Specs Repository Index
 
 Version: **12.0**
-Specifications: **66**
+Specifications: **67**
 Tracked features: **104**
 Canonical tasks: **170**
 Deployment: **Docker Compose persistent / Apptainer Slurm**
@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,272,173 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,275,986 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -124,6 +124,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-15-dynamic-nodes-gateway-provisioning.md` — `520cdf86d20f` — ~2,646t
 - `decisions/2026-10-15-link-upstream-role.md` — `28b266c6f2e1` — ~497t
 - `decisions/2026-10-16-inferweave-storage.md` — `291a3eed2b04` — ~1,601t
+- `decisions/2026-10-21-role-scoped-embedded-uis.md` — `0171d46ed303` — ~1,302t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `468dc44cd437` — ~4,192t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
@@ -186,6 +187,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/specs/model-intelligence-kit/MASTER_SPEC.md` — `d2f8c9a01d3e` — ~4,594t
 - `docs/superpowers/plans/2026-09-23-backpressure-actions-load-report.md` — `906fed45439c` — ~6,262t
 - `docs/superpowers/plans/2026-10-08-node-hardware-registration.md` — `f22c7646d2ee` — ~947t
+- `docs/superpowers/plans/2026-10-21-role-scoped-embedded-uis.md` — `72b43565e5c1` — ~875t
 - `evidence/alias-precision-tokens-2026-10-15/README.md` — `b11af2d47390` — ~536t
 - `evidence/alias-precision-tokens-2026-10-15/models.txt` — `a99123809c19` — ~99t
 - `evidence/dynamic-nodes-r9700-2026-10-16/10-measuring.json` — `18dd812e526b` — ~540t
@@ -832,6 +834,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS.md` — `b716bb40dbb4` — ~8,187t
 - `specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md` — `34c058ffbaeb` — ~11,958t
 - `specs/65_INFERWEAVE_STORAGE.md` — `23f560a09e9a` — ~23,787t
+- `specs/66_NORMALISED_ENGINE_METRICS.md` — `630737e10728` — ~1,636t
 - `state-machines/README.md` — `3d080bd39b4d` — ~144t
 - `state-machines/allocation.md` — `28e3db0859d8` — ~470t
 - `state-machines/job.md` — `99f922c820cb` — ~544t
