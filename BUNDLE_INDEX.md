@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,538,471 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,539,401 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -146,6 +146,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-20-private-observability-http.md` — `64abde66f588` — ~642t
 - `decisions/2026-10-20-request-failure-rollups.md` — `29a5f2553c4e` — ~594t
 - `decisions/2026-10-21-role-scoped-embedded-uis.md` — `0171d46ed303` — ~1,302t
+- `decisions/2026-10-25-bench-cognito-auth.md` — `915ddebfaf3d` — ~733t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `a144f22f0a4c` — ~4,320t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
@@ -922,7 +923,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/07_FAIRSHARE_OWNER_PRIORITY.md` — `3c9f3be77e28` — ~454t
 - `specs/08_CONNECTIVITY_DATA_PLANE.md` — `26075e86d9ae` — ~799t
 - `specs/09_OBSERVABILITY_RECEIPTS.md` — `3a5c0010fe90` — ~5,118t
-- `specs/10_DASHBOARD_PORTAL.md` — `b9d55761a388` — ~1,066t
+- `specs/10_DASHBOARD_PORTAL.md` — `535d7e54bf6a` — ~1,263t
 - `specs/11_WORKBENCH_AUTOSPEC_PI.md` — `fbd0cf942993` — ~409t
 - `specs/12_MODEL_TUNING_BENCHMARKS.md` — `18e3f43ca576` — ~509t
 - `specs/13_RAG_TOOLS_LSP.md` — `9b08ea55e3c6` — ~330t
