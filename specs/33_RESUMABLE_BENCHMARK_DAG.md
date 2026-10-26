@@ -87,6 +87,8 @@ registration when acquiring a fenced lease. Lease intent is persisted before
 external side effects. Node admission and scheduler authority remain independent.
 The lease records GPU identities, deployment fingerprint, KV/context and CPU
 budgets, the prior gateway deployment and a conservative allocation deadline.
+Tensor-parallel placement requires an explicitly attested compatible GPU-ID
+group; missing topology must refuse multi-GPU placement.
 Progress renews an inactivity lease, never the underlying scheduler allocation.
 Setup, workload and flush margin must fit before the safe allocation end.
 

@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,543,299 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,543,333 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -949,7 +949,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md` — `2dbde44c46cd` — ~446t
 - `specs/31_RESOURCE_HEALTH_QUARANTINE.md` — `4b0b1edbb982` — ~351t
 - `specs/32_DEMAND_FORECASTING_PRESTAGING.md` — `d705ce0560ba` — ~302t
-- `specs/33_RESUMABLE_BENCHMARK_DAG.md` — `3b2f94b9a0e8` — ~993t
+- `specs/33_RESUMABLE_BENCHMARK_DAG.md` — `307ee3ab2660` — ~1,027t
 - `specs/34_PROMPT_STORE_TIERING.md` — `801f5b308130` — ~437t
 - `specs/35_CLUSTER_SIMULATOR_CHAOS.md` — `8ff7bb06c9db` — ~475t
 - `specs/36_GPU_WATCHDOG_RESCUE.md` — `74fd26e93204` — ~2,641t
