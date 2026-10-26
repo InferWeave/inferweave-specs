@@ -1239,3 +1239,19 @@ routes alone do not implement this lease contract. The web endpoint's real
 admin-session/grant integration is also owed. Local fakes cannot prove any of
 these controls. Hive allocation 24781153 and its explicitly active benchmark
 mode are not available for automatic takeover or gateway restoration.
+
+### 2026-10-26: live benchmark workbench implementation and bounded rollout
+
+The operator authorized live dashboard integration, administrator grants,
+gateway/node lease integration, isolated end-to-end testing and deployment to
+existing bench.metabolomics.us after validation. See decision
+`2026-10-26-live-benchmark-workbench.md`. Shared Rust/Next.js stacks and existing
+InferWeave styling are required. This records authorization, not successful
+activation. Hive24781153/currentbenchmarkmode and drained Beast remain protected.
+
+Owed until evidence is recorded: complete signed identity/browser role workflow,
+real grant/audit persistence and revocation, dual admission fences, exact-node
+restoration proof, supervised leaf lifecycle, actual eligible-target campaign,
+production smoke/rollback and independent release review. Resident execution
+alone does not prove engine switching. Missing or unverified runtime attestation
+must refuse acquisition. No existing gate is closed by this contract update.
