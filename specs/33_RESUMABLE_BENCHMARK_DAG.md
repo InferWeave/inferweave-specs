@@ -111,3 +111,14 @@ placement, preemption loss and verified-return status. Prompts, outputs,
 credentials and result bodies stay inside the authenticated evidence store.
 Implementation constants for polling, queue caps and recovery deadlines are
 operational bounds, not measured hardware envelopes.
+
+### Live adapter integration
+
+Decision `2026-10-26-live-benchmark-workbench.md` defines the live integration
+boundary. Gateway and node fences are independent, lease-owned, durable and
+atomic with their respective admissions. Existing operator holds are not lease
+ownership. Fresh explicit GPU compatibility groups remain required for TP>1.
+A resident-only adapter must refuse nonresident deployments until an executor
+handoff is implemented and proven. Tokens that admit benchmark work cannot
+manage leases; restoration probes are narrowly bounded and do not reopen normal
+traffic. Grant authority is the Rust registry's current issuer/subject rows.

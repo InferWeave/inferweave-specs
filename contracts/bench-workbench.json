@@ -1,0 +1,10 @@
+{
+  "schema": "iw.bench-workbench/1",
+  "roles": ["viewer", "requester", "reviewer", "admin"],
+  "leaf_states": ["READY", "LEASED", "RUNNING", "SUCCEEDED", "FAILED", "CANCELLED", "RETRY_PENDING"],
+  "return_phases": ["Stop", "Scratch", "Restore", "Verify", "Release"],
+  "gateway_ownership": ["absent", "owned", "released"],
+  "human_routes": ["/api/bench/access/me", "/api/bench/access/grants", "/api/bench/conductor"],
+  "machine_routes": ["/api/bench/leases/snapshots", "/api/bench/leases/acquire", "/api/bench/leases/status", "/api/bench/leases/reconcile", "/api/bench/leases/release"],
+  "node_routes": ["/benchmark/acquire", "/benchmark/status", "/benchmark/reconcile", "/benchmark/verify", "/benchmark/release"]
+}
