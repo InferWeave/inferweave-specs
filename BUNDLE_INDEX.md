@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,541,513 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,543,299 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `f41feed8414e` — ~23,178t
+- `OPEN_GATES.md` — `843917c5399e` — ~23,434t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -149,6 +149,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-22-gateway-history-store-and-network-views.md` — `3aec54c26aaf` — ~1,418t
 - `decisions/2026-10-22-status-envelope-cpu-node-and-gateway-session.md` — `432541ce56cb` — ~645t
 - `decisions/2026-10-22-status-ui-javascript-and-charts.md` — `21d470c8d508` — ~809t
+- `decisions/2026-10-25-bench-cognito-auth.md` — `915ddebfaf3d` — ~733t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `a144f22f0a4c` — ~4,320t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
@@ -925,7 +926,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/07_FAIRSHARE_OWNER_PRIORITY.md` — `3c9f3be77e28` — ~454t
 - `specs/08_CONNECTIVITY_DATA_PLANE.md` — `26075e86d9ae` — ~799t
 - `specs/09_OBSERVABILITY_RECEIPTS.md` — `3a5c0010fe90` — ~5,118t
-- `specs/10_DASHBOARD_PORTAL.md` — `b9d55761a388` — ~1,066t
+- `specs/10_DASHBOARD_PORTAL.md` — `535d7e54bf6a` — ~1,263t
 - `specs/11_WORKBENCH_AUTOSPEC_PI.md` — `fbd0cf942993` — ~409t
 - `specs/12_MODEL_TUNING_BENCHMARKS.md` — `18e3f43ca576` — ~509t
 - `specs/13_RAG_TOOLS_LSP.md` — `9b08ea55e3c6` — ~330t
@@ -948,7 +949,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md` — `2dbde44c46cd` — ~446t
 - `specs/31_RESOURCE_HEALTH_QUARANTINE.md` — `4b0b1edbb982` — ~351t
 - `specs/32_DEMAND_FORECASTING_PRESTAGING.md` — `d705ce0560ba` — ~302t
-- `specs/33_RESUMABLE_BENCHMARK_DAG.md` — `091546f271f1` — ~393t
+- `specs/33_RESUMABLE_BENCHMARK_DAG.md` — `3b2f94b9a0e8` — ~993t
 - `specs/34_PROMPT_STORE_TIERING.md` — `801f5b308130` — ~437t
 - `specs/35_CLUSTER_SIMULATOR_CHAOS.md` — `8ff7bb06c9db` — ~475t
 - `specs/36_GPU_WATCHDOG_RESCUE.md` — `74fd26e93204` — ~2,641t
