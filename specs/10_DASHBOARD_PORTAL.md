@@ -85,6 +85,19 @@ Never display ambiguous cross-model universal TPS rankings without dimensions.
 
 ## Authenticated portal
 
+Authentication for authenticated portal surfaces follows decision
+`2026-10-25-bench-cognito-auth.md`: Cognito is the single identity authority for
+local User Pool users and Google federation. The application maps verified
+`(issuer, sub)` identities to local roles and never treats an email address or
+browser-provided identity header as authority.
+
+The browser uses Authorization Code + PKCE through Cognito Managed Login. Raw
+prompts, generated outputs, traces and artifacts require reviewer/admin grants;
+aggregate benchmark views remain content-free. New users start as viewers and
+must receive elevated roles through an audited application action. The security
+qualification and production deployment gates remain separate and blocked until
+the decision's proof obligations pass.
+
 - API keys;
 - usage;
 - prompt/session/request history where authorized;

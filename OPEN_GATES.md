@@ -1222,3 +1222,20 @@ external-node envelopes exist as draft pull requests under
 Nothing is merged or deployed. Provider billing, provider API calls and exposure beyond loopback stay BLOCKED.
 Independent review: BLOCKED (see the independent review gate). Screenshot baselines are recorded from a
 real Rust stack with a labelled test-double engine on one host; they are not production evidence.
+
+### 2026-10-25: benchmark conductor implementation boundary
+
+IW-BENCH-003 now has a bounded conductor contract in spec 33. The current
+implementation work adds local durable queue/fencing, typed driver calls,
+placement, sweep-leaf journaling and a private operator projection. This records
+no deployed capability and opens no production gate.
+
+**Owed:** a real authenticated gateway adapter with atomic lease/drain,
+owner-priority and availability-floor checks, current-clock start checks,
+independent abandoned-lease recovery, and atomic full-path verification/release;
+real engine lifecycle/cancellation/scratch recovery; end-to-end Hive smoke;
+independent deployment review. The current gateway's operator drain/undrain
+routes alone do not implement this lease contract. The web endpoint's real
+admin-session/grant integration is also owed. Local fakes cannot prove any of
+these controls. Hive allocation 24781153 and its explicitly active benchmark
+mode are not available for automatic takeover or gateway restoration.
