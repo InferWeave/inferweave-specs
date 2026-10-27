@@ -4,8 +4,8 @@ assignment entry that a JSON Schema cannot express.
 The deployment id (section 5 rule 6) is a SHA-256 over one byte string built from the model id,
 the profile and its launch block, the artifacts and, for a `serve`, the advert figures. The
 layout is the one the reference implementation's `iw_core::dynamic_node::deployment_id` writes;
-its three known answers (conformance/dynamic-node-vectors.json) were reproduced here with
-`python3 -I` before they were written down.
+its legacy and optional-suffix known answers are recorded in conformance/dynamic-node-vectors.json.
+The original three values remain unchanged; optional fields append domain-separated strings.
 
 Stdlib only. `check_vectors(root)` returns a list of error strings; `semantic_errors(fixture,
 schema_rel)` returns the rules a valid assignment fixture must also meet.
@@ -68,6 +68,16 @@ def deployment_id(model: str, profile: dict, artifacts: list, advert: dict | Non
         out += bytes([1])
         for member in ("slots", "contextSupported", "maxContextTokens", "kvBytesPerToken"):
             out += _n(advert[member])
+    # Append only present values, after the COMPLETE legacy input. Null and absent
+    # preserve old identities. Do not use truthiness: Some("") hashes a suffix in Rust;
+    # profile validation rejects an empty override independently of this pure encoder.
+    for domain, value in (
+        ("iw.runtime-entrypoint/1", launch.get("entrypoint")),
+        ("iw.runtime-served-model/1", profile.get("servedModel")),
+        ("iw.runtime-gpu-binding/1", profile.get("gpuBinding")),
+    ):
+        if value is not None:
+            out += _s(domain) + _s(value)
     return "dep_" + hashlib.sha256(bytes(out)).hexdigest()
 
 
@@ -148,7 +158,7 @@ def _apply(base: dict, change: dict) -> tuple:
     """The (model, profile, artifacts, advert) of `base` with `change` laid over it.
 
     `change` may carry `model`, `name`, `version`, `profile` (top-level members of the profile
-    document replaced, for members that are not hashed: `match`, `evidence`, `quality`),
+    document replaced, including hashed `servedModel`/`gpuBinding` and unhashed `match`/evidence),
     `launch` (members replaced one by one), `artifacts` (replaced whole) and `advert` (members
     replaced one by one; `null` is no advert, which is what a `measure` hashes).
     """

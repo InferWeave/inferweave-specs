@@ -138,3 +138,16 @@ to existing P1-T20/P2-T03 and specs09/23/58 through
 The private HTTP carrier reuses IW-OBS-001/IW-TEL-001/IW-BENCH-002 and P1-T20/P2-T03:
 `contracts/private-observability.json`, AC-PRIVATEOBS-01..06. Existing request and
 failure DTOs are unchanged; private ingest/read runtime proof remains owed.
+
+## Managed-profile implementation alignment (2026-10-27)
+
+Specs50/28 reuse IW-RT-003/B-T03 and IW-BOOT-001/IW-BOOT-004/P0-T03 for
+the bounded pinned-profile owner/helper/client contract. The task graph, task cards and
+canonical sequence carry the added acceptance; no feature or dependency is added.
+Live-owner composition, hardware qualification and full runtime_reservations/1 proof
+remain owed in OPEN_GATES.
+
+The spec64 optional assignment-identity correction extends the same managed-profile
+acceptance under B-T03 and existing IW-DYNNODE-001/P5-T35 conformance vectors.
+Legacy proof is retained; new byte-encoding checks do not establish live managed-profile
+or hardware qualification. No task status or phase dependency changes.

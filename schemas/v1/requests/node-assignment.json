@@ -199,7 +199,7 @@
   ],
   "definitions": {
     "deployment": {
-      "description": "dep_ and the lowercase hex SHA-256 of the byte string of section 5 rule 6: the model id, the profile name and version, the launch image, digest, command, environment, privileges, mounts, shm size, engine, backend and label, every artifact's path and digest, and for a serve the advert figures; every list count-prefixed. A node recomputes it and refuses an entry whose id differs.",
+      "description": "dep_ and the lowercase hex SHA-256 of the byte string of section 5 rule 6: the model id, the profile name and version, the launch image, digest, command, environment, privileges, mounts, shm size, engine, backend and label, every artifact's path and digest, and for a serve the advert figures; every list count-prefixed. A node recomputes it and refuses an entry whose id differs. Present launch.entrypoint, profile.servedModel and profile.gpuBinding append S(domain) S(value) after the complete legacy encoding, in that exact order, using iw.runtime-entrypoint/1, iw.runtime-served-model/1 and iw.runtime-gpu-binding/1. Absent/null fields append no bytes, preserving legacy identities. See specs/64 section 5 rule 6 and conformance/dynamic-node-vectors.json.",
       "type": "string",
       "pattern": "^dep_[0-9a-f]{64}$"
     },
@@ -374,7 +374,8 @@
               "enum": [
                 "vllm",
                 "llama.cpp",
-                "strata"
+                "strata",
+                "sglang"
               ]
             },
             "backend": {

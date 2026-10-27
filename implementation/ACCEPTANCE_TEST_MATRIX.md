@@ -125,3 +125,17 @@ IW-OBS-001/IW-TEL-001/IW-BENCH-002; P1-T20/P2-T03; spec23;
 | Durable outbox/ACK/replay and independent expected/loss coverage | owed | Restart, saturation and checkpoint integration |
 | Consistent bounded private snapshots and exact parent/failure reads | owed | Concurrent database and cursor tests |
 | Paired generation, atomic seal/prune and persistent late-ingest fence before collection enablement | owed | Real persistence integration; all routes default disabled |
+
+## Managed pinned-profile increment (2026-10-27)
+
+| ID | Scenario | Required result / proof |
+|---|---|---|
+| AC-MPROFILE-01 | Duplicate/conflicting ensure, cancellation before ensure, saturation and restart | Same exact intent reuses its durable result; cancelled identities never resurrect; distinct retained IDs cap at 1024 without eviction; changed bindings fail closed; live-owner composition **owed** |
+| AC-MPROFILE-02 | Canonical ID differs from servedModel; route changes after admission | Parsed owner profile and helper binding agree; direct dispatch uses the admitted lease's pinned backend model; live owner/helper inference **owed** |
+| AC-MPROFILE-03 | Typed native TP2 placement, extra/missing GPU, map drift and adoption | Exact image and full-host physical-UUID exclusivity are mandatory; selector and immutable helper identity agree through unload; hardware proof **owed** |
+| AC-MPROFILE-04 | CLI dry-run, signal while loading, stale state and control loss | No launch secrets/network for dry-run; no 202-as-ready; cancellation succeeds only after owner-confirmed release; failures retain request identity; live-owner composition **owed** |
+| AC-MPROFILE-05 | Optional entrypoint, backend model and typed GPU binding change assignment identity | Fixed domain-separated suffix order; absent/null preserve original vectors; local encoder/vector/mutation checks **proven** by tests/smoke/test_dynamic_node_identity.py; live owner/helper composition **owed** |
+| AC-MPROFILE-06 | Helper Warm/Ready without genuine qualification | Ordinary model/alias/activation/instance projections and demand autoplace stay closed, including shadow catalogue; no boolean qualification override; genuine qualification enablement proof **owed** |
+
+These acceptance rows trace IW-RT-003/B-T03 and IW-BOOT-001/IW-BOOT-004/P0-T03.
+They do not close universal-runtime, reservation, public gateway or qualification gates.

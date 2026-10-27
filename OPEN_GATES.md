@@ -1239,3 +1239,51 @@ routes alone do not implement this lease contract. The web endpoint's real
 admin-session/grant integration is also owed. Local fakes cannot prove any of
 these controls. Hive allocation 24781153 and its explicitly active benchmark
 mode are not available for automatic takeover or gateway restoration.
+
+## Managed pinned profiles and R9700 runtime bindings — 2026-10-27
+
+IW-RT-003/B-T03 and IW-BOOT-001/IW-BOOT-004/P0-T03 now specify the implemented
+Rust owner's EnsureProfile/CancelProfile, bounded durable request ledger, profile/helper
+identity, lease-pinned direct model rewrite and foreground CLI in specs50/28. This is
+an implementation alignment, not a declaration that the full universal runtime lifecycle,
+`runtime_reservations/1`, new safe-peak allocator or spec64 managed qualification is complete.
+The existing owner/controller/outbox, router admission, device locks and helper journal
+remain authoritative. No new qualification or production gate is closed by this change.
+
+**UNSATISFIED / owed:** a pinned, independently reviewed live-owner composition test
+using the real helper/container must demonstrate ensure → staged/loaded/warmed → genuine qualification → actual
+admitted inference under a canonical ID different from `servedModel` → cancellation →
+confirmed release, including restart/retry, lost acknowledgement and a late load/warm
+completion. It must demonstrate that a previously issued lease keeps its backend model
+binding across catalogue/profile changes. Local core, fake-owner HTTP and fake-container
+helper tests do not prove this composition or public/Go gateway and relay interoperability.
+
+**UNSATISFIED / owed:** hardware execution of the typed exact-image
+`paiton_native_tp2_v1` binding must prove full-host exclusivity, fixed logical-to-kernel
+UUID mapping, the effective native selectors, adoption/inspection/unload reconciliation,
+and actual runtime correctness under the owner. Generic ROCm masks, profile presence,
+a container startup or a journal/device fence do not establish reservation/grant authority.
+
+**UNSATISFIED / owed:** per-profile hardware quality, capacity, context/concurrency,
+watchdog/rollback and full authorization/admission qualification for each newly wired
+runtime, including SGLang and native Paiton. Existing production evidence is not transferred
+to another image, binding, topology or fingerprint. Engine vocabulary and BF16/preflight
+support do not establish MXFP4 kernel support or authorize production selection. This
+change reports no new performance measurement and leaves the existing known-good runtime
+and all universal-runtime reservation/cache/rollback gates in force.
+
+The spec64 deployment-identity correction has local byte-encoding proof in
+`tests/smoke/test_dynamic_node_identity.py` and `conformance/dynamic-node-vectors.json`:
+legacy absent/null identities, each optional suffix, combined order and omission mutations.
+This **proven** local encoding control does not close the **owed** live-owner composition,
+public gateway/relay identity preservation or per-fingerprint hardware gates above.
+
+**UNSATISFIED / owed — genuine managed-profile qualification integration:** helper warm/health
+and lifecycle Ready are insufficient for ordinary serving (invariants 28 and 38). The current
+safe increment quarantines managed-profile models, aliases, instances and activation candidates from
+ordinary router projection (including shadow catalogue) and suppresses their demand-driven placement; explicit Ensure is
+laboratory lifecycle/diagnostics only. No boolean override may claim qualification. Tests
+must prove Warm/Ready remains ordinarily unroutable and that a genuine authorized,
+admitted exact-deployment qualification can eventually enable eligible serving without
+weakening quarantine for missing/stale/mismatched evidence. Direct backend model rewriting
+and request-scoped diagnostics do not close this gate.

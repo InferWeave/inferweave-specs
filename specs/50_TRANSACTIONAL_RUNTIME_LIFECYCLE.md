@@ -171,6 +171,174 @@ GPU quantities. Their CPU RAM and disk safe peaks remain admitted and aggregated
 worker or GPU reservation is created. Legacy reservations without `contractVersion` retain the
 specs/46 GPU-ledger shape.
 
+## Managed pinned-profile increment (2026-10-27)
+
+IW-RT-003/B-T03 and IW-BOOT-001/IW-BOOT-004/P0-T03 also cover the existing Rust
+owner's bounded managed-profile path. This increment reuses the adaptive controller,
+its persisted instances, fenced owner lease, operation outbox and existing router admission.
+It introduces neither another allocator nor a separate runtime owner. It does **not**
+claim implementation or qualification of the full `runtime_reservations/1` contract,
+immutable deployment-key single-flight waiter semantics, or every lifecycle stage above.
+Its request ID is a retry identity for one explicit placement, not a deployment key.
+
+### Internal owner control and durable retries
+
+Authenticated owner control uses bearer authorization on
+`POST /internal/orchestrator/control` and `GET /internal/orchestrator/snapshot`.
+The action discriminator is snake case on the wire:
+
+```json
+{"action":"ensure_profile","request_id":"run-example","model_id":"canonical-model","profile_digest":"sha256:<64 lowercase hex digits>","worker_ids":["worker-a","worker-b"]}
+```
+
+`EnsureProfile` binds the configured model version, exact raw-file profile digest and
+explicit unique worker set to the request ID. Worker order does not change retry identity.
+The owner validates placement and records either its instance identity or an error through
+its existing state/outbox path; the client does not reserve or assign workers itself.
+An accepted queue submission returns HTTP 202 with `accepted: true` and `request_id`.
+This acknowledges queueing only. Invalid authorization, malformed control, unapproved
+profile bindings or conflicts fail explicitly; asynchronous semantic failure appears in
+the durable record. Neither 202 nor a helper process starting establishes READY.
+
+`CancelProfile` uses `{"action":"cancel_profile","request_id":"run-example"}`.
+Cancellation is durable even before ensure, during loading/warming, or after readiness.
+A cancelled identity cannot be replayed to create another runtime; late load/warm results
+cannot revive it. Repeating the same ensure resolves to its existing snapshot record; changing the
+model/version, profile or worker set under that ID is a conflict. The ledger retains at
+most 1024 distinct ensure/cancel identities, including cancel-before-ensure tombstones.
+It does not evict old identities to accept new work: saturation fails closed and requires
+owner intervention. This bounded retained history is not indefinite deduplication after
+an operator deliberately replaces the controller state.
+
+Snapshot `profile_requests` is an object keyed by request ID. Each record contains
+`intent` (`request_id`, `model_id`, `model_version`, `profile_digest`, `worker_ids`),
+nullable `instance_id`, nullable `error`, `created_at_ms`, and `cancelled`.
+A cancel-before-ensure tombstone has null intent and instance identity. Existing
+`instances` and `workers` remain arrays; instance states include `staging`, `loading`,
+`warming`, `ready`, `active`, `draining`, `evicting`, `failed`, and worker `assignment`
+is an instance ID or null. These implementation states are a projection of the lifecycle,
+not additional canonical transactional states. Owner-confirmed release requires the
+cancelled record and removal of its instance after unload acknowledgement; former worker
+assignments must no longer reference that instance. Reassignment to a later instance is
+not evidence that the old instance remains loaded. A tombstone confirms no instance was
+created for that identity. Control loss cannot be converted into a claim of release.
+
+### Bounded request-scoped snapshot projection
+
+Foreground clients use the same authenticated endpoint with
+`GET /internal/orchestrator/snapshot?request_id=<URL-form-encoded ID>`. Authenticate
+before query validation. The query is at most 1024 bytes and contains exactly one
+`request_id`: empty values, duplicate/unknown parameters, malformed percent encoding
+or a decoded ID outside the owner's nonempty ASCII-graphic, 256-byte limit return
+HTTP 400 with `error.code: invalid_request_query`. An unknown valid ID is not an error.
+No query preserves the legacy full diagnostic snapshot.
+
+The projection reads one existing snapshot under its lock. It retains original
+`mode`, `version` and `updated_at_ms` when present; it does not mint freshness or a
+new revision. `profile_requests` contains only the selected record, or `{}` for an
+unknown ID. The projected record retains its five-field intent, `instance_id`,
+`cancelled` and nullable `error`; it omits `created_at_ms`. A nonnull backend error is
+replaced with the bounded marker `profile request failed`, never copied as raw text.
+Fields absent in the underlying record remain absent so clients fail closed.
+`instances` contains only the record's selected instance, with `id`, `model_id`,
+`model_version`, `state`. `workers` contains only the intent's workers, with `id` and
+`assignment`; a later reassignment is preserved rather than hidden. Tombstones have
+no intent workers or selected instance. An unknown ID returns empty request, instance
+and worker collections plus any original snapshot metadata. This bounds client reads
+independently of the retained retry ledger without weakening its 1024-identity limit
+or returning a complete history for each poll. It adds no public scheduling authority.
+
+### Authoritative profile and inference identity
+
+Owner `profile_files` and `profile_digests` maps have identical canonical-model keys.
+The owner reads bounded regular profile files without following symlinks, checks the
+SHA-256 of their exact bytes, parses `RuntimeProfile`, and requires explicit `servedModel`.
+The model must exist in the configured catalogue. Profile binding changes or removal
+against persisted owner state fail restart; a changed binding requires a new model identity.
+Concrete serving `Engine::Sglang` uses wire name `sglang` and the LLM family; profile
+launch engine vocabulary in `schemas/v1/requests/node-assignment.json` includes it. This
+does not change the runtime-family adapter type enum or prove live SGLang kernels.
+Engine/backend metadata is derived from this verified profile, not guessed from a display
+label, accelerator vendor or runtime name.
+
+The public canonical model ID and backend HTTP `servedModel` are distinct. For an
+otherwise admission-eligible route, route identity
+binds profile digest, engine/backend and backend model name. Each admitted lease retains
+its selected instance and backend model name: direct HTTP inference rewrites the request
+model from that pinned lease, not a later mutable catalogue lookup. Canonical model identity
+remains the control/admission/accounting identity. A profile or backend-name update cannot
+retarget an already admitted request. This is an identity boundary, not evidence that a
+Go/public gateway or every relay path already preserves the binding.
+
+### Default managed-profile quarantine
+
+Profile loading and helper warm/health success establish diagnostic lifecycle state only.
+Until genuine qualification is integrated, the owner excludes managed-profile models,
+aliases, instances and activation candidates from the ordinary router projection (including
+the shadow catalogue), and suppresses
+ordinary demand-driven automatic placement for those models. An explicit `EnsureProfile`
+may exercise the laboratory lifecycle and diagnostic snapshot, including `ready`/`active`,
+but that state does not make the instance ordinarily discoverable, schedulable or routable.
+Legacy routes without managed profile bindings retain their existing behavior.
+
+There is no `qualified: true` configuration escape hatch or readiness-based promotion.
+Qualification must traverse the genuine authorization/admission and exact-deployment proof
+path before ordinary discovery/admission can use the profile. The direct lease-pinned
+model rewrite described above preserves identity for an otherwise eligible admitted route;
+it is not a bypass for a quarantined managed profile. Real qualification integration and
+its negative cases remain **owed**. A fake HTTP backend or a helper Warm acknowledgement
+cannot authorize ordinary serving or close this gate.
+
+### Node helper and device materialization
+
+The existing helper's operator-owned `profile_models[canonical_model_id]` binds
+`profile_file`, `profile_sha256`, version `fingerprint`, `source_dir`, checksum-bearing
+`artifacts`, and allowed `mount_roots`. Requests must match that fingerprint, profile
+digest and explicit backend model name. Artifacts remain verified before launch; parsed
+profile launch content is not authority to bypass approved roots or device assignments.
+Stage/load/warm/inspect/drain/unload reuse the existing helper journal and fences.
+
+The helper persists immutable preparation identity before either Stage or Load, including
+when cached artifacts skip Stage. Deterministic pre-launch failure may release only after
+confirmed absence; an actual unresolved load intent retains its holds. Successful unload
+retains an immutable terminal record and known container ID so a lost acknowledgement can
+be replayed across owner epochs only after rechecking ID and name absence. A replacement
+container is never removed or reported absent by name alone, and terminal instance IDs
+cannot be staged or loaded again. The helper bounds these distinct identities at 4096:
+new unseen identities fail closed at saturation while existing retries and drains remain
+usable. Records are not silently evicted to make room; authorized reconciliation or a new
+controlled state epoch is required. Tests must cover cached-artifact first-Load failure,
+loaded and stage-only cross-epoch unload, uncertain-load refusal, replacement refusal,
+terminal non-resurrection and saturation with existing cleanup preserved.
+
+`nodes[node_id].gpu_runtime_ids` maps stable discovered logical GPU IDs to fixed kernel
+physical UUIDs. ROCm masks use validated nonzero physical UUIDs, never PCI discovery IDs
+or transient ordinals. Missing or duplicate mappings fail closed. Materialized instance
+identity records the selected binding and ordered physical IDs; launch/adoption/inspection
+must reconcile that identity against local hardware rather than trust ambient masks.
+
+The typed `gpuBinding: paiton_native_tp2_v1` is restricted to AMD, exactly two GPUs,
+`vllm`/`rocm`, and
+`ghcr.io/eliovp/paiton-vllm-plugin@sha256:328be15c6f1bc3ec99b1b7a436c4a38eeb82ec36d0589b7bbef38f0e465e11cf`.
+Raw profile `PAITON_FN_GPU_MASK` is rejected. Native selectors are materialized only
+after exclusive whole-host proof: under the existing logical/physical locks, the complete
+local DRM/kernel physical GPU set must equal the assigned two mapped UUIDs. The typed
+strategy, ordered IDs and effective candidate environment become immutable helper instance
+identity before Docker starts, with full inventory rechecked for launch, adoption,
+inspection, warm and unload. Only the local default Docker Unix socket is eligible.
+This helper journal/device fence does not prove exact issued-grant authority under
+`runtime_reservations/1`, and container launch does not establish runtime quality.
+
+### Acceptance and proof boundary
+
+Required tests cover durable retry/conflict/saturation and restart binding; cancellation
+before ensure and across late load/warm acknowledgements; exact profile/helper/artifact
+identity; ordered physical mappings and exclusive native binding; lease-pinned inference
+model rewrite; and the foreground CLI contract in spec28. Hardware execution and a live
+owner → real helper/container → genuinely qualified admitted inference → cancellation/restart demonstration
+are **owed**, as recorded in OPEN_GATES. No profile, engine vocabulary addition or local
+fake-container test opens production routing, qualification or reservation gates.
+
 ## Transactional caches
 
 Model, runtime and optimization artifacts use three distinct cache classes with the common

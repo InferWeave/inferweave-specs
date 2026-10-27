@@ -353,6 +353,64 @@ arguments and environment values unless explicit reveal is requested. An
 explicitly requested protected local launch-state artifact may retain launch
 values for drift checking; it is private state, not a public report.
 
+## Foreground managed-profile client
+
+IW-BOOT-001/IW-BOOT-004 and IW-RT-003 reuse the existing owner control contract in
+spec50. The normal managed invocation is:
+
+```text
+inferweave node run --profile FILE --controller https://owner.example --control-token-file TOKEN_FILE --worker-ids worker-a,worker-b --json
+```
+
+`--gateway` aliases `--controller`; both may be supplied only for the same origin.
+This client neither enrolls a node nor starts a new controller, allocator or standalone
+Docker engine. `--model` selects an optional owner-canonical ID; otherwise the profile's
+`match.model.name` is used. `servedModel` remains the separate backend HTTP identity.
+The exact raw-file SHA-256 must match the owner's binding. `--request-id` supplies a
+stable retry identity; omitted IDs use fresh OS entropy. IDs use the same validation as
+the owner and worker IDs must be unique, with at most 256 workers.
+
+`--dry-run` validates the typed profile and emits an inspectable logical plan without
+network, token access, hardware discovery or worker input. It exposes no launch commands,
+environment values or readiness claim. Image/engine/backend/runtime/weights, host GPU
+selectors and enrollment/port overrides are rejected in managed profile mode rather than
+silently ignored. Legacy `node run --model NAME --dry-run` remains sizing only; legacy real
+execution without a profile remains unsupported. Managed-only flags require `--profile`.
+
+Real execution requires an HTTP(S) owner origin without userinfo, path, query or fragment,
+and a regular token file of mode 0600, at most 4096 bytes, with no symlink following.
+Profile and HTTP response reads are bounded to 1 MiB. Calls have bounded timeouts, disable
+ambient proxies and redirects, and never echo bearer tokens or raw owner error bodies.
+The CLI retains the existing versioned envelope and exit vocabulary; progress uses stderr.
+
+An HTTP 202 ensure acknowledgement means queued, never ready. The client polls
+`GET /internal/orchestrator/snapshot?request_id=<URL-form-encoded ID>`, using the bounded
+request projection in spec50 so retained history cannot exceed its response-read budget.
+The projection retains the original snapshot timestamp/revision rather than manufacturing
+freshness; unfiltered diagnostic reads remain compatible. The client
+checks request/model/version/profile/worker intent and stable instance identity, and observes
+`ready`/`active` only with the matching worker assignment. Snapshots must be fresh within
+30 seconds, with nondecreasing timestamps; owner and client clocks must meet that bound.
+Readiness observation reports the laboratory lifecycle only. Managed-profile models,
+aliases, instances and activation candidates remain excluded from ordinary router
+discovery/admission, including the shadow catalogue,
+and ordinary demand does not auto-place them, until genuine qualification integration.
+There is no configuration boolean that promotes warm/healthy profiles to qualified routing.
+The CLI never grants qualification or bypasses existing router/node admission.
+The foreground client stays attached after readiness. SIGINT/SIGTERM requests cancellation
+of its owner request, then waits for owner-confirmed instance removal and assignment release.
+Cancellation while loading uses the same owner path. It never force-deletes an engine or
+reuses the enrollment process's force-exit handler.
+
+`--startup-timeout-secs` defaults to 600 (1–86400), `--drain-timeout-secs` to 120
+(1–3600), and `--poll-ms` to 500 (20–10000). Startup timeout requests owner cancellation
+and remains a nonzero result even after confirmed cleanup. Normal cancellation succeeds
+only after confirmed release. Post-submit errors retain `requestId` and
+`ownerConfirmedStopped`; stale/mismatched state, control loss or an unconfirmed drain
+returns a nonzero result and the reconciliation identity, without asserting the engine
+stopped. Composition with a live owner/helper and hardware qualification remain **owed**
+in OPEN_GATES; a dry-run or fake-owner test cannot close those gates.
+
 ## Runtime-selection configuration boundary
 
 The gateway's optional placement filter is configured through

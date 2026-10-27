@@ -66,6 +66,8 @@ Rules:
 - CLI golden JSON tests
 - exit-code tests
 - secret redaction tests
+- managed profile dry-run, bounded private owner control, signal cancellation and truthful reconciliation (live composition proof owed)
+
 
 ### P0-T04 — Read-only doctor and host probe
 **Context:** `C65`
@@ -2329,6 +2331,8 @@ Rules:
 - safe-peak reservation, fencing, physical de-duplication and progress-based expiry
 - cache integrity, atomic publication, pins, offline behavior and streamed acquisition
 - constrained-memory swap impact and rollback
+- pinned profile retry/cancel ledger, exact helper/device identity and lease-pinned direct model rewrite (live composition and hardware proof owed)
+
 
 ### B-T04 — Typed inference pipelines
 **Context:** `C75`

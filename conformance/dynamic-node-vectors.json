@@ -1,8 +1,9 @@
 {
   "_comment": [
     "Known answers for the deployment id of specs/64 section 5 rule 6, checked by conformance/runner.py through conformance/dynamic_nodes.py.",
-    "The three known answers are the ones the reference implementation's unit test iw_core::dynamic_node::the_deployment_id_known_answer_vectors asserts; they were reproduced here, byte for byte, with python3 -I hashlib, before this file was written.",
-    "`change` is laid over `base`: model, name, version, launch (members replaced), artifacts (replaced whole), advert (members replaced; null is no advert, which a measure hashes). Every `mustDiffer` change moves the id away from the base and from each other change; each pair of `mustDifferPairs` must hash differently (the count prefixes). Every `mustEqual` change touches only members that are not hashed and leaves the id where it was."
+    "The original three known answers remain unchanged and match the Rust legacy vectors. Optional-field answers were independently reproduced with Python hashlib over the published byte layout, after checking the original serve answer.",
+    "`change` is laid over `base`: model, name, version, launch (members replaced), artifacts (replaced whole), advert (members replaced; null is no advert, which a measure hashes). Every `mustDiffer` change moves the id away from the base and from each other change; each pair of `mustDifferPairs` must hash differently (the count prefixes). Every `mustEqual` change touches only members that are not hashed and leaves the id where it was. Optional launch.entrypoint, profile.servedModel and profile.gpuBinding append distinct domains in that exact order after the complete legacy input; absent and null append nothing.",
+    "These are pure byte-encoding vectors, not validated launch recipes: adding gpuBinding to the legacy fixture does not establish its exact-image/hardware eligibility. Empty present strings exercise encoding independently of profile validation."
   ],
   "base": {
     "model": "qwen3.8-27b-modality-vision-quant-q8_k_xl",
@@ -78,6 +79,46 @@
         }
       },
       "expect": "dep_6c0ec71feede12a8789bccda8a8d345b7ec27547af8c074e5bef58987b8c615f"
+    },
+    {
+      "id": "serve-with-entrypoint",
+      "change": {
+        "launch": {
+          "entrypoint": "bash"
+        }
+      },
+      "expect": "dep_dfe5a4018428cebec9c477a249a0331ad5cd768eec48d9af8a30d45be54457d9"
+    },
+    {
+      "id": "serve-with-served-model",
+      "change": {
+        "profile": {
+          "servedModel": "AMD/provider-model"
+        }
+      },
+      "expect": "dep_7a638ff7661105443ce47f7476dc60804145245a60f4e570cfeae3c5e527edf4"
+    },
+    {
+      "id": "serve-with-gpu-binding",
+      "change": {
+        "profile": {
+          "gpuBinding": "paiton_native_tp2_v1"
+        }
+      },
+      "expect": "dep_2e341e522e0132f731636dfd0d8a7ae9407578a552d31342f0c0ff38c8d94b40"
+    },
+    {
+      "id": "serve-with-all-optional-suffixes-in-order",
+      "change": {
+        "launch": {
+          "entrypoint": "bash"
+        },
+        "profile": {
+          "servedModel": "AMD/provider-model",
+          "gpuBinding": "paiton_native_tp2_v1"
+        }
+      },
+      "expect": "dep_e9da9463aae2a32fa4cf337c9fe77ae9e9fd70b7a1a65463ca31e8fff6c862c6"
     }
   ],
   "mustDiffer": [
@@ -261,6 +302,58 @@
       "change": {
         "advert": null
       }
+    },
+    {
+      "id": "entrypoint",
+      "change": {
+        "launch": {
+          "entrypoint": "bash"
+        }
+      }
+    },
+    {
+      "id": "served-model",
+      "change": {
+        "profile": {
+          "servedModel": "AMD/provider-model"
+        }
+      }
+    },
+    {
+      "id": "gpu-binding",
+      "change": {
+        "profile": {
+          "gpuBinding": "paiton_native_tp2_v1"
+        }
+      }
+    },
+    {
+      "id": "all-optional-suffixes",
+      "change": {
+        "launch": {
+          "entrypoint": "bash"
+        },
+        "profile": {
+          "servedModel": "AMD/provider-model",
+          "gpuBinding": "paiton_native_tp2_v1"
+        }
+      }
+    },
+    {
+      "id": "present-empty-entrypoint-is-not-None",
+      "change": {
+        "launch": {
+          "entrypoint": ""
+        }
+      }
+    },
+    {
+      "id": "present-empty-served-model-is-not-None",
+      "change": {
+        "profile": {
+          "servedModel": ""
+        }
+      }
     }
   ],
   "mustEqual": [
@@ -335,6 +428,18 @@
           }
         }
       }
+    },
+    {
+      "id": "explicit-null-optional-suffixes-preserve-legacy",
+      "change": {
+        "launch": {
+          "entrypoint": null
+        },
+        "profile": {
+          "servedModel": null,
+          "gpuBinding": null
+        }
+      }
     }
   ],
   "mustDifferPairs": [
@@ -366,6 +471,19 @@
             ]
           }
         ]
+      }
+    },
+    {
+      "id": "entrypoint-and-served-model-have-distinct-domains",
+      "a": {
+        "launch": {
+          "entrypoint": "same-value"
+        }
+      },
+      "b": {
+        "profile": {
+          "servedModel": "same-value"
+        }
       }
     }
   ]

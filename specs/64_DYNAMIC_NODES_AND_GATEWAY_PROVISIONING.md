@@ -184,7 +184,8 @@ heartbeat response's `assignments` carry the same entries. Rules:
    string `x` in bytes as an unsigned 64-bit big-endian integer followed by the UTF-8 bytes of
    `x`; `N(n)` is the integer `n` as an unsigned 64-bit big-endian integer (a count, or an advert
    figure); `B(b)` is one byte, `01` for true and `00` for false. Everything is appended in this
-   order, with no tag or separator between the parts:
+   order. The legacy portion has no additional separator; present optional fields append
+   the domain-separated suffixes listed after the advert:
 
    ```text
    S(model id)
@@ -201,7 +202,20 @@ heartbeat response's `assignments` carry the same entries. Rules:
    S(launch engine) S(launch backend) S(launch label)
    advert               B(0) for a measure, else
                         B(1) N(slots) N(contextSupported) N(maxContextTokens) N(kvBytesPerToken)
+   optional entrypoint  S("iw.runtime-entrypoint/1") S(launch.entrypoint)
+   optional model alias S("iw.runtime-served-model/1") S(profile.servedModel)
+   optional GPU binding S("iw.runtime-gpu-binding/1") S(profile.gpuBinding)
    ```
+
+   These three optional suffixes follow the **complete** legacy encoding, including the
+   advert presence byte and figures, in fixed order: entrypoint, served model, GPU binding.
+   An absent or JSON-null field appends **no bytes**, preserving all legacy known answers.
+   A present string appends both length-prefixed strings even if empty; typed profile
+   validation rejects empty launch/model overrides separately from this pure encoding.
+   `gpuBinding` currently serializes the typed value `paiton_native_tp2_v1`; that identifier
+   is hashed, not its display label or effective environment. Its exact-image/exclusive-host
+   materialization requirements are specified in spec50. JSON object insertion order does
+   not change this suffix order.
 
    `env` keys are sorted by the bytes of their UTF-8 encoding; a mount's `readOnly` is true when
    the profile omits it. Every list is count-prefixed, so the elements of one list can never be
@@ -212,11 +226,18 @@ heartbeat response's `assignments` carry the same entries. Rules:
    advert's `tools` and `structuredOutput`, the profile's `match` rules, `evidence`, `quality`,
    `quantization`, `kvOffload` and `probe`. Hashed, so that they distinguish deployments: the
    model id, the profile `name` and `version`, every launch member listed above (image, digest,
-   command, environment, privileges, mounts, shm size, engine, backend, label), the artifacts'
+   command, environment, privileges, mounts, shm size, engine, backend, label), optional
+   `launch.entrypoint`, `profile.servedModel`, `profile.gpuBinding`, the artifacts'
    paths and digests and, for a `serve`, the advert figures. A different profile, image, flag,
    environment, mount, weight file or advertised figure is a different deployment (invariant
    15). For a `measure` entry the profile is the `candidate` and there is no advert (`B(0)`), so
    a measurement and a serve never share an id.
+
+   **Specification defect corrected (2026-10-27):** the previous layout omitted optional
+   entrypoint, served-model and GPU-binding suffixes already used by the reference code.
+   Following that text literally made these materially different launches hash alike in
+   conformance and made conforming nodes reject valid extended assignments. Implementers
+   must append the suffixes rather than change the legacy prefix or ignore these fields.
 
    **A gateway MUST derive the id this way. A node MUST recompute it from the entry's own
    payload and MUST NOT act on an entry whose `deployment` differs**: it treats the entry as
@@ -235,10 +256,15 @@ heartbeat response's `assignments` carry the same entries. Rules:
    | a `measure` (no advert, `B(0)` last) | `dep_6866ef335f03f489914a99313941c3b16b2be92b8cad743439c2f851aa26019e` |
    | the `serve`, with `env` `HSA_OVERRIDE=1` and `A=x` (hashed `A` first), privilege `--device=/dev/kfd`, mounts (`/models`, `/models`, read-only) and (`/cache`, `/c`, read-write) and `shmSize` `64g` | `dep_6c0ec71feede12a8789bccda8a8d345b7ec27547af8c074e5bef58987b8c615f` |
 
-   All three were computed from the layout above with Python `hashlib` run as `python3 -I`, and
+   The original three were computed from the legacy layout above with Python `hashlib` run as `python3 -I`, and
    they equal the three values the reference implementation's unit test
    `the_deployment_id_known_answer_vectors` (`iw_core::dynamic_node`) asserts, so the layout
-   here and the code agree byte for byte. The vectors, with relations that two inputs must or
+   here and the code agree byte for byte for absent optional fields. Additional known
+   answers encode `entrypoint=bash`, `servedModel=AMD/provider-model`, and
+   `gpuBinding=paiton_native_tp2_v1` separately and together in the fixed suffix order.
+   Their values and null/absence, domain-separation and must-differ relations live in the
+   same vector file. These are byte-encoding vectors, not validated launch recipes or
+   hardware/runtime qualification. The vectors, with relations that two inputs must or
    must not hash alike, are `conformance/dynamic-node-vectors.json`; `conformance/runner.py`
    recomputes them, and the fixtures' `deployment` members are their real derived ids.
 
