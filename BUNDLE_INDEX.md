@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,543,987 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,544,171 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -944,7 +944,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md` — `b4fb9cff4ba4` — ~1,910t
 - `specs/26_RESOURCE_IDENTITY_REDISCOVERY.md` — `ad4f89547616` — ~1,652t
 - `specs/27_SITE_CONNECTOR_ARTIFACT_CACHE.md` — `5117f6bd7dea` — ~929t
-- `specs/28_BOOTSTRAP_INIT_CLIENT.md` — `dd4e4c0e3b59` — ~2,606t
+- `specs/28_BOOTSTRAP_INIT_CLIENT.md` — `c04b82f83d2a` — ~2,766t
 - `specs/29_MCP_SERVERS.md` — `1f23788d86fd` — ~1,045t
 - `specs/30_WORKLOAD_CONTRACTS_RESOURCE_EVENTS.md` — `2dbde44c46cd` — ~446t
 - `specs/31_RESOURCE_HEALTH_QUARANTINE.md` — `4b0b1edbb982` — ~351t
@@ -1001,7 +1001,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-0/P0-T07.md` — `7b2d9b601815` — ~232t
 - `tasks/phase-0/P0-T08.md` — `7d809393c292` — ~223t
 - `tasks/phase-0/P0-T09.md` — `01b974ba0175` — ~206t
-- `tasks/phase-0/P0-T10.md` — `9cf0835dcf64` — ~315t
+- `tasks/phase-0/P0-T10.md` — `434563b53333` — ~339t
 - `tasks/phase-0/P0-T11.md` — `4ef4994bf764` — ~236t
 - `tasks/phase-0/P0-T11A.md` — `8616ae5381c2` — ~299t
 - `tasks/phase-0/P0-T12.md` — `d7d71d559fbe` — ~274t

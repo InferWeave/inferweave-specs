@@ -325,7 +325,15 @@ profile loader or a new deployment substrate.
 
 The optional status extension reports the spec-50 deployment ID/key, model,
 engine/backend, external ownership and configured resource limits only after
-checking supported schemas and the bound profile/resource/policy digests.
+checking schema versions, closed top-level field sets, canonical identity,
+bound profile/resource/policy digests and the exposed resource-limit invariants.
+Nested launch, hardware and policy fields outside these checks are opaque digest
+inputs: their types and execution semantics are not fully validated. A rehashed
+package may be self-consistent while unsuitable for execution; the external
+owner's verifier and qualification remain required before adoption or admission.
+Earlier wording, "checking supported schemas", overstated this inspection boundary
+and could cause consumers to mistake digest agreement for launch validation. Do
+not reuse the inspector as a general nested runtime/profile-schema validator.
 Read a bounded set of fixed regular documents with duplicate-key rejection,
 bounded size and supported canonical encoding. Do not follow document-supplied
 paths, symlinks or access credentials, start processes, query Docker or contact
