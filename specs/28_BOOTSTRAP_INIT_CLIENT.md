@@ -309,6 +309,42 @@ The code is one-time/short-lived and exchanges for normal node credentials.
 
 The gateway web UI may generate enrollment links/QR codes for convenience.
 
+## Truthful operational results and explicit external inspection
+
+IW-BOOT-004 / IW-BOOT-002: command success describes the operation actually
+performed. A sizing plan must not report that a node started or joined. A
+failed initialization smoke check returns a nonzero operational result while
+retaining the structured diagnostic report. Artifact preparation alone is not
+gateway enrollment or runtime readiness.
+
+`inferweave system status --deployment-dir <directory>` (legacy spelling
+`inferweave status`) may inspect an explicitly selected external deployment
+package without taking lifecycle ownership. The first supported implementation
+is the versioned Beast external package; this does not establish a generic
+profile loader or a new deployment substrate.
+
+The optional status extension reports the spec-50 deployment ID/key, model,
+engine/backend, external ownership and configured resource limits only after
+checking supported schemas and the bound profile/resource/policy digests.
+Read a bounded set of fixed regular documents with duplicate-key rejection,
+bounded size and supported canonical encoding. Do not follow document-supplied
+paths, symlinks or access credentials, start processes, query Docker or contact
+an endpoint. Errors must not echo document content.
+
+Hash agreement means self-consistency, not authenticity or qualification: a
+modified package whose hashes are recomputed remains a different deployment.
+Offline inspection reports runtime state UNKNOWN, available capacity unknown
+and evidence not checked. It cannot grant admission, publish READY, transfer
+ownership or replace the existing owner's verifier, guard or pinned lock.
+The command does not establish that the public gateway preserves deployment
+identity or runtime observations. Missing this capability is disclosed, never
+inferred from a health endpoint. No routing or production gate opens here.
+
+Public profile decision/report output redacts credential-bearing launch
+arguments and environment values unless explicit reveal is requested. An
+explicitly requested protected local launch-state artifact may retain launch
+values for drift checking; it is private state, not a public report.
+
 ## Security
 
 - one-time bootstrap credentials;
