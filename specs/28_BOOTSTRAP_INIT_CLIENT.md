@@ -353,6 +353,16 @@ arguments and environment values unless explicit reveal is requested. An
 explicitly requested protected local launch-state artifact may retain launch
 values for drift checking; it is private state, not a public report.
 
+## Runtime-selection configuration boundary
+
+The gateway's optional placement filter is configured through
+`routing.runtime_selection_file` in its central YAML file supplied by `--config`.
+Unset/null keeps selection off; empty paths and named missing or malformed files
+fail startup. The unsupported `IW_RUNTIME_SELECTION_CONFIG` environment variable
+is not a fallback. This repairs the implementation's conflict between rejecting
+legacy environment configuration and later requiring that variable to activate
+the filter. It adds no qualification, reservation, lifecycle or production authority.
+
 ## Security
 
 - one-time bootstrap credentials;
