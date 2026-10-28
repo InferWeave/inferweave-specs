@@ -324,3 +324,10 @@ canonical configuration fingerprint. The exact selected executable must advertis
 requested flags through bounded help inspection before launch. This negotiation
 is not hardware/kernel qualification or a benchmark lease. Flags and values are
 separate argv elements; no shell tokenization is used to launch a model path.
+
+Operating-point residency requires agreement among all successful measured trials;
+missing or conflicting residency remains unknown. The achieved context is the
+minimum measured value in the applicable context-validation cohort. A missing
+applicable measurement remains unknown, rather than borrowing configured context
+or the largest observed value. Known throughput-only rows need no fabricated
+context validation. Unknown context cannot establish an admissible context floor.
