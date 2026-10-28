@@ -32,10 +32,13 @@ implementation repository under
 - **P2–P8: unsatisfied.** No new graders, mutation lifecycle, interactive harness, adaptive
   scheduler, statistics, dashboard views or rollout exist. Nothing has run on real hardware;
   no figure is measured.
-- **Live placement remains BLOCKED.** Specs 33 and 46 require live target qualification
-  (sharing headroom, exact Slurm-step cancellation, canary, 24-hour recovery soak) before any
-  background benchmark may take production placement; none is recorded here as done. Protected
-  R9700 allocations and the operator's Mac are never eligible without explicit configuration.
+- **Live placement remains BLOCKED.** Spec 33 (background scheduling) and spec 46 (shared-memory
+  admission) govern background benchmark placement; this package's P5 is not approved to take
+  production placement under either. Qualification conditions beyond those specs (sharing headroom,
+  exact Slurm-step cancellation, a canary, a recovery soak) appear in an operator draft of the
+  background-benchmark gate that is not on `main`; they are not defined by this entry and need a
+  decision record before any live placement. Protected R9700 allocations and the operator's Mac
+  are never eligible without explicit configuration.
 - **Registry traceability owed:** feature IDs, task cards and `canonical-task-graph.json`
   entries for P1–P8 are not created, and specs 12/23/24 were not reconciled field by field.
 
