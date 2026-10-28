@@ -30,10 +30,38 @@ image digest. Served weight hashes and exact launch arguments still require evid
 request directly against that runtime reproduced HTTP 200, visible DSML, zero tool entries and
 `stop` in both modes; streaming terminated with `[DONE]`. Pi, with built-in tools disabled and
 only a harmless mock `bash` handler, exited with visible DSML and no tool-execution event.
-This localizes the failure to the runtime/model parsing boundary; it does not distinguish
-degraded native generation from parser behavior. The installed image's help lists Jinja
+This localizes the failure to the runtime/model parsing boundary. The native dialect
+evidence correction below replaces the earlier malformed-generation hypothesis. The installed image's help lists Jinja
 (enabled by default), `reasoning-format deepseek` and chat-template/file options, with no
 `tool-call-parser` option observed. That is flag evidence, not proof of a working configuration.
+
+## Native dialect evidence correction
+
+The initial “malformed wrapper” interpretation is withdrawn. DeepSeek's
+[official encoder at revision 314113f8a7dadb388215396ba5fbee2c610a04d6](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash/blob/314113f8a7dadb388215396ba5fbee2c610a04d6/encoding/encoding.py#L428)
+defines the spaced V4.1 tags. Spacing is not evidence of quantization damage.
+The canonical parser source at reported build pin
+[32bf0eb37cfecbc7d74b1dd2594ce285bed2f55f](https://github.com/ggml-org/llama.cpp/blob/32bf0eb37cfecbc7d74b1dd2594ce285bed2f55f/common/chat.cpp#L2188)
+recognizes older unspaced wrappers. Official native V4.1 support was added in
+[74bca3950054eed1795f525cb9cf06bfe796492d / PR #31086](https://github.com/ggml-org/llama.cpp/commit/74bca3950054eed1795f525cb9cf06bfe796492d),
+including template detection, spaced DSML parsing, reasoning and continuation
+handling. The measured effective template also contains an unspaced call-wrapper
+fragment and no spaced counterpart. This explains a concrete runtime/template
+dialect mismatch rather than a gateway schema-loss failure.
+
+A candidate must align native handling and the V4.1 template. Updating a binary
+while retaining an old embedded template may still select the older dialect.
+The private serving image may contain downstream modifications despite its build
+string; exact loaded-image/source and served-weight binding remain owed. A
+read-only CPU step observed actual redacted argv for the exact model/port,
+including --jinja, and hashed the current staged SIF file, but those observations
+are not cryptographic running-deployment attestation. No serving change was made.
+At upstream 74bca395, eight CPU-only parser fixtures passed. Disabling only V4.1
+recognition made the third fixture fail with spaced tags left in content;
+restoring the source restored all eight passes. A fresh leader rerun passed.
+The upstream minimal template warns that it does not natively describe tools:
+this is parser/incremental proof only. It cannot close native model, production
+template, hardware, Pi, deployment or promotion gates.
 
 ## Existing implementation to reuse
 
