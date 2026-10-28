@@ -818,3 +818,35 @@ SIGTERM/SIGINT/graceful-drop plus host reboot, gateway restart, link-only infere
 and exact-artifact independent review/release. Existing legacy schemas and P5-T35 proof remain
 unchanged. Registry/task coverage and validator/runner/bundle integration trace these checks
 through `IW-DYNNODE-002` / `P5-T38`; this section alone cannot close an operational gate.
+
+## Typed tool configuration negotiation (2026-10-28)
+
+An assignment carrying optional profile `toolCalling` requires both existing
+`iw.dynamic-node/1` and the additive `iw.tool-config/1` capability negotiated with that exact
+current node. Offering, registering or reporting a capability alone is insufficient; the receiver
+also verifies negotiation before acting. Old peers continue receiving only legacy profiles without
+`toolCalling`. Refuse unsupported typed assignments rather than silently dropping their parser
+configuration and running different semantics.
+
+The metadata uses `schemas/v1/runtime/tool-calling.json`. Active declarations participate in the
+immutable assignment/deployment fingerprint; absent metadata preserves existing known-answer
+vectors. Candidate measurement and draft creation clone the declaration. Throughput measurements,
+successful engine startup or draft publication never create a signed tool qualification. Reuse
+spec24 tool-suite evidence and the separate spec56 purpose-specific hard filter; a changed
+runtime/model/template/parser identity or generation cannot reuse old signed evidence.
+
+No independent runtime registry or placement mechanism is added. Native configuration remains
+bounded to the exact supported pairings in `contracts/tool-call-compatibility.json`. Active R9700
+workloads, scheduler authority, drains, rollback, watchdog and availability floors remain in force.
+The earlier P5-T35 dynamic-node evidence does not prove this new negotiation, hot-swap behavior,
+real model compatibility or rollout. Their runtime proofs remain owed under OPEN_GATES.
+
+The optional deployment-fingerprint extension is explicitly framed: if `toolCalling` is absent,
+append nothing. If present, append `S("iw.runtime-tool-calling/1")`, `N(schemaVersion)`,
+`S(modeWire)`, `S(engineRevision)`, then optional parser-patch digest, parser wire token and
+reasoning wire token, then optional template path/digest, then `N(supportCount)` and each
+lexically sorted support wire token with `S`. An optional field starts with a single 0/1 byte;
+a present scalar appends `S(value)`, and a present template appends `S(path), S(sha256)`.
+Here `S` uses a u64 big-endian UTF-8 byte length and `N` is u64 big-endian, matching the existing
+dynamic payload framing. This is intentionally different from qualification/report strings,
+which use u32 lengths. Domain and field order are frozen in the tool compatibility contract.

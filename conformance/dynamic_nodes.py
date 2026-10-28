@@ -68,7 +68,36 @@ def deployment_id(model: str, profile: dict, artifacts: list, advert: dict | Non
         out += bytes([1])
         for member in ("slots", "contextSupported", "maxContextTokens", "kvBytesPerToken"):
             out += _n(advert[member])
+    tool_calling = profile.get("toolCalling")
+    if tool_calling is not None:
+        out += _tool_calling_suffix(tool_calling)
     return "dep_" + hashlib.sha256(bytes(out)).hexdigest()
+
+
+def _optional(value: str | None) -> bytes:
+    """A 0/1 presence byte, then S(value) when present."""
+    return bytes([0]) if value is None else bytes([1]) + _s(value)
+
+
+def _tool_calling_suffix(config: dict) -> bytes:
+    """The present-only `toolCalling` extension of specs/64 (typed tool configuration).
+
+    Absent `toolCalling` appends nothing, so every legacy vector is unchanged. Strings and counts
+    use the same u64 framing as the rest of the payload; the support set is sorted by wire token.
+    """
+    out = bytearray()
+    out += _s("iw.runtime-tool-calling/1") + _n(config["schemaVersion"])
+    out += _s(config["mode"]) + _s(config["engineRevision"])
+    out += _optional(config.get("parserPatchSha256"))
+    out += _optional(config.get("parser")) + _optional(config.get("reasoning"))
+    template = config.get("template")
+    if template is None:
+        out += bytes([0])
+    else:
+        out += bytes([1]) + _s(template["path"]) + _s(template["sha256"])
+    support = sorted(config.get("support") or [], key=lambda t: t.encode("utf-8"))
+    out += _n(len(support)) + b"".join(_s(t) for t in support)
+    return bytes(out)
 
 
 def artifact_set_errors(artifacts: list) -> list:

@@ -1,11 +1,12 @@
-# Proposed: native tool-call compatibility and qualification — 2026-10-28
+# Native tool-call compatibility and bounded qualification — 2026-10-28
 
-**Status:** Proposed — needs owner acceptance. This record decides and authorizes nothing.  
-**Decision owner:** InferWeave operator  
-**Authorizes:** no protocol change, verifier authority, routing activation, runtime restart,
-profile promotion or production deployment.  
-**Relationship:** reconciles the operator-supplied `inferweave-toolcall-compat-v1` bundle with
-specs 24, 54, 56, 63 and 64. The existing qualification-verifier proposal remains unaccepted.
+**Status:** Accepted for implementation and bounded isolated qualification only.
+**Decision owner:** InferWeave operator
+**Authorization record:** the operator's same-thread “ok work on all of these here” follow-up
+accepted the scoped implementation work. It does not authorize production activation, active
+R9700 interruption, new GPU allocation, or acceptance of the general verifier proposal.
+**Relationship:** amends specs 03, 24, 56 and 64 through the closed camelCase contract
+`contracts/tool-call-compatibility.json`. Existing invariants and all unrelated open gates apply.
 
 ## Input and observed incident
 
@@ -13,15 +14,16 @@ The input ZIP was transferred from the operator's Mac Downloads directory and ch
 hosts with SHA-256 `2da08ee33b3943bc9717aff663baddea64a812e730481671701cba704a60cd04`.
 The implementation checkout retains its unmodified `SPEC.md` and `START_PROMPT.md` under
 `docs/specs/inferweave-toolcall-compat-v1-c13102d4a8/inferweave-toolcall-compat-v1/`.
-The bundle explicitly calls its protocol fields proposed and requires canonical approval.
+The bundle originally called its fields proposed; the bounded implementation acceptance above
+supersedes that status only for the contract and scope recorded here.
 
 The implementation session on 2026-10-28 sent a synthetic `bash` function schema with
 `tool_choice: auto` to the existing public gateway for
 `deepseek_v4.1-flash-modality-text-quant-mxfp4`. Both nonstreaming and streaming requests
 returned HTTP 200, visible DSML, no structured tool-call entries, and `finish_reason: stop`;
 the stream included `[DONE]`. No generated command was executed. The local sanitized summary
-was inspected for this proposal; its reproducible request and durable evidence belong in the
-implementation evidence report before acceptance.
+was inspected for this decision; the implementation evidence report retains the request and
+sanitary structural observations without exposing prompts, arguments or credentials.
 
 Read-only serving inspection in that session identified llama.cpp build `b10921-32bf0eb37`,
 the `mx-llamacpp-cuda.sif` image name, an eight-A100 allocation and template SHA-256
@@ -80,10 +82,10 @@ The entries below describe code, not qualified production capability.
 
 `iw-gateway/src/joined.rs` intentionally reads `NodeModelAdvert.tools == None` as permissive
 legacy support. Its source records a prior outage caused by treating absence as a refusal.
-The proposed enforcement must be separately opt-in; changing that default globally would
+The accepted enforcement must be separately opt-in; changing that default globally would
 break existing exact-model callers without providing qualified alternatives.
 
-## Reconciliation required before implementation
+## Canonical boundaries
 
 **P2 privacy boundary.** The bundle's blanket byte-transparency wording cannot replace spec 63's
 success-response allow-list, recorded in `OPEN_GATES.md` under the final 2026-10-16 update.
@@ -92,63 +94,73 @@ reasoning fields through that reduction. Preserve byte transparency on paths who
 contract requires it. Backend identity, unknown extensions and node error detail remain subject
 to canonical redaction. A test must prove both tool fidelity and the privacy boundary.
 
-**P3 qualification authority.** Passing a new suite does not itself authorize a catalog row to
-become `verified`. Spec 56 requires a trusted verifier/evidence binding; its store, record and
-authority are still proposed in
-[`2026-10-16-proposed-qualification-verifier.md`](2026-10-16-proposed-qualification-verifier.md).
-`OPEN_GATES.md` explicitly records this as unsatisfied. Do not introduce a parallel boolean
-verification field or silently accept that older proposal through this feature.
+**P3 qualification authority.** A purpose-specific signed tool record may constrain an exact-model
+route under the private owner-installed policy. It does not promote a catalog row or alias
+confidence. The general verifier in
+[`2026-10-16-proposed-qualification-verifier.md`](2026-10-16-proposed-qualification-verifier.md)
+remains proposed. Runtime observations provide current generation/epoch/instance/deployment/GPU
+and runtime-implementation bindings, but contain no actual runtime build/version or artifact
+hash attestation. The owner's expected build/image/model/template identity is explicit trust
+input and must not be described as independently measured by those observations.
 
 **P4 replay boundary.** “Before client tool execution” is insufficient to make an inference
 retry safe. Existing dispatch/idempotency contracts still govern ambiguous dispatch, partial
 responses, cancellation and reconnects. A detected DSML string cannot establish that a request
 is replayable, cannot become an executable call, and cannot be upgraded to a native success.
 
-## Proposed owner decisions
+## Accepted implementation contract
 
-1. **P1 profile schema and parser authority.** Approve additive optional metadata on the existing
-   runtime profile, with exact engine/build/template identity and separate supported operations
-   for nonstreaming, streaming, continuation, parallel calls and forced choice. Select the
-   canonical spelling, schema version and unknown-field behavior before changing the wire.
-   Native parser names/flags must come from the installed version and serving tests; no universal
-   `deepseek_v41` parser name is assumed. Default absence preserves current launch behavior.
-2. **P3 trusted qualification.** Decide whether to accept or amend the existing spec 56 verifier
-   proposal, including who may attest tool fidelity, trusted record source/key purpose, immutable
-   deployment and generation/epoch bindings, expiry, revocation and owner policy. Choose the
-   required repeat/pass policy from measured results. A raw benchmark record or operator-declared
-   parser name alone grants no verified capability. Unknown identity remains unqualified.
-3. **P3 routing scope.** Approve a default-off enforcement flag scoped to explicitly selected
-   deployments/requests, using existing feature eligibility and refusal semantics. Missing,
-   stale, failed or mismatched tool evidence excludes a deployment only under that policy;
-   tool-free traffic keeps its existing selection. Decide how empty tools and `tool_choice: none`
-   affect the requirement, and freeze the capability-refusal vocabulary before implementation.
-   Rollback disables the new policy without restarting engines or changing active reservations.
-4. **P4 diagnostics and recovery.** Approve a bounded, content-free counter/reason vocabulary in
-   canonical machine-readable contracts, plus retention and audience. Raw traces stay opt-in,
-   locally restricted and subject to existing encryption/recording rules. Permit no automatic
-   DSML conversion; any recovery uses the existing bounded no-replay rules and an independently
-   qualified alternative. No new retry path is authorized by this proposal.
+The frozen fields, bounds, enum spellings, signature transcript and task ownership live in
+`contracts/tool-call-compatibility.json` and `schemas/v1/runtime/tool-*.json`.
 
-Acceptance should name which decisions are accepted; unspecified parts remain proposed. Accepted
-design must then be reflected in relevant specs, contracts, schemas, task cards and coverage,
-with executable hostile vectors. No new feature ID or accepted task is assigned by this draft.
-Candidate ownership is the existing IW-DP-001/002, IW-REC-001/002, IW-BENCH-002 and runtime/alias
-tasks; their final allocation is part of that canonical change.
+1. Optional profile `toolCalling` is a declaration. Absence preserves legacy serialized identity
+   and launch behavior. Active declarations support only the tested native llama.cpp revision or
+   exact backport pairing, CPU/CUDA, an explicit read-only template with checked SHA-256 and known
+   native arguments. Unsupported combinations fail validation; no guessed vLLM flags are passed.
+   Typed dynamic assignments require negotiated `iw.tool-config/1` in addition to the existing
+   dynamic capability. Throughput drafts clone declarations, never qualifications.
+2. Reports reuse the benchmark Store and exact evidence cohort. Each actual-model repetition must
+   pass T02/T05/T06 through direct runtime and gateway, and T05 through the agent. A failed case,
+   missing identity, synthetic transport evidence or missing repetition cannot qualify. Parallel
+   additionally needs T04 on both runtime/gateway paths. Suite v1 cannot qualify `forcedChoice`.
+   Signed records use the purpose-specific binary transcript, trusted owner keys, exact binding,
+   policy revision, expiry and revocation. The report hash covers semantic fields, not raw JSON.
+3. Private snapshots default to `off`; `shadow` observes and `on` enforces only allowlisted models
+   carrying nonempty tools. Nonempty tools require nonstreaming, streaming and continuation even
+   with `tool_choice: none`. Required/named choice additionally requires forced choice, and an
+   explicit `parallel_tool_calls: true` requires parallel support. Empty/absent tools preserve
+   existing behavior. Strictly newer same-owner snapshots replace atomically; failed reload
+   preserves the old policy. Registration incarnation additionally invalidates evidence but
+   never substitutes for the engine generation/source epoch. Active leases remain untouched.
+4. Existing authenticated operator explain/reload routes carry context and atomic snapshot reload;
+   no new URL or public projection is introduced. Content-free bounded counters use the closed
+   vocabulary. Preserve spec63 redaction, cancellation and all no-replay rules. No new retry,
+   DSML conversion or execution authority is introduced.
 
-## Work allowed by the current task and proof still owed
+Minimum three repetitions and a maximum one-hour record lifetime are **unmeasured policy
+choices**, not measured reliability or hardware bounds. The owner may configure stricter policy;
+actual live qualification and expiry/revocation behavior still require executable evidence.
 
-The operator's current request supports P0 read-only audit/reproduction, sanitized evidence,
-P2 regression tests for existing behavior, and the isolated benchmark-argument evidence fix.
-These do not require new protocol semantics. This draft supplies no additional authority.
+## Native candidate and remaining proof
 
-Full P1–P4 delivery remains **owed**: approved profile schema and native parser validation;
-qualified nonstream/stream/continuation through the real runtime, gateway and Pi; T01–T16 with
-failure counts and mutation-sensitive protections; exact artifact identity and version-change
-invalidation; trusted promotion and opt-in routing; canonical telemetry/recovery controls;
-live Qwen regression, dynamic hot-swap and independent release evidence. Local fixtures prove
-only the controls their executed tests exercise, never compatibility of an untested engine.
+The native upstream revision is `74bca3950054eed1795f525cb9cf06bfe796492d`. The bounded older-base
+alternative is `32bf0eb37cfecbc7d74b1dd2594ce285bed2f55f` with parser patch SHA-256
+`03e81a8aa0b8834e6951f4e46bb30324521343d6581ede5dd0a78da1a94d6696`.
+The full V4.1 template candidate has SHA-256
+`c9046238d418153ed16c1ece7041873556d4c5ae27918a2cc20106d12b0a23f8`; it adapts the provider
+Jinja expression using undefined `**` syntax for the pinned native interpreter. The
+implementation session reports eight V4.1 and 57 Qwen CPU parser fixtures passing with the native
+backport. Those results are parser/template evidence, not actual-model or GPU qualification.
 
-Retain active R9700 workloads, owner priority, availability floors, watchdogs, rollback artifacts
-and scheduler authority. No engine replacement, hot swap, new GPU allocation, production
-deployment or independent-review gate is approved here. Existing `OPEN_GATES.md` entries and
-accepted contracts remain unchanged.
+P0/P2 transport and mock-handler regressions and the isolated argument-evidence helper repair
+remain within scope. Full P1–P4 acceptance is **owed** until current implementation checks,
+mutation-sensitive controls, exact artifacts and the complete T01–T16 matrix are evidenced.
+Actual DeepSeek and Qwen generation, Pi mock dispatch and continuation, GPU serving, dynamic
+hot swap, post-change floor/rollback behavior and independent release proof remain **owed**.
+No eligible existing spare with availability-floor proof has been established. Do not create a
+new GPU allocation or disturb R9700 workloads to fill this evidence gap.
+
+No production deployment, route activation, profile promotion or general verifier acceptance
+is granted. Preserve owner priority, availability floors, watchdogs, rollback artifacts and
+scheduler authority. The bounded `OPEN_GATES.md` entry records implementation authority separately
+from those unsatisfied operational controls; unrelated entries retain their prior meaning.

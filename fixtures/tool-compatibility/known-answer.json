@@ -1,0 +1,423 @@
+{
+  "scope": "offline public-seed synthetic fixture; no runtime or qualification authority",
+  "publicSeedHex": "0707070707070707070707070707070707070707070707070707070707070707",
+  "profile": {
+    "schemaVersion": 1,
+    "mode": "experimental",
+    "engineRevision": "74bca3950054eed1795f525cb9cf06bfe796492d",
+    "parser": "llamaCppDeepseekV41",
+    "reasoning": "llamaCppDeepseek",
+    "template": {
+      "path": "/templates/deepseek-v41.jinja",
+      "sha256": "c9046238d418153ed16c1ece7041873556d4c5ae27918a2cc20106d12b0a23f8"
+    },
+    "support": [
+      "nonStreaming",
+      "streaming",
+      "continuation"
+    ]
+  },
+  "report": {
+    "schemaVersion": 1,
+    "suiteVersion": "1",
+    "repetitions": 3,
+    "binding": {
+      "ownerGatewayId": "owner",
+      "registrationIncarnation": "registration",
+      "nodeId": "node",
+      "instanceId": "instance",
+      "deploymentFingerprint": "dep_test",
+      "generation": "generation",
+      "sourceEpoch": "epoch",
+      "requiredGpuIds": [
+        "gpu-a",
+        "gpu-b"
+      ],
+      "cohort": {
+        "model": "model",
+        "modelRevision": "model-revision",
+        "tokenizerRevision": "tokenizer",
+        "quantization": "mxfp4",
+        "runtimeImplementationId": "llama.cpp",
+        "runtimeVersion": "build",
+        "hardwareFingerprint": "hardware",
+        "contextTokens": 4096,
+        "concurrency": 1,
+        "outputTokens": 128,
+        "cacheRegime": "cold"
+      },
+      "profileSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "imageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "artifactsSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "templateSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "parserFamily": "llamaCppDeepseekV41",
+      "backend": "cuda"
+    },
+    "attempts": [
+      {
+        "caseId": "T02",
+        "repetition": 1,
+        "path": "directRuntime",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T05",
+        "repetition": 1,
+        "path": "directRuntime",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T06",
+        "repetition": 1,
+        "path": "directRuntime",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T02",
+        "repetition": 1,
+        "path": "gateway",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T05",
+        "repetition": 1,
+        "path": "gateway",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T06",
+        "repetition": 1,
+        "path": "gateway",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T05",
+        "repetition": 1,
+        "path": "agent",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T02",
+        "repetition": 2,
+        "path": "directRuntime",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T05",
+        "repetition": 2,
+        "path": "directRuntime",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T06",
+        "repetition": 2,
+        "path": "directRuntime",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T02",
+        "repetition": 2,
+        "path": "gateway",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T05",
+        "repetition": 2,
+        "path": "gateway",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T06",
+        "repetition": 2,
+        "path": "gateway",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T05",
+        "repetition": 2,
+        "path": "agent",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T02",
+        "repetition": 3,
+        "path": "directRuntime",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T05",
+        "repetition": 3,
+        "path": "directRuntime",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T06",
+        "repetition": 3,
+        "path": "directRuntime",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T02",
+        "repetition": 3,
+        "path": "gateway",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T05",
+        "repetition": 3,
+        "path": "gateway",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T06",
+        "repetition": 3,
+        "path": "gateway",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      },
+      {
+        "caseId": "T05",
+        "repetition": 3,
+        "path": "agent",
+        "scope": "actualModel",
+        "outcome": "pass",
+        "reason": null
+      }
+    ]
+  },
+  "policy": {
+    "ownerGatewayId": "owner",
+    "revision": 7,
+    "maxLifetimeMs": 3600000,
+    "minRepetitions": 3,
+    "keys": [
+      {
+        "verifierId": "verifier",
+        "keyId": "key",
+        "publicKey": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+        "notBeforeMs": 900,
+        "expiresAtMs": 10000,
+        "enabled": true
+      }
+    ],
+    "revokedRecordIds": [],
+    "revokedKeyIds": []
+  },
+  "record": {
+    "id": "tq1-bd229dce5d67a9e719cd82ebd9b028c88942e03f41327ec5a42da12f493afffa",
+    "body": {
+      "schemaVersion": 1,
+      "verifierId": "verifier",
+      "keyId": "key",
+      "purpose": "inferweave.tool-qualification/v1",
+      "policyRevision": 7,
+      "issuedAtMs": 1000,
+      "notBeforeMs": 1000,
+      "expiresAtMs": 5000,
+      "binding": {
+        "ownerGatewayId": "owner",
+        "registrationIncarnation": "registration",
+        "nodeId": "node",
+        "instanceId": "instance",
+        "deploymentFingerprint": "dep_test",
+        "generation": "generation",
+        "sourceEpoch": "epoch",
+        "requiredGpuIds": [
+          "gpu-a",
+          "gpu-b"
+        ],
+        "cohort": {
+          "model": "model",
+          "modelRevision": "model-revision",
+          "tokenizerRevision": "tokenizer",
+          "quantization": "mxfp4",
+          "runtimeImplementationId": "llama.cpp",
+          "runtimeVersion": "build",
+          "hardwareFingerprint": "hardware",
+          "contextTokens": 4096,
+          "concurrency": 1,
+          "outputTokens": 128,
+          "cacheRegime": "cold"
+        },
+        "profileSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "imageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "artifactsSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "templateSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "parserFamily": "llamaCppDeepseekV41",
+        "backend": "cuda"
+      },
+      "suiteVersion": "1",
+      "reportId": "record-1",
+      "reportSha256": "27e671907ea9750ef9b8c3c2c8d9a99755d1bd98aa86cbbbd314910c35f0250d",
+      "operations": [
+        "nonStreaming",
+        "streaming",
+        "continuation"
+      ],
+      "repetitions": 3
+    },
+    "signature": "49f46330a45669c474279dfbd30cf44e08ffa2e386a6a0883fee8200b0c921bb1e013c5275ca22e4170937f25a796bf62953dca88b8b7f6965b09eb121938d0c"
+  },
+  "snapshot": {
+    "schemaVersion": 1,
+    "policy": {
+      "mode": "off",
+      "models": [
+        "model"
+      ],
+      "trust": {
+        "ownerGatewayId": "owner",
+        "revision": 7,
+        "maxLifetimeMs": 3600000,
+        "minRepetitions": 3,
+        "keys": [
+          {
+            "verifierId": "verifier",
+            "keyId": "key",
+            "publicKey": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c",
+            "notBeforeMs": 900,
+            "expiresAtMs": 10000,
+            "enabled": true
+          }
+        ],
+        "revokedRecordIds": [],
+        "revokedKeyIds": []
+      }
+    },
+    "records": [
+      {
+        "id": "tq1-bd229dce5d67a9e719cd82ebd9b028c88942e03f41327ec5a42da12f493afffa",
+        "body": {
+          "schemaVersion": 1,
+          "verifierId": "verifier",
+          "keyId": "key",
+          "purpose": "inferweave.tool-qualification/v1",
+          "policyRevision": 7,
+          "issuedAtMs": 1000,
+          "notBeforeMs": 1000,
+          "expiresAtMs": 5000,
+          "binding": {
+            "ownerGatewayId": "owner",
+            "registrationIncarnation": "registration",
+            "nodeId": "node",
+            "instanceId": "instance",
+            "deploymentFingerprint": "dep_test",
+            "generation": "generation",
+            "sourceEpoch": "epoch",
+            "requiredGpuIds": [
+              "gpu-a",
+              "gpu-b"
+            ],
+            "cohort": {
+              "model": "model",
+              "modelRevision": "model-revision",
+              "tokenizerRevision": "tokenizer",
+              "quantization": "mxfp4",
+              "runtimeImplementationId": "llama.cpp",
+              "runtimeVersion": "build",
+              "hardwareFingerprint": "hardware",
+              "contextTokens": 4096,
+              "concurrency": 1,
+              "outputTokens": 128,
+              "cacheRegime": "cold"
+            },
+            "profileSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "imageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "artifactsSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "templateSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "parserFamily": "llamaCppDeepseekV41",
+            "backend": "cuda"
+          },
+          "suiteVersion": "1",
+          "reportId": "record-1",
+          "reportSha256": "27e671907ea9750ef9b8c3c2c8d9a99755d1bd98aa86cbbbd314910c35f0250d",
+          "operations": [
+            "nonStreaming",
+            "streaming",
+            "continuation"
+          ],
+          "repetitions": 3
+        },
+        "signature": "49f46330a45669c474279dfbd30cf44e08ffa2e386a6a0883fee8200b0c921bb1e013c5275ca22e4170937f25a796bf62953dca88b8b7f6965b09eb121938d0c"
+      }
+    ],
+    "expectedBindings": [
+      {
+        "ownerGatewayId": "owner",
+        "registrationIncarnation": "registration",
+        "nodeId": "node",
+        "instanceId": "instance",
+        "deploymentFingerprint": "dep_test",
+        "generation": "generation",
+        "sourceEpoch": "epoch",
+        "requiredGpuIds": [
+          "gpu-a",
+          "gpu-b"
+        ],
+        "cohort": {
+          "model": "model",
+          "modelRevision": "model-revision",
+          "tokenizerRevision": "tokenizer",
+          "quantization": "mxfp4",
+          "runtimeImplementationId": "llama.cpp",
+          "runtimeVersion": "build",
+          "hardwareFingerprint": "hardware",
+          "contextTokens": 4096,
+          "concurrency": 1,
+          "outputTokens": 128,
+          "cacheRegime": "cold"
+        },
+        "profileSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "imageDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "artifactsSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "templateSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "parserFamily": "llamaCppDeepseekV41",
+        "backend": "cuda"
+      }
+    ]
+  },
+  "expected": {
+    "reportSha256": "27e671907ea9750ef9b8c3c2c8d9a99755d1bd98aa86cbbbd314910c35f0250d",
+    "qualificationTranscriptBytes": 800,
+    "qualificationId": "tq1-bd229dce5d67a9e719cd82ebd9b028c88942e03f41327ec5a42da12f493afffa"
+  }
+}

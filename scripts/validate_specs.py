@@ -1053,6 +1053,10 @@ def self_test():
     if reconcile_test.returncode:
         print(reconcile_test.stdout + reconcile_test.stderr)
         return 1
+    tool_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_tool_call_compatibility.py")], capture_output=True, text=True)
+    if tool_test.returncode:
+        print(tool_test.stdout + tool_test.stderr)
+        return 1
     file_mutations = 1 + len(gpu_breaks) + len(semantic)
     print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "
           "every guard rejects its known-bad input")

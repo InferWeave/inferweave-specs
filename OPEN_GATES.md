@@ -1239,3 +1239,28 @@ routes alone do not implement this lease contract. The web endpoint's real
 admin-session/grant integration is also owed. Local fakes cannot prove any of
 these controls. Hive allocation 24781153 and its explicitly active benchmark
 mode are not available for automatic takeover or gateway restoration.
+
+## Structured tool compatibility — bounded implementation authorization (2026-10-28)
+
+**ACCEPTED for implementation and bounded isolated qualification; production activation remains
+BLOCKED.** The operator's “ok work on all of these here” follow-up is recorded in
+`decisions/2026-10-28-proposed-toolcall-compatibility.md`. The accepted contract is
+`contracts/tool-call-compatibility.json`, owned by existing P1-T13/P2-T05/A-T05/P5-T35.
+No general verifier proposal, alias-confidence promotion, new GPU allocation, active R9700
+interruption, production profile replacement or route activation is authorized.
+
+The purpose-specific signed tool record is an extra exact-route hard filter, default off.
+Current observation generation/epoch/instance/deployment/GPU/runtime-implementation bindings
+are checked, but no current observation field attests actual build/version or artifact/image/
+template hashes: expected identity remains explicit owner trust input. Registration incarnation
+is additional invalidation, not a replacement for actual engine generation. Three repetitions
+and one-hour maximum lifetime are unmeasured policy defaults. Suite v1 cannot qualify forced choice.
+
+**Owed:** actual-model nonstreaming, streaming and tool-result continuation through direct runtime,
+gateway and Pi; complete T01–T16 with counts and exact artifacts; live Qwen regression, dynamic
+negotiation/hot-swap/floor/rollback proof; revocation/reload/cancellation under actual serving;
+independent security/release review and production authorization. CPU-only native V4.1/Qwen parser
+and template fixtures prove their parsing controls only. No eligible existing spare with floor
+proof was established; do not allocate another GPU or disturb protected workloads to fill the gap.
+Offline schemas, vectors and any local implementation tests retain their narrow evidence scope.
+All unrelated entries and the general spec56 verifier gate above remain in force.

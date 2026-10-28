@@ -275,6 +275,10 @@
           "type": "integer",
           "minimum": 1
         },
+        "toolCalling": {
+          "description": "Optional typed tool configuration. It needs the iw.tool-config/1 capability and joins the deployment fingerprint only when present.",
+          "$ref": "../runtime/tool-calling.json"
+        },
         "match": {
           "type": "object",
           "additionalProperties": true,

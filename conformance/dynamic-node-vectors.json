@@ -78,6 +78,30 @@
         }
       },
       "expect": "dep_6c0ec71feede12a8789bccda8a8d345b7ec27547af8c074e5bef58987b8c615f"
+    },
+    {
+      "id": "serve-with-typed-tool-calling",
+      "change": {
+        "profile": {
+          "toolCalling": {
+            "schemaVersion": 1,
+            "mode": "native",
+            "engineRevision": "74bca3950054eed1795f525cb9cf06bfe796492d",
+            "parser": "llamaCppDeepseekV41",
+            "reasoning": "llamaCppDeepseek",
+            "template": {
+              "path": "/templates/v41.jinja",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "support": [
+              "nonStreaming",
+              "streaming",
+              "continuation"
+            ]
+          }
+        }
+      },
+      "expect": "dep_2253304828e36e6829165dde5d7b10c4c101716b617c569fe40275f7e77a4ce0"
     }
   ],
   "mustDiffer": [
@@ -260,6 +284,96 @@
       "id": "no-advert-measure",
       "change": {
         "advert": null
+      }
+    },
+    {
+      "id": "tool-parser",
+      "change": {
+        "profile": {
+          "toolCalling": {
+            "schemaVersion": 1,
+            "mode": "native",
+            "engineRevision": "74bca3950054eed1795f525cb9cf06bfe796492d",
+            "parser": "llamaCppQwen",
+            "reasoning": "llamaCppDeepseek",
+            "template": {
+              "path": "/templates/v41.jinja",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "support": [
+              "nonStreaming",
+              "streaming",
+              "continuation"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "tool-template-digest",
+      "change": {
+        "profile": {
+          "toolCalling": {
+            "schemaVersion": 1,
+            "mode": "native",
+            "engineRevision": "74bca3950054eed1795f525cb9cf06bfe796492d",
+            "parser": "llamaCppDeepseekV41",
+            "reasoning": "llamaCppDeepseek",
+            "template": {
+              "path": "/templates/v41.jinja",
+              "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "support": [
+              "nonStreaming",
+              "streaming",
+              "continuation"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "tool-engine-revision",
+      "change": {
+        "profile": {
+          "toolCalling": {
+            "schemaVersion": 1,
+            "mode": "native",
+            "engineRevision": "32bf0eb37",
+            "parser": "llamaCppDeepseekV41",
+            "reasoning": "llamaCppDeepseek",
+            "template": {
+              "path": "/templates/v41.jinja",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "support": [
+              "nonStreaming",
+              "streaming",
+              "continuation"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "tool-support-set",
+      "change": {
+        "profile": {
+          "toolCalling": {
+            "schemaVersion": 1,
+            "mode": "native",
+            "engineRevision": "74bca3950054eed1795f525cb9cf06bfe796492d",
+            "parser": "llamaCppDeepseekV41",
+            "reasoning": "llamaCppDeepseek",
+            "template": {
+              "path": "/templates/v41.jinja",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "support": [
+              "nonStreaming"
+            ]
+          }
+        }
       }
     }
   ],

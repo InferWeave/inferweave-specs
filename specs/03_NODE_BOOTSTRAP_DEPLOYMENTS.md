@@ -179,3 +179,30 @@ On a node with more than one accelerator the assignment is per GPU: each GPU car
 Persistent nodes run through Docker Compose. The bootstrap CLI generates exact GPU device exposure, volumes, networks and watchdog configuration.
 
 Slurm workers use Apptainer as specified in `37_CONTAINER_DEPLOYMENT_STANDARD.md`.
+
+## Optional native tool configuration (2026-10-28)
+
+The existing runtime profile may carry optional camelCase `toolCalling`, defined by
+`schemas/v1/runtime/tool-calling.json` and `contracts/tool-call-compatibility.json`. Its
+`schemaVersion` is 1. It declares parser configuration; even mode `native` is not qualification.
+Absent metadata preserves legacy serialization, deployment fingerprint vectors and launch flags.
+
+Active `experimental`/`native` declarations are accepted only for engine `llama.cpp`, backend
+`cpu` or `cuda`, and upstream revision `74bca3950054eed1795f525cb9cf06bfe796492d`, or older base
+`32bf0eb37cfecbc7d74b1dd2594ce285bed2f55f` with `parserPatchSha256`
+`03e81a8aa0b8834e6951f4e46bb30324521343d6581ede5dd0a78da1a94d6696`. Parser is
+`llamaCppDeepseekV41`; optional reasoning is `llamaCppDeepseek`. The older-base backport
+requires template SHA-256 `c9046238d418153ed16c1ece7041873556d4c5ae27918a2cc20106d12b0a23f8`;
+a differently pinned template is unsupported for that base. A full explicit template is
+required under exactly one read-only mount. Validate normalized absolute paths and reject
+ambiguous/overlapping mounts, mutable template sources and content-hash mismatches before launch.
+Materialized flags are `--jinja --chat-template-file <path>` and, when requested,
+`--reasoning-format deepseek`. Conflicting raw template/reasoning flags or environment overrides
+are refused. Native vLLM flags are never forwarded to llama.cpp by this declaration.
+
+`unsupported` mode has no parser, patch, template, reasoning or supported operations. Other
+pairings remain unsupported pending separately pinned engine-native evidence. Configured support
+includes independent `nonStreaming`, `streaming`, `continuation`, `parallel`, `forcedChoice`
+tokens; this set is not an eligibility grant. The suite-v1 qualification contract cannot grant
+forced choice. Dynamic typed configurations require the spec64 negotiation below. Production
+activation and real model/GPU/Pi evidence remain governed by OPEN_GATES.
