@@ -2,9 +2,16 @@
 
 **Status:** Accepted for implementation and bounded isolated qualification only.
 **Decision owner:** InferWeave operator
-**Authorization record:** the operator's same-thread “ok work on all of these here” follow-up
-accepted the scoped implementation work. It does not authorize production activation, active
-R9700 interruption, new GPU allocation, or acceptance of the general verifier proposal.
+**Authorization record:** the operator's “ok work on all of these here” follow-up accepted the
+scoped implementation work. On 2026-10-28 the operator then explicitly approved, in the same
+thread: (1) submitting the CPU-only native candidate image build on Hive, (2) obtaining the
+capacity a separate isolated canary needs, (3) running the canary's runtime, gateway and Pi
+qualification including the Qwen regression, and (4) every open decision in this record and
+its canonical proposal PR. This does not authorize production activation or promotion, replacing
+or cancelling the running production allocation or its profile, interrupting active R9700
+workloads, taking capacity from protected benchmark or owner-floor allocations, or acceptance of
+the general verifier proposal. A canary is a new, separately owned allocation that the existing
+executor can retire, with the prior profile/image preserved for rollback.
 **Relationship:** amends specs 03, 24, 56 and 64 through the closed camelCase contract
 `contracts/tool-call-compatibility.json`. Existing invariants and all unrelated open gates apply.
 

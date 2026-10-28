@@ -1246,8 +1246,13 @@ mode are not available for automatic takeover or gateway restoration.
 BLOCKED.** The operator's “ok work on all of these here” follow-up is recorded in
 `decisions/2026-10-28-proposed-toolcall-compatibility.md`. The accepted contract is
 `contracts/tool-call-compatibility.json`, owned by existing P1-T13/P2-T05/A-T05/P5-T35.
-No general verifier proposal, alias-confidence promotion, new GPU allocation, active R9700
-interruption, production profile replacement or route activation is authorized.
+The operator further approved, on 2026-10-28, the native candidate image build, obtaining
+capacity for a separate isolated canary, its runtime/gateway/Pi and Qwen qualification, and all
+open decisions in the record. A canary is a new allocation retired through the existing executor;
+the running production allocation, protected benchmark and owner-floor allocations and active
+R9700 workloads are not to be cancelled or displaced for it. No general verifier proposal,
+alias-confidence promotion, active R9700 interruption, production profile replacement or route
+activation is authorized.
 
 The purpose-specific signed tool record is an extra exact-route hard filter, default off.
 Current observation generation/epoch/instance/deployment/GPU/runtime-implementation bindings
