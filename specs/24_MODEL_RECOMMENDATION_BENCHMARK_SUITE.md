@@ -331,3 +331,11 @@ minimum measured value in the applicable context-validation cohort. A missing
 applicable measurement remains unknown, rather than borrowing configured context
 or the largest observed value. Known throughput-only rows need no fabricated
 context validation. Unknown context cannot establish an admissible context floor.
+
+Experiment identity binds the complete requested workload, including repetitions,
+output limits and parameters, plus actual model-file SHA256 and execution mode.
+Resume excludes unrequested or incompatible workload/artifact/mode history; latest
+attempt status controls reuse while earlier matching failed attempts remain in
+profile denominators. Legacy incomplete experiment IDs are retained but rerun,
+not rewritten. File hashing requires an opened regular file, with nonblocking,
+no-follow descriptor checks before streaming special paths.
