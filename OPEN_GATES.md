@@ -12,25 +12,32 @@ reasonably concludes more exists than does.
 
 ## Autonomous capability & limitations bench v1.0.0 — 2026-10-28
 
-**Unsatisfied except P1.** Package `inferweave-autonomous-capability-bench-v1` (SHA-256
+**BLOCKED. Unsatisfied.** Package `inferweave-autonomous-capability-bench-v1` (SHA-256
 `66b15719d09f4ddb135f6ad8d69e476e91b65810a0db8b1d114afd2414dd8496`) is audited in the
-implementation repository under `docs/specs/inferweave-autonomous-capability-bench-v1-*/audit/`.
+implementation repository under
+`docs/specs/inferweave-autonomous-capability-bench-v1-20261028T180332Z/inferweave-autonomous-capability-bench-v1/audit/`.
 
-- **P1 (record metadata): implemented, not deployed.** An optional `capability` block on
-  `iw.bench-record/1`; frozen vocabulary in
+- **P1 (record metadata): merged, not deployed, not independently staffed-reviewed.** An optional
+  `capability` block on `iw.bench-record/1`, merged as implementation commit
+  `4e78b54a3413f5cbb20011a66a1bbdfaaa25f06c` (PR #1360); frozen vocabulary in
   [`contracts/capability-bench-vocabulary-v1.json`](contracts/capability-bench-vocabulary-v1.json).
-  Proven by tests that fail when removed: historical `content_sha256`/key unchanged (removing
-  `skip_serializing_if` fails two tests) and a changed grader hash changes the comparison key
-  (dropping it fails one test). No producer emits the block yet. `Record` rejects unknown
-  fields, so readers must be deployed before any writer.
+  Proof status, reproducible with `cargo test -p iw-bench-record` at that commit:
+  *proven* — a record without the block keeps its historical `content_sha256`, id, JSON and
+  comparison/series keys (removing `skip_serializing_if` fails 2 tests); a changed grader hash
+  changes the comparison key (removing it fails 1 test); a stored record that breaks the block's
+  rules is refused on load (removing the load validator fails 1 test). *owed* — every other P1 rule
+  (canonical/adaptive requirements, hash checks) has a test but no removal-mutation was run.
+  No producer emits the block. `Record` rejects unknown fields, so readers must be deployed before
+  any writer. A model agent (Codex) reviewed the change; that does not staff the independent review gate.
 - **P2–P8: unsatisfied.** No new graders, mutation lifecycle, interactive harness, adaptive
   scheduler, statistics, dashboard views or rollout exist. Nothing has run on real hardware;
   no figure is measured.
-- **Live placement stays blocked** by the background-benchmark gate above. Protected R9700
-  allocations and the operator's Mac are never eligible without explicit configuration.
-- **Review is owed.** The independent review gate is unstaffed; no review of this work has occurred.
+- **Live placement remains BLOCKED.** Specs 33 and 46 require live target qualification
+  (sharing headroom, exact Slurm-step cancellation, canary, 24-hour recovery soak) before any
+  background benchmark may take production placement; none is recorded here as done. Protected
+  R9700 allocations and the operator's Mac are never eligible without explicit configuration.
 - **Registry traceability owed:** feature IDs, task cards and `canonical-task-graph.json`
-  entries for P1–P8 are not yet created, and specs 12/23/24 were not reconciled field by field.
+  entries for P1–P8 are not created, and specs 12/23/24 were not reconciled field by field.
 
 ## How to read a gate
 

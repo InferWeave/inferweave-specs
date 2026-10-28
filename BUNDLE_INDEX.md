@@ -16,13 +16,25 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,544,192 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,545,190 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
 - `.github/workflows/protocol-ci.yml` — `4e4a8b44a516` — ~194t
 - `.gitignore` — `46f401dc200c` — ~33t
 - `.gitleaks.toml` — `61bce6cd69b3` — ~130t
+- `.omx/logs/notify-hook-2026-10-28.jsonl` — `903da666bf45` — ~50t
+- `.omx/logs/omx-2026-10-28.jsonl` — `f87f5ee6e8fd` — ~56t
+- `.omx/logs/tmux-hook-2026-10-28.jsonl` — `def59c76a726` — ~25t
+- `.omx/logs/turns-2026-10-28.jsonl` — `9e26f556e86f` — ~129t
+- `.omx/metrics.json` — `f3c5c8fb98de` — ~45t
+- `.omx/state/current-task-baseline.json` — `d7b1465b7ccf` — ~79t
+- `.omx/state/session.json` — `9da1334f3410` — ~95t
+- `.omx/state/sessions/01a183ca-14a4-76a3-8523-2721ffec1d4e/hud-state.json` — `f5ea7618b509` — ~62t
+- `.omx/state/sessions/01a183ca-14a4-76a3-8523-2721ffec1d4e/notify-hook-state.json` — `7b102dd936be` — ~48t
+- `.omx/state/subagent-tracking.json` — `fca49ae0e028` — ~163t
+- `.omx/state/team-leader-nudge.json` — `05a821e65d03` — ~23t
+- `.omx/state/tmux-hook-state.json` — `a770de3ff4ca` — ~49t
 - `.semgrepignore` — `81c5def09b50` — ~86t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
@@ -33,7 +45,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `51ef8c71f029` — ~23,832t
+- `OPEN_GATES.md` — `179c711c67e9` — ~24,006t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
