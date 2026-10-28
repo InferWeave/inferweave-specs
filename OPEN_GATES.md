@@ -10,6 +10,38 @@ This file exists because these specifications run far ahead of any running syste
 register of what is *not* approved, a reader encounters thirty-eight confident documents and
 reasonably concludes more exists than does.
 
+## Autonomous capability & limitations bench v1.0.0 — 2026-10-28
+
+**BLOCKED. Unsatisfied.** Package `inferweave-autonomous-capability-bench-v1` (SHA-256
+`66b15719d09f4ddb135f6ad8d69e476e91b65810a0db8b1d114afd2414dd8496`) is audited in the
+implementation repository under
+`docs/specs/inferweave-autonomous-capability-bench-v1-20261028T180332Z/inferweave-autonomous-capability-bench-v1/audit/`.
+
+- **P1 (record metadata): merged, not deployed, not independently staffed-reviewed.** An optional
+  `capability` block on `iw.bench-record/1`, merged as implementation commit
+  `4e78b54a3413f5cbb20011a66a1bbdfaaa25f06c` (PR #1360); frozen vocabulary in
+  [`contracts/capability-bench-vocabulary-v1.json`](contracts/capability-bench-vocabulary-v1.json).
+  Proof status, reproducible with `cargo test -p iw-bench-record` at that commit:
+  *proven* — a record without the block keeps its historical `content_sha256`, id, JSON and
+  comparison/series keys (removing `skip_serializing_if` fails 2 tests); a changed grader hash
+  changes the comparison key (removing it fails 1 test); a stored record that breaks the block's
+  rules is refused on load (removing the load validator fails 1 test). *owed* — every other P1 rule
+  (canonical/adaptive requirements, hash checks) has a test but no removal-mutation was run.
+  No producer emits the block. `Record` rejects unknown fields, so readers must be deployed before
+  any writer. A model agent (Codex) reviewed the change; that does not staff the independent review gate.
+- **P2–P8: unsatisfied.** No new graders, mutation lifecycle, interactive harness, adaptive
+  scheduler, statistics, dashboard views or rollout exist. Nothing has run on real hardware;
+  no figure is measured.
+- **Live placement remains BLOCKED.** Spec 33 (background scheduling) and spec 46 (shared-memory
+  admission) govern background benchmark placement; this package's P5 is not approved to take
+  production placement under either. Qualification conditions beyond those specs (sharing headroom,
+  exact Slurm-step cancellation, a canary, a recovery soak) appear in an operator draft of the
+  background-benchmark gate that is not on `main`; they are not defined by this entry and need a
+  decision record before any live placement. Protected R9700 allocations and the operator's Mac
+  are never eligible without explicit configuration.
+- **Registry traceability owed:** feature IDs, task cards and `canonical-task-graph.json`
+  entries for P1–P8 are not created, and specs 12/23/24 were not reconciled field by field.
+
 ## How to read a gate
 
 - **BLOCKED** — not approved. No implementation may behave as though it were.

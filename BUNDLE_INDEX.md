@@ -16,13 +16,27 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,543,333 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,546,093 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
 - `.github/workflows/protocol-ci.yml` — `4e4a8b44a516` — ~194t
 - `.gitignore` — `46f401dc200c` — ~33t
 - `.gitleaks.toml` — `61bce6cd69b3` — ~130t
+- `.omx/logs/notify-hook-2026-10-28.jsonl` — `0f41039a4a97` — ~148t
+- `.omx/logs/omx-2026-10-28.jsonl` — `81163bacc91a` — ~111t
+- `.omx/logs/tmux-hook-2026-10-28.jsonl` — `0d0241124b4d` — ~74t
+- `.omx/logs/turns-2026-10-28.jsonl` — `7b17bbb59d46` — ~386t
+- `.omx/metrics.json` — `8dce8fc35133` — ~45t
+- `.omx/state/current-task-baseline.json` — `d8a47ed0eef1` — ~79t
+- `.omx/state/session.json` — `e16a7199daf5` — ~95t
+- `.omx/state/sessions/01a183ca-14a4-76a3-8523-2721ffec1d4e/hud-state.json` — `f5ea7618b509` — ~62t
+- `.omx/state/sessions/01a183ca-14a4-76a3-8523-2721ffec1d4e/notify-hook-state.json` — `7b102dd936be` — ~48t
+- `.omx/state/sessions/01a183cb-4ad9-7090-935c-14e602fef766/hud-state.json` — `f2e91c47192b` — ~62t
+- `.omx/state/sessions/01a183cb-4ad9-7090-935c-14e602fef766/notify-hook-state.json` — `8167153bddef` — ~77t
+- `.omx/state/subagent-tracking.json` — `92932abce285` — ~403t
+- `.omx/state/team-leader-nudge.json` — `05a821e65d03` — ~23t
+- `.omx/state/tmux-hook-state.json` — `3dd857fbe968` — ~49t
 - `.semgrepignore` — `81c5def09b50` — ~86t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
@@ -33,7 +47,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `843917c5399e` — ~23,434t
+- `OPEN_GATES.md` — `5d2f9a1cb12d` — ~24,071t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -87,6 +101,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
 - `contracts/canonical-task-graph.json` — `ac33c95cdeaa` — ~40,799t
+- `contracts/capability-bench-vocabulary-v1.json` — `3372ab1ac6c2` — ~461t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~167t
 - `contracts/deployment-manifest.image.example.yaml` — `94c2bd1e9061` — ~577t
