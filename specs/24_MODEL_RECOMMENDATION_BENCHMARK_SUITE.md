@@ -279,3 +279,48 @@ It produces a `benchmark_profile_id` consumable by a `modality: image` manifest'
 `validation.benchmark_profile_id`. See
 `contracts/image-qualification-profile.example.json`. Recognized runtimes are
 enumerated per modality in `contracts/backends.registry.example.json`.
+
+## Legacy NVIDIA evidence and complete qualification cohorts
+
+The 2026-10-27 operator bundle requests sm61 dual GTX 1080 Ti and sm75 dual
+RTX 2080 Ti evaluation through the existing catalogue, immutable benchmark
+records, planner, qualification and dashboard. A hardware expectation is not
+an enrolled inventory observation or a CUDA build qualification. Published weight
+hashes establish declared artifact provenance; qualification still needs hashes
+of the actual loaded files and the exact executable/container build.
+
+Qualification policies may specify `minimum_free_vram_bytes_per_gpu` (bytes).
+Old policies deserialize with zero for compatibility; zero adds no headroom
+protection. Legacy campaigns must explicitly choose and validate a reserve.
+A suggested 768 MiB is an unmeasured policy starting point, not a measured safe
+limit. For each physical GPU, checked arithmetic must prove non-KV residency +
+peak KV + reserve <= current owner-authorized allocatable VRAM. Residency, KV
+and allocatable-memory maps must identify exactly the same GPUs; summed VRAM,
+missing cards or arithmetic overflow cannot qualify a candidate. This read-only
+assessment grants no lease or production-promotion authority.
+
+Quality evidence must cover every applicable quality trial in the configuration
+cohort (agent roles or explicitly scored trials; unknown legacy workloads remain
+conservative). Successful throughput/context/vision-overhead measurements need
+not invent quality scores. A failed or skipped configuration trial, or a missing,
+nonfinite or out-of-range applicable quality score, prevents quality passing;
+retain throughput observations but report aggregate quality as unknown rather
+than a successful-only mean. An entirely throughput-only run has unknown quality,
+not passing quality. Equivalent canonical configuration fingerprints are scheduled
+once; duplicate planner inputs produce explicit prune records, not repeated work.
+
+Before any remote record storage, validate the canonical record schema, metadata,
+content SHA256 and safe canonical record ID. Reject tampering before creating files;
+never execute attached artifacts or fetch embedded URLs during validation. SHA256
+establishes integrity, not uploader identity or trust. Authenticated ingestion,
+public projection and automatic promotion remain separate obligations in the
+existing benchmark gateway, warehouse and Next.js workbench.
+
+Evaluation configuration may carry an explicit `backendTunables` map. Llama.cpp
+`split_mode` accepts only `none`, `layer` or `row`; `tensor_split` requires finite
+nonnegative decimal ratios with positive total and cannot accompany `none`.
+Unknown options are refused, not silently ignored. Tunables participate in the
+canonical configuration fingerprint. The exact selected executable must advertise
+requested flags through bounded help inspection before launch. This negotiation
+is not hardware/kernel qualification or a benchmark lease. Flags and values are
+separate argv elements; no shell tokenization is used to launch a model path.

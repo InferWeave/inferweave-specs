@@ -1239,3 +1239,16 @@ routes alone do not implement this lease contract. The web endpoint's real
 admin-session/grant integration is also owed. Local fakes cannot prove any of
 these controls. Hive allocation 24781153 and its explicitly active benchmark
 mode are not available for automatic takeover or gateway restoration.
+
+
+## Legacy NVIDIA benchmark integration — 2026-10-28
+
+**UNSATISFIED / owed:** production qualification for dual sm61/sm75 targets.
+Read-only inventory observes serving workloads on both operator-named hosts;
+it grants no benchmark lease or preemption authority. Deterministic catalogue,
+planner, record-integrity and qualification changes do not establish a compatible
+CUDA build, loaded artifact identity, measured memory reserve, agent-task quality,
+stability, safe fallback, authenticated remote submission or deployed dashboard
+integration. AC-MI-08 remains owed as full acceptance. Existing R9700/4090 and Slurm
+ownership and production gates remain in force. No new deployment is authorized
+by this entry.

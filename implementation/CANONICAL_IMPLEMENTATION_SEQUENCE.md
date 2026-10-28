@@ -868,6 +868,7 @@ Rules:
 - dataset revision persistence
 - failure classification
 - MI-04 versioned task-family evaluation retains direction, provenance, sample confidence and separate production feedback
+- AC-MI-08 incomplete, failed, skipped and invalid-score cohorts never pass quality
 
 ### P2-T06 — Pi/AutoSpec real-workflow replay benchmark
 **Context:** `C90`
@@ -895,6 +896,7 @@ Rules:
 - exact evidence reconstruction
 - confidence downgrade
 - MI-04 recommendation-only default and evidence-gated shadow/canary/opt-in promotion/rollback reject skipped stages
+- AC-MI-08 per-card reserve, exact physical GPU set and checked-memory arithmetic
 
 ### P2-T08 — Pareto frontier and next-experiment selection
 **Context:** `C75`
