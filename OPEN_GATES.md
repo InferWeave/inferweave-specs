@@ -1284,7 +1284,10 @@ endpoint, the attestation document, the one-hour expiry, or the rule that the si
 join and not while a link is held. This records that absence; it opens no production gate and
 approves nothing. The decision owner accepted, on 2026-11-01, the operated renewer for now and the
 gateway-served design for design only (`decisions/2026-11-01-gateway-served-site-attestation.md`,
-now `Accepted for design`); neither is an implementation or a deployment approval.
+now `Accepted for design`); neither is an implementation or a deployment approval. The same day the
+owner withdrew the operated renewer and asked for the attestation to be built into the protocol; the
+decision record now carries proposed answers for the owner to accept (capability `iw.site-attestation/1`),
+which authorize nothing.
 
 **Owed, UNSATISFIED (invariant 40):** a specification of the above; a test that fails when the
 default-deny-paid rule is removed; a test that an attestation for another rollout, model or source

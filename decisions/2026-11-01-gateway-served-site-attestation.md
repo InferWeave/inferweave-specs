@@ -1,7 +1,8 @@
 # The gateway serves a paid site its own attestation — 2026-11-01
 
-**Status:** Accepted for design (Option 2); Option 1 adopted for operation. Accepted by the decision
-owner in conversation on 2026-11-01, after this record was proposed the same day.  
+**Status:** Accepted for design (Option 2). Revised by the decision owner on 2026-11-01, the same day:
+Option 1 (a scheduled renewer) is **withdrawn**; the attestation is to be built into the protocol.
+The proposed answers below are **Proposed — needs owner acceptance** and authorize nothing.  
 **Decision owner:** InferWeave operator  
 **Date:** 2026-11-01  
 **Authorizes:** the design of Option 2 only, and the operated status quo of Option 1. It does **not**
@@ -95,10 +96,12 @@ party that checks it.
 
 Accepted by the decision owner on 2026-11-01:
 
-1. **Option 1 is adopted now**, as an operational measure: a scheduled renewer
-   (`renew_attestation.py`) on a host with verified access to both ends. It needs no gateway or node
-   change. Until a scheduler is installed, an unplanned link drop with an expired attestation leaves
-   the site waiting until someone renews; a planned gateway deploy re-attests as part of the deploy.
+1. **Option 1 was adopted, then withdrawn by the owner the same day** ("we will not be doing the cron
+   line ... this needs to be a built in support of the protocol"). No scheduler is to be installed.
+   The renewer (`renew_attestation.py`) and `deploy-gateway.sh` remain as tools an operator may run;
+   they are not the intended mechanism. Until Option 2 exists, an unplanned link drop with an expired
+   attestation leaves the site waiting until someone renews, and a planned gateway deploy re-attests as
+   part of the deploy. This interim exposure is accepted by the owner.
 2. **Option 2 is accepted for design only.** It may be refined and its open questions answered; it
    may not be implemented or deployed under this record. Moving to `Accepted for implementation`
    needs an answer to each open question below, a feature ID and canonical task, and the proofs
@@ -143,3 +146,59 @@ accepted until the new path is proven, so Option 1 stays available as the fallba
 Revisit if issuance under Option 2 is ever requested by an identity the grant does not name, if a
 restart still leaves the site waiting longer than the time to re-register its node, or if the
 binding in open question 1 cannot be stated without enumerating nodes.
+
+## Proposed answers and protocol shape (Proposed — needs owner acceptance; authorizes nothing)
+
+Added 2026-11-01 after the owner withdrew Option 1. These answer the five open questions in terms of
+the mechanisms the protocol already has: the negotiated capability offer of spec 47 section 2.1 (a
+node offers `capabilities` at registration, the gateway puts in force only those it supports, and a
+registration that offers none behaves as before), registration authenticated by `nodeId`, `role`,
+`credential` and `connectionId`, and the heartbeat as the node's periodic authenticated request.
+
+**Shape.** A new capability, `iw.site-attestation/1`. A node offers it at registration. The gateway
+puts it in force only when it has a paid-policy source loaded. While it is in force, the node may send
+`siteAttestation: {rollout, model, source_sha256}` in its heartbeat request, and the heartbeat response
+carries either `siteAttestation: {version, rollout, model, source_sha256, policy_sha256, node_id,
+gateway_id, issued_at, expires_at}` or `siteAttestationRefused: <code>` from a fixed list
+(`policy_not_loaded`, `no_grant_for_node`, `model_not_granted`, `not_default_deny`, `malformed_request`).
+A refusal is never an empty success. Absent the capability, nothing changes on the wire.
+
+**Order of operations.** The paid advert is added to the registration only **after** an attestation
+has been received, then kept current by re-requesting before `expires_at` while the link is held. This
+closes a gap in the as-built design, which checks the attestation only at join and not while a link
+is held. The site registers first without the paid model, so the attestation is requested over an
+authenticated registration rather than before any connection exists.
+
+1. **Binding.** The grant names the node. The policy entry for a paid model gains the node id(s)
+   allowed to serve it, next to the permitted subject(s), and issuance requires the authenticated
+   registration's `nodeId` to equal it. Exactly one node per paid model, mirroring today's "exactly one
+   subject". This needs no change to enrollment and is checked at issuance, where an operator can
+   audit it. The alternative (carrying the owner's subject on the node's enrollment) is rejected for
+   now because it changes enrollment, which spec 47 section 6 governs.
+2. **The request does not influence the answer.** `rollout` and `source_sha256` are validated for
+   format (a bounded token; 64 lowercase hex) and echoed for the site to compare. They are never an
+   input to whether the policy is loaded, default-deny or granted.
+3. **Replay and scope.** The attestation carries `node_id` and `gateway_id`; the site accepts it only if
+   both match its own identity and its pinned parent. Lifetime stays at most 3600 s. It is issued only
+   to a registration that is live (fresh heartbeat), so a copy of the file is useless to another node
+   and after the registration ends.
+4. **Failure behaviour.** On refusal or no answer the site keeps the paid model unadvertised and says why
+   at the same cadence it does now. It never falls back to an older attestation or to a file when the
+   capability is in force (invariant 7). The file path stays available only for a parent that does not
+   offer the capability, for migration, and is removed once the owner declares migration complete.
+5. **Parents.** The site accepts a `siteAttestation` only on the registration that negotiated the
+   capability, from the parent whose identity its identity file pins, with `gateway_id` equal to that
+   pinned parent. An attestation from any other parent, or one that arrives without the capability in
+   force, is ignored.
+
+**Who issues it.** The policy and the paid-model enforcement live in the Go gateway today. Spec 47
+says the capability offer is "used by both the Rust and Go gateways", so the capability itself is
+gateway-neutral, but the `D-002` amendment of 2026-10-12 limits the Go gateway to consuming, rendering
+and relaying, and the Go gateway already loads the paid policy. This record flags that for the owner
+rather than resolving it: either the policy loader and issuance stay in the Go gateway as an explicit,
+recorded exception, or they move to the Rust gateway.
+
+**Owed before `Accepted for implementation`:** the owner's acceptance of the five answers (or
+amendments); the issuer decision above; a feature ID and canonical task (the validator requires both);
+a contract under `contracts/` for the capability and refusal codes; and the proofs listed in
+`OPEN_GATES.md`, each of which must fail when its control is removed.
