@@ -1,13 +1,15 @@
-# Proposed: the gateway serves a paid site its own attestation — 2026-11-01
+# The gateway serves a paid site its own attestation — 2026-11-01
 
-**Status:** Proposed — needs owner acceptance. This record decides and authorizes nothing.  
+**Status:** Accepted for design (Option 2); Option 1 adopted for operation. Accepted by the decision
+owner in conversation on 2026-11-01, after this record was proposed the same day.  
 **Decision owner:** InferWeave operator  
 **Date:** 2026-11-01  
-**Authorizes:** nothing (design proposal only; not an endpoint, a gateway change, a node change, a
-deployment, a key or any traffic).  
+**Authorizes:** the design of Option 2 only, and the operated status quo of Option 1. It does **not**
+authorize: any implementation (no endpoint, gateway change or node change), any deployment,
+enrollment, key issuance, spending or production traffic, or a feature ID or task. Those need this
+record's open questions answered and a later `Accepted for implementation`.  
 **Relationship:** `discloses` an operational fact no specification states (below). It amends no
-record and no invariant. It proposes one change of mechanism, Option B, for the owner to accept or
-reject.
+record and no invariant. It decides one change of mechanism (Option 2) for design only.
 
 Code citations are to `InferWeave/inferweave@5ff5c633` (`deploy/whiteale/jev/`) and
 `metabolomics-us/inferweave-gateway@6c22b6db`, read in this change; the incident figures in
@@ -91,10 +93,19 @@ party that checks it.
 
 ## Decision
 
-Not made here. Recommendation for the owner: **adopt Option 1 now** (it is purely operational) and
-**accept Option 2 for design**, subject to the open questions below.
+Accepted by the decision owner on 2026-11-01:
 
-## Open questions Option 2 must answer before it can be accepted for implementation
+1. **Option 1 is adopted now**, as an operational measure: a scheduled renewer
+   (`renew_attestation.py`) on a host with verified access to both ends. It needs no gateway or node
+   change. Until a scheduler is installed, an unplanned link drop with an expired attestation leaves
+   the site waiting until someone renews; a planned gateway deploy re-attests as part of the deploy.
+2. **Option 2 is accepted for design only.** It may be refined and its open questions answered; it
+   may not be implemented or deployed under this record. Moving to `Accepted for implementation`
+   needs an answer to each open question below, a feature ID and canonical task, and the proofs
+   listed in `OPEN_GATES.md`.
+3. **Option 3 (a longer expiry) is not adopted.**
+
+## Open questions Option 2 must answer before it can be accepted for implementation (all still open)
 
 1. **Binding.** The policy today maps a model to a permitted *subject* (an owner identity). The
    requesting party is a *node* with a node credential. What binds the node to the grant (a node id

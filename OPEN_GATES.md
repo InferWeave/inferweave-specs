@@ -1278,11 +1278,13 @@ mode are not available for automatic takeover or gateway restoration.
 
 A paid System One model is served from a Slurm job on Whiteale and advertised through the public
 gateway, gated by an operator-made, one-hour attestation that the gateway enforces the owner grant
-(`InferWeave/inferweave` `deploy/whiteale/jev/`; `decisions/2026-11-01-proposed-gateway-served-site-attestation.md`
+(`InferWeave/inferweave` `deploy/whiteale/jev/`; `decisions/2026-11-01-gateway-served-site-attestation.md`
 states what exists). No specification describes the policy file, the loopback administrative status
 endpoint, the attestation document, the one-hour expiry, or the rule that the site checks it at every
 join and not while a link is held. This records that absence; it opens no production gate and
-approves nothing.
+approves nothing. The decision owner accepted, on 2026-11-01, the operated renewer for now and the
+gateway-served design for design only (`decisions/2026-11-01-gateway-served-site-attestation.md`,
+now `Accepted for design`); neither is an implementation or a deployment approval.
 
 **Owed, UNSATISFIED (invariant 40):** a specification of the above; a test that fails when the
 default-deny-paid rule is removed; a test that an attestation for another rollout, model or source
