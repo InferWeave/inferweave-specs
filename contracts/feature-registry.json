@@ -1320,6 +1320,17 @@
         "A-T07",
         "A-T08"
       ]
+    },
+    {
+      "id": "IW-SITEATT-001",
+      "name": "Site attestation: a gateway attests the paid-model grant it enforces to a paid runtime over the register and heartbeat messages (iw.site-attestation/1), for any gateway and any number of scheduled or restarted instances (Protocol 1.1.0; new proof owed)",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "gateway+node",
+      "canonical_tasks": [
+        "P5-T39"
+      ]
     }
   ]
 }

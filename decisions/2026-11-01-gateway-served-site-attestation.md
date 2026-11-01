@@ -1,16 +1,16 @@
 # The gateway serves a paid site its own attestation — 2026-11-01
 
-**Status:** Accepted for design (Option 2). Revised by the decision owner on 2026-11-01, the same day:
-Option 1 (a scheduled renewer) is **withdrawn**; the attestation is to be built into the protocol.
-The proposed answers below are **Proposed — needs owner acceptance** and authorize nothing.  
+**Status:** Accepted for implementation (Option 2, with the six answers below and the Rust gateway as
+issuer). Accepted by the decision owner on 2026-11-01, the same day it was proposed. Option 1 (a
+scheduled renewer) was withdrawn the same day.  
 **Decision owner:** InferWeave operator  
 **Date:** 2026-11-01  
-**Authorizes:** the design of Option 2 only, and the operated status quo of Option 1. It does **not**
-authorize: any implementation (no endpoint, gateway change or node change), any deployment,
-enrollment, key issuance, spending or production traffic, or a feature ID or task. Those need this
-record's open questions answered and a later `Accepted for implementation`.  
+**Authorizes:** building `iw.site-attestation/1` in the Rust gateway and node (`specs/67_SITE_ATTESTATION.md`,
+task `P5-T39`, feature `IW-SITEATT-001`). It does **not** authorize: any deployment, enrollment, key
+issuance, spending or production traffic; retiring the Go gateway's existing paid-policy path; or
+making `any` a default trusted-gateway setting.  
 **Relationship:** `discloses` an operational fact no specification states (below). It amends no
-record and no invariant. It decides one change of mechanism (Option 2) for design only.
+record and no invariant. It decides one change of mechanism (Option 2) and amends no invariant.
 
 Code citations are to `InferWeave/inferweave@5ff5c633` (`deploy/whiteale/jev/`) and
 `metabolomics-us/inferweave-gateway@6c22b6db`, read in this change; the incident figures in
@@ -102,13 +102,15 @@ Accepted by the decision owner on 2026-11-01:
    they are not the intended mechanism. Until Option 2 exists, an unplanned link drop with an expired
    attestation leaves the site waiting until someone renews, and a planned gateway deploy re-attests as
    part of the deploy. This interim exposure is accepted by the owner.
-2. **Option 2 is accepted for design only.** It may be refined and its open questions answered; it
-   may not be implemented or deployed under this record. Moving to `Accepted for implementation`
-   needs an answer to each open question below, a feature ID and canonical task, and the proofs
-   listed in `OPEN_GATES.md`.
+2. **Option 2 is accepted for implementation** with the six answers below as written, and with **the
+   Rust gateway as the sole issuer and enforcer** (owner decision, 2026-11-01: "all to rust"). `D-002`
+   is not amended and no exception is granted to the Go gateway. The Go gateway's existing paid-policy
+   path stays as it is, as the legacy path the file attestation serves, until a separate decision
+   retires it. Implementation is `P5-T39`; deployment is not authorized by this record and needs the
+   proofs in `OPEN_GATES.md`.
 3. **Option 3 (a longer expiry) is not adopted.**
 
-## Open questions Option 2 must answer before it can be accepted for implementation (all still open; proposed answers follow, revised for the owner's any-gateway requirement)
+## Open questions Option 2 must answer before it can be accepted for implementation (answered below, revised for the owner's any-gateway requirement, and accepted)
 
 1. **Binding.** The policy today maps a model to a permitted *subject* (an owner identity). The
    requesting party is a *node* with a node credential. What binds the node to the grant (a node id
@@ -158,7 +160,7 @@ record: no stable node id can be a binding; "exactly one node per paid model" is
 cannot pin one parent; and nothing may need a person or a third host to keep a restarted instance
 attested. The answers below replace the first draft, which assumed one parent and one named node.
 
-## Proposed answers and protocol shape (Proposed — needs owner acceptance; authorizes nothing)
+## Answers and protocol shape (accepted by the owner, 2026-11-01; normative text is `specs/67_SITE_ATTESTATION.md`)
 
 These use the mechanisms the protocol already has: the negotiated capability offer of spec 47
 section 2.1, registration authenticated by `nodeId`, `role`, `credential` and `connectionId`, the
@@ -213,14 +215,13 @@ instance repeats the sequence by itself; nobody renews anything.
    instance, or fetched with the grant) is **not decided here**; this record only requires that the
    attestation path never carry it.
 
-**Who issues it.** The policy and the paid-model enforcement live in the Go gateway today. Spec 47
-says the capability offer is "used by both the Rust and Go gateways", so the capability is
-gateway-neutral, but the `D-002` amendment of 2026-10-12 limits the Go gateway to consuming, rendering
-and relaying, and the Go gateway already loads the paid policy. Now that any gateway may host a paid
-runtime this matters more: the rule must be implemented once per gateway implementation, or the
-Rust gateway must own it. This record flags that for the owner rather than resolving it.
+**Who issues it.** The Rust gateway, alone (owner decision, 2026-11-01). Spec 47 says the capability offer
+is "used by both the Rust and Go gateways", and the capability stays gateway-neutral on the wire, but only
+the Rust gateway evaluates a grant, enforces it and issues the attestation. The Go gateway does not
+negotiate `iw.site-attestation/1`, so a paid runtime that joins a Go gateway keeps the file path. This is
+consistent with `D-002` as amended on 2026-10-12 and creates no exception.
 
-**Owed before `Accepted for implementation`:** the owner's acceptance of the six answers (or
-amendments); the issuer decision above; a feature ID and canonical task (the validator requires both);
-a contract under `contracts/` for the capability, the grant digest's canonical form and the refusal
-codes; and the proofs listed in `OPEN_GATES.md`, each of which must fail when its control is removed.
+**Done in this change:** the feature ID `IW-SITEATT-001`, the canonical task `P5-T39`, and the normative
+contract in `specs/67_SITE_ATTESTATION.md` (capability, grant digest canonical form, refusal codes,
+issuance order, site rules). **Still owed (invariant 40):** the implementation and every proof in
+spec 67 section 10 and `OPEN_GATES.md`, each of which must fail when its control is removed.
