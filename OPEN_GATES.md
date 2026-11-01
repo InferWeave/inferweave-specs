@@ -1271,3 +1271,22 @@ routes alone do not implement this lease contract. The web endpoint's real
 admin-session/grant integration is also owed. Local fakes cannot prove any of
 these controls. Hive allocation 24781153 and its explicitly active benchmark
 mode are not available for automatic takeover or gateway restoration.
+
+## Paid System One site attestation (2026-11-01)
+
+**Status: UNSATISFIED. Specified nowhere; implemented, and in production use, without a specification.**
+
+A paid System One model is served from a Slurm job on Whiteale and advertised through the public
+gateway, gated by an operator-made, one-hour attestation that the gateway enforces the owner grant
+(`InferWeave/inferweave` `deploy/whiteale/jev/`; `decisions/2026-11-01-proposed-gateway-served-site-attestation.md`
+states what exists). No specification describes the policy file, the loopback administrative status
+endpoint, the attestation document, the one-hour expiry, or the rule that the site checks it at every
+join and not while a link is held. This records that absence; it opens no production gate and
+approves nothing.
+
+**Owed, UNSATISFIED (invariant 40):** a specification of the above; a test that fails when the
+default-deny-paid rule is removed; a test that an attestation for another rollout, model or source
+digest is refused; a test that an expired attestation prevents a join; and, if the proposal is
+accepted, the gateway-served attestation, its node-to-grant binding and its replay scope. The
+operational tooling that renews the file (`renew_attestation.py`) is tested against a fake transport
+only; it has not been exercised by an unattended scheduler.
