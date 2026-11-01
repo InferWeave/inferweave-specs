@@ -108,7 +108,7 @@ Accepted by the decision owner on 2026-11-01:
    listed in `OPEN_GATES.md`.
 3. **Option 3 (a longer expiry) is not adopted.**
 
-## Open questions Option 2 must answer before it can be accepted for implementation (all still open)
+## Open questions Option 2 must answer before it can be accepted for implementation (all still open; proposed answers follow, revised for the owner's any-gateway requirement)
 
 1. **Binding.** The policy today maps a model to a permitted *subject* (an owner identity). The
    requesting party is a *node* with a node credential. What binds the node to the grant (a node id
@@ -147,58 +147,80 @@ Revisit if issuance under Option 2 is ever requested by an identity the grant do
 restart still leaves the site waiting longer than the time to re-register its node, or if the
 binding in open question 1 cannot be stated without enumerating nodes.
 
+## Requirement added by the owner, 2026-11-01
+
+A paid runtime must be able to join **any** gateway, not one named gateway. A gateway that schedules
+nodes (a Slurm gateway under spec 64) may start any number of instances of it and keep them alive,
+and a container supervisor may spawn and restart them and have them join any other gateway. Such
+instances have per-instance, short-lived node ids (spec 64: an id is minted per boot, at most 50
+characters) and are enrolled by whichever operator runs the gateway they join. Consequences for this
+record: no stable node id can be a binding; "exactly one node per paid model" is wrong; the site
+cannot pin one parent; and nothing may need a person or a third host to keep a restarted instance
+attested. The answers below replace the first draft, which assumed one parent and one named node.
+
 ## Proposed answers and protocol shape (Proposed — needs owner acceptance; authorizes nothing)
 
-Added 2026-11-01 after the owner withdrew Option 1. These answer the five open questions in terms of
-the mechanisms the protocol already has: the negotiated capability offer of spec 47 section 2.1 (a
-node offers `capabilities` at registration, the gateway puts in force only those it supports, and a
-registration that offers none behaves as before), registration authenticated by `nodeId`, `role`,
-`credential` and `connectionId`, and the heartbeat as the node's periodic authenticated request.
+These use the mechanisms the protocol already has: the negotiated capability offer of spec 47
+section 2.1, registration authenticated by `nodeId`, `role`, `credential` and `connectionId`, the
+heartbeat as the node's periodic authenticated request, and the operator enrollment of spec 64
+section 3 (only an operator-enrolled credential is provisioned or trusted with a grant).
 
-**Shape.** A new capability, `iw.site-attestation/1`. A node offers it at registration. The gateway
-puts it in force only when it has a paid-policy source loaded. While it is in force, the node may send
-`siteAttestation: {rollout, model, source_sha256}` in its heartbeat request, and the heartbeat response
-carries either `siteAttestation: {version, rollout, model, source_sha256, policy_sha256, node_id,
-gateway_id, issued_at, expires_at}` or `siteAttestationRefused: <code>` from a fixed list
-(`policy_not_loaded`, `no_grant_for_node`, `model_not_granted`, `not_default_deny`, `malformed_request`).
-A refusal is never an empty success. Absent the capability, nothing changes on the wire.
+**What is attested.** Not "this node", but "this gateway enforces *this grant* for this model". A
+**grant** is the owner's statement of who may use the paid model: `{model, permitted subject}`. Its
+digest, `grant_sha256`, is computed over a canonical form and is configured on the site by its owner.
+Any gateway that hosts the site must carry an entry whose digest is the same, and the attestation says
+so. Instance ids, replica counts and restarts do not change the grant.
+
+**Shape.** A capability, `iw.site-attestation/1`. A node offers it at registration; a gateway puts it
+in force only when it can evaluate a grant. While in force, the node may send
+`siteAttestation: {rollout, model, grant_sha256}` in its heartbeat request, and the response carries
+either `siteAttestation: {version, rollout, model, grant_sha256, policy_sha256, node_id, gateway_id,
+issued_at, expires_at}` or `siteAttestationRefused: <code>` from a fixed list (`policy_not_loaded`,
+`grant_not_enforced`, `model_not_granted`, `not_default_deny`, `not_enrolled`, `malformed_request`). A
+refusal is never an empty success. Absent the capability, nothing changes on the wire.
 
 **Order of operations.** The paid advert is added to the registration only **after** an attestation
-has been received, then kept current by re-requesting before `expires_at` while the link is held. This
-closes a gap in the as-built design, which checks the attestation only at join and not while a link
-is held. The site registers first without the paid model, so the attestation is requested over an
-authenticated registration rather than before any connection exists.
+has been received, and is kept current by re-requesting before `expires_at` while the link is held.
+This closes a gap in the as-built design, which checks only at join. A restarted or newly scheduled
+instance repeats the sequence by itself; nobody renews anything.
 
-1. **Binding.** The grant names the node. The policy entry for a paid model gains the node id(s)
-   allowed to serve it, next to the permitted subject(s), and issuance requires the authenticated
-   registration's `nodeId` to equal it. Exactly one node per paid model, mirroring today's "exactly one
-   subject". This needs no change to enrollment and is checked at issuance, where an operator can
-   audit it. The alternative (carrying the owner's subject on the node's enrollment) is rejected for
-   now because it changes enrollment, which spec 47 section 6 governs.
-2. **The request does not influence the answer.** `rollout` and `source_sha256` are validated for
-   format (a bounded token; 64 lowercase hex) and echoed for the site to compare. They are never an
-   input to whether the policy is loaded, default-deny or granted.
-3. **Replay and scope.** The attestation carries `node_id` and `gateway_id`; the site accepts it only if
-   both match its own identity and its pinned parent. Lifetime stays at most 3600 s. It is issued only
-   to a registration that is live (fresh heartbeat), so a copy of the file is useless to another node
-   and after the registration ends.
-4. **Failure behaviour.** On refusal or no answer the site keeps the paid model unadvertised and says why
-   at the same cadence it does now. It never falls back to an older attestation or to a file when the
-   capability is in force (invariant 7). The file path stays available only for a parent that does not
-   offer the capability, for migration, and is removed once the owner declares migration complete.
-5. **Parents.** The site accepts a `siteAttestation` only on the registration that negotiated the
-   capability, from the parent whose identity its identity file pins, with `gateway_id` equal to that
-   pinned parent. An attestation from any other parent, or one that arrives without the capability in
-   force, is ignored.
+1. **Binding.** By grant and enrollment, not by node id. The gateway issues only to a registration
+   whose credential an operator of that gateway enrolled (so a key-only identity earns nothing, as in
+   spec 64), and only if the gateway's own policy entry for the model has the same `grant_sha256`
+   the node presented. Any number of enrolled instances may carry the same grant. What stays "exactly
+   one" is the permitted subject per grant, as today. The first draft's node id in the policy is
+   withdrawn because a scheduled replica cannot have a stable id.
+2. **The request does not influence the answer.** `rollout`, `model` and `grant_sha256` are validated
+   for format (a bounded token, a bounded token, 64 lowercase hex) and compared against what the
+   gateway enforces; they are never an input to whether the policy is loaded or default-deny. The
+   gateway echoes what it enforces and the site compares.
+3. **Replay and scope.** The attestation carries `node_id` (the instance), `gateway_id` and
+   `grant_sha256`; the site accepts it only if all three match its own instance id, a gateway it
+   trusts (answer 5) and its own grant. It is issued only to a live registration and lasts at most
+   3600 s, so a copy is useless to another instance, another gateway, another grant or later.
+4. **Failure behaviour.** On refusal or no answer the site keeps the paid model unadvertised and says
+   why, as now. It never falls back to an older attestation or to a file while the capability is in
+   force (invariant 7). The file path stays only for a parent that does not offer the capability, for
+   migration, and goes when the owner declares migration complete.
+5. **Which gateways the site trusts.** The owner configures the site with the gateways whose
+   attestations it accepts: by default the parent its identity file pins, or an explicit list of
+   authenticated gateway ids (spec 63), or an explicit "any". The record states the limit plainly: an
+   attestation is a gateway reporting its own state, so it protects the owner against a *mistake* or a
+   stale policy on a trusted gateway, never against a gateway that lies. "Any" therefore means the
+   owner accepts every gateway's word, and should be a deliberate choice, not a default.
+6. **(New) The paid credential.** A gateway that schedules or spawns a paid runtime must not be able to
+   read the owner's vendor credential. How a replica obtains it (an owner-held secret mounted into the
+   instance, or fetched with the grant) is **not decided here**; this record only requires that the
+   attestation path never carry it.
 
 **Who issues it.** The policy and the paid-model enforcement live in the Go gateway today. Spec 47
-says the capability offer is "used by both the Rust and Go gateways", so the capability itself is
+says the capability offer is "used by both the Rust and Go gateways", so the capability is
 gateway-neutral, but the `D-002` amendment of 2026-10-12 limits the Go gateway to consuming, rendering
-and relaying, and the Go gateway already loads the paid policy. This record flags that for the owner
-rather than resolving it: either the policy loader and issuance stay in the Go gateway as an explicit,
-recorded exception, or they move to the Rust gateway.
+and relaying, and the Go gateway already loads the paid policy. Now that any gateway may host a paid
+runtime this matters more: the rule must be implemented once per gateway implementation, or the
+Rust gateway must own it. This record flags that for the owner rather than resolving it.
 
-**Owed before `Accepted for implementation`:** the owner's acceptance of the five answers (or
+**Owed before `Accepted for implementation`:** the owner's acceptance of the six answers (or
 amendments); the issuer decision above; a feature ID and canonical task (the validator requires both);
-a contract under `contracts/` for the capability and refusal codes; and the proofs listed in
-`OPEN_GATES.md`, each of which must fail when its control is removed.
+a contract under `contracts/` for the capability, the grant digest's canonical form and the refusal
+codes; and the proofs listed in `OPEN_GATES.md`, each of which must fail when its control is removed.
