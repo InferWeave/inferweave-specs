@@ -1289,13 +1289,20 @@ Rust gateway as sole issuer and enforcer, binding by grant digest and operator e
 and a paid runtime that may join any gateway and be scheduled or restarted by one. The operated renewer
 was withdrawn the same day. This opens no production gate and approves no deployment.
 
-**Owed, UNSATISFIED (invariant 40):** the implementation; and each proof in spec 67 section 10, each of
-which must fail when its control is removed: the capability only with a valid loaded policy; every
-refusal code from exactly its condition; issuance only to an enrolled, fresh registration; two instances
-attested independently and a copy refused by another instance, gateway or grant; the gateway refusing a
-non-grant subject before admission; the site gating, withdrawing and refreshing its advert with the link
-held; no fallback to a stale attestation or a file while the capability is in force; `any` only when
-explicit. The file attestation and `renew_attestation.py` remain the only mechanism until then, tested
-against a fake transport only; an unplanned link drop with an expired file leaves the site waiting until
-someone renews, and the owner has accepted that interim exposure. The paid vendor credential's delivery to
-a scheduled instance is not decided here and is owed separately.
+**Implemented, not deployed (2026-11-02).** `InferWeave/inferweave` PR #1446 (`90686506`) implements
+`iw.site-attestation/1` in the Rust gateway and node; Linux CI passed. This is not an operational claim: no
+paid site runs on it, the public gateway is still the Go gateway, and Jev still uses the file attestation.
+
+**Proven (fails when the control is removed):** default-deny enforcement before admission on every route
+found; the capability listed only with a valid loaded policy and a byte-identical wire without it; the
+enrollment check; the site's `verify` (a copy is useless to another instance, gateway, grant, model or
+rollout); the wake at `expires_at`; withdrawal on refusal with no older attestation kept; no fallback to the
+file while the capability is in force; the advert gate; and the grant digest comparison.
+
+**Owed, UNSATISFIED (invariant 40):** a mutation check of the remaining spec 67 section 10 tests (the order
+and individual refusal codes other than those above, two instances attested independently, `any` only when
+explicit, the lifetime clamp); and the operational evidence in `tasks/phase-5/P5-T39.md` (a real site on a
+Slurm node, restarted by its scheduler and re-attested; the same site on a second gateway). The file
+attestation and `renew_attestation.py` remain the only mechanism in production until a cutover. An unplanned
+link drop with an expired file leaves the site waiting until someone renews, which the owner accepted. The
+paid vendor credential's delivery to a scheduled instance is not decided here and is owed separately.
