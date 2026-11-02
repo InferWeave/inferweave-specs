@@ -4543,6 +4543,39 @@
       "proof_owed_by": [
         "A-T08"
       ]
+    },
+    {
+      "id": "P5-T39",
+      "phase": 5,
+      "title": "Site attestation: the Rust gateway attests the grant it enforces to a paid runtime that may join any gateway",
+      "depends_on": [
+        "P5-T35",
+        "P5-T33"
+      ],
+      "specs": [
+        "67_SITE_ATTESTATION",
+        "47_NODE_JOIN_AND_HARDWARE_REGISTRATION",
+        "64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING",
+        "63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS"
+      ],
+      "features": [
+        "IW-SITEATT-001"
+      ],
+      "context_class": "C85",
+      "outcome": "Implement `iw.site-attestation/1` in the Rust gateway and node (InferWeave/inferweave). The gateway loads a private paid-grant policy and enforces each grant with default-deny before admission; it puts the capability in force only with a valid loaded policy; it answers a node's heartbeat `siteAttestation` request with a short-lived attestation bound to the instance, the gateway and the grant digest, or a closed-set refusal. The node registers without its paid model, requests and verifies an attestation against its trusted gateways, advertises the model only while it holds an acceptable one, refreshes it before expiry with the link held, and withdraws it on expiry or refusal. It works against any gateway and for any number of scheduled or restarted instances.",
+      "required_tests": [
+        "the capability is listed only with a loaded, valid paid-grant policy, and an invalid policy is absent",
+        "every refusal code is produced by exactly its condition, in the stated order, and a refusal is never an empty success",
+        "an attestation is issued only to an enrolled, fresh registration; a key-only identity gets `not_enrolled`",
+        "two instances with different node ids are each attested for one grant, and a copy of one is refused by the other, by another gateway id and by another grant digest",
+        "the gateway refuses a request for the model from any subject other than the grant's before admission",
+        "the site does not advertise the paid model before an attestation, withdraws it at expiry and on refusal, and re-requests before expiry with the link held",
+        "the site never falls back to an older attestation or a file while the capability is in force",
+        "`any` is accepted only when configured explicitly"
+      ],
+      "notes": "Rust gateway owns grant evaluation, enforcement and issuance (owner decision 2026-11-01; no Go-gateway exception). Operates for any gateway and any number of scheduled or restarted instances; binding is by grant digest and operator enrollment, not node id. The vendor credential never rides this path.",
+      "proof_status": "owed",
+      "proof_owed_by": "P5-T39"
     }
   ]
 }

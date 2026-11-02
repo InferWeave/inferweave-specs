@@ -1271,3 +1271,31 @@ routes alone do not implement this lease contract. The web endpoint's real
 admin-session/grant integration is also owed. Local fakes cannot prove any of
 these controls. Hive allocation 24781153 and its explicitly active benchmark
 mode are not available for automatic takeover or gateway restoration.
+
+## Paid System One site attestation (2026-11-01)
+
+**Status: UNSATISFIED. Accepted for implementation; nothing implemented, nothing deployed.**
+
+A paid System One model is served from a Slurm job on Whiteale and advertised through the public
+gateway, gated today by an operator-made, one-hour file attestation that the gateway enforces the owner
+grant (`InferWeave/inferweave` `deploy/whiteale/jev/`). No specification described the policy file, the
+loopback status endpoint, the file attestation, its one-hour expiry, or the rule that the site checks it
+at every join and not while a link is held; `decisions/2026-11-01-gateway-served-site-attestation.md`
+records what exists and the incident (6 min 3 s from link drop to serving after a gateway restart).
+
+The decision owner accepted, on 2026-11-01, the gateway-served design for implementation: the capability
+`iw.site-attestation/1` (`specs/67_SITE_ATTESTATION.md`, feature `IW-SITEATT-001`, task `P5-T39`), with the
+Rust gateway as sole issuer and enforcer, binding by grant digest and operator enrollment (not node id),
+and a paid runtime that may join any gateway and be scheduled or restarted by one. The operated renewer
+was withdrawn the same day. This opens no production gate and approves no deployment.
+
+**Owed, UNSATISFIED (invariant 40):** the implementation; and each proof in spec 67 section 10, each of
+which must fail when its control is removed: the capability only with a valid loaded policy; every
+refusal code from exactly its condition; issuance only to an enrolled, fresh registration; two instances
+attested independently and a copy refused by another instance, gateway or grant; the gateway refusing a
+non-grant subject before admission; the site gating, withdrawing and refreshing its advert with the link
+held; no fallback to a stale attestation or a file while the capability is in force; `any` only when
+explicit. The file attestation and `renew_attestation.py` remain the only mechanism until then, tested
+against a fake transport only; an unplanned link drop with an expired file leaves the site waiting until
+someone renews, and the owner has accepted that interim exposure. The paid vendor credential's delivery to
+a scheduled instance is not decided here and is owed separately.

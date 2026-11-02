@@ -2280,6 +2280,23 @@ Rules:
 - ONB-11: managed link-only inference and cancellation work through reconnect without duplicated placement or exposed unauthenticated engine ports
 - ONB-12: exact-commit and digest-pinned Nibbler installation/restart/recovery evidence, independent review and required checks pass before normal merge; offline contract tests never substitute for runtime or hardware proof
 
+### P5-T39 — Site attestation: the Rust gateway attests the grant it enforces to a paid runtime that may join any gateway
+**Context:** `C85`
+**Depends on:** P5-T35, P5-T33
+**Features:** IW-SITEATT-001
+**Read:** specs/67_SITE_ATTESTATION.md, specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md, specs/64_DYNAMIC_NODES_AND_GATEWAY_PROVISIONING.md, specs/63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS.md, decisions/2026-11-01-gateway-served-site-attestation.md
+
+**Outcome:** Implement `iw.site-attestation/1` in the Rust gateway and node (InferWeave/inferweave). The gateway loads a private paid-grant policy and enforces each grant with default-deny before admission; it puts the capability in force only with a valid loaded policy; it answers a node's heartbeat `siteAttestation` request with a short-lived attestation bound to the instance, the gateway and the grant digest, or a closed-set refusal. The node registers without its paid model, requests and verifies an attestation against its trusted gateways, advertises the model only while it holds an acceptable one, refreshes it before expiry with the link held, and withdraws it on expiry or refusal. It works against any gateway and for any number of scheduled or restarted instances.
+
+**Required tests:**
+- the capability is listed only with a loaded, valid paid-grant policy, and an invalid policy is absent
+- every refusal code is produced by exactly its condition, in the stated order, and a refusal is never an empty success
+- an attestation is issued only to an enrolled, fresh registration; a key-only identity gets `not_enrolled`
+- two instances with different node ids are each attested for one grant, and a copy of one is refused by the other, by another gateway id and by another grant digest
+- the gateway refuses a request for the model from any subject other than the grant's before admission
+- the site does not advertise the paid model before an attestation, withdraws it at expiry and on refusal, and re-requests before expiry with the link held
+- the site never falls back to an older attestation or a file while the capability is in force
+- `any` is accepted only when configured explicitly
 ### B-T01 — Runtime families and typed capabilities
 **Context:** `C75`
 **Depends on:** none
