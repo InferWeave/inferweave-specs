@@ -473,7 +473,10 @@
       "required_tests": [
         "disconnect/stale TTL test",
         "reconnect same identity",
-        "gateway restart recovery"
+        "gateway restart recovery",
+        "pre-dispatch DNS failure stays withdrawn across heartbeat and recovers after fresh registration",
+        "an authenticated held Link clears only DNS withdrawal; rejected Link and stronger withdrawals remain",
+        "late DNS results cannot undo concurrent Link acceptance, same-endpoint re-registration or controller snapshot replacement; an ordinary heartbeat does not invalidate a pending DNS failure"
       ],
       "notes": ""
     },
@@ -1059,6 +1062,7 @@
       ],
       "specs": [
         "08_CONNECTIVITY_DATA_PLANE",
+        "45_PROTOCOL_V1",
         "59_LINK_HTTP_JSON",
         "63_LINK_UPSTREAM_ROLE_AND_AUTHENTICATED_GATEWAYS"
       ],
@@ -1072,7 +1076,11 @@
         "forced NAT failure",
         "fallback ordering",
         "gateway relay bandwidth circuit breaker",
-        "spec59 exact-registration/Link negotiation, HTTP byte fidelity and hostile response vectors; production mixed-version, cancellation/backpressure and no-replay proof owed",
+        "spec59 exact-registration/Link negotiation, HTTP byte fidelity and hostile response vectors",
+        "mixed-version initial-credit compatibility: paused consumer accepts the bounded combined allowance, consumption replenishes exactly one item, and one item beyond the allowance terminates only that stream",
+        "legacy EOF before End is incomplete; credit, sequence, idle, and shared-connection failures retain distinct bounded operator attribution while public error semantics remain stable",
+        "no automatic replay after ambiguous dispatch or partial response",
+        "production mixed-version, sustained backpressure, cancellation and no-replay proof owed",
         "spec63 (proposed, owed): typed-credential upstream binding, acceptor-appended path and hop limit, no transit by default, request-id idempotency, per-key bounds, revocation drain, invariant-11 direct-path preference"
       ],
       "notes": ""
