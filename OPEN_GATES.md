@@ -10,6 +10,38 @@ This file exists because these specifications run far ahead of any running syste
 register of what is *not* approved, a reader encounters thirty-eight confident documents and
 reasonably concludes more exists than does.
 
+## Autonomous capability & limitations bench v1.0.0 — 2026-10-28
+
+**BLOCKED. Unsatisfied.** Package `inferweave-autonomous-capability-bench-v1` (SHA-256
+`66b15719d09f4ddb135f6ad8d69e476e91b65810a0db8b1d114afd2414dd8496`) is audited in the
+implementation repository under
+`docs/specs/inferweave-autonomous-capability-bench-v1-20261028T180332Z/inferweave-autonomous-capability-bench-v1/audit/`.
+
+- **P1 (record metadata): merged, not deployed, not independently staffed-reviewed.** An optional
+  `capability` block on `iw.bench-record/1`, merged as implementation commit
+  `4e78b54a3413f5cbb20011a66a1bbdfaaa25f06c` (PR #1360); frozen vocabulary in
+  [`contracts/capability-bench-vocabulary-v1.json`](contracts/capability-bench-vocabulary-v1.json).
+  Proof status, reproducible with `cargo test -p iw-bench-record` at that commit:
+  *proven* — a record without the block keeps its historical `content_sha256`, id, JSON and
+  comparison/series keys (removing `skip_serializing_if` fails 2 tests); a changed grader hash
+  changes the comparison key (removing it fails 1 test); a stored record that breaks the block's
+  rules is refused on load (removing the load validator fails 1 test). *owed* — every other P1 rule
+  (canonical/adaptive requirements, hash checks) has a test but no removal-mutation was run.
+  No producer emits the block. `Record` rejects unknown fields, so readers must be deployed before
+  any writer. A model agent (Codex) reviewed the change; that does not staff the independent review gate.
+- **P2–P8: unsatisfied.** No new graders, mutation lifecycle, interactive harness, adaptive
+  scheduler, statistics, dashboard views or rollout exist. Nothing has run on real hardware;
+  no figure is measured.
+- **Live placement remains BLOCKED.** Spec 33 (background scheduling) and spec 46 (shared-memory
+  admission) govern background benchmark placement; this package's P5 is not approved to take
+  production placement under either. Qualification conditions beyond those specs (sharing headroom,
+  exact Slurm-step cancellation, a canary, a recovery soak) appear in an operator draft of the
+  background-benchmark gate that is not on `main`; they are not defined by this entry and need a
+  decision record before any live placement. Protected R9700 allocations and the operator's Mac
+  are never eligible without explicit configuration.
+- **Registry traceability owed:** feature IDs, task cards and `canonical-task-graph.json`
+  entries for P1–P8 are not created, and specs 12/23/24 were not reconciled field by field.
+
 ## How to read a gate
 
 - **BLOCKED** — not approved. No implementation may behave as though it were.
@@ -1240,6 +1272,40 @@ admin-session/grant integration is also owed. Local fakes cannot prove any of
 these controls. Hive allocation 24781153 and its explicitly active benchmark
 mode are not available for automatic takeover or gateway restoration.
 
+## Paid System One site attestation (2026-11-01)
+
+**Status: UNSATISFIED. Accepted for implementation; nothing implemented, nothing deployed.**
+
+A paid System One model is served from a Slurm job on Whiteale and advertised through the public
+gateway, gated today by an operator-made, one-hour file attestation that the gateway enforces the owner
+grant (`InferWeave/inferweave` `deploy/whiteale/jev/`). No specification described the policy file, the
+loopback status endpoint, the file attestation, its one-hour expiry, or the rule that the site checks it
+at every join and not while a link is held; `decisions/2026-11-01-gateway-served-site-attestation.md`
+records what exists and the incident (6 min 3 s from link drop to serving after a gateway restart).
+
+The decision owner accepted, on 2026-11-01, the gateway-served design for implementation: the capability
+`iw.site-attestation/1` (`specs/67_SITE_ATTESTATION.md`, feature `IW-SITEATT-001`, task `P5-T39`), with the
+Rust gateway as sole issuer and enforcer, binding by grant digest and operator enrollment (not node id),
+and a paid runtime that may join any gateway and be scheduled or restarted by one. The operated renewer
+was withdrawn the same day. This opens no production gate and approves no deployment.
+
+**Implemented, not deployed (2026-11-02).** `InferWeave/inferweave` PR #1446 (`90686506`) implements
+`iw.site-attestation/1` in the Rust gateway and node; Linux CI passed. This is not an operational claim: no
+paid site runs on it, the public gateway is still the Go gateway, and Jev still uses the file attestation.
+
+**Proven (fails when the control is removed):** default-deny enforcement before admission on every route
+found; the capability listed only with a valid loaded policy and a byte-identical wire without it; the
+enrollment check; the site's `verify` (a copy is useless to another instance, gateway, grant, model or
+rollout); the wake at `expires_at`; withdrawal on refusal with no older attestation kept; no fallback to the
+file while the capability is in force; the advert gate; and the grant digest comparison.
+
+**Owed, UNSATISFIED (invariant 40):** a mutation check of the remaining spec 67 section 10 tests (the order
+and individual refusal codes other than those above, two instances attested independently, `any` only when
+explicit, the lifetime clamp); and the operational evidence in `tasks/phase-5/P5-T39.md` (a real site on a
+Slurm node, restarted by its scheduler and re-attested; the same site on a second gateway). The file
+attestation and `renew_attestation.py` remain the only mechanism in production until a cutover. An unplanned
+link drop with an expired file leaves the site waiting until someone renews, which the owner accepted. The
+paid vendor credential's delivery to a scheduled instance is not decided here and is owed separately.
 
 ## Legacy NVIDIA benchmark integration — 2026-10-28
 

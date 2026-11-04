@@ -161,6 +161,7 @@ Total tasks: **168**
 | `P5-T36` | 5 | C85 | P5-T33 | InferWeave Storage Phase 1: signed grants, store daemon, S3 front end, digest index and multi-source stager |
 | `P5-T37` | 5 | C85 | P5-T36 | InferWeave Storage Phase 2: ingest leases, replication, TLS, federated grants and per-range hashes |
 | `P5-T38` | 5 | C85 | P5-T35, P1-T23, P1-T20B, P3-T25 | Managed persistent node onboarding, qualification and durable reconciliation |
+| `P5-T39` | 5 | C85 | P5-T35, P5-T33 | Site attestation: the Rust gateway attests the grant it enforces to a paid runtime that may join any gateway |
 | `B-T01` | B | C75 | — | Runtime families and typed capabilities |
 | `B-T02` | B | C75 | B-T01 | Native `/inferweave/v1` control-plane and inference endpoints |
 | `B-T03` | B | C75 | B-T01 | Transactional runtime hot-swap lifecycle |
