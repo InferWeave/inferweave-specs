@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,560,229 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,560,951 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -77,7 +77,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/request-observation-failure-rollup-vectors.json` — `aad3b8166769` — ~6,076t
 - `conformance/request-observation-vectors.json` — `76a610871926` — ~7,575t
 - `conformance/request_observations.py` — `c0647aa8814c` — ~4,867t
-- `conformance/runner.py` — `802cac8b4024` — ~9,160t
+- `conformance/runner.py` — `67f6c578dbf3` — ~9,298t
 - `conformance/runtime-family-vectors.json` — `e9182c76245d` — ~3,138t
 - `conformance/runtime-observation-vectors.json` — `199670cef5ac` — ~19,334t
 - `conformance/runtime_observations.py` — `d4b1c36d2a1f` — ~1,382t
@@ -230,7 +230,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/inference-stream-reliability-2026-10-20/release-review.md` — `6aed284301ff` — ~912t
 - `evidence/inference-stream-reliability-2026-10-20/rust-canary.json` — `d2ec8ffdae7e` — ~493t
 - `evidence/inference-stream-reliability-2026-10-20/rust.md` — `3ce87559a7c0` — ~1,650t
-- `evidence/link-communication-recovery-2026-11-04/README.md` — `dbd474bc91cf` — ~929t
+- `evidence/link-communication-recovery-2026-11-04/README.md` — `6dbc84b840f7` — ~1,084t
 - `evidence/link-initial-credit-2026-11-04/README.md` — `aea33eb0c10a` — ~798t
 - `evidence/link-upstream-key-probe-2026-10-15/README.md` — `a1d5861d03c5` — ~169t
 - `evidence/model-intelligence-2026-10-12/README.md` — `c0aa7f2bfefb` — ~2,391t
@@ -1170,7 +1170,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_alias_execution_contract.py` — `6af0f772c0e2` — ~3,848t
 - `tests/smoke/test_bundle_self_test.py` — `f0115f5e0f1a` — ~281t
 - `tests/smoke/test_capability_routing_contract.py` — `c2dca75a583d` — ~1,999t
-- `tests/smoke/test_conformance.py` — `40dd0543b1e5` — ~1,230t
+- `tests/smoke/test_conformance.py` — `b1c910866008` — ~1,659t
 - `tests/smoke/test_dynamic_alias_contract.py` — `7d28f77b6c38` — ~4,396t
 - `tests/smoke/test_failure_rollups.py` — `c0f46e2ed960` — ~2,408t
 - `tests/smoke/test_family_routing.py` — `d44eef95e64a` — ~457t

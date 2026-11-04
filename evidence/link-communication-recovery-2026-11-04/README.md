@@ -71,3 +71,12 @@ their known-bad inputs. Task cards, canonical task data, the implementation
 sequence, bundle inventory and checksums are synchronized. This replaces the
 initial older-base schema-resolution validation gap; production qualification
 remains owed.
+
+The complete offline conformance runner also passes. Its previous mutable
+`RefResolver` incorrectly retained an alias document's scope while resolving a
+sibling request-schema reference, causing an HTTP lookup for a schema already
+bundled locally. The runner now uses the immutable registry already supplied by
+`jsonschema==4.23.0`, entering schemas through their registered retrieval URI.
+No dependency, fixture, or schema acceptance rule changed. Three regressions
+cover offline sibling references, Draft 7 root-reference base handling, and
+retained rejection of unknown fields; all 11 conformance smoke tests pass.

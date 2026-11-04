@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -33,6 +34,33 @@ def run_runner(vectors_text=None):
 
 
 class Conformance(unittest.TestCase):
+    def test_sibling_schema_references_resolve_without_network(self):
+        from conformance import runner
+        fixture = json.loads((ROOT / "fixtures/valid/alias-link-request.json").read_text())
+        try:
+            with patch("jsonschema.validators.urlopen", side_effect=AssertionError("offline validation attempted network")):
+                errors = list(runner.validator("requests/link-alias-request.json").iter_errors(fixture))
+        except Exception as error:
+            self.fail(f"bundled sibling references must resolve offline: {error}")
+        self.assertEqual(errors, [])
+
+    def test_root_reference_keeps_its_registered_retrieval_uri(self):
+        from conformance import runner
+        fixture = json.loads((ROOT / "fixtures/valid/dynamic-alias-adhoc-resolution.json").read_text())
+        try:
+            errors = list(runner.validator("aliases/adhoc-resolution.json").iter_errors(fixture))
+        except Exception as error:
+            self.fail(f"root $ref must resolve relative to its registered document URI: {error}")
+        self.assertEqual(errors, [])
+
+    def test_sibling_schema_validation_still_rejects_unknown_fields(self):
+        from conformance import runner
+        fixture = json.loads((ROOT / "fixtures/valid/alias-link-request.json").read_text())
+        fixture["meta"]["executable"]["unrecognized"] = True
+        with patch("jsonschema.validators.urlopen", side_effect=AssertionError("offline validation attempted network")):
+            errors = list(runner.validator("requests/link-alias-request.json").iter_errors(fixture))
+        self.assertTrue(errors, "local reference resolution must retain closed-schema validation")
+
     def test_family_vectors_present(self):
         doc = json.loads(VECTORS.read_text())
         for fam in FAMILIES:

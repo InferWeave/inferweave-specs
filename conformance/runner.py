@@ -26,6 +26,8 @@ import sys
 import urllib.error
 import urllib.request
 from jsonschema import Draft7Validator, RefResolver
+from referencing import Registry, Resource
+from referencing.jsonschema import DRAFT7
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "conformance"))
@@ -171,14 +173,22 @@ _STORE = {}
 for _p in SCHEMA_DIR.rglob("*.json"):
     _s = json.loads(_p.read_text())
     _STORE[_s["$id"]] = _s
+# Immutable resources retain each document's scope across sibling $refs. The
+# legacy mutable resolver can retain an alias document's scope while resolving
+# the next request member, incorrectly falling back to the network.
+_REGISTRY = Registry().with_resources(
+    (identifier, Resource.from_contents(schema, default_specification=DRAFT7))
+    for identifier, schema in _STORE.items()
+)
 _cached = {}
 
 
 def validator(schema_rel):
     if schema_rel not in _cached:
         schema = json.loads((SCHEMA_DIR / schema_rel).read_text())
-        resolver = RefResolver(base_uri=schema["$id"], referrer=schema, store=_STORE)
-        _cached[schema_rel] = Draft7Validator(schema, resolver=resolver)
+        # Enter through the retrieval URI: Draft 7 ignores $id beside a
+        # root $ref, but relative references still need the document's base.
+        _cached[schema_rel] = Draft7Validator({"$ref": schema["$id"]}, registry=_REGISTRY)
     return _cached[schema_rel]
 
 
