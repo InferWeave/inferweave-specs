@@ -83,6 +83,20 @@ Filter/compare:
 
 Never display ambiguous cross-model universal TPS rankings without dimensions.
 
+### Public task inspection navigation
+
+Published task results in configuration details and comparisons link to an existing
+public task page using its canonical `family/task` identity. A task inspection
+preserves the known observation, application profile and, for comparisons, both
+observations; its return link restores that context. Unknown or duplicate
+observation references, ambiguous repeated context keys, explicitly invalid
+profiles and empty comparison references do not produce a contextual return link;
+they never substitute a different configuration or profile. Tasks absent
+from the published catalogue remain plain recorded results rather than invented
+public definitions. A requested task absent from the snapshot is disclosed
+explicitly without echoing the unknown identifier or inventing its prompt.
+These links carry public review context, never content-read authority.
+
 ## Authenticated portal
 
 Authentication for authenticated portal surfaces follows decision

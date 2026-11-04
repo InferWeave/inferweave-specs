@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,555,249 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,555,843 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `2e5ded350a09` — ~24,780t
+- `OPEN_GATES.md` — `1133a9cec055` — ~25,040t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -928,7 +928,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/07_FAIRSHARE_OWNER_PRIORITY.md` — `3c9f3be77e28` — ~454t
 - `specs/08_CONNECTIVITY_DATA_PLANE.md` — `26075e86d9ae` — ~799t
 - `specs/09_OBSERVABILITY_RECEIPTS.md` — `3a5c0010fe90` — ~5,118t
-- `specs/10_DASHBOARD_PORTAL.md` — `535d7e54bf6a` — ~1,263t
+- `specs/10_DASHBOARD_PORTAL.md` — `3522c21547bb` — ~1,485t
 - `specs/11_WORKBENCH_AUTOSPEC_PI.md` — `fbd0cf942993` — ~409t
 - `specs/12_MODEL_TUNING_BENCHMARKS.md` — `18e3f43ca576` — ~509t
 - `specs/13_RAG_TOOLS_LSP.md` — `9b08ea55e3c6` — ~330t
@@ -1064,7 +1064,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-2/P2-T15.md` — `94a72cc2009e` — ~223t
 - `tasks/phase-2/P2-T16.md` — `6d4c645cb15a` — ~329t
 - `tasks/phase-2/P2-T17.md` — `8b8a9947b84a` — ~212t
-- `tasks/phase-2/P2-T18.md` — `0c79cbcb9b33` — ~324t
+- `tasks/phase-2/P2-T18.md` — `9b6fa9c9827e` — ~436t
 - `tasks/phase-2/P2-T19.md` — `31d54dd0f6cd` — ~209t
 - `tasks/phase-2/P2-T20.md` — `7101adbb0f10` — ~208t
 - `tasks/phase-2/P2-T21.md` — `eecd1c1a9103` — ~222t

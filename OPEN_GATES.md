@@ -1306,3 +1306,20 @@ Slurm node, restarted by its scheduler and re-attested; the same site on a secon
 attestation and `renew_attestation.py` remain the only mechanism in production until a cutover. An unplanned
 link drop with an expired file leaves the site waiting until someone renews, which the owner accepted. The
 paid vendor credential's delivery to a scheduled instance is not decided here and is owed separately.
+
+## Benchmark attempt inspection boundary — 2026-11-04
+
+**UNSATISFIED / owed.** A raw benchmark attempt inspector still needs an explicit
+current benchmark-role-to-ledger access-policy mapping, authoritative
+benchmark-record/task-to-ledger identifiers, recorded-content provenance and a
+bounded audited reader. Existing benchmark `viewer/requester/reviewer/admin`
+grants do not by themselves define a mapping to ledger `admin/audit` content
+roles or tenant/owner policy. A public model/task URL grants no content access.
+
+The existing prompt ledger already provides encrypted content and audited reads;
+a compatible inspector must compose with it and the current Rust registry,
+rather than create a parallel authority. Producer capture, missing historical
+transcripts, artifact ownership/retention binding, real OIDC/registry/ledger
+integration and adversarial scope/revocation/audit-failure proof remain owed.
+Public task-page navigation closes none of these gates and opens no deployment,
+real-user grant or benchmark-execution authority.
