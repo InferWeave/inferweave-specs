@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,560,951 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,562,507 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `598a068dcd1d` — ~25,163t
+- `OPEN_GATES.md` — `039f356fc6a7` — ~25,732t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -86,7 +86,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
-- `contracts/canonical-task-graph.json` — `a8f4336484ff` — ~41,718t
+- `contracts/canonical-task-graph.json` — `732d908ca7e7` — ~41,786t
 - `contracts/capability-bench-vocabulary-v1.json` — `3372ab1ac6c2` — ~461t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~167t
@@ -757,7 +757,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/runtime-observation-report.json` — `a2e472f63798` — ~281t
 - `fixtures/valid/seat.json` — `226b3cc299f9` — ~19t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `8871cb621336` — ~3,283t
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `f49b9a6ee975` — ~31,044t
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `a4e7ee10b634` — ~31,107t
 - `implementation/CANONICAL_TASK_INDEX.md` — `e726cf7e7b42` — ~3,853t
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
@@ -930,7 +930,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/07_FAIRSHARE_OWNER_PRIORITY.md` — `3c9f3be77e28` — ~454t
 - `specs/08_CONNECTIVITY_DATA_PLANE.md` — `5279b1af27a6` — ~1,129t
 - `specs/09_OBSERVABILITY_RECEIPTS.md` — `3a5c0010fe90` — ~5,118t
-- `specs/10_DASHBOARD_PORTAL.md` — `535d7e54bf6a` — ~1,263t
+- `specs/10_DASHBOARD_PORTAL.md` — `b3506282556b` — ~1,944t
 - `specs/11_WORKBENCH_AUTOSPEC_PI.md` — `fbd0cf942993` — ~409t
 - `specs/12_MODEL_TUNING_BENCHMARKS.md` — `18e3f43ca576` — ~509t
 - `specs/13_RAG_TOOLS_LSP.md` — `9b08ea55e3c6` — ~330t
@@ -1066,7 +1066,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-2/P2-T15.md` — `94a72cc2009e` — ~223t
 - `tasks/phase-2/P2-T16.md` — `6d4c645cb15a` — ~329t
 - `tasks/phase-2/P2-T17.md` — `8b8a9947b84a` — ~212t
-- `tasks/phase-2/P2-T18.md` — `0c79cbcb9b33` — ~324t
+- `tasks/phase-2/P2-T18.md` — `179ee930ac41` — ~499t
 - `tasks/phase-2/P2-T19.md` — `31d54dd0f6cd` — ~209t
 - `tasks/phase-2/P2-T20.md` — `7101adbb0f10` — ~208t
 - `tasks/phase-2/P2-T21.md` — `eecd1c1a9103` — ~222t

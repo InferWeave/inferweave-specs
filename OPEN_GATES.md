@@ -1329,3 +1329,40 @@ before End as incomplete. Public `upstream_transport_error` semantics remain
 unchanged and raw errors remain private. Mixed-version rollout, repaired-DNS
 operation without a held Link, sustained failure-rate comparison, cancellation
 under saturation and production operator-diagnostic retention remain **owed**.
+
+## Benchmark attempt inspection boundary — 2026-11-04
+
+**UNSATISFIED / owed.** Ownership is IW-UI-002 / P2-T18 for the inspector and
+IW-BENCH-002 / P2-T03 with the ledger/storage owner for its backend prerequisites.
+Authority: [spec10](specs/10_DASHBOARD_PORTAL.md) authenticated portal/history,
+[spec15](specs/15_ASYNC_JOBS_ARTIFACTS.md) artifact ownership and retention,
+[spec22](specs/22_PROMPT_LEDGER.md) scoped content access/audit/loss,
+[spec34](specs/34_PROMPT_STORE_TIERING.md) encrypted storage, and the accepted
+[Cognito decision](decisions/2026-10-25-bench-cognito-auth.md). Benchmark
+`viewer/requester/reviewer/admin` roles and ledger content roles remain their
+separate vocabularies; no implicit promotion between them is authorized.
+
+The private attempt inspector owes all of:
+
+1. **Tenant/owner policy and role mapping:** define the current verified registry
+   principal/benchmark-role to scoped ledger-content policy, including revocation
+   and expiry. A public model/task URL grants no content access.
+2. **Authoritative producer linkage:** persist benchmark record/task-repeat to
+   ledger prompt/request/attempt identifiers and ordering; do not join by model,
+   time or presentation-row index.
+3. **Capture/provenance:** define recorded prompt/output/check/artifact custody,
+   integrity and retention, with explicit missing, partial and recording-loss
+   disclosure. Missing historical transcripts remain unavailable.
+4. **Private reader and audit:** compose a bounded authorized route with the
+   existing encrypted prompt store and durable content-access audit, including
+   denied/unknown-resource and audit-failure behavior. Do not create a parallel
+   grant or audit authority.
+5. **Integration proof:** real local OIDC/registry/ledger/BFF/browser checks for
+   cross-tenant/owner denial, revocation, expiry, artifact binding, integrity and
+   audit failure; production-pool qualification remains separate.
+
+Closure must name its accepted mapping/linkage contract and exact implementation
+commit plus guard-removal and integration evidence under the existing task's
+completion record. None is supplied by public task-page navigation. This entry
+opens no deployment, real-user grant, production-content ingestion or benchmark
+execution authority.
