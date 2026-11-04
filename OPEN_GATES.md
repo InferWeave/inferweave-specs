@@ -1306,3 +1306,26 @@ Slurm node, restarted by its scheduler and re-attested; the same site on a secon
 attestation and `renew_attestation.py` remain the only mechanism in production until a cutover. An unplanned
 link drop with an expired file leaves the site waiting until someone renews, which the owner accepted. The
 paid vendor credential's delivery to a scheduled instance is not decided here and is owed separately.
+
+## Held Link initial-credit and communication recovery qualification
+
+Initial-credit interoperability now has bounded implementation evidence, not
+production qualification. The Go/Rust fixture holds the consumer, exercises the
+Rust implicit default window plus the Go explicit default-window grant, verifies
+one-for-one replenishment, and proves that an item beyond the combined allowance
+fails only its stream. This closes the specific buffer/grant mismatch in the
+fixture. Sustained mixed-version load, cancellation under saturation, deployment
+and post-rollout error-rate evidence remain **owed**. The compatibility buffer is
+temporary until a negotiated convention can replace support for both implicit-
+and explicit-initial-credit peers.
+
+DNS recovery and linked-stream attribution also have bounded implementation
+evidence, not production qualification. Rust HTTP integration tests reproduce a
+DNS-broken endpoint being incorrectly restored by heartbeat, then prove that only
+fresh registration or an authenticated held Link clears that withdrawal; a bad
+credential and stronger withdrawal reasons remain held. Go tests distinguish
+credit, sequence, stream-idle and shared-connection causes, and treat legacy EOF
+before End as incomplete. Public `upstream_transport_error` semantics remain
+unchanged and raw errors remain private. Mixed-version rollout, repaired-DNS
+operation without a held Link, sustained failure-rate comparison, cancellation
+under saturation and production operator-diagnostic retention remain **owed**.

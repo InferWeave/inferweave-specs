@@ -50,6 +50,30 @@ versioning rules and the protocol change workflow.
   Slot semantics now distinguish schedulable `slots` from the `max_concurrency` admission bound, and a CPU-only node
   is first class (`cpu` device/backend, `gpus: []`, routable without GPU telemetry). Older peers are unaffected:
   every member is optional and omitted when absent. Casing of the new members is inconsistent and recorded as open.
+### Held Link initial-credit compatibility (specification correction)
+
+**Compatibility classification: patch, backwards-compatible specification
+correction.** Spec 59 now states that Request carries one implicit default response
+window and later Credit frames add to it. Existing Go gateways that also send an
+explicit initial default-window grant may temporarily retain that grant and a
+bounded receive buffer covering both allowances, so peers that start at zero do
+not deadlock. Per-consumed-item replenishment and overrun refusal are unchanged.
+
+The previous text required credit exhaustion behavior but did not identify who
+initialized the first window. Rust therefore began with an implicit window while
+Go granted another window and buffered only one. A paused consumer could be
+reported as a sender overrun even though the sender remained within the combined
+allowance. The bounded Go/Rust fixture evidence is recorded under
+`evidence/link-initial-credit-2026-11-04/`; production rollout and sustained-load
+qualification remain owed.
+
+The same correction set separates control liveness from data-path evidence: a
+heartbeat cannot restore a DNS-unresolvable endpoint, while fresh registration or
+an authenticated held Link can clear only that withdrawal. It also makes EOF
+before End incomplete on legacy Link streams and limits connection-loss wording to
+typed shared-socket failures. Stream-local credit, sequence and idle failures gain
+bounded operator attribution without changing public error codes, retry metadata,
+or replay rules.
 
 - Additive, explicitly negotiated `dynamic_aliases: "2"` (spec 54) preserves level 1.
   Adds strict alias policies/revisions, instance-level preview and evidence, frozen reasons/events,

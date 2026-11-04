@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,555,249 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,560,951 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -26,14 +26,14 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `.semgrepignore` — `81c5def09b50` — ~86t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `3eef0185f83b` — ~5,195t
+- `CHANGELOG.md` — `e5fbf40e787e` — ~5,581t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `2e5ded350a09` — ~24,780t
+- `OPEN_GATES.md` — `598a068dcd1d` — ~25,163t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -77,7 +77,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/request-observation-failure-rollup-vectors.json` — `aad3b8166769` — ~6,076t
 - `conformance/request-observation-vectors.json` — `76a610871926` — ~7,575t
 - `conformance/request_observations.py` — `c0647aa8814c` — ~4,867t
-- `conformance/runner.py` — `802cac8b4024` — ~9,160t
+- `conformance/runner.py` — `67f6c578dbf3` — ~9,298t
 - `conformance/runtime-family-vectors.json` — `e9182c76245d` — ~3,138t
 - `conformance/runtime-observation-vectors.json` — `199670cef5ac` — ~19,334t
 - `conformance/runtime_observations.py` — `d4b1c36d2a1f` — ~1,382t
@@ -86,7 +86,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/backends.registry.example.json` — `262e45fa8fe3` — ~384t
 - `contracts/backpressure-action-codes.json` — `827d0e1d577d` — ~78t
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
-- `contracts/canonical-task-graph.json` — `9ad4283b20dd` — ~41,482t
+- `contracts/canonical-task-graph.json` — `a8f4336484ff` — ~41,718t
 - `contracts/capability-bench-vocabulary-v1.json` — `3372ab1ac6c2` — ~461t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~167t
@@ -230,6 +230,8 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/inference-stream-reliability-2026-10-20/release-review.md` — `6aed284301ff` — ~912t
 - `evidence/inference-stream-reliability-2026-10-20/rust-canary.json` — `d2ec8ffdae7e` — ~493t
 - `evidence/inference-stream-reliability-2026-10-20/rust.md` — `3ce87559a7c0` — ~1,650t
+- `evidence/link-communication-recovery-2026-11-04/README.md` — `6dbc84b840f7` — ~1,084t
+- `evidence/link-initial-credit-2026-11-04/README.md` — `aea33eb0c10a` — ~798t
 - `evidence/link-upstream-key-probe-2026-10-15/README.md` — `a1d5861d03c5` — ~169t
 - `evidence/model-intelligence-2026-10-12/README.md` — `c0aa7f2bfefb` — ~2,391t
 - `evidence/model-intelligence-2026-10-12/backend-final-integration-report.md` — `0db0987f4bc3` — ~2,996t
@@ -755,7 +757,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/runtime-observation-report.json` — `a2e472f63798` — ~281t
 - `fixtures/valid/seat.json` — `226b3cc299f9` — ~19t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `8871cb621336` — ~3,283t
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `1f4d4a7713a1` — ~30,823t
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `f49b9a6ee975` — ~31,044t
 - `implementation/CANONICAL_TASK_INDEX.md` — `e726cf7e7b42` — ~3,853t
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
@@ -926,7 +928,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/05_ROUTING_AFFINITY.md` — `08f84ef563d7` — ~677t
 - `specs/06_BACKPRESSURE_RETURN_TO_SENDER.md` — `c5ffc9099543` — ~1,340t
 - `specs/07_FAIRSHARE_OWNER_PRIORITY.md` — `3c9f3be77e28` — ~454t
-- `specs/08_CONNECTIVITY_DATA_PLANE.md` — `26075e86d9ae` — ~799t
+- `specs/08_CONNECTIVITY_DATA_PLANE.md` — `5279b1af27a6` — ~1,129t
 - `specs/09_OBSERVABILITY_RECEIPTS.md` — `3a5c0010fe90` — ~5,118t
 - `specs/10_DASHBOARD_PORTAL.md` — `535d7e54bf6a` — ~1,263t
 - `specs/11_WORKBENCH_AUTOSPEC_PI.md` — `fbd0cf942993` — ~409t
@@ -963,9 +965,9 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/42_SITE_GATEWAY_CONFORMANCE.md` — `4dd18e70fd26` — ~3,081t
 - `specs/43_GPU_PLACEMENT_HOT_SWAP.md` — `09f1b10de1cf` — ~3,647t
 - `specs/44_CORE_PROTOCOL.md` — `ef12f6112a93` — ~12,397t
-- `specs/45_PROTOCOL_V1.md` — `4bfad5e835f7` — ~11,082t
+- `specs/45_PROTOCOL_V1.md` — `e5c92740ad0b` — ~11,352t
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `e26904a4867b` — ~13,514t
-- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `c337216415bf` — ~10,993t
+- `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `fcea209e5340` — ~11,348t
 - `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `56766c2f5e63` — ~1,860t
 - `specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md` — `387132ce71c0` — ~2,005t
 - `specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md` — `24d9f61452a1` — ~3,315t
@@ -977,7 +979,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md` — `aac39acef794` — ~5,069t
 - `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` — `3659d1492b01` — ~10,487t
 - `specs/58_MODEL_INTELLIGENCE_UI_COHESION.md` — `d4aafcb9742d` — ~3,996t
-- `specs/59_LINK_HTTP_JSON.md` — `c18801c541c2` — ~3,152t
+- `specs/59_LINK_HTTP_JSON.md` — `41d7e99c50e8` — ~4,003t
 - `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` — `4fc9e27aded3` — ~3,135t
 - `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` — `77414c142add` — ~7,385t
 - `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` — `943ff4bb28a1` — ~7,197t
@@ -1011,7 +1013,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-1/P1-T01.md` — `c558fac84690` — ~238t
 - `tasks/phase-1/P1-T02.md` — `b6b97feed4db` — ~234t
 - `tasks/phase-1/P1-T02A.md` — `813e53012f60` — ~309t
-- `tasks/phase-1/P1-T03.md` — `a0dc1e389f65` — ~229t
+- `tasks/phase-1/P1-T03.md` — `d73a462d81bb` — ~326t
 - `tasks/phase-1/P1-T04.md` — `96b4c02e831a` — ~252t
 - `tasks/phase-1/P1-T05.md` — `598d0f3cde14` — ~321t
 - `tasks/phase-1/P1-T06.md` — `92b8b8097cd5` — ~237t
@@ -1035,7 +1037,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-1/P1-T15.md` — `bfe3343fa469` — ~212t
 - `tasks/phase-1/P1-T16.md` — `31111e5bc528` — ~231t
 - `tasks/phase-1/P1-T17.md` — `3837224c6d0a` — ~218t
-- `tasks/phase-1/P1-T18.md` — `8b5f1a9044d1` — ~378t
+- `tasks/phase-1/P1-T18.md` — `787b576b3700` — ~502t
 - `tasks/phase-1/P1-T19.md` — `01c922da054b` — ~339t
 - `tasks/phase-1/P1-T20.md` — `631e311f8e5a` — ~697t
 - `tasks/phase-1/P1-T20A.md` — `06f7cad8d9ca` — ~272t
@@ -1168,7 +1170,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_alias_execution_contract.py` — `6af0f772c0e2` — ~3,848t
 - `tests/smoke/test_bundle_self_test.py` — `f0115f5e0f1a` — ~281t
 - `tests/smoke/test_capability_routing_contract.py` — `c2dca75a583d` — ~1,999t
-- `tests/smoke/test_conformance.py` — `40dd0543b1e5` — ~1,230t
+- `tests/smoke/test_conformance.py` — `b1c910866008` — ~1,659t
 - `tests/smoke/test_dynamic_alias_contract.py` — `7d28f77b6c38` — ~4,396t
 - `tests/smoke/test_failure_rollups.py` — `c0f46e2ed960` — ~2,408t
 - `tests/smoke/test_family_routing.py` — `d44eef95e64a` — ~457t
