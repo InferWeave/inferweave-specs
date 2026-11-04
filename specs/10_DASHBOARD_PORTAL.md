@@ -85,17 +85,46 @@ Never display ambiguous cross-model universal TPS rankings without dimensions.
 
 ### Public task inspection navigation
 
-Published task results in configuration details and comparisons link to an existing
-public task page using its canonical `family/task` identity. A task inspection
-preserves the known observation, application profile and, for comparisons, both
-observations; its return link restores that context. Unknown or duplicate
-observation references, ambiguous repeated context keys, explicitly invalid
-profiles and empty comparison references do not produce a contextual return link;
-they never substitute a different configuration or profile. Tasks absent
-from the published catalogue remain plain recorded results rather than invented
-public definitions. A requested task absent from the snapshot is disclosed
-explicitly without echoing the unknown identifier or inventing its prompt.
-These links carry public review context, never content-read authority.
+The authoritative data for a public review is the current Rust-exported snapshot
+whose manifest hashes have been verified by the server. A known task is a
+canonical `family/task` key present in its `tasks`, `suite_tasks` or
+`task_prompts` collections; the split is on the first slash. A known observation
+is an exact `observation_id` in the snapshot's validated `configurations`
+collection. Community submissions and model names/timestamps do not stand in for
+that observation identity.
+
+The existing application-profile identifiers are `balanced`, `coding`, `logic`,
+`science` and `tool-use`. A missing profile uses the existing `balanced` default;
+an explicitly supplied empty or other value is invalid. Validity is against this
+profile vocabulary, not a claim that an observation has measurements for every
+profile: a valid but unmeasured profile must retain the model view's explicit
+"Not measured" state, never substitute another profile's score.
+
+Required public behavior (IW-UI-002 / P2-T18 UI E2E):
+
+1. A configuration or comparison task-result row links to its existing public task
+   page only when that exact canonical task key is known. Otherwise the recorded
+   task name remains plain text; no definition or prompt is invented.
+2. A contextual return is available only for a known task and a nonempty known
+   observation. Each of `task`, `observation`, `compare` and `profile` occurs at
+   most once. If `compare` is present it is nonempty, known and distinct from the
+   first observation. Repeated keys are ambiguous even when their values agree.
+3. Valid context preserves the exact observation and profile; a comparison also
+   preserves the second observation. The return opens that configuration or the
+   same comparison pair. Browser Back restores the preceding inspection state.
+4. Unknown observations, duplicate identities/keys, invalid profiles and empty or
+   unknown comparison references omit the contextual return link. The known
+   public task page and its ordinary Back-to-Benchmarks link remain usable. No
+   alternative configuration or profile is selected for that return.
+5. A nonempty requested task key absent from the snapshot shows the catalogue with
+   the generic status "The selected task is not available in this snapshot."
+   The unknown key is not echoed; no task detail, prompt or contextual return is
+   invented. A known task without published prompt content keeps its existing
+   absent-prompt disclosure.
+
+These links carry public review context, never content-read authority. The
+required tests cover both valid roundtrips and the invalid/ambiguous cases above;
+private prompt history remains governed separately below and by spec22.
 
 ## Authenticated portal
 

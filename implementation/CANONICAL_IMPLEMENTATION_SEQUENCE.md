@@ -1050,6 +1050,8 @@ Rules:
 
 **Required tests:**
 - UI E2E
+- UI E2E: public task links and configuration/comparison returns preserve exact known observation/profile context and browser Back
+- UI E2E: unknown tasks disclose absence without echo; invalid/ambiguous context omits return without substituting results
 - measured/predicted labels
 - dimension filters
 - AC-OBS-07: public GPU profiles use existing Next.js apps/web with private-field redaction, sparse-cohort suppression and context/fingerprint provenance
