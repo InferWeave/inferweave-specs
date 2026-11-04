@@ -221,6 +221,25 @@ a conforming Rust sender's permitted burst as a credit overrun. A future
 implementation that independently chooses implicit or explicit initialization
 would recreate the same cross-language stream failures.
 
+A synchronous refusal of the authenticated registration binding before enqueue is
+not an accepted request. The implementation MUST retain that local proof across
+its authentication/transport adapter. It may return the existing bounded
+`capacity_unavailable` backoff envelope with `request_state:not_started` and
+`replay_safe:true`; it MUST NOT fall back to a legacy transport or automatically
+replay the request. The same error observed after a stream was accepted is not
+proof of non-execution and MUST retain the conservative unknown/non-replayable
+contract. Do not infer this proof from an error string or from missing output.
+
+Operational evidence (2026-11-04): three edge telemetry records at22:01:22,
+22:01:23 and22:09:11UTC returned HTTP502 `route_dispatch_failed` on Hive routes.
+Those records did not retain the underlying cause, so attributing every one to
+binding revocation is **owed**. A real authenticated registration-replacement
+regression did reproduce a separate confirmed defect: refusal under the
+registration lock before any Request frame lost its typed boundary evidence and
+was represented as unknown execution. Go regression gates cover preservation of
+the typed refusal, no frame enqueued, no automatic replay, and the control where
+the same cause arrives only after acceptance and cannot grant replay safety.
+
 The transport must not retry/replay any accepted request, including a lost response
 head: absence of output is not proof the backend did not execute. Only existing
 pre-dispatch admission refusal may select another eligible exact placement under
