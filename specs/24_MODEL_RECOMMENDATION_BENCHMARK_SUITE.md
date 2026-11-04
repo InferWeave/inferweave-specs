@@ -339,3 +339,21 @@ attempt status controls reuse while earlier matching failed attempts remain in
 profile denominators. Legacy incomplete experiment IDs are retained but rerun,
 not rewritten. File hashing requires an opened regular file, with nonblocking,
 no-follow descriptor checks before streaming special paths.
+
+
+## Existing-workbench integration and source selection
+
+The existing private conductor reader may use the configured file or authenticated
+Rust gateway. An explicitly configured `bench.conductor_dataset` remains its source
+even when `bench.gateway_url` also supplies grant authority. Without an explicit
+file, the live source uses the current access session and freshly resolved backend
+admin grant, the existing bounded transport and sanitized projection. A selected
+source's refusal, stale data or validation failure never selects another source.
+Private submission completion remains separate from consent/review/publication.
+
+`llama.split_mode` remains the canonical matrix vocabulary. The old short
+`split_mode` input may be normalized to it; conflicting aliases are refused and
+only one effective flag is emitted. Explicit global settings pin the split axis
+without repeating overwritten candidate cells. Recorded runtime commands preserve
+argv boundaries and applied environment; a readable display string is not allowed
+to misrepresent a successfully executed configuration.

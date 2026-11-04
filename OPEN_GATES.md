@@ -1318,3 +1318,16 @@ stability, safe fallback, authenticated remote submission or deployed dashboard
 integration. AC-MI-08 remains owed as full acceptance. Existing R9700/4090 and Slurm
 ownership and production gates remain in force. No new deployment is authorized
 by this entry.
+
+
+### Legacy integration follow-up — 2026-11-04
+
+Bounded source integration now reuses the merged private submission, community
+review/publication and workbench implementations. Logical recovery tests use a
+persisted ACK journal, a fresh PostgreSQL connection and reconstructed service;
+a surviving test listener is not OS-crash or power-loss proof. Authorization and
+projection removal mutations fail the new web regressions. These checks establish
+neither deployed enablement nor production qualification. Both legacy targets are
+running operator benchmarks; alternate comparison resources require their own
+scheduler allocation. No owner workload may be displaced and no static inventory
+entry may manufacture a lease or open an existing production gate.
