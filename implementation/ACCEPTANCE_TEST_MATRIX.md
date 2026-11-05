@@ -112,6 +112,7 @@
 | AC-MI-05 | No demand, unknown state intervals and scheduler reclaim | Unknown is not available; explicit time denominator; linked GPU/worker/logical-request interruption and recovery; **owed** |
 | AC-MI-06 | Unauthenticated reads, forged tenant headers, private scope, shared exports and old facts | Explicit operator grants; unsupported private scopes fail closed; bounded redacted responses and additive unknown history; **owed** |
 | AC-MI-07 | Every existing route/action at desktop/tablet/mobile, light/dark and accessible states | Retained workflows/roles/preferences; coherent shared UI, real-data provenance, no fixture fallback and source/dist parity; **owed** |
+| AC-MI-08 | Legacy multi-GPU reserve and incomplete quality cohorts | Exact GPU key sets and checked residency/KV/reserve; failed, skipped or invalid quality cannot pass; throughput separate and canonical duplicates pruned; **owed** |
 
 ## Private normalized observability HTTP (2026-10-20)
 

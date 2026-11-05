@@ -1307,6 +1307,40 @@ attestation and `renew_attestation.py` remain the only mechanism in production u
 link drop with an expired file leaves the site waiting until someone renews, which the owner accepted. The
 paid vendor credential's delivery to a scheduled instance is not decided here and is owed separately.
 
+## Legacy NVIDIA benchmark integration — 2026-10-28
+
+**UNSATISFIED / owed:** production qualification for dual sm61/sm75 targets.
+Read-only inventory observes serving workloads on both operator-named hosts;
+it grants no benchmark lease or preemption authority. Deterministic catalogue,
+planner, record-integrity and qualification changes do not establish a compatible
+CUDA build, loaded artifact identity, measured memory reserve, agent-task quality,
+stability, safe fallback, authenticated remote submission or deployed dashboard
+integration. AC-MI-08 remains owed as full acceptance. Existing R9700/4090 and Slurm
+ownership and production gates remain in force. No new deployment is authorized
+by this entry.
+
+
+### Legacy integration follow-up — 2026-11-04
+
+Implementation PR #1457 merged as `50e9f3d87caa1bb401a4687444d34c57cf9bd749`.
+Bounded source integration reuses the merged private submission, community
+review/publication and workbench implementations. Logical recovery tests use a
+persisted ACK journal, a fresh PostgreSQL connection and reconstructed service;
+a surviving test listener is not OS-crash or power-loss proof. Authorization and
+projection removal mutations fail the new web regressions. These checks establish
+neither deployed enablement nor production qualification. Both legacy targets are
+running operator benchmarks; alternate comparison resources require their own
+scheduler allocation. No owner workload may be displaced and no static inventory
+entry may manufacture a lease or open an existing production gate.
+The pinned implementation report linked from
+`evidence/legacy-nvidia-2026-10-28/README.md` records an owned single-TITAN RTX
+Slurm pilot and deployed authenticated private intake/replay. This is experimental
+single-card comparison evidence, not exact-target production qualification;
+AC-MI-08 remains **owed / UNSATISFIED**. Private raw evidence remains outside Git.
+Public publication, production promotion and deployed owner-view access are not
+established. New conductor v2 stores retain canonical IDs; v1 preserves legacy
+replay only and cannot supply canonical coverage or publication evidence.
+
 ## Held Link initial-credit and communication recovery qualification
 
 Initial-credit interoperability now has bounded implementation evidence, not

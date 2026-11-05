@@ -121,6 +121,23 @@
           "proof_status": "owed"
         }
       ]
+    },
+    {
+      "id": "AC-MI-08",
+      "canonical_tasks": [
+        "P2-T05",
+        "P2-T07"
+      ],
+      "scenario": "Legacy multi-GPU reserve and incomplete quality cohorts",
+      "expected": "Checked per-GPU residency plus KV plus configured reserve with exact GPU key sets; failed/skipped/missing/invalid quality never passes; throughput stays separate; duplicate canonical planner inputs schedule once",
+      "proof_status": "owed",
+      "evidence": [
+        {
+          "path": "evidence/legacy-nvidia-2026-10-28/README.md",
+          "scope": "Bounded deterministic implementation changes; full deployed and hardware qualification remains owed",
+          "proof_status": "owed"
+        }
+      ]
     }
   ],
   "api_contract": "openapi/model-intelligence.yaml",
