@@ -738,7 +738,7 @@
   "fixtures/valid/runtime-observation-event.json": "4c6cb2e9331e3fa8b63bd905bd1f27defe92f2c52ebfffa8add29ded794623fc",
   "fixtures/valid/runtime-observation-report.json": "a2e472f637988d842f40ef6c42c8825825e33e44183d035056dbf8970e4d6327",
   "fixtures/valid/seat.json": "226b3cc299f9a3ca464a54f3bbd857de951874d343bc3b545c167d46d460ba7b",
-  "implementation/ACCEPTANCE_TEST_MATRIX.md": "8871cb6213366f70eb2e7e3ed59098a4a8c555a2d91849a664a38c755f61fa19",
+  "implementation/ACCEPTANCE_TEST_MATRIX.md": "74080ed0e429216448309544214aad804c08b52cfcc1dc894ed0444fea9117e8",
   "implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md": "38ed7a78b4ec67eb4aa1356bbb26584e59b8997023e185f324ec99a29b3232f3",
   "implementation/CANONICAL_TASK_INDEX.md": "e726cf7e7b42906f65c2c7d4c39fe8e703fb3194847a98096c82484f07d1d050",
   "implementation/CONTEXT_50_100K_STRATEGY.md": "aae72e9e1bc56fb5a16b55831e16a4aee5ce8474975644f75f089b751457c2ce",
