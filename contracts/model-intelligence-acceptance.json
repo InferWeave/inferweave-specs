@@ -148,6 +148,16 @@
       "scenario": "Actual backend artifact bytes, immutable offline resolution and drift refusal",
       "expected": "Canonical bounded file/compound manifests bind actual bytes and profile provenance; offline HF/Ollama resolution cannot trust tags, fetch or escape; importer validates full cohort; drift preserves trials and refuses export; old profiles remain compatible",
       "proof_status": "owed"
+    },
+    {
+      "id": "AC-MI-10",
+      "canonical_tasks": [
+        "P2-T05",
+        "P2-T07"
+      ],
+      "scenario": "Opt-in image-grounding diagnostic and complete model/projector provenance",
+      "expected": "Whole gguf-vision cohort and explicit local projector; private graded fixtures, versioned opt-in suite, identical paired text, complete accounting and strict reported usage; wrong/partial/unsupported outcomes honest; unknown residency/context and bounded sampler stop",
+      "proof_status": "owed"
     }
   ],
   "api_contract": "openapi/model-intelligence.yaml",

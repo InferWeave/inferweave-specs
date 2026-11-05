@@ -1421,3 +1421,21 @@ adversarial filesystem integrity or complete hardware/runtime/tokenizer/grader/
 deployment attestation. Hashing warms host caches and constrains cold-start/load-time
 interpretation. Exact-target legacy production qualification, owner leases, safe
 rollback and all existing production gates remain **UNSATISFIED**.
+
+
+## Opt-in vision-grounding diagnostic — 2026-11-05
+
+Spec 24 adds AC-MI-10 for the existing eval/suite paths and complete `gguf-vision`
+model/projector identity. The prior tiny-image timing path did not grade semantic
+answers; its successful text/image transport cannot establish vision quality.
+The new color-grid diagnostic has a deliberately narrow grounding-smoke scope.
+
+**UNSATISFIED / owed:** actual control-removal evidence for projector selection
+and full-cohort drift refusal, private expected-answer grading/fingerprinting,
+opt-in versioned suite compatibility, complete paired accounting and reported
+usage precision, honest partial/failure/unknown handling and no-sample bounded
+sampler stop. No real GPU vision run or projector compatibility is established
+here; publisher metadata, fixture tests and mocked HTTP are not runtime evidence.
+Whole-graph residency, independent vision quality, Pascal/dual-card behavior,
+memory reserve, stability, owner leases and all existing production gates remain
+**UNSATISFIED**. Existing text-only evidence stays text-only.
