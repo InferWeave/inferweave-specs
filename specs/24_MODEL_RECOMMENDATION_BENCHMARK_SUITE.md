@@ -464,3 +464,55 @@ or complete hardware/runtime/tokenizer/grader/deployment attestation. Hashing ma
 warm host caches; record that limitation when interpreting cold-start or load-time
 measurements. Exact-target safety, lease and production qualification gates remain
 **UNSATISFIED**. AC-MI-09 is owed until actual control-removal evidence is recorded.
+
+
+## Opt-in image-grounding diagnostic
+
+The former tiny-image timing path did not grade image-grounded correctness and
+used differing baseline/image text. A successful response from that path cannot
+qualify vision quality. Existing text-only cohorts retain their text-only scope;
+a publisher's multimodal declaration or projector metadata proves no runtime,
+placement or hardware compatibility.
+
+Extend the existing artifact manifest with kind `gguf-vision`: at least two files,
+exactly one logical `projector` entry, and the complete model/main-shard cohort.
+The fingerprint covers the whole cohort with checked byte totals. Explicit
+`backendTunables["llama.mmproj"]` selects a local GGUF projector. The selected
+executable must advertise the exact `--mmproj` option; pass its local path as an
+argv element, never a URL or `--mmproj-url`. Revalidate actual model and projector
+bytes at the existing boundaries. Without an explicit projector, preserve raw
+single-file model SHA256 behavior. Paired residency stays unknown until whole-
+graph evidence exists; a decoder layer-offload log cannot prove projector or
+vision-encoder residency.
+
+Reuse the shared core vision fixture/grader, HTTP request path, existing suite,
+CLI eval, records and qualification; introduce no parallel registry or harness.
+The diagnostic uses four actual 64x64 RGB color grids with four hidden
+permutations, the same prompt and strict JSON position/color answers. Public
+fixture manifests contain SHA256, ID, dimensions, prompt and license, never
+expected answers. Private expected answers participate in the version-1
+length-delimited fixture fingerprint. Capture fixture, grader, compiled suite
+manifest and accounting provenance. `SuiteVersion` 3 adds an explicitly opt-in
+vision area while the default four text areas stay unchanged; retain version-1
+and version-2 compatibility. Do not reinterpret historical timing-only image
+trials as semantic correctness evidence.
+
+CLI vision evaluation performs all eight paired requests: four text baselines
+and four image requests with identical text and selected model. Sum measured
+token totals, elapsed time and counters across all requests and use the maximum
+measured peak. Completion-token precision requires explicitly reported usage;
+SSE delta/chunk counts cannot supply token counts. Missing cost components remain
+unknown. Do not derive achieved context from configuration; use conservative
+maximum paired costs only with complete evidence. Wrong image answers yield
+`Failed`/`QualityFailure` and a fractional correctness score. A specifically
+unsupported image HTTP 4xx is skipped; HTTP 5xx and transport failures fail.
+Retain incomplete/partial attempt metrics; these cannot qualify a candidate.
+
+Workload parameters bind the core fixture version, fingerprint and
+`qualification_scope=vision_grounding_smoke`. This changes identity so old
+ungraded tiny-image timing trials rerun while their history remains intact.
+GPU sampling stop must terminate independently of whether samples arrived;
+zero or one sample leaves VRAM unknown. This diagnostic establishes only its
+bounded image-grounding task scope, never general vision accuracy, production
+qualification or whole-graph placement safety. No real GPU vision evidence is
+established by fixtures, mocks or metadata. AC-MI-10 remains **owed**.

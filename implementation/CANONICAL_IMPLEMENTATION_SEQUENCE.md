@@ -877,6 +877,7 @@ Rules:
 - MI-04 versioned task-family evaluation retains direction, provenance, sample confidence and separate production feedback
 - AC-MI-08 incomplete, failed, skipped and invalid-score cohorts never pass quality
 - AC-MI-09 bounded canonical artifact manifests and offline backend resolution bind actual bytes; drift preserves trial metrics and refuses profile export
+- AC-MI-10 private image-grounded grading, opt-in suite compatibility and complete paired accounting; partial or wrong answers never qualify
 
 ### P2-T06 — Pi/AutoSpec real-workflow replay benchmark
 **Context:** `C90`
@@ -906,6 +907,7 @@ Rules:
 - MI-04 recommendation-only default and evidence-gated shadow/canary/opt-in promotion/rollback reject skipped stages
 - AC-MI-08 per-card reserve, exact physical GPU set and checked-memory arithmetic
 - AC-MI-09 importer validates manifest/cohort/profile identity and bytes; append-only artifacts and compatible unknown legacy files
+- AC-MI-10 whole model/projector artifact identity, honest unknown residency/context and bounded GPU sampler stop
 
 ### P2-T08 — Pareto frontier and next-experiment selection
 **Context:** `C75`

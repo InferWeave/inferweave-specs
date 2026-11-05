@@ -114,6 +114,7 @@
 | AC-MI-07 | Every existing route/action at desktop/tablet/mobile, light/dark and accessible states | Retained workflows/roles/preferences; coherent shared UI, real-data provenance, no fixture fallback and source/dist parity; **owed** |
 | AC-MI-08 | Legacy multi-GPU reserve and incomplete quality cohorts | Exact GPU key sets and checked residency/KV/reserve; failed, skipped or invalid quality cannot pass; throughput separate and canonical duplicates pruned; **owed** |
 | AC-MI-09 | File, directory, GGUF shards, offline HF snapshots and local Ollama bytes; drift and hostile metadata | Canonical bounded manifests, actual-byte verification, append-only persistence, importer agreement, error without profile export on drift and compatible old profiles; **owed** |
+| AC-MI-10 | Opt-in image grounding, paired accounting and complete model/projector artifacts | Private expected answers, strict grading/usage, complete paired observations, bounded stop and honest unknowns; no general vision or hardware qualification; **owed** |
 
 ## Private normalized observability HTTP (2026-10-20)
 
