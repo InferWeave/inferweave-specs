@@ -399,7 +399,9 @@ Hash actual opened regular-file bytes with no-follow/nonblocking descriptor chec
 a read bounded by observed length plus one byte, and stable inode, ctime, mtime
 and size observations. Directory identity includes the actual weights, tokenizer,
 configuration and template files; enumerate at most 20,000 entries and depth 32.
-Refuse symlink directories, special files and escaping file links. HF snapshot
+Refuse symlinked subdirectories, special files and escaping file links. An
+explicitly selected root directory alias may be canonicalized to its resolved
+path; recapture the original reference at each required revalidation boundary. HF snapshot
 file links may resolve only within that snapshot or the same repository's blobs.
 HF `org/model` input resolves offline through the current local `refs/main` to an
 exact revision and existing snapshot; the snapshot kind pins its revision even
