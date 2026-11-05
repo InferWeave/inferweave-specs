@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,572,396 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,572,563 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -923,7 +923,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `scripts/test_benchmark_speed_contract.py` — `a5beccffadc7` — ~592t
 - `scripts/test_native_control_plane.py` — `fd4e33413e1c` — ~842t
 - `scripts/test_validate_specs.py` — `45b7fd4b5ecc` — ~6,695t
-- `scripts/validate_specs.py` — `fb367203f574` — ~12,202t
+- `scripts/validate_specs.py` — `9d4b16328b50` — ~12,282t
 - `solana/DEVNET_ONLY.md` — `1a8ea96fcc58` — ~136t
 - `specs/00_INVARIANTS.md` — `e21827e64179` — ~1,478t
 - `specs/01_REPOSITORIES_AND_OWNERSHIP.md` — `e52f5e6e8112` — ~735t
@@ -1198,6 +1198,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_runtime_observation_contract.py` — `075965e9e3ba` — ~978t
 - `tests/smoke/test_runtime_protocol_gap_repair.py` — `02d1a6dd7955` — ~1,692t
 - `tests/smoke/test_runtime_protocol_semantics.py` — `85923c2a6c09` — ~9,893t
+- `tests/smoke/test_speed_contract_smoke.py` — `658aec4d599d` — ~87t
 - `tests/smoke/test_systemone_wire.py` — `bf11221968d1` — ~748t
 - `tools/README.md` — `4ab4454accb3` — ~79t
 - `tools/gen_alias_execution_fixtures.py` — `011503f09523` — ~3,636t
