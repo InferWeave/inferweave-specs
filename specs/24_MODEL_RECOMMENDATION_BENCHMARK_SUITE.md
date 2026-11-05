@@ -334,7 +334,8 @@ or the largest observed value. Known throughput-only rows need no fabricated
 context validation. Unknown context cannot establish an admissible context floor.
 
 Experiment identity binds the complete requested workload, including repetitions,
-output limits and parameters, plus actual model-file SHA256 and execution mode.
+output limits and parameters, plus actual model artifact fingerprint (single-file SHA256 or the canonical compound
+manifest fingerprint below) and execution mode.
 Resume excludes unrequested or incompatible workload/artifact/mode history; latest
 attempt status controls reuse while earlier matching failed attempts remain in
 profile denominators. Legacy incomplete experiment IDs are retained but rerun,
@@ -367,3 +368,90 @@ coverage observations or publication. Private authenticated submission/replay is
 not public publication or hardware production qualification. Implementation and
 experimental single-card evidence are pinned in
 `evidence/legacy-nvidia-2026-10-28/README.md`; full AC-MI-08 remains owed.
+
+
+## Backend artifact identity — iw.eval-artifacts/1
+
+The former model-file-only wording excluded measured directory, HF snapshot and
+Ollama workloads even where runtime adapters existed. The following extends the
+existing typed `EvalModel.contentHash` provenance path; it introduces no registry,
+network fetcher or download authority. Single-file fingerprints remain compatible.
+A tag, model name, advertised digest or remote URL alone is not measured identity.
+
+The shared `iw_bench_record::eval_artifacts::ModelArtifactManifest` has exactly
+`schema`, `kind`, `fingerprint`, `files`; unknown fields are refused. Schema is
+`iw.eval-artifacts/1`. Each file has exactly `name`, `bytes`, `sha256`, with bytes
+an unsigned 64-bit integer and SHA256 a lowercase 64-hex digest. Supported kinds
+are `file`, `directory`, `gguf-shards`, `ollama-manifest`, or
+`hf-snapshot:<revision>` where revision is exactly 40 or 64 lowercase hex digits.
+There are 1 to 10,000 files; empty manifests and empty directories are refused.
+Names are unique, sorted relative UTF-8 slash paths
+of at most 4096 bytes, with no absolute path, dot/traversal segment, backslash,
+colon or control character. Total bytes use checked unsigned 64-bit addition.
+Kind `file` has exactly one entry named `model` and its fingerprint is that file's
+raw SHA256. Compound kinds use SHA256 of canonical JSON `{schema,kind,files}`;
+`fingerprint` is excluded from its own preimage. Producer and importer use the
+same existing record canonical encoder: recursively sort object keys, retain array
+order, and sort the complete file cohort lexically by name. Bound the serialized
+profile manifest to 4 MiB at creation as well as import.
+
+Hash actual opened regular-file bytes with no-follow/nonblocking descriptor checks,
+a read bounded by observed length plus one byte, and stable inode, ctime, mtime
+and size observations. Directory identity includes the actual weights, tokenizer,
+configuration and template files; enumerate at most 20,000 entries and depth 32.
+Refuse symlinked subdirectories, special files and escaping file links. An
+explicitly selected root directory alias may be canonicalized to its resolved
+path; recapture the original reference at each required revalidation boundary. HF snapshot
+file links may resolve only within that snapshot or the same repository's blobs.
+HF `org/model` input resolves offline through the current local `refs/main` to an
+exact revision and existing snapshot; the snapshot kind pins its revision even
+when all files are regular files without blob links. Pass the resolved local path to the runtime,
+never a mutable repository name. Resolve all GGUF shards through the existing launcher enumeration as one complete
+file set, requiring the declared sequence to be complete. A first-shard-only old
+fingerprint cannot establish full artifact identity: the compound fingerprint
+invalidates incomplete resume identity while preserving historical records.
+Directory bytes alone do not establish reference closure across runtime versions.
+Verify known weight `*.index.json` files with JSON bounded to 4 MiB: `weight_map`
+must be an object of string references, each an exact safe relative member of the
+captured file cohort. In `tokenizer_config.json`, nonnull `tokenizer_file`,
+`vocab_file`, `merges_file`, `spm_file`, `added_tokens_file`, `special_tokens_map_file`,
+`chat_template_file` and each `fast_tokenizer_files` array entry must likewise name
+an exact safe contained cohort member. A nonnull `fast_tokenizer_files` must be
+an array of strings; malformed scalar/object values are refused. Refuse URLs, absolute/traversal paths and
+unsupported external references; do not fetch or recursively resolve them. This
+conservative closure check covers known keys only, not arbitrary code or dependency
+attestation, and makes no claim of a demonstrated current-runtime exploit.
+No resolution step downloads or follows arbitrary URLs.
+
+Ollama input resolves the local preferred `manifests-v2` representation or current
+legacy alias. Bound manifest JSON to 1 MiB and accept only the supported Docker v2
+GGUF representation. Hash the actual manifest plus every config and layer blob,
+verifying each expected SHA256 and size. Refuse conflicting duplicate entries,
+missing/corrupt blobs, manifest lists, cloud models and unsupported representations.
+Pin the local store using `OLLAMA_MODELS` and `OLLAMA_NO_CLOUD=1`; use the selected
+canonical tag consistently across every request workload. vLLM/SGLang receive the
+resolved local path with `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1`.
+Approved environment settings must be recorded and applied identically, alongside
+quote-safe argv; artifact resolution grants no GPU control environment authority.
+Bind the actual selected request model and approved environment in experiment
+provenance for nondefault backends. The artifact fingerprint is independent of
+absolute location; experiment identity may change when the actual resolved model
+path or environment changes, preventing reuse of unattested execution history.
+
+Profile `provenance.model_artifact_manifest` embeds the canonical JSON string.
+The canonical record importer bounds it to 4 MiB, validates schema, fingerprint,
+complete file cohort and agreement with profile `contentHash` and `fileBytes`,
+and exposes actual `model.files`. Old profiles without a manifest retain existing
+behavior with unknown files; do not infer bytes from names or rewrite history.
+Persist manifests append-only at `artifacts/<fingerprint>.json`: identical content
+is idempotent; different content at the same identity is refused.
+
+Revalidate the original reference before every launch, after stopping the owned
+runtime and before final profile construction, including entirely resumed runs.
+Reference or byte drift preserves pending/failed trial metrics and returns an error
+without profile export. Refuse output paths within the artifact directory.
+These are bounded before/after observations, not adversarial filesystem attestation
+or complete hardware/runtime/tokenizer/grader/deployment attestation. Hashing may
+warm host caches; record that limitation when interpreting cold-start or load-time
+measurements. Exact-target safety, lease and production qualification gates remain
+**UNSATISFIED**. AC-MI-09 is owed until actual control-removal evidence is recorded.

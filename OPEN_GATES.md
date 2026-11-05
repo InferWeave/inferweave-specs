@@ -1400,3 +1400,24 @@ commit plus guard-removal and integration evidence under the existing task's
 completion record. None is supplied by public task-page navigation. This entry
 opens no deployment, real-user grant, production-content ingestion or benchmark
 execution authority.
+
+
+## Backend eval artifact identity — 2026-11-04
+
+Spec 24 extends the existing provenance path with `iw.eval-artifacts/1` actual-byte
+manifests for single files, directories, GGUF shards, offline HF snapshots and
+local Ollama manifests/blobs. This corrects the former model-file-only contract,
+which excluded backend inputs even where adapters existed. It creates no download
+or network resolution authority, registry or production enablement.
+
+**UNSATISFIED / owed — AC-MI-09:** control-removal proof for manifest/file-cohort
+validation, bounded traversal and link containment, offline immutable reference
+resolution, hash/size verification, append-only persistence, applied/recorded argv
+and approved environment, resumed-run drift refusal with trial metrics preserved,
+known weight-index/tokenizer file-reference closure, and compatibility for
+historical profiles. Implementation work in progress is not
+proven acceptance. Bounded before/after file observations cannot establish
+adversarial filesystem integrity or complete hardware/runtime/tokenizer/grader/
+deployment attestation. Hashing warms host caches and constrains cold-start/load-time
+interpretation. Exact-target legacy production qualification, owner leases, safe
+rollback and all existing production gates remain **UNSATISFIED**.
