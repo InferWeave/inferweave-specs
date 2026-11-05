@@ -138,6 +138,16 @@
           "proof_status": "owed"
         }
       ]
+    },
+    {
+      "id": "AC-MI-09",
+      "canonical_tasks": [
+        "P2-T05",
+        "P2-T07"
+      ],
+      "scenario": "Actual backend artifact bytes, immutable offline resolution and drift refusal",
+      "expected": "Canonical bounded file/compound manifests bind actual bytes and profile provenance; offline HF/Ollama resolution cannot trust tags, fetch or escape; importer validates full cohort; drift preserves trials and refuses export; old profiles remain compatible",
+      "proof_status": "owed"
     }
   ],
   "api_contract": "openapi/model-intelligence.yaml",
