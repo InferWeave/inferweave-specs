@@ -414,7 +414,8 @@ must be an object of string references, each an exact safe relative member of th
 captured file cohort. In `tokenizer_config.json`, nonnull `tokenizer_file`,
 `vocab_file`, `merges_file`, `added_tokens_file`, `special_tokens_map_file`,
 `chat_template_file` and each `fast_tokenizer_files` array entry must likewise name
-an exact safe contained cohort member. Refuse URLs, absolute/traversal paths and
+an exact safe contained cohort member. A nonnull `fast_tokenizer_files` must be
+an array of strings; malformed scalar/object values are refused. Refuse URLs, absolute/traversal paths and
 unsupported external references; do not fetch or recursively resolve them. This
 conservative closure check covers known keys only, not arbitrary code or dependency
 attestation, and makes no claim of a demonstrated current-runtime exploit.
