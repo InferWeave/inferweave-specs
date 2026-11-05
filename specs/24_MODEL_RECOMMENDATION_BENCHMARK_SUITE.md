@@ -382,7 +382,7 @@ The shared `iw_bench_record::eval_artifacts::ModelArtifactManifest` has exactly
 `schema`, `kind`, `fingerprint`, `files`; unknown fields are refused. Schema is
 `iw.eval-artifacts/1`. Each file has exactly `name`, `bytes`, `sha256`, with bytes
 an unsigned 64-bit integer and SHA256 a lowercase 64-hex digest. Supported kinds
-are `file`, `directory`, `gguf-shards`, `ollama-manifest`, or
+are `file`, `directory`, `gguf-shards`, `gguf-vision`, `ollama-manifest`, or
 `hf-snapshot:<revision>` where revision is exactly 40 or 64 lowercase hex digits.
 There are 1 to 10,000 files; empty manifests and empty directories are refused.
 Names are unique, sorted relative UTF-8 slash paths
