@@ -384,7 +384,8 @@ The shared `iw_bench_record::eval_artifacts::ModelArtifactManifest` has exactly
 an unsigned 64-bit integer and SHA256 a lowercase 64-hex digest. Supported kinds
 are `file`, `directory`, `gguf-shards`, `ollama-manifest`, or
 `hf-snapshot:<revision>` where revision is exactly 40 or 64 lowercase hex digits.
-There are at most 10,000 files; names are unique, sorted relative UTF-8 slash paths
+There are 1 to 10,000 files; empty manifests and empty directories are refused.
+Names are unique, sorted relative UTF-8 slash paths
 of at most 4096 bytes, with no absolute path, dot/traversal segment, backslash,
 colon or control character. Total bytes use checked unsigned 64-bit addition.
 Kind `file` has exactly one entry named `model` and its fingerprint is that file's
@@ -403,7 +404,10 @@ file links may resolve only within that snapshot or the same repository's blobs.
 HF `org/model` input resolves offline through the current local `refs/main` to an
 exact revision and existing snapshot; the snapshot kind pins its revision even
 when all files are regular files without blob links. Pass the resolved local path to the runtime,
-never a mutable repository name. Resolve all GGUF shards as one complete file set.
+never a mutable repository name. Resolve all GGUF shards through the existing launcher enumeration as one complete
+file set, requiring the declared sequence to be complete. A first-shard-only old
+fingerprint cannot establish full artifact identity: the compound fingerprint
+invalidates incomplete resume identity while preserving historical records.
 No resolution step downloads or follows arbitrary URLs.
 
 Ollama input resolves the local preferred `manifests-v2` representation or current
