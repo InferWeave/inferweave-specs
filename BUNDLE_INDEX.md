@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,566,540 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,567,122 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `6e7a387a74bf` — ~26,100t
+- `OPEN_GATES.md` — `3a15094de1f0` — ~26,269t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -230,7 +230,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/inference-stream-reliability-2026-10-20/release-review.md` — `6aed284301ff` — ~912t
 - `evidence/inference-stream-reliability-2026-10-20/rust-canary.json` — `d2ec8ffdae7e` — ~493t
 - `evidence/inference-stream-reliability-2026-10-20/rust.md` — `3ce87559a7c0` — ~1,650t
-- `evidence/legacy-nvidia-2026-10-28/README.md` — `3f3cbaefbd7e` — ~226t
+- `evidence/legacy-nvidia-2026-10-28/README.md` — `fc1658e9f266` — ~508t
 - `evidence/link-communication-recovery-2026-11-04/README.md` — `6dbc84b840f7` — ~1,084t
 - `evidence/link-initial-credit-2026-11-04/README.md` — `aea33eb0c10a` — ~798t
 - `evidence/link-upstream-key-probe-2026-10-15/README.md` — `a1d5861d03c5` — ~169t
@@ -945,7 +945,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/21_FEDERATION_ROLES.md` — `edc52ab18985` — ~494t
 - `specs/22_PROMPT_LEDGER.md` — `4d62b868e31f` — ~2,038t
 - `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md` — `4a5af7b3f6a6` — ~5,399t
-- `specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md` — `f85672f6a9cf` — ~2,917t
+- `specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md` — `728174a9d3a7` — ~3,048t
 - `specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md` — `b4fb9cff4ba4` — ~1,910t
 - `specs/26_RESOURCE_IDENTITY_REDISCOVERY.md` — `ad4f89547616` — ~1,652t
 - `specs/27_SITE_CONNECTOR_ARTIFACT_CACHE.md` — `5117f6bd7dea` — ~929t

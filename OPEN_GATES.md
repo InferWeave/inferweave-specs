@@ -1322,7 +1322,8 @@ by this entry.
 
 ### Legacy integration follow-up — 2026-11-04
 
-Bounded source integration now reuses the merged private submission, community
+Implementation PR #1457 merged as `50e9f3d87caa1bb401a4687444d34c57cf9bd749`.
+Bounded source integration reuses the merged private submission, community
 review/publication and workbench implementations. Logical recovery tests use a
 persisted ACK journal, a fresh PostgreSQL connection and reconstructed service;
 a surviving test listener is not OS-crash or power-loss proof. Authorization and
@@ -1331,6 +1332,15 @@ neither deployed enablement nor production qualification. Both legacy targets ar
 running operator benchmarks; alternate comparison resources require their own
 scheduler allocation. No owner workload may be displaced and no static inventory
 entry may manufacture a lease or open an existing production gate.
+The pinned implementation report linked from
+`evidence/legacy-nvidia-2026-10-28/README.md` records an owned single-TITAN RTX
+Slurm pilot and deployed authenticated private intake/replay. This is experimental
+single-card comparison evidence, not exact-target production qualification;
+AC-MI-08 remains **owed / UNSATISFIED**. Private raw evidence remains outside Git.
+Public publication, production promotion and deployed owner-view access are not
+established. New conductor v2 stores retain canonical IDs; v1 preserves legacy
+replay only and cannot supply canonical coverage or publication evidence.
+
 ## Held Link initial-credit and communication recovery qualification
 
 Initial-credit interoperability now has bounded implementation evidence, not

@@ -357,3 +357,12 @@ only one effective flag is emitted. Explicit global settings pin the split axis
 without repeating overwritten candidate cells. Recorded runtime commands preserve
 argv boundaries and applied environment; a readable display string is not allowed
 to misrepresent a successfully executed configuration.
+
+
+Conductor store compatibility is versioned: historical v1 stores retain their
+legacy leaf IDs and replay behavior; new v2 stores preserve canonical record IDs.
+A v1 envelope cannot be relabeled or admitted to generic canonical-store reads,
+coverage observations or publication. Private authenticated submission/replay is
+not public publication or hardware production qualification. Implementation and
+experimental single-card evidence are pinned in
+`evidence/legacy-nvidia-2026-10-28/README.md`; full AC-MI-08 remains owed.
