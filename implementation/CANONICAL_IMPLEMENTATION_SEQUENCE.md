@@ -273,6 +273,9 @@ Rules:
 - disconnect/stale TTL test
 - reconnect same identity
 - gateway restart recovery
+- pre-dispatch DNS failure stays withdrawn across heartbeat and recovers after fresh registration
+- an authenticated held Link clears only DNS withdrawal; rejected Link and stronger withdrawals remain
+- late DNS results cannot undo concurrent Link acceptance, same-endpoint re-registration or controller snapshot replacement; an ordinary heartbeat does not invalidate a pending DNS failure
 
 ### P1-T04 — Full hardware/software/GPU discovery fingerprint
 **Context:** `C70`
@@ -609,7 +612,7 @@ Rules:
 **Context:** `C75`
 **Depends on:** P1-T17
 **Features:** IW-DP-001, IW-DP-002
-**Read:** specs/08_CONNECTIVITY_DATA_PLANE.md, specs/59_LINK_HTTP_JSON.md
+**Read:** specs/08_CONNECTIVITY_DATA_PLANE.md, specs/45_PROTOCOL_V1.md, specs/59_LINK_HTTP_JSON.md
 
 **Outcome:** Fallback order is direct → site/regional relay → gateway relay last resort with byte accounting/circuit breakers. Negotiated exact-model Held Link HTTP JSON preserves target, status, MIME and bytes with terminal failure and no replay (spec59).
 
@@ -617,7 +620,11 @@ Rules:
 - forced NAT failure
 - fallback ordering
 - gateway relay bandwidth circuit breaker
-- spec59 exact-registration/Link negotiation, HTTP byte fidelity and hostile response vectors; production mixed-version, cancellation/backpressure and no-replay proof owed
+- spec59 exact-registration/Link negotiation, HTTP byte fidelity and hostile response vectors
+- mixed-version initial-credit compatibility: paused consumer accepts the bounded combined allowance, consumption replenishes exactly one item, and one item beyond the allowance terminates only that stream
+- legacy EOF before End is incomplete; credit, sequence, idle, and shared-connection failures retain distinct bounded operator attribution while public error semantics remain stable
+- no automatic replay after ambiguous dispatch or partial response
+- production mixed-version, sustained backpressure, cancellation and no-replay proof owed
 - spec63 (proposed, owed): typed-credential upstream binding, acceptor-appended path and hop limit, no transit by default, request-id idempotency, per-key bounds, revocation drain, invariant-11 direct-path preference
 
 ### P1-T19 — Canonical 503/429 backpressure and bounded retries
@@ -1045,6 +1052,8 @@ Rules:
 
 **Required tests:**
 - UI E2E
+- UI E2E: public task links and configuration/comparison returns preserve exact known observation/profile context and browser Back
+- UI E2E: unknown tasks disclose absence without echo; invalid/ambiguous context omits return without substituting results
 - measured/predicted labels
 - dimension filters
 - AC-OBS-07: public GPU profiles use existing Next.js apps/web with private-field redaction, sparse-cohort suppression and context/fingerprint provenance

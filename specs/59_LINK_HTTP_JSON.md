@@ -169,9 +169,77 @@ failure in request telemetry. Never send normal End after an I/O/decode failure.
 Socket loss without End is failure; a terminal request rejects further frames.
 Backend HTTP4xx/5xx is an ordinary authoritative head/body/End, not End.failure.
 
+For every Link response mode, only a valid End completes the response. EOF before
+End is an incomplete response, including on the legacy metadata-free path; it MUST
+NOT be treated as a clean end. Credit-window overrun, token-sequence error, and a
+single stream's idle deadline are stream-local failures and do not prove that the
+shared socket ended. Shared connection loss is recorded separately. None of these
+failures authorizes automatic replay after dispatch; after any response bytes were
+delivered, retry remains the caller's decision.
+
+Operator diagnostics use a closed local allow-list for the observed subtype:
+`link_credit_exceeded`, `link_sequence_error`, `link_stream_idle_timeout`, and
+`link_connection_lost`. Unknown cases remain `upstream_transport_failure`. These
+are diagnostic labels, not new public wire error codes. Raw local or upstream
+error text MUST NOT become a diagnostic label or public response. For these local
+Link transport failures, the edge's public error remains
+`upstream_transport_error` with its existing request-state,
+retryability, replay-safety, action, and retry metadata. Only a typed shared-socket
+cause may use connection-loss wording; stream-local failures describe the bounded
+cause without claiming that the Link ended.
+
 Cancellation uses the existing Cancel frame and cancels backend I/O; deadline,
 client disconnect and terminal cleanup release existing resources exactly once.
 Cancel/heartbeat control must keep progressing when body credits are exhausted.
+
+### Initial-credit compatibility
+
+A Request begins with spec 45's unnegotiated default allowance of 16 Token frames
+already available to the sender. A Credit frame adds to that allowance; it does
+not replace or initialize it. Each response item consumes one credit, including
+the HTTP response head, and the receiver returns one credit only after its
+consumer takes that item. The sender pauses at zero credit. The receiver must
+buffer at least the total outstanding allowance it has authorized and must
+terminate only the offending stream for a credit-window overrun. A credit-window
+overrun must not close the shared Link or grow the receive queue without a bound;
+other authentication or protocol failures retain their existing Link-level
+handling.
+
+Mixed-version compatibility needs one temporary exception. Existing Go site
+gateways explicitly send one default-window Credit after Request, while existing
+Rust peers start with the 16-frame default window implicitly. The protocol did not
+previously say which side initialized credit, so removing the explicit grant can
+deadlock a peer that starts at zero. Until capability negotiation distinguishes
+the conventions, a compatible receiver that still sends the explicit initial
+grant MAY reserve a bounded receive window equal to 16 plus that grant. This
+exception changes buffering only: subsequent Credit frames remain one per consumed
+item, and a sender exceeding the combined allowance is still refused.
+
+The missing initial-credit rule was a specification defect. It allowed a Go
+receiver to grant a second default window while buffering only one, then classify
+a conforming Rust sender's permitted burst as a credit overrun. A future
+implementation that independently chooses implicit or explicit initialization
+would recreate the same cross-language stream failures.
+
+A synchronous refusal of the authenticated registration binding before enqueue is
+not an accepted request. The implementation MUST retain that local proof across
+its authentication/transport adapter. It may return the existing bounded
+`capacity_unavailable` backoff envelope with `request_state:not_started` and
+`replay_safe:true`; it MUST NOT fall back to a legacy transport or automatically
+replay the request. The same error observed after a stream was accepted is not
+proof of non-execution and MUST retain the conservative unknown/non-replayable
+contract. Do not infer this proof from an error string or from missing output.
+
+Operational evidence (2026-11-04): three edge telemetry records at22:01:22,
+22:01:23 and22:09:11UTC returned HTTP502 `route_dispatch_failed` on Hive routes.
+Those records did not retain the underlying cause, so attributing every one to
+binding revocation is **owed**. A real authenticated registration-replacement
+regression did reproduce a separate confirmed defect: refusal under the
+registration lock before any Request frame lost its typed boundary evidence and
+was represented as unknown execution. Go regression gates cover preservation of
+the typed refusal, no frame enqueued, no automatic replay, and the control where
+the same cause arrives only after acceptance and cannot grant replay safety.
+
 The transport must not retry/replay any accepted request, including a lost response
 head: absence of output is not proof the backend did not execute. Only existing
 pre-dispatch admission refusal may select another eligible exact placement under
@@ -182,8 +250,11 @@ its current bounded rules. There is no resume semantics in this version.
 Closed schemas, golden/hostile vectors and the offline state-machine oracle in
 `conformance/link_http_json.py` are specification evidence. Run
 `python3 -m unittest discover -s tests/smoke -p 'test_link_http_json.py'` and
-`python3 scripts/validate_specs.py --self-test`. The System One targets' vectors (accepted, not-negotiated 503, stream refusal, refused targets) are in
-the same file. Production Rust/Go mixed-version,
-real backend exact path/status/MIME/bytes, cancellation, credit exhaustion, socket
-loss and no-replay tests remain **owed**. Spec57 and alias rollout gates remain
+`python3 scripts/validate_specs.py --self-test`. The System One targets' vectors (accepted, not-negotiated 503, stream refusal, refused targets) remain in the same file. A bounded Go/Rust fixture now
+proves the initial-credit compatibility case: the receiver accepts the combined
+allowance while its consumer is paused, replenishes one item after consumption,
+and refuses one item beyond the allowance without affecting another stream. This
+is implementation evidence only. Production Rust/Go mixed-version exact
+path/status/MIME/bytes, cancellation, sustained backpressure, socket loss,
+no-replay and rollout tests remain **owed**. Spec57 and alias rollout gates remain
 blocked. Independent review is required before implementation activation.

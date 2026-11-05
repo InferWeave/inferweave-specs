@@ -246,6 +246,24 @@ native dispatch on the old binding. Retired sockets may finish already accepted 
 under their existing rules, but receive no new native request. Metadata-free legacy chat behavior
 is unchanged.
 
+### Held Link response-credit initialization
+
+Accepting a Request creates a response stream with an implicit allowance of 16
+Token frames already available to the sender. Sixteen is the unnegotiated Link v1
+default on both sides. A different initial window is legal only after both peers
+explicitly negotiate and agree on the same value; local configuration alone cannot change
+the wire allowance. Credit frames add to the remaining allowance; they do not
+initialize or replace it. Each Token consumes one credit, and the receiver
+replenishes one credit only after its consumer takes that Token. The sender pauses
+when its allowance reaches zero. The receiver keeps a bounded queue large enough
+for every outstanding item it has authorized. A credit-window overrun terminates
+only the offending stream; it does not close the shared Link.
+
+Spec 59 defines the temporary mixed-version rule for deployed Go gateways that
+also issue one explicit initial default-window grant. That compatibility rule
+does not change subsequent one-for-one replenishment or permit an unbounded
+queue.
+
 ## Stable identity model
 
 Every important protocol object has a stable ID. Required identity classes: `gateway_id`,

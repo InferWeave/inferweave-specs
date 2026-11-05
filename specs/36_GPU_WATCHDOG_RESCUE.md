@@ -82,6 +82,96 @@ thermal throttling
 
 A metric marked unsupported is not interpreted as zero.
 
+## Kernel OOM attribution
+
+For `IW-WATCH-001` / `P1-T20A`, a kernel OOM record is evidence to classify,
+not proof that the monitored runtime failed. This implements invariants 34–35
+without withdrawing a healthy runtime for a provably unrelated memory limit.
+
+A watchdog may discount a memory-cgroup OOM only when a bounded, complete event
+proves all of the following:
+
+- the constraint is explicitly `CONSTRAINT_MEMCG`;
+- both the constrained cgroup and victim's cgroup are known, with the victim
+  inside the constrained subtree;
+- the matching victim record identifies the same PID and task;
+- both cgroups are disjoint from the monitored engine and registrar container
+  roots, including their ancestors and descendants.
+
+Derive monitored scope from trusted runtime identity and kernel process
+membership, not from event text, a configured process name or an unverified PID.
+For Docker, bind the actual memory cgroup to the pinned container generation and
+running PID, and reject a generation change during capture. Normalize a PID in a
+delegated child to the exact container-ID ancestor: an OOM in a sibling child is
+still an OOM of the monitored container. Ambiguous or unavailable provenance is
+not evidence that an event is unrelated. A stopped registrar has no live scope;
+when registration starts, monitoring must include its current trusted scope.
+
+Engine/registrar OOM, their container-root sibling subtrees and ancestor-limit
+OOM remain faults. Global OOM and unknown, malformed, truncated or unmatched OOM
+events remain fail closed. Bound bytes, line size/count and pending event/victim
+correlations; exceeding a bound is a monitor failure, never permission to ignore
+records. An unrelated event must not mask a later runtime or GPU fault in the
+same batch. Preserve GPU/native fault detection and fail-closed monitor errors.
+A successful HTTP health check does not override a genuine runtime fault.
+
+For a false-positive quarantine, preserve the original quarantine, cursor,
+native-log baselines and engine identity. Before an explicitly authorized
+acknowledgement, replay the complete saved-cursor kernel interval through the
+corrected classifier using independently qualified scope. Missing or truncated
+evidence blocks recovery. The corrected normal monitor must process the original
+cursor; do not reset cursors, discard native evidence, recapture identity or
+restart the engine to make the incident disappear. This rule grants no automatic
+engine action or bypass of existing recovery/qualification gates.
+
+### 2026-11-04 Beast incident and bounded proof
+
+At 20:36:14 UTC, unrelated Python processes exhausted a memory-cgroup limit in a
+user-session `app.slice/run-*.scope`. At 20:36:15 UTC, the Paiton containment guard
+withdrew its registrar and quarantined with `runtime_fault_or_monitor_failure`.
+Its implementation matched any host kernel `oom-kill:` / `out of memory:` line,
+without cgroup attribution. The engine remained running in a separate Docker
+cgroup, with its October 29 generation/start time unchanged and
+`OOMKilled=false`; its native fault logs had not advanced.
+
+The implementation defect was a host-wide OOM classifier. This specification's
+previous unqualified `OOM` signal and acceptance text did not define attribution,
+so an implementer following it could reproduce that false positive. The rules
+above repair that omission; they do not relax detection of runtime OOM below the
+admitted envelope.
+
+The corrected operational guard's `main.rs` SHA-256 is
+`d1af9a287717a3e3e561cc76072a0dad3a35aae645ef9d3bf06ae6738d247342`;
+the tested Linux musl ELF SHA-256 is
+`f73c9a2b760157b949ec939fbeb96c856a00a11cecf02df0d79752fcab2c2e98`.
+Its module is `deploy/beast/paiton-flashnext-131k/guard`, preserved with its CI gate
+in [implementation PR 1470](https://github.com/InferWeave/inferweave/pull/1470).
+Bounded proof for this correction is:
+
+- **proven, incident regression:** the exact foreign MEMCG/victim fixture first
+  failed on the old classifier, then passed with attribution. A second failing
+  regression exposed delegated-child scope hiding a sibling OOM; container-root
+  normalization made it pass without discounting that fault.
+- **proven, standalone Linux guard scope:** all 22 tests passed, including
+  engine/registrar ancestry, global/unknown OOM, malformed/truncated input,
+  provenance, GPU/native faults and existing containment ordering. Independent
+  review accepted the correction after the sibling-scope repair.
+- **incident recovery observation:** the preserved 90,046-byte saved-cursor
+  journal interval contained eight MEMCG events and replayed clear under the
+  corrected classifier. Recovery explicitly acknowledged the original false
+  positive; it did not repeatedly clear quarantine or reset evidence. The
+  registrar returned while engine generation and the locked three-slot,
+  131K-per-slot W3A8 profile remained unchanged. Public chat and automatic tool
+  selection passed. Forced structured output was rejected by the backend with
+  HTTP 400 and is not recorded as a passing capability.
+
+These observations prove only the scoped OOM classification/containment repair
+and the reported recovery path. They do not grant a new Verified qualification,
+prove sustained availability, authorize profile changes, or establish the full
+automatic rescue/rollback ladder, device reset, or host reboot. Those controls
+remain owed to their existing task/production gates; this guard has no automatic
+engine actions. Existing `OPEN_GATES.md` restrictions remain binding.
+
 ## Failure classification
 
 ```text
@@ -379,6 +469,13 @@ Destructive operations require strong authorization and audit.
 
 - GPU reset removes the GPU from routing before more work is admitted.
 - OOM below admitted envelope trips rollback/health policy.
+- Complete provably unrelated MEMCG/victim pairs do not withdraw the monitored
+  runtime; engine/registrar ancestor and sibling-container-subtree OOM do.
+- Global/unknown OOM, incomplete attribution and monitor failure remain fail
+  closed, including when an unrelated event appears in the same input batch.
+- False-positive recovery preserves and replays the original cursor before an
+  explicit quarantine acknowledgement; no engine action or qualification claim
+  is inferred from a clear replay.
 - backend restart loop is bounded and ends in quarantine.
 - previous deployment/image/environment/cache remain available until rollback succeeds.
 - successful soft rescue returns resource through RECOVERING before HEALTHY.
