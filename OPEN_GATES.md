@@ -1361,6 +1361,17 @@ replay only and cannot supply canonical coverage or publication evidence.
 
 ## Held Link initial-credit and communication recovery qualification
 
+The later [DNS-withdrawal capacity correction](evidence/dns-withdrawal-capacity-2026-11-05/README.md)
+addresses ghost-advertised eligible capacity without relaxing recovery. Its
+focused red/green regression and pinned implementation PR are recorded
+separately; required Linux CI and production qualification remain owed in that
+record. Engine-preserving refresh of a
+registered direct-only producer after a transient DNS failure remains
+**UNSATISFIED / owed**. Positive probing does not authorize direct restoration;
+atomic fences, bounded producer/executor exhaustion and no-engine-shutdown proof
+are prerequisites for the proposed fresh-registration recovery design, not
+controls proven by the capacity correction. No production gate opens here.
+
 Initial-credit interoperability now has bounded implementation evidence, not
 production qualification. The Go/Rust fixture holds the consumer, exercises the
 Rust implicit default window plus the Go explicit default-window grant, verifies

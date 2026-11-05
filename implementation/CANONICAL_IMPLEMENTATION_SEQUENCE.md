@@ -421,6 +421,7 @@ Rules:
 - stale node removed
 - model alias/fingerprint test
 - OpenAI response contract
+- withdrawn fresh provider contributes zero eligible capacity while known model/deployment/context and healthy sibling offers remain discoverable
 
 ### P1-T10 — OpenAI streaming ingress against deterministic backend
 **Context:** `C70`
@@ -448,6 +449,7 @@ Rules:
 - capacity never negative property
 - shared weights counted once
 - context growth update tests
+- withdrawn ready provider contributes zero eligible/owner capacity; healthy sibling capacity and already accepted reservations remain intact
 
 ### P1-T11A — Enforce the context ceiling as a hard admission bound
 **Context:** `C75`
@@ -539,6 +541,7 @@ Rules:
 - hard constraints never relaxed property
 - no eligible candidate semantics
 - model mismatch
+- catalogue capacity and currently servable context apply the same out-of-routing predicates as selection, without changing known inventory or DNS recovery policy
 
 ### P1-T13A — Context-size alias semantics
 **Context:** `C50`
