@@ -1414,7 +1414,8 @@ or network resolution authority, registry or production enablement.
 validation, bounded traversal and link containment, offline immutable reference
 resolution, hash/size verification, append-only persistence, applied/recorded argv
 and approved environment, resumed-run drift refusal with trial metrics preserved,
-and compatibility for historical profiles. Implementation work in progress is not
+known weight-index/tokenizer file-reference closure, and compatibility for
+historical profiles. Implementation work in progress is not
 proven acceptance. Bounded before/after file observations cannot establish
 adversarial filesystem integrity or complete hardware/runtime/tokenizer/grader/
 deployment attestation. Hashing warms host caches and constrains cold-start/load-time

@@ -408,6 +408,16 @@ never a mutable repository name. Resolve all GGUF shards through the existing la
 file set, requiring the declared sequence to be complete. A first-shard-only old
 fingerprint cannot establish full artifact identity: the compound fingerprint
 invalidates incomplete resume identity while preserving historical records.
+Directory bytes alone do not establish reference closure across runtime versions.
+Verify known weight `*.index.json` files with JSON bounded to 4 MiB: `weight_map`
+must be an object of string references, each an exact safe relative member of the
+captured file cohort. In `tokenizer_config.json`, nonnull `tokenizer_file`,
+`vocab_file`, `merges_file`, `added_tokens_file`, `special_tokens_map_file`,
+`chat_template_file` and each `fast_tokenizer_files` array entry must likewise name
+an exact safe contained cohort member. Refuse URLs, absolute/traversal paths and
+unsupported external references; do not fetch or recursively resolve them. This
+conservative closure check covers known keys only, not arbitrary code or dependency
+attestation, and makes no claim of a demonstrated current-runtime exploit.
 No resolution step downloads or follows arbitrary URLs.
 
 Ollama input resolves the local preferred `manifests-v2` representation or current
