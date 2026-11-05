@@ -1,5 +1,23 @@
 # Open Gates
 
+## Autonomous background benchmark production qualification
+
+**BLOCKED.** Spec 33 background scheduling policy and spec 46 shared-memory
+admission require live target qualification. Local policy, journal, resource-ledger
+and subprocess tests do not establish production readiness. Owed: NVIDIA/AMD
+sharing headroom and serving-pressure validation, exact owned Slurm-step
+cancellation/preemption, independent deployed recovery, a verified Hive 8×A100
+canary, and a 24-hour interruption/recovery soak. Free VRAM, static qualification
+templates and a successful process exit grant no production placement authority.
+Keep the owning rebalancer, availability floors and scheduler authority in force.
+
+The benchmark-policy implementation does not implement P5-T31's owning-gateway
+composition/export. Physical node reports and generic heartbeat storage do not
+constitute authoritative `safeSchedulable`, pressure and eligibility, nor a
+qualified `/iw/v1/gpu-memory` endpoint. Live automatic sharing remains blocked
+until that controller dependency is implemented and qualified; fixtures or a
+successful/unauthorized HTTP probe do not satisfy it.
+
 Every gate below is **BLOCKED** unless this file records otherwise.
 
 A placeholder, example, environment default, test fixture, prototype, or merged pull request
@@ -1400,3 +1418,16 @@ commit plus guard-removal and integration evidence under the existing task's
 completion record. None is supplied by public task-page navigation. This entry
 opens no deployment, real-user grant, production-content ingestion or benchmark
 execution authority.
+
+## Guarded SpeedRequests and coverage v2 — owed
+
+IW-BENCH-003/P2-T19 and IW-BENCH-002/P2-T03 acceptance AC-SPEED-01–08
+in `contracts/benchmark-speed-execution.json` are **owed**. Offline schema and
+conformance checks prove only contract shape and arithmetic examples. They do not
+prove actual authority, recovery ordering, cancellation, resource safety, runtime
+identity, observation authenticity, overlap, production readiness or qualification.
+Owner composition and live safety, Slurm cancellation and resident attestation,
+Hive canary, restoration and recovery soak remain open. E7–E9 observation
+producers, additive payload v2 and exact coverage are separate engineering
+prerequisites; existing v1 capsules lack observed exact axes. IW-GPUMEM-001's
+separate memory and owner-composition gates remain unsatisfied.
