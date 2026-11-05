@@ -433,6 +433,15 @@ canonical tag consistently across every request workload. vLLM/SGLang receive th
 resolved local path with `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1`.
 Approved environment settings must be recorded and applied identically, alongside
 quote-safe argv; artifact resolution grants no GPU control environment authority.
+Launch and replay share the versioned `local-model-inputs/1` environment policy:
+remove inherited model/router, HF, draft-model and projector selector variables
+that could replace the captured local inputs; preserve CUDA visibility and Slurm
+allocation variables. Disable automatic projector selection unless an explicit
+local projector is selected. Apply and record the same policy in launch and
+replay, with required options negotiated against the selected executable's help.
+Owned runtime listeners bind explicitly to loopback (`127.0.0.1`); bind provenance
+uses `runtime_bind_policy=loopback/1`. Experiment identity must exclude reuse of
+older unconfined history without rewriting it. This grants no network exposure.
 Bind the actual selected request model and approved environment in experiment
 provenance for nondefault backends. The artifact fingerprint is independent of
 absolute location; experiment identity may change when the actual resolved model
