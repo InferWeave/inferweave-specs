@@ -437,7 +437,7 @@ Launch and replay share `local-model-inputs/2`, superseding the intermediate v1
 policy without rewriting file SHA256 or historical evidence. Remove the bounded
 13 model/router, HF, draft-model and projector selector names in direct form and
 with `APPTAINERENV_` and `SINGULARITYENV_` prefixes (39 names). Propagate fixed
-`HOST=127.0.0.1` and default `MMPROJ_AUTO=0` in all three forms for clean-environment
+`LLAMA_ARG_HOST=127.0.0.1` and default `LLAMA_ARG_MMPROJ_AUTO=0` in all three forms for clean-environment
 container wrappers. Explicit `llama.mmproj` leaves automatic-projector selectors
 unset in all forms and selects the projector through argv. Preserve CUDA, ROCR
 and Slurm allocation variables, including their prefixed forms. Apply and record
