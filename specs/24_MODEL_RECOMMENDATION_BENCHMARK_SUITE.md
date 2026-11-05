@@ -433,12 +433,17 @@ canonical tag consistently across every request workload. vLLM/SGLang receive th
 resolved local path with `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1`.
 Approved environment settings must be recorded and applied identically, alongside
 quote-safe argv; artifact resolution grants no GPU control environment authority.
-Launch and replay share the versioned `local-model-inputs/1` environment policy:
-remove inherited model/router, HF, draft-model and projector selector variables
-that could replace the captured local inputs; preserve CUDA visibility and Slurm
-allocation variables. Disable automatic projector selection unless an explicit
-local projector is selected. Apply and record the same policy in launch and
-replay, with required options negotiated against the selected executable's help.
+Launch and replay share `local-model-inputs/2`, superseding the intermediate v1
+policy without rewriting file SHA256 or historical evidence. Remove the bounded
+13 model/router, HF, draft-model and projector selector names in direct form and
+with `APPTAINERENV_` and `SINGULARITYENV_` prefixes (39 names). Propagate fixed
+`HOST=127.0.0.1` and default `MMPROJ_AUTO=0` in all three forms for clean-environment
+container wrappers. Explicit `llama.mmproj` leaves automatic-projector selectors
+unset in all forms and selects the projector through argv. Preserve CUDA, ROCR
+and Slurm allocation variables, including their prefixed forms. Apply and record
+the same policy in launch/replay; negotiate required options against the selected
+executable's help. Arbitrary wrapper behavior and image-baked environment remain
+unattested; this bounded policy is not full runtime/deployment attestation.
 Owned runtime listeners bind explicitly to loopback (`127.0.0.1`); bind provenance
 uses `runtime_bind_policy=loopback/1`. Experiment identity must exclude reuse of
 older unconfined history without rewriting it. This grants no network exposure.
