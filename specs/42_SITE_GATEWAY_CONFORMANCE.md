@@ -57,6 +57,11 @@ chain (B1–B5).
 - **C1 Model advertisement** — OpenAI `{"object":"list","data":[…]}`; each entry
   carries a *servable* context window and a state (`hot|warm|cold`), never a bare
   id. Modality marked for non-text models.
+  Known model/deployment identity and declared context may remain discoverable
+  while eligible capacity is zero. Withdrawn providers contribute neither
+  eligible capacity nor an enlarged currently servable context; healthy sibling
+  offers remain available. Advertisement must not imply that control freshness
+  alone authorizes dispatch (specs 04/05).
 - **C2 OpenAI-compatible inference** — proxy `chat/completions` + `completions`
   (SHOULD: `embeddings`, `images/generations`); unbuffered SSE on `stream:true`;
   client cancellation frees the worker; assign+echo `X-Request-Id`; **no worker →

@@ -732,7 +732,8 @@
       "required_tests": [
         "stale node removed",
         "model alias/fingerprint test",
-        "OpenAI response contract"
+        "OpenAI response contract",
+        "withdrawn fresh provider contributes zero eligible capacity while known model/deployment/context and healthy sibling offers remain discoverable"
       ],
       "notes": ""
     },
@@ -780,7 +781,8 @@
       "required_tests": [
         "capacity never negative property",
         "shared weights counted once",
-        "context growth update tests"
+        "context growth update tests",
+        "withdrawn ready provider contributes zero eligible/owner capacity; healthy sibling capacity and already accepted reservations remain intact"
       ],
       "notes": ""
     },
@@ -928,7 +930,8 @@
       "required_tests": [
         "hard constraints never relaxed property",
         "no eligible candidate semantics",
-        "model mismatch"
+        "model mismatch",
+        "catalogue capacity and currently servable context apply the same out-of-routing predicates as selection, without changing known inventory or DNS recovery policy"
       ],
       "notes": ""
     },

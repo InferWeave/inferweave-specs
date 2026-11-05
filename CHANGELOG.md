@@ -6,6 +6,13 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Specs 04/05/42: eligible catalogue capacity and currently servable context must
+  apply routing's withdrawal predicates while retaining known model identity,
+  declared context, healthy siblings and accepted work. Operational feedback and
+  bounded regression evidence are recorded separately; this introduces no wire
+  member or new DNS recovery signal. Engine-preserving direct-node refresh
+  remains owed; see `evidence/dns-withdrawal-capacity-2026-11-05/README.md`.
+
 - Spec 67: `iw.site-attestation/1` (additive, optional): a gateway attests, over the heartbeat of an enrolled registration, that it enforces a specific paid-model grant (`grant_sha256`), so a paid runtime that may join any gateway advertises its model only while the gateway demonstrably restricts it to the owner; a registration that does not negotiate it is unchanged. Accepted for implementation; proof owed (`P5-T39`, `IW-SITEATT-001`).
 - Spec 61: a held `selection.precision_table_version` now **binds classification**, not only validation (a candidate
   advertising another table version, or none, is classified by its token under the pinned table, whatever its

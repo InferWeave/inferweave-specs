@@ -32,6 +32,20 @@ Model weights/runtime residency are accounted once. Per-session KV/runtime state
 
 Gateway pre-admission predicts feasibility. Node performs authoritative local reservation before accepting the lease.
 
+Published eligible capacity must apply the same out-of-routing predicates as
+request selection. A withdrawn node contributes zero eligible capacity, including
+owner capacity, even while its registration and readiness remain fresh. This is
+a capacity projection, not deletion of the known model/deployment inventory or
+its declared context ceiling. Healthy siblings retain their eligible capacity;
+withdrawal does not cancel already accepted work or release its reservations.
+Known context and currently servable context remain separate: a withdrawn node
+cannot enlarge a serving offer through its context declaration.
+
+The November 2026 DNS-withdrawal incident exposed a missing specification link:
+freshness-only catalogue budgeting could advertise capacity that selection would
+reject. An implementation following freshness alone would recreate that ghost
+capacity. See [operational evidence](../evidence/dns-withdrawal-capacity-2026-11-05/README.md).
+
 Possible internal decision:
 `ACCEPT | QUEUE_BOUNDED | REROUTE | DEGRADE_CONTEXT_EXPLICIT_ONLY | REJECT_CAPACITY`.
 
