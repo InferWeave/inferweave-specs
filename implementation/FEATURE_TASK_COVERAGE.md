@@ -139,3 +139,7 @@ to existing P1-T20/P2-T03 and specs09/23/58 through
 The private HTTP carrier reuses IW-OBS-001/IW-TEL-001/IW-BENCH-002 and P1-T20/P2-T03:
 `contracts/private-observability.json`, AC-PRIVATEOBS-01..06. Existing request and
 failure DTOs are unchanged; private ingest/read runtime proof remains owed.
+
+Guarded SpeedRequests and advisory coverage v2 reuse IW-BENCH-003/P2-T19 and
+IW-BENCH-002/P2-T03, with the independent IW-GPUMEM-001 safety dependency.
+AC-SPEED-01–08 and their owed proof are in `contracts/benchmark-speed-execution.json`.

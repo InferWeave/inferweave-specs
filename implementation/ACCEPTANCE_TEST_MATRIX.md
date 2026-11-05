@@ -126,3 +126,16 @@ IW-OBS-001/IW-TEL-001/IW-BENCH-002; P1-T20/P2-T03; spec23;
 | Durable outbox/ACK/replay and independent expected/loss coverage | owed | Restart, saturation and checkpoint integration |
 | Consistent bounded private snapshots and exact parent/failure reads | owed | Concurrent database and cursor tests |
 | Paired generation, atomic seal/prune and persistent late-ingest fence before collection enablement | owed | Real persistence integration; all routes default disabled |
+
+## Guarded SpeedRequests (all runtime proof owed)
+
+| ID | Scenario | Expected |
+|---|---|---|
+| AC-SPEED-01 | Committed capsule, current policy or manifest unavailable | Held-journal recovery imports original canonical RecordID before current checks |
+| AC-SPEED-02 | New work without current private owner, lease or policies | Refuse without inference; preserve recovery and fence |
+| AC-SPEED-03 | Original deadline, parent loss or uncertain reap | Bounded stop and cleanup; no new execution time or unsafe release |
+| AC-SPEED-04 | Admission and placement | Preserve owner, floors, scheduler, CPU and per-request KV accounting |
+| AC-SPEED-05 | Bounded speed run | At most four calibration plus C×R measured calls; complete usage and no hidden calls |
+| AC-SPEED-06 | Every measured wave overlap | Positive duration at C using half-open intervals; backend concurrency stays unknown |
+| AC-SPEED-07 | Coverage v2 and legacy v1 | Saved-leaf identity, explicit unknown axes, distinct exact match and qualification |
+| AC-SPEED-08 | Observation and production proof | E7–E9 and Slurm attestation remain dependencies; fixture shape is not runtime qualification |

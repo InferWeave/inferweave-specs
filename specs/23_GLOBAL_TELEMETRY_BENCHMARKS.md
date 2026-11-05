@@ -64,6 +64,11 @@ For every active deployment/profile:
 
 A material fingerprint change triggers requalification.
 
+Background benchmark records also retain execution mode and co-residency basis.
+Shared exploratory/correctness/compatibility evidence cannot be merged into an
+exclusive serving-performance baseline. See spec 33 for live scheduling policy,
+resource ceilings, resumable cell evidence and restoration requirements.
+
 ## High-frequency telemetry
 
 Collect where supported:
@@ -431,3 +436,34 @@ pagination preserves query identity and parent revisions, with explicit missing
 companions and read health. All routes default disabled; production collection
 requires paired generation, atomic revision/seal/prune and persisted late-ingest
 fences first. Public publication authority and retention scope are unchanged.
+
+## SpeedRequests coverage identity and evidence
+
+Coverage is bounded and advisory. `contracts/benchmark-speed-execution.json`
+defines v2 separately from legacy v1; never reinterpret v1 concurrency, whose
+existing actual/per-engine wording is an objective, as measured backend generating
+concurrency or as requested HTTP load. V2 binds an actual saved leaf and exact
+suite and specification version, corpus recipe and input hash, load, output and
+sampling settings, seed and cache state. Admission prompt-depth ceiling and final
+reported prompt-depth window are different axes. Each measured request's final
+provider-reported usage establishes the window; calibration usage does not.
+Provider usage retains its provenance and is not independently verified token truth.
+
+Requested concurrency C, HTTP overlap, and backend generating concurrency are
+separate. For the minimal overlap objective, every measured wave has positive
+duration with C HTTP requests overlapping. Intervals are half-open; ends sort
+before starts on ties. Report raw overlap maximum and histogram separately. Any
+other duration or fraction objective is explicit in cell identity. HTTP overlap
+never proves simultaneous backend generation. Unknown backend concurrency remains
+unknown, not zero or a wildcard; a backend-generating requirement cannot pass
+without appropriate observation.
+
+A validated workload, an exact-known-axis match and qualification are distinct
+results. Compare only identical measured dimensions and semantics; mismatches or
+unknowns cannot satisfy exact cells. Current v1 capsules lack observed runtime,
+GPU and deployment facts; requested provenance and configured declarations cannot
+fill those axes. They can be valid workload evidence without exact coverage.
+Qualification requires independent measured proof and is never inferred from a
+fixture, submitted record or exact match. E7–E9 must provide authenticated owner
+observations, additive payload v2 and producer receipts before source-backed exact
+coverage can be claimed. Slurm resident attestation remains absent.

@@ -1053,6 +1053,11 @@ def self_test():
     if reconcile_test.returncode:
         print(reconcile_test.stdout + reconcile_test.stderr)
         return 1
+    # Offline-only speed contract vocabulary and per-wave overlap vectors.
+    speed_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_speed_contract_smoke.py")], capture_output=True, text=True)
+    if speed_test.returncode:
+        print(speed_test.stdout + speed_test.stderr)
+        return 1
     file_mutations = 1 + len(gpu_breaks) + len(semantic)
     print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "
           "every guard rejects its known-bad input")

@@ -1,0 +1,73 @@
+{
+  "version": "iw.benchmark-speed-execution/1",
+  "profile": "SpeedRequests",
+  "features": [
+    "IW-BENCH-003",
+    "IW-BENCH-002"
+  ],
+  "safety_dependency": "IW-GPUMEM-001",
+  "tasks": [
+    "P2-T19",
+    "P2-T03"
+  ],
+  "coverage_version": 2,
+  "legacy_coverage_version": 1,
+  "backend_generating_concurrency": "unknown_without_observation",
+  "overlap": "positive_duration_at_requested_concurrency_each_measured_wave",
+  "intervals": "half_open_ends_before_starts",
+  "calibration_max_calls": 4,
+  "measured_calls": "C*R",
+  "recovery_order": "committed_journal_before_current_checks",
+  "authority": "private_owned_child_and_live_lease",
+  "proof": "offline_shape_only_runtime_owed",
+  "refusals": [
+    "TaskSerial",
+    "ordinary_constrained_cli",
+    "FakeEnv",
+    "missing_current_policy",
+    "unowned_or_ambiguous_child",
+    "unsupported_slurm"
+  ],
+  "acceptance": [
+    {
+      "id": "AC-SPEED-01",
+      "owner_task": "P2-T19",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-SPEED-02",
+      "owner_task": "P2-T19",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-SPEED-03",
+      "owner_task": "P2-T19",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-SPEED-04",
+      "owner_task": "P2-T19",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-SPEED-05",
+      "owner_task": "P2-T19",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-SPEED-06",
+      "owner_task": "P2-T03",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-SPEED-07",
+      "owner_task": "P2-T03",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-SPEED-08",
+      "owner_task": "P2-T19/P2-T03",
+      "proof_status": "owed"
+    }
+  ]
+}
