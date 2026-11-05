@@ -317,7 +317,8 @@ public projection and automatic promotion remain separate obligations in the
 existing benchmark gateway, warehouse and Next.js workbench.
 
 Evaluation configuration may carry an explicit `backendTunables` map. Llama.cpp
-`split_mode` accepts only `none`, `layer` or `row`; `tensor_split` requires finite
+`split_mode` accepts `none`, `layer`, `row` or `tensor`, subject to the selected
+runtime build advertising support; `tensor_split` requires finite
 nonnegative decimal ratios with positive total and cannot accompany `none`.
 Unknown options are refused, not silently ignored. Tunables participate in the
 canonical configuration fingerprint. The exact selected executable must advertise
