@@ -1,0 +1,38 @@
+{
+  "version": "iw.benchmark-continuation-policy/1",
+  "method": "POST",
+  "path": "/api/bench/leases/continuation-policy",
+  "transport": "private_authenticated",
+  "features": [
+    "IW-BENCH-003",
+    "IW-BENCH-002"
+  ],
+  "tasks": [
+    "P2-T19",
+    "P2-T03"
+  ],
+  "request_fields": [
+    "schema",
+    "nonce",
+    "lease"
+  ],
+  "positive_response_fields": [
+    "schema",
+    "nonce",
+    "lease_id",
+    "node_id",
+    "hard_deadline",
+    "policy_allows"
+  ],
+  "nonce": "exactly_32_lowercase_hex",
+  "max_request_bytes": 4194304,
+  "max_response_bytes": 4194304,
+  "lease": "existing_complete_strict_lease_and_bounds",
+  "binding": "response_echoes_request_actual_owned_lease_and_nonce",
+  "meaning": "current_policy_observation_not_execution_or_start_grant",
+  "start_gates": "unchanged",
+  "recovery": "independent_of_current_policy",
+  "deadline": "original_immutable_hard_deadline",
+  "failure": "false_refused_unavailable_or_mismatch_is_not_positive",
+  "proof": "offline_projection_only_runtime_owed"
+}

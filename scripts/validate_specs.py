@@ -1058,6 +1058,11 @@ def self_test():
     if speed_test.returncode:
         print(speed_test.stdout + speed_test.stderr)
         return 1
+    # Offline continuation-policy descriptor and binding projections.
+    continuation_test = subprocess.run([sys.executable, "-B", str(ROOT / "scripts/test_benchmark_continuation_policy.py")], capture_output=True, text=True)
+    if continuation_test.returncode:
+        print(continuation_test.stdout + continuation_test.stderr)
+        return 1
     file_mutations = 1 + len(gpu_breaks) + len(semantic)
     print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "
           "every guard rejects its known-bad input")

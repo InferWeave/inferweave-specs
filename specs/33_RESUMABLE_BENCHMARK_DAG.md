@@ -188,6 +188,39 @@ configuration cannot override current authority. Unknown or failed child reap
 keeps the lease fenced. Reap and verify the claimed RecordID before success;
 Stop → Scratch → Restore → Verify → Release remains independently required.
 
+The earlier withdrawal requirement did not freeze an ongoing policy-observation
+interface. Following it by treating `admit-start` as a monitor would reject valid
+owned work after its soft start window or while its engine is busy; treating
+ownership status as policy permission would miss withdrawal. The private,
+authenticated gateway operation `POST /api/bench/leases/continuation-policy`,
+described by `contracts/benchmark-continuation-policy.json`, is the required
+read-only current observation. Its strict request contains only `schema`, a fresh
+32-character lowercase hexadecimal `nonce`, and the complete existing strict
+`lease`; its strict positive response contains only `schema`, `nonce`, `lease_id`,
+`node_id`, `hard_deadline`, and `policy_allows: true`. Both schemas use
+`iw.benchmark-continuation-policy/1`. Each frame is at most 4 MiB. The nonce and
+all response bindings must match this exchange and the actual durable owned lease;
+reject duplicate or unknown fields, malformed data, wrong versions and mismatch.
+The existing Lease type and bounds remain authoritative; the projection fixtures
+are not a Lease schema. The nonce is correlation, not authentication, signature,
+attestation or a permit. No credentials, prompts, outputs, private node endpoints
+or owner bearers belong in this observation.
+
+The gateway checks actual current ownership and immutable identity, current policy,
+protection, owner priority, floors, safety and original hard expiry under its
+existing authority. A released, expired, wrong or changed owner cannot receive a
+positive observation. False, refusal, unavailability or unknown policy is not
+positive; consumers require a fresh matching observation and cancel/refuse owned
+work under the same captured original deadline when permission is absent or lost.
+The operation does not mutate or renew leases, acquire resources, extend a start
+window, reactivate a grant, claim idle capacity, or authorize execution. A passed
+soft start window or busy/unknown engine alone does not reject current policy
+observation, and busy/unknown is never represented as idle. Acquire and
+`admit-start` retain initial idle, soft-window and full-new-work estimate checks.
+Private Child/channel, node admission and ownership remain independent; historical
+ownership status and return/recovery remain available despite policy withdrawal.
+This interface and its consumer do not yet exist; runtime proof remains owed.
+
 One original expiration covers preflight, capture, calibration, measurement,
 preparation and commit. Parent captures monotonic remaining time and transmits the
 original absolute expiration; child derives its own monotonic deadline once. Wall

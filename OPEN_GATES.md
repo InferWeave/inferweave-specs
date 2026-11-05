@@ -1431,3 +1431,10 @@ Hive canary, restoration and recovery soak remain open. E7–E9 observation
 producers, additive payload v2 and exact coverage are separate engineering
 prerequisites; existing v1 capsules lack observed exact axes. IW-GPUMEM-001's
 separate memory and owner-composition gates remain unsatisfied.
+
+The separate current owned-policy observation in
+`contracts/benchmark-continuation-policy.json` and spec 33 is specified but not
+implemented. Its offline descriptor and binding projections establish no deployed
+authority or active withdrawal. Live ownership, policy withdrawal/unavailability,
+cancellation under the original deadline, independent child/channel admission,
+recovery, safe capacity, hardware and production qualification remain **owed**.

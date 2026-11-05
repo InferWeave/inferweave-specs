@@ -1,0 +1,359 @@
+{
+  "scope": "binding_projection_only_not_complete_lease_or_runtime_authority",
+  "vectors": [
+    {
+      "id": "current_owned",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": true
+    },
+    {
+      "id": "soft_window_passed_busy",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": true,
+      "soft_window_passed": true,
+      "engine": "busy"
+    },
+    {
+      "id": "unknown_engine",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": true,
+      "engine": "unknown"
+    },
+    {
+      "id": "wrong_schema",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "wrong/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false
+    },
+    {
+      "id": "wrong_nonce",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "ffffffffffffffffffffffffffffffff",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false
+    },
+    {
+      "id": "wrong_lease_id",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-b",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false
+    },
+    {
+      "id": "wrong_node_id",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-b",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false
+    },
+    {
+      "id": "wrong_hard_deadline",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-02T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false
+    },
+    {
+      "id": "wrong_policy_allows",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": false
+      },
+      "expected": false
+    },
+    {
+      "id": "expired",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false,
+      "authority": "expired"
+    },
+    {
+      "id": "released",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false,
+      "authority": "released"
+    },
+    {
+      "id": "wrong_owner",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false,
+      "authority": "wrong_owner"
+    },
+    {
+      "id": "changed_immutable_identity",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false,
+      "authority": "changed_immutable_identity"
+    },
+    {
+      "id": "policy_withdrawn",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false,
+      "authority": "policy_withdrawn"
+    },
+    {
+      "id": "policy_unavailable",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease_id": "lease-a",
+        "node_id": "node-a",
+        "hard_deadline": "2030-01-01T00:00:00Z",
+        "policy_allows": true
+      },
+      "expected": false,
+      "authority": "policy_unavailable"
+    },
+    {
+      "id": "refused",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {},
+      "expected": false
+    },
+    {
+      "id": "unavailable",
+      "request": {
+        "schema": "iw.benchmark-continuation-policy/1",
+        "nonce": "0123456789abcdef0123456789abcdef",
+        "lease": {
+          "lease_id": "lease-a",
+          "node_id": "node-a",
+          "hard_deadline": "2030-01-01T00:00:00Z"
+        }
+      },
+      "response": {
+        "unavailable": true
+      },
+      "expected": false
+    }
+  ]
+}
