@@ -244,12 +244,67 @@ fault candidates; no parsing error may become clear. Journal continuity, all
 bounds, native replay, epoch/transaction fences and qualification remain exactly
 as required above.
 
+The conservative candidate families are deliberately broader than resident exact
+markers. Match case-insensitive `oom`, `oom-kill`, `oomkiller` (including
+underscore, hyphen and whitespace variants), `out of memory` / `out-of-memory`,
+`memory cgroup out of memory`, and colonless `Killed process`; recognize
+meaningful incomplete candidates such as `out of mem`. Document normalization,
+token boundaries, the finite cross-`MESSAGE` recognition window and its state
+budget. Carry bounded state across records and pages within the same boot;
+never pair across boots. Do not claim arbitrary truncation recognition from
+unrelated fragments such as `ou`. Invalid source framing/encoding, known
+truncation, ambiguous pending state at a boundary or exhausted bounds refuses
+adoption, rather than producing a candidate-free result.
+
+### Retained coverage and collector assumptions
+
+Full-journal global sequence continuity proves retained-record coverage between
+recorded anchors; it does not prove pre-ingest kernel completeness. Inspect
+`MESSAGE_ID` on every record regardless of transport. Refuse
+`SD_JOURNAL_MISSED` (`e9bf28e6e834481bb6f48f548ad13606`) and
+`SD_JOURNAL_DROPPED` (`a596d6fe7bfa4994828e72309e95d61e`), and malformed or
+ambiguous IDs. Separately inspect trusted kernel/collector-driver text for
+documented overrun, lost, suppressed or dropped messages/callbacks. Unrelated
+application bodies are not authoritative loss indicators. Missing IDs alone do
+not imply loss; do not require every journal record to carry an ID.
+
+A first-value lookup cannot establish singleton metadata: enumerate per-entry
+field names within bounded field-count, name-length, time, work and data-threshold
+budgets. Inspect each name through its first `=` within the finite official
+field-name maximum; refuse duplicate or malformed selected singleton fields,
+including duplicate `MESSAGE_ID`, even when only a later value reports loss.
+The library may materialize field pointers internally in host-process memory.
+The parser must not copy, decode, log or persist unrelated application `MESSAGE`
+bodies. Copy only bounded selected metadata payloads and trusted kernel/driver
+message bodies. Do not claim that the library never retrieves or touches unknown
+bodies. Exhausted enumeration or selected-payload bounds refuse adoption.
+
+The source basis is systemd v255
+[`journald-kmsg.c`](https://raw.githubusercontent.com/systemd/systemd/v255/src/journal/journald-kmsg.c)
+(kernel serial-gap reporting) and
+[`sd-messages.h`](https://raw.githubusercontent.com/systemd/systemd/v255/src/systemd/sd-messages.h)
+(loss message IDs). Pin the collector implementation and document its applicable
+loss vocabulary. Verify protected current effective collector configuration:
+`ReadKMsg` enabled and no known filter that could omit required evidence;
+verified documented defaults for that implementation are acceptable evidence.
+Declare historical configuration continuity and trusted-producer assumptions
+explicitly; current settings and absence of retained loss indicators cannot
+prove that events were never omitted before journal ingestion.
+
 Absent legacy scope provenance therefore need not block this mode when the
 **entire qualified interval is candidate-free**. Its protected receipt must name
 the mode and bind the actual coverage interval, boot/page/record watermarks,
-classifier policy/version and bounds. It proves candidate-free coverage under
-that policy, not verified historical scopes, absence of every possible machine
-fault, or automatic readiness. It cannot grant scoped exemptions or substitute
+classifier policy/version and bounds. Its assurance must read:
+
+"Complete retained-journal coverage verified between
+recorded anchors under declared collector assumptions. No recognized fault
+candidates or known loss indicators found. Does not prove completeness of events
+never ingested by journal or absence of every machine fault."
+
+It does not verify
+historical scopes or grant automatic readiness. This narrower assurance is
+required before adoption; no absolute completeness claim may replace it. It
+cannot grant scoped exemptions or substitute
 for the normal guard's handoff checks.
 
 Generated tests must establish that conservative clear implies scoped clear for

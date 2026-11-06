@@ -48,6 +48,11 @@ removal-sensitive tests, independent review, applicable repository checks and
 owner production qualification are **owed**, not inferred from health, old proofs
 or this specification. Disabled CI pools do not waive required checks. Missing
 required provenance/lost records/new faults keep the resource quarantined.
+Global-only candidate normalization/cross-record windows, all-transport loss IDs,
+trusted kernel/driver loss recognition, protected collector configuration and
+limited assurance receipts remain **owed** before adoption. Global journal
+sequence continuity does not establish completeness of never-ingested events;
+historical collector continuity and trusted producers remain declared assumptions.
 Historical scopes may be absent only for complete candidate-free conservative
 coverage, never for a scoped exemption or a claim that the machine is fault-free;
 all existing
