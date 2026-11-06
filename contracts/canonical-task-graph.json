@@ -1179,7 +1179,9 @@
         "OOM-below-envelope incident",
         "backend hung/stuck request",
         "restart-loop counter",
-        "unsupported sensor not treated as zero"
+        "unsupported sensor not treated as zero",
+        "owner cold-boot replay (owed): retained-boot record/page continuity, boot-local cross-page OOM and historical engine/registrar scope; missing/lost/malformed evidence refuses adoption",
+        "owner cold-boot native/handoff (owed): every byte with inode/offset/lookbehind lineage, truncation/append/cutoff races and bounded normal-monitor resumption"
       ]
     },
     {
@@ -2464,7 +2466,9 @@
         "destructive rescue authorization",
         "audit record",
         "quarantine UI",
-        "MCP cannot expose arbitrary host control"
+        "MCP cannot expose arbitrary host control",
+        "owner cold-boot adoption (owed): quarantine-last durable multi-file transaction survives every publication crash; strict no-bootstrap and stale identity/PID/ready-proof rejection",
+        "owner cold-boot qualification (owed): fresh local and authenticated context/concurrent-session proof preserves the locked profile before ordinary admission"
       ]
     },
     {

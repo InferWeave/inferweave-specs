@@ -348,6 +348,11 @@ The command does not establish that the public gateway preserves deployment
 identity or runtime observations. Missing this capability is disclosed, never
 inferred from a health endpoint. No routing or production gate opens here.
 
+A separate, explicitly authorized owner cold-boot catch-up/epoch adoption may
+requalify that already-running external engine under spec 36. It does not extend
+this read-only inspector or permit bootstrap. Old identity/checkpoint proofs
+remain preserved; missing monitoring provenance leaves the owner quarantined.
+
 Public profile decision/report output redacts credential-bearing launch
 arguments and environment values unless explicit reveal is requested. An
 explicitly requested protected local launch-state artifact may retain launch
