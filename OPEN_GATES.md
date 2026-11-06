@@ -28,6 +28,32 @@ This file exists because these specifications run far ahead of any running syste
 register of what is *not* approved, a reader encounters thirty-eight confident documents and
 reasonably concludes more exists than does.
 
+## Owner cold-boot catch-up and epoch adoption — 2026-11-06
+
+**UNSATISFIED / owed.** Spec 36 now defines explicit owner requalification of an
+already-running external engine after a host reboot, keeping quarantine until
+complete retained-boot journal/native evidence replay and a coherent durable
+checkpoint/identity adoption. The approved design permits implementation, not
+runtime adoption or automatic rescue. The existing guard's bounded current-boot
+monitor is not a cross-boot catch-up API; deleting a cursor to initialize at the
+tail is prohibited. Spec 28 external status remains read-only.
+
+`IW-WATCH-001` / `P1-T20A` and `IW-WATCH-003` / `P3-T18A` owe complete history and
+historical-scope provenance for scoped exemptions, boot-local stateful replay,
+explicit whole-machine conservative candidate/coverage proof without exemptions,
+native byte/append handoff, strict no-bootstrap startup, publication crash tests,
+and fresh local
+plus authenticated context/concurrent-session qualification. Implementation,
+removal-sensitive tests, independent review, applicable repository checks and
+owner production qualification are **owed**, not inferred from health, old proofs
+or this specification. Disabled CI pools do not waive required checks. Missing
+required provenance/lost records/new faults keep the resource quarantined.
+Historical scopes may be absent only for complete candidate-free conservative
+coverage, never for a scoped exemption or a claim that the machine is fault-free;
+all existing
+qualification, watchdog and rollback gates remain binding. No gate opens here.
+See [operational evidence and limits](evidence/owner-coldboot-epoch-adoption-2026-11-06/README.md).
+
 ## Autonomous capability & limitations bench v1.0.0 — 2026-10-28
 
 **BLOCKED. Unsatisfied.** Package `inferweave-autonomous-capability-bench-v1` (SHA-256

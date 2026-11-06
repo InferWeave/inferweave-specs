@@ -679,6 +679,10 @@ Rules:
 - backend hung/stuck request
 - restart-loop counter
 - unsupported sensor not treated as zero
+- owner cold-boot replay (owed): retained-boot record/page continuity, boot-local cross-page OOM and historical engine/registrar capture/anchor proof for scoped exemptions; missing required proof/lost/malformed evidence refuses adoption
+- owner conservative replay (owed): reject every OOM/GPU-fault candidate, require complete candidate-free coverage without historical scopes, and prove conservative-clear implies scoped-clear for all valid scopes under comparable budgets
+- owner cold-boot native/handoff (owed): every byte with inode/offset/lookbehind lineage, truncation/append/cutoff races and bounded normal-monitor resumption
+
 
 ### P1-T20B — Bounded rescue ladder and automatic profile rollback
 **Context:** `C85`
@@ -1370,6 +1374,9 @@ Rules:
 - audit record
 - quarantine UI
 - MCP cannot expose arbitrary host control
+- owner cold-boot adoption (owed): quarantine-last durable multi-file transaction survives every publication crash; strict no-bootstrap and stale identity/PID/ready-proof rejection
+- owner cold-boot qualification (owed): fresh local and authenticated context/concurrent-session proof preserves the locked profile before ordinary admission
+
 
 ### P3-T19 — AI copy/paste installer acceptance flow
 **Context:** `C90`

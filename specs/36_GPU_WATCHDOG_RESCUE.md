@@ -115,7 +115,8 @@ records. An unrelated event must not mask a later runtime or GPU fault in the
 same batch. Preserve GPU/native fault detection and fail-closed monitor errors.
 A successful HTTP health check does not override a genuine runtime fault.
 
-For a false-positive quarantine, preserve the original quarantine, cursor,
+For a false-positive quarantine of the same engine incarnation, preserve the
+original quarantine, cursor,
 native-log baselines and engine identity. Before an explicitly authorized
 acknowledgement, replay the complete saved-cursor kernel interval through the
 corrected classifier using independently qualified scope. Missing or truncated
@@ -171,6 +172,159 @@ prove sustained availability, authorize profile changes, or establish the full
 automatic rescue/rollback ladder, device reset, or host reboot. Those controls
 remain owed to their existing task/production gates; this guard has no automatic
 engine actions. Existing `OPEN_GATES.md` restrictions remain binding.
+
+## Owner cold-boot catch-up and epoch adoption
+
+For `IW-WATCH-001` / `P1-T20A` and `IW-WATCH-003` / `P3-T18A`, a supported
+owner operation may requalify an externally managed engine after a host reboot.
+It is explicit owner recovery, not automatic healing, a new watchdog rescue
+tier, or permission to reopen any production gate. The existing guard executable
+and serving profile may remain pinned; the recovery helper must implement the
+following contract independently of any normal monitor's bounded batch API.
+
+A serving deployment fingerprint and a live engine incarnation are distinct.
+Unchanged hashed model/profile/resource/policy/input bytes may retain their
+immutable deployment identity; a new start time/boot/process needs a newly
+qualified protected engine snapshot. Changed hashed inputs require normal
+identity rederivation and qualification. Never relabel the old incarnation's
+proof as current or adopt a changed profile through this operation.
+
+### Containment and evidence boundary
+
+- Hold an exclusive owner maintenance/recovery lock. Close ordinary admission,
+  prove public active/pending and native active/waiting work are zero, and
+  establish local-client quiescence. Keep the registrar stopped/unarmed and
+  quarantine present throughout catch-up and local qualification. Preserve
+  protected originals of the quarantine, identities, checkpoint files, guard
+  package/unit, profile and serving inputs before any state publication.
+- Replay the complete saved-cursor interval, including the retained previous-boot
+  tail, every intervening retained boot and current-boot history through a fixed
+  cutoff. A seekable cursor or a list of retained boots alone does not prove
+  continuity. Bind boot IDs, ordered record identities, page boundaries and
+  source retention/sequence evidence; detect missing, duplicated, reordered or
+  vacuumed ranges. If completeness cannot be established, remain quarantined.
+  A current-boot-only query cannot prove a cross-boot interval.
+- For scoped OOM exemptions (`scoped_attribution` in owner artifacts), preserve
+  OOM/victim correlation across bounded
+  pages within one boot. At a boot boundary unresolved events fail closed; never
+  pair records across boots or discard pending events to finish a page. Require
+  protected historical engine **and registrar** container-root scopes for their
+  relevant generations, including stopped historical registrars. Current live
+  scope cannot prove that an old OOM was foreign. Root-owned JSON assertions alone
+  are not scope authority: validate a concrete protected capture/anchor chain
+  against its backing measurements, journal anchor and runtime generation.
+  A live-only producer cannot backdate proof. Missing/ambiguous historical scope
+  provenance forbids scoped exemptions; do not guess roots or pass empty scopes
+  to turn parser failure into a clear result.
+- Scan every unconsumed native byte through fixed per-file cutoffs, with enough
+  carried state/lookbehind to detect patterns split across old offsets, chunks
+  or concurrent appends. Bind device/inode lineage and byte offsets; missing
+  files, replacement, truncation or unverifiable lineage fail closed. No tail-N,
+  sample, discarded prefix, checkpoint deletion, rewind or blind tail baseline
+  substitutes for complete replay. Bound records/pages/bytes, total work/time,
+  line sizes and pending classifier state; hitting a bound refuses adoption.
+- Include the entire local qualification interval in replay. Recheck engine,
+  boot, input and log/journal identities before publication. Persist explicit
+  watermarks and classifier boundary state. Bytes/records appended after the
+  cutoffs remain pending for the normal guard; prove its first read resumes
+  without gaps or double-skipped prefixes. If its bounds cannot consume the
+  pending handoff, perform another bounded qualified catch-up or refuse; never
+  advance past unseen evidence to fit a legacy batch limit.
+
+### Conservative replay without historical scope exemptions
+
+The explicit owner mode `whole_machine_conservative` may replay a complete
+qualified interval without historical cgroup proof because it discounts **no**
+OOM or GPU-fault candidate. It is a stronger classification policy over shared
+recognition, not a permissive parser fallback. Reject every OOM candidate,
+including complete foreign MEMCG pairs, header-only or victim-only records,
+malformed/unknown/incomplete events, case variations and page-split events.
+Preserve existing GPU fatal-fault recognition and conservatively reject unknown
+fault candidates; no parsing error may become clear. Journal continuity, all
+bounds, native replay, epoch/transaction fences and qualification remain exactly
+as required above.
+
+Absent legacy scope provenance therefore need not block this mode when the
+**entire qualified interval is candidate-free**. Its protected receipt must name
+the mode and bind the actual coverage interval, boot/page/record watermarks,
+classifier policy/version and bounds. It proves candidate-free coverage under
+that policy, not verified historical scopes, absence of every possible machine
+fault, or automatic readiness. It cannot grant scoped exemptions or substitute
+for the normal guard's handoff checks.
+
+Generated tests must establish that conservative clear implies scoped clear for
+**every valid scope assignment under comparable classifier budgets**. Comparing
+an owner catch-up budget against a smaller resident-monitor wrapper limit is not
+that property; the normal monitor's own handoff bounds must separately pass.
+These mode labels identify owner-artifact policy, not a new negotiated wire API.
+No broader exemption or recovery signal is introduced.
+
+### Qualification and publication transaction
+
+Before adoption, freshly verify exact hardware binding, image, ordered launch
+arguments, input digests, TP/KV/resource limits, context and concurrency geometry
+against the unchanged owner-qualified package. Health HTTP 200, idle metrics,
+offline digest agreement and prior ready proofs are insufficient. Fresh local
+response-integrity, context and concurrent-session qualification must exercise
+the retained envelope; the locked Beast case retains TP2 and three public
+131072-token sessions without changing native sequence or KV limits.
+
+Publish the engine snapshot, kernel cursor/boot watermarks, native offsets and
+registrar-proof disposition as one coherent protected multi-file transaction.
+A durable manifest binds old/new file hashes, generations, cutoffs and evidence.
+Serialize all checkpoint writers and guard startup; an incomplete transaction
+blocks the strict preparation path.
+Stage regular private files, fsync their contents and parent directories, then
+publish in a documented recoverable order. Keep quarantine until every required
+replacement and transaction commit is durable; acknowledging quarantine is the
+last publication step. A crash at any earlier step, mixed manifest/file state,
+or ambiguous commit must leave registration blocked and quarantine retained or
+re-established before any service start. Preserve originals for audit; rollback
+must not reinstall an old engine identity as proof of the new process. An old
+registrar PID proof cannot authorize a new registrar generation.
+
+Normal startup must use a reviewed strict **no-bootstrap** preparation path:
+require the exact already-running engine and reject absent/stopped/changed
+engines without starting or restarting them. Passing an ignored flag to an old
+hook is not enforcement. The existing guard/owner alone creates the new
+registrar proof and arms it; no PATH shim, bypassed prehook, synthetic readiness
+or public profile/transport change is permitted.
+
+Keep ordinary traffic closed while fresh authenticated full-path completion,
+context and concurrent-session qualification proves the new incarnation through
+its real authorization/admission route. Preserve request identity, terminal
+stream status, resource accounting and fault monitoring. Do not replay old
+interrupted requests. Open ordinary admission only after the unchanged owner's
+existing gates and explicit operational approval pass. On any failure or new
+fault, contain/quarantine and preserve pending evidence; do not restart/retune
+the engine, erase history or loop acknowledgements.
+
+### Proof status and required failure tests
+
+All cold-boot controls above are **owed** until executable removal-sensitive
+proof, independent review and applicable repository checks pass. In particular:
+
+- split/interleaved OOM across pages, historical registrar/ancestor OOM, and GPU
+  faults cannot be hidden by foreign MEMCG events; cross-boot pairing fails;
+- conservative mode rejects every OOM/GPU-fault candidate without attribution,
+  accepts only complete candidate-free coverage when historical scopes are
+  absent, and satisfies the comparable-budget generated implication above;
+- root-owned historical claims without backing capture/anchor proof cannot
+  authorize scoped exemptions; a live producer cannot manufacture past proof;
+- missing/duplicate/reordered records/pages, absent boots, vacuum/loss, oversized
+  events and exhausted bounds refuse adoption;
+- split native faults across offset/chunk/append boundaries, inode replacement,
+  truncation and missing rank logs refuse adoption;
+- concurrent engine/boot/input changes, append-at-cutoff and monitor handoff
+  demonstrate no evidence gap; unseen events remain pending;
+- fault injection at every file/manifest/quarantine publication and restart
+  boundary proves crash containment and rejection of mixed epochs;
+- stopped-engine strict startup cannot bootstrap; old identity/PID/ready proofs
+  cannot arm a new generation; failed qualification cannot reopen admission;
+- fresh local and authenticated context/session tests preserve the locked
+  profile and accepted-request/replay semantics.
+
+See [the operational correction and open proof boundary](../evidence/owner-coldboot-epoch-adoption-2026-11-06/README.md).
 
 ## Failure classification
 

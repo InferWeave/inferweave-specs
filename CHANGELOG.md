@@ -6,6 +6,15 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Specs 36/28: define an explicit owner-only cold-boot evidence catch-up and
+  engine-epoch adoption contract, preserving the locked external profile,
+  complete monitoring history and quarantine-last publication. Explicit
+  whole-machine conservative replay needs no historical scope exemptions and
+  rejects every fault candidate; scoped exemptions require real capture/anchor
+  provenance. This repairs the
+  missing cross-boot recovery boundary; implementation, failure proofs and
+  production qualification remain owed. No automatic recovery or gate opens.
+
 - Specs 04/05/42: eligible catalogue capacity and currently servable context must
   apply routing's withdrawal predicates while retaining known model identity,
   declared context, healthy siblings and accepted work. Operational feedback and
