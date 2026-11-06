@@ -64,3 +64,15 @@ operational qualification remain required. CI capacity intentionally disabled by
 the owner is not authorization to bypass checks or change infrastructure.
 No implementation revision, test success, service start, state adoption,
 quarantine acknowledgement or production recovery is asserted in this record.
+
+## Assurance correction before adoption
+
+The merged recovery text left candidate families and the pre-ingest loss boundary
+underspecified. A literal implementation could reuse narrow resident markers or
+mistake contiguous retained global journal sequence numbers for complete kernel
+history. Spec 36 now requires broader global-only candidate recognition,
+boot-local bounded cross-record state, all-transport loss message-ID inspection,
+trusted kernel/driver loss text checks and a receipt bounded by declared collector
+assumptions. Current protected collector configuration is required; historical
+continuity remains an assumption. This correction supplies no runtime evidence
+and opens no gate. All new source/runtime and removal-sensitive proofs are owed.

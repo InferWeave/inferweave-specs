@@ -6,6 +6,10 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Spec 36: bound owner cold-boot assurance to retained journal anchors and declared
+  collector assumptions; require broader global OOM candidates and pre-ingest
+  loss-indicator checks before adoption. All new proofs remain owed.
+
 - Specs 36/28: define an explicit owner-only cold-boot evidence catch-up and
   engine-epoch adoption contract, preserving the locked external profile,
   complete monitoring history and quarantine-last publication. Explicit
