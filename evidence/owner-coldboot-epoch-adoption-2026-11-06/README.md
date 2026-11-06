@@ -36,8 +36,15 @@ rule. This is a supported operation to implement, not an existing guard API.
 
 The owner approved a recovery helper and this operational-spec correction while
 retaining the existing guard executable, unchanged profile, and existing safety
-gates. Catch-up must prove full retained-boot continuity and conservative
-historical engine/registrar scopes, carry OOM state only within a boot, scan every
+gates. Catch-up must prove full retained-boot continuity and, when discounting
+foreign OOM, protected historical engine/registrar capture/anchor provenance.
+Root-owned JSON claims alone cannot supply it; a live producer cannot backdate
+proof. Explicit `whole_machine_conservative` replay can instead use complete
+candidate-free history without historical scopes because it discounts no OOM or
+GPU-fault candidate. Its mode/coverage receipt proves neither historical
+attribution nor absence of every machine fault. Conservative/scoped agreement
+under comparable budgets and rejection of all candidate forms remain owed.
+Carry OOM state only within a boot, scan every
 pending native byte with lineage/lookbehind, bind fixed watermarks, and leave
 subsequent appends pending for a gap-free guard handoff. Any ambiguity, loss,
 fault or bound exhaustion leaves quarantine in place.

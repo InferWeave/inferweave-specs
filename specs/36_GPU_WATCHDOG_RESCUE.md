@@ -204,13 +204,18 @@ proof as current or adopt a changed profile through this operation.
   source retention/sequence evidence; detect missing, duplicated, reordered or
   vacuumed ranges. If completeness cannot be established, remain quarantined.
   A current-boot-only query cannot prove a cross-boot interval.
-- Preserve OOM/victim correlation across bounded pages within one boot. At a
-  boot boundary unresolved events fail closed; never pair records across boots
-  or discard pending events to finish a page. Use conservative protected
-  historical engine **and registrar** container-root scopes for their relevant
-  generations, including stopped historical registrars. Current live scope alone
-  cannot establish that an old OOM was foreign. Unavailable or ambiguous scope
-  provenance means unknown/fault; preserve all earlier OOM/GPU fault rules.
+- For scoped OOM exemptions (`scoped_attribution` in owner artifacts), preserve
+  OOM/victim correlation across bounded
+  pages within one boot. At a boot boundary unresolved events fail closed; never
+  pair records across boots or discard pending events to finish a page. Require
+  protected historical engine **and registrar** container-root scopes for their
+  relevant generations, including stopped historical registrars. Current live
+  scope cannot prove that an old OOM was foreign. Root-owned JSON assertions alone
+  are not scope authority: validate a concrete protected capture/anchor chain
+  against its backing measurements, journal anchor and runtime generation.
+  A live-only producer cannot backdate proof. Missing/ambiguous historical scope
+  provenance forbids scoped exemptions; do not guess roots or pass empty scopes
+  to turn parser failure into a clear result.
 - Scan every unconsumed native byte through fixed per-file cutoffs, with enough
   carried state/lookbehind to detect patterns split across old offsets, chunks
   or concurrent appends. Bind device/inode lineage and byte offsets; missing
@@ -225,6 +230,34 @@ proof as current or adopt a changed profile through this operation.
   without gaps or double-skipped prefixes. If its bounds cannot consume the
   pending handoff, perform another bounded qualified catch-up or refuse; never
   advance past unseen evidence to fit a legacy batch limit.
+
+### Conservative replay without historical scope exemptions
+
+The explicit owner mode `whole_machine_conservative` may replay a complete
+qualified interval without historical cgroup proof because it discounts **no**
+OOM or GPU-fault candidate. It is a stronger classification policy over shared
+recognition, not a permissive parser fallback. Reject every OOM candidate,
+including complete foreign MEMCG pairs, header-only or victim-only records,
+malformed/unknown/incomplete events, case variations and page-split events.
+Preserve existing GPU fatal-fault recognition and conservatively reject unknown
+fault candidates; no parsing error may become clear. Journal continuity, all
+bounds, native replay, epoch/transaction fences and qualification remain exactly
+as required above.
+
+Absent legacy scope provenance therefore need not block this mode when the
+**entire qualified interval is candidate-free**. Its protected receipt must name
+the mode and bind the actual coverage interval, boot/page/record watermarks,
+classifier policy/version and bounds. It proves candidate-free coverage under
+that policy, not verified historical scopes, absence of every possible machine
+fault, or automatic readiness. It cannot grant scoped exemptions or substitute
+for the normal guard's handoff checks.
+
+Generated tests must establish that conservative clear implies scoped clear for
+**every valid scope assignment under comparable classifier budgets**. Comparing
+an owner catch-up budget against a smaller resident-monitor wrapper limit is not
+that property; the normal monitor's own handoff bounds must separately pass.
+These mode labels identify owner-artifact policy, not a new negotiated wire API.
+No broader exemption or recovery signal is introduced.
 
 ### Qualification and publication transaction
 
@@ -273,6 +306,11 @@ proof, independent review and applicable repository checks pass. In particular:
 
 - split/interleaved OOM across pages, historical registrar/ancestor OOM, and GPU
   faults cannot be hidden by foreign MEMCG events; cross-boot pairing fails;
+- conservative mode rejects every OOM/GPU-fault candidate without attribution,
+  accepts only complete candidate-free coverage when historical scopes are
+  absent, and satisfies the comparable-budget generated implication above;
+- root-owned historical claims without backing capture/anchor proof cannot
+  authorize scoped exemptions; a live producer cannot manufacture past proof;
 - missing/duplicate/reordered records/pages, absent boots, vacuum/loss, oversized
   events and exhausted bounds refuse adoption;
 - split native faults across offset/chunk/append boundaries, inode replacement,

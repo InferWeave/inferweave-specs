@@ -8,7 +8,10 @@ versioning rules and the protocol change workflow.
 
 - Specs 36/28: define an explicit owner-only cold-boot evidence catch-up and
   engine-epoch adoption contract, preserving the locked external profile,
-  complete monitoring history and quarantine-last publication. This repairs the
+  complete monitoring history and quarantine-last publication. Explicit
+  whole-machine conservative replay needs no historical scope exemptions and
+  rejects every fault candidate; scoped exemptions require real capture/anchor
+  provenance. This repairs the
   missing cross-boot recovery boundary; implementation, failure proofs and
   production qualification remain owed. No automatic recovery or gate opens.
 

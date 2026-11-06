@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,588,673 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,589,749 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -26,14 +26,14 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `.semgrepignore` — `81c5def09b50` — ~86t
 - `AGENTS.md` — `62b52b92bd18` — ~1,253t
 - `CANONICAL_IMPLEMENTATION_HANDOFF.md` — `fce9fb0109d4` — ~407t
-- `CHANGELOG.md` — `ad1a34afa60a` — ~5,795t
+- `CHANGELOG.md` — `384c21f64aec` — ~5,840t
 - `CONTRIBUTING.md` — `afbd4102ee4c` — ~405t
 - `FEATURE_GAPS_AND_CONFLICT_RESOLUTIONS.md` — `750ece083a57` — ~641t
 - `FEATURE_PRESERVATION_MATRIX.md` — `fe04be99b1a2` — ~980t
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `f229144436c1` — ~27,415t
+- `OPEN_GATES.md` — `247bc40fd7a0` — ~27,483t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -90,7 +90,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
 - `contracts/benchmark-continuation-policy.json` — `350ad477a88d` — ~256t
 - `contracts/benchmark-speed-execution.json` — `32e40f1d5397` — ~422t
-- `contracts/canonical-task-graph.json` — `cf5790c2cf17` — ~42,131t
+- `contracts/canonical-task-graph.json` — `190ab5d42470` — ~42,206t
 - `contracts/capability-bench-vocabulary-v1.json` — `3372ab1ac6c2` — ~461t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
 - `contracts/deployment-manifest.example.yaml` — `42f71d086f03` — ~167t
@@ -254,7 +254,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/model-intelligence-2026-10-12/schema-validation.json` — `9078ee9558d6` — ~233t
 - `evidence/model-intelligence-2026-10-12/theme-after-report.json` — `104469520e78` — ~3,079t
 - `evidence/model-intelligence-2026-10-12/ui-before-report.json` — `71493699dbc7` — ~2,685t
-- `evidence/owner-coldboot-epoch-adoption-2026-11-06/README.md` — `273efb2cd40d` — ~914t
+- `evidence/owner-coldboot-epoch-adoption-2026-11-06/README.md` — `9cb9ff547c44` — ~1,042t
 - `evidence/private-observability-2026-10-20/README.md` — `a21ddace6484` — ~621t
 - `evidence/private-observability-2026-10-20/conformance.log` — `59cce6de05e2` — ~252t
 - `evidence/private-observability-2026-10-20/green.log` — `94eb36e113ae` — ~27t
@@ -767,7 +767,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/runtime-observation-report.json` — `a2e472f63798` — ~281t
 - `fixtures/valid/seat.json` — `226b3cc299f9` — ~19t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `13f720f8b4f5` — ~3,633t
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `f8c1cf2d3a02` — ~31,433t
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `94da964e6bb6` — ~31,505t
 - `implementation/CANONICAL_TASK_INDEX.md` — `e726cf7e7b42` — ~3,853t
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
@@ -970,7 +970,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/33_RESUMABLE_BENCHMARK_DAG.md` — `6113091bd9c6` — ~3,308t
 - `specs/34_PROMPT_STORE_TIERING.md` — `801f5b308130` — ~437t
 - `specs/35_CLUSTER_SIMULATOR_CHAOS.md` — `8ff7bb06c9db` — ~475t
-- `specs/36_GPU_WATCHDOG_RESCUE.md` — `9430cf5fc0ae` — ~6,034t
+- `specs/36_GPU_WATCHDOG_RESCUE.md` — `e61f0d8d70c6` — ~6,650t
 - `specs/37_CONTAINER_DEPLOYMENT_STANDARD.md` — `d8a2dfbfa660` — ~1,687t
 - `specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md` — `3be309a25553` — ~1,179t
 - `specs/39_INFERENCE_RUNTIME_TUNING.md` — `3da89d20da5e` — ~1,485t
@@ -1054,7 +1054,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-1/P1-T18.md` — `787b576b3700` — ~502t
 - `tasks/phase-1/P1-T19.md` — `01c922da054b` — ~339t
 - `tasks/phase-1/P1-T20.md` — `631e311f8e5a` — ~697t
-- `tasks/phase-1/P1-T20A.md` — `19d8475c12e0` — ~358t
+- `tasks/phase-1/P1-T20A.md` — `458b52469fdb` — ~430t
 - `tasks/phase-1/P1-T20B.md` — `1eb4f73abdcd` — ~294t
 - `tasks/phase-1/P1-T20C.md` — `6c392a57daea` — ~313t
 - `tasks/phase-1/P1-T21.md` — `46ab609d7c13` — ~441t
