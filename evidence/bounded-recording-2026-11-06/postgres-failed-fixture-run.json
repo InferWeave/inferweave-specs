@@ -1,0 +1,47 @@
+{
+  "archive_sha256": "73aac7cbcab76e17d403a39719fd5bc25464c21d09bb810831a6ecc8b781e625",
+  "cleanup": {
+    "independent_container_absent": true,
+    "password_env_removed": true,
+    "runner_verified": true
+  },
+  "compile_exit": 0,
+  "image_id": "sha256:80f4c7a5e91618546dce5b4fe60cf03b14c0f9efa7e40157278d122772ced8d2",
+  "loopback_port": 32777,
+  "owned_container_id": "c1f2cf299ff8fd73673b3dcd1d14f60f826fe73aa7bb1e28089f820e5388bd87",
+  "resources": {
+    "bind_ip": "127.0.0.1",
+    "cpus": 1,
+    "memory_bytes": 536870912,
+    "pgdata": "tmpfs160m",
+    "pids": 128,
+    "ttl_s": 600
+  },
+  "schema": "iw.recording-receipt-failed-run/1",
+  "scope": "The new test stopped at RequestId grammar validation before concurrency/ACK markers; this run proves neither property. No storage implementation failure was observed.",
+  "source_commit": "fc695c07b335bcc5233b5270a862195265f3689e",
+  "test": {
+    "closed_marker_count": 0,
+    "exit_code": 101,
+    "failed": 1,
+    "failure_class": "invalid_test_fixture_identifier",
+    "ignored": 0,
+    "name": "receipt_and_supported_row_are_atomic_retries_require_identical_semantics",
+    "overlap_or_ack_proven": false,
+    "panic_locations": [
+      {
+        "column": 47,
+        "file": "recording.rs",
+        "line": 26
+      }
+    ],
+    "passed": 0
+  },
+  "test_binary_sha256": "b187a03fec0b59fc0c9e338fbe2f9c1fc3d07c718f97a5a7cfce30a99745dff5",
+  "toolchain": {
+    "cargo": "cargo 1.91.0 (ea2d97820 2025-10-10)",
+    "compiler_host_target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.91.0 (f8297e351 2025-10-28)",
+    "rustdoc": "rustdoc 1.91.0 (f8297e351 2025-10-28)"
+  }
+}

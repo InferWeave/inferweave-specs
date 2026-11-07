@@ -1,0 +1,85 @@
+{
+  "build": {
+    "compile_only_before_container": true,
+    "exit_code": 0,
+    "gate_bypass": false,
+    "gate_wait_seconds": 600,
+    "gated": true,
+    "jobs": 2,
+    "locked": true,
+    "offline": true,
+    "package": "iw-storage",
+    "test_binary": "recording"
+  },
+  "cleanup": {
+    "independently_rechecked_container_absent": true,
+    "password_env_removed": true,
+    "runner_verified": true
+  },
+  "postgres": {
+    "cached_image_id": "sha256:80f4c7a5e91618546dce5b4fe60cf03b14c0f9efa7e40157278d122772ced8d2",
+    "ephemeral_container_id": "bc951da600e6281aebf9e4030d93bd8b17c66fd934170782390a8937c867af80",
+    "loopback_port": 32776,
+    "ownership_and_resources_verified_before_test": true,
+    "ownership_label": {
+      "key": "io.inferweave.validation",
+      "value": "828a4de36da34055bc397f1f52fc5440"
+    },
+    "pull_policy": "never",
+    "resources": {
+      "bind_ip": "127.0.0.1",
+      "cpus": 1,
+      "memory_bytes": 536870912,
+      "pgdata": "tmpfs160m",
+      "pids": 128,
+      "ttl_s": 600
+    },
+    "version": "postgres (PostgreSQL) 16.15 (Debian 16.15-1.pgdg13+2)"
+  },
+  "runner_sha256": "5cd793275f4ac1b43fe3f4437f924d36a4afaa27d4ce25c5277be073660cdbc6",
+  "schema": "iw.recording-receipt-proof/1",
+  "scope": "Controlled PostgreSQL fixture test of iw-storage recording receipts; no gateway serving, production rollout, full-suite, or remote-filesystem qualification.",
+  "source_archive_sha256": "9fbfe400105dfe2eada8510aeb43b10a4023d17d1f3b5150a5f395be16b0b97f",
+  "source_commit": "3f96ba5e246b92226dd6d915dc0d1776fd91bfce",
+  "source_file_sha256": {
+    "crates/iw-storage/migrations/0017_gateway_recording_receipt.down.sql": "4ad56664876c593d2fc1791b9af21d47747c06db2d694e1f3367dac9b5e0cd5a",
+    "crates/iw-storage/migrations/0017_gateway_recording_receipt.up.sql": "138d81016b8a2291e828486358c93434ed8d24762b66ea466de61a6893001154",
+    "crates/iw-storage/src/error.rs": "23887c97d815ba7310c91d171a52f5d420399af30e15f6bb017cb855370742e7",
+    "crates/iw-storage/src/lib.rs": "d32f10d3d6f80735608b8e62e862ed41364b20bf038ae4ab27a575e320eccea3",
+    "crates/iw-storage/src/migrate.rs": "f013e1615ced7bdc3976bfb6e0016da204d3c9379ec5b55a1b33f17d839b815d",
+    "crates/iw-storage/src/prompt_store.rs": "835c25ca6c077d3229eb42e1b7278eda8aa027ce7e65213c23423735502802f7",
+    "crates/iw-storage/src/recording.rs": "52d27d3ecace064c9aa4aaff6d4fe650e8641df2ca2f55173904a962ceed7f66",
+    "crates/iw-storage/src/request_fact.rs": "b7d3b4bb57204548190a4f33e3728fd6e4a606c1a33062b1137d34764cc93b0d",
+    "crates/iw-storage/src/store.rs": "7f9bb23aaffbd887833cb41e124703c4bb478b23920254edfdd6960d76b42f5a",
+    "crates/iw-storage/tests/aliases.rs": "fd0b57a0c266e67cfd856e377ba8a26906ea3f560e8142565942f423fe816260",
+    "crates/iw-storage/tests/benchmark_review.rs": "6ba8a62bd49e4b37ad019fd00e5c4a9565b8e8a9c1dcb2dead925c3a7834d599",
+    "crates/iw-storage/tests/benchmark_submission.rs": "a54a84b033e8bf3fefb069f998a78815d6c6169fbe7ed37ff2c530070f023d18",
+    "crates/iw-storage/tests/benchmark_warehouse.rs": "e5fa2cc59dde1d4ac91612d3cad4fb271675b9dc159cb916714171170e1f5dad",
+    "crates/iw-storage/tests/migrations.rs": "5cfe2bafab475cc6d6ec1f294d9d6c939d5cf6707665b62690cbd9cc72e477d5",
+    "crates/iw-storage/tests/recording.rs": "806fecbd83e89e82b56c5e61a3070843d09670aa4ad3d3dc81fa3be9ab6c9830"
+  },
+  "test": {
+    "coverage": [
+      "sealed prompt with managed key references",
+      "identical prompt/attempt/fact retry without duplicate rows or totals",
+      "changed prompt/attempt/fact semantic digest conflicts",
+      "legacy natural rows without receipts conflict and roll back new receipts",
+      "missing-parent attempt/fact failures permit independent valid sibling commit",
+      "receipt parent cascade and genuinely deferred foreign key"
+    ],
+    "exit_code": 0,
+    "failed": 0,
+    "ignored": 0,
+    "name": "receipt_and_supported_row_are_atomic_retries_require_identical_semantics",
+    "passed": 1
+  },
+  "test_binary_sha256": "7b51bf35f61d44b8d712a417a7989153445770873e6f61ffe55ac2777fa85cbc",
+  "toolchain": {
+    "cargo": "cargo 1.91.0 (ea2d97820 2025-10-10)",
+    "compiler_host_target": "x86_64-unknown-linux-gnu",
+    "explicit_installed_executables_verified": true,
+    "rustc": "rustc 1.91.0 (f8297e351 2025-10-28)",
+    "rustdoc": "rustdoc 1.91.0 (f8297e351 2025-10-28)"
+  },
+  "verified_storage_file_count": 15
+}

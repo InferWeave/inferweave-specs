@@ -1480,3 +1480,16 @@ implemented. Its offline descriptor and binding projections establish no deploye
 authority or active withdrawal. Live ownership, policy withdrawal/unavailability,
 cancellation under the original deadline, independent child/channel admission,
 recovery, safe capacity, hardware and production qualification remain **owed**.
+
+## Bounded gateway recorder resource policy — deployment proof owed
+
+**BLOCKED for production adoption of this repair until independently reviewed
+and qualified.** Spec22's configurable byte/disk policy and stable-identity
+migration implement existing best-effort recording intent; they do not approve
+an expanded rollout or new PostgreSQL response capture. Local component tests,
+private PostgreSQL receipt tests and policy defaults cannot establish target
+shared-filesystem lock semantics, exclusion of legacy writers, preservation of
+the existing deployed identity, or integrated auth/alias/cancellation parity.
+The source/evidence boundary is tracked in
+[`evidence/bounded-recording-2026-11-06/README.md`](evidence/bounded-recording-2026-11-06/README.md).
+No Farm serving artifact, GPU deployment or CI pool is changed by these proofs.

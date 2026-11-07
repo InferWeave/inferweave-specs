@@ -35,7 +35,7 @@ Features: **92**
 | `IW-FED-001` Intermediate coordinator/federation roles | P1 | 5 | control-plane | `P5-T04` |
 | `IW-TOOL-001` Workbench MCP/tool catalog and permission-aware invocation | P2 | 4 | web/workbench | `P4-T05`, `P4-T08` |
 | `IW-VERIFY-001` Node/deployment challenge and verification bands | P2 | 5 | control-plane+node | `P5-T05` |
-| `IW-PROMPT-001` Record encrypted prompts without coupling gateway admission to sink availability | P0 | 1 | control-plane | `P0-T05`, `P1-T07`, `P1-T08`, `P1-T24` |
+| `IW-PROMPT-001` Record encrypted prompts with bounded resource policy without coupling gateway admission to sink availability | P0 | 1 | control-plane | `P0-T05`, `P1-T07`, `P1-T08`, `P1-T24` |
 | `IW-DP-003` Direct-first client/local-proxy to node data path | P0 | 1 | control-plane+node | `P1-T16`, `P1-T17`, `P1-T24` |
 | `IW-TEL-001` Per-GPU full hardware/software/runtime/model telemetry | P0 | 1 | node | `P0-T04`, `P0-T05`, `P1-T04`, `P1-T05`, `P1-T20` |
 | `IW-BENCH-002` Global cluster benchmark and contribution warehouse | P0 | 2 | control-plane | `P2-T01`, `P2-T03` |
@@ -143,3 +143,8 @@ failure DTOs are unchanged; private ingest/read runtime proof remains owed.
 Guarded SpeedRequests and advisory coverage v2 reuse IW-BENCH-003/P2-T19 and
 IW-BENCH-002/P2-T03, with the independent IW-GPUMEM-001 safety dependency.
 AC-SPEED-01–08 and their owed proof are in `contracts/benchmark-speed-execution.json`.
+
+The 2026-11-06 IW-PROMPT-001 recording resource-policy repair and P1-T25 failure
+proofs are tracked in [bounded-recording evidence](../evidence/bounded-recording-2026-11-06/README.md).
+This preserves the existing task graph, phase order and durable-ingest contract;
+component tests do not close production/shared-filesystem gates.

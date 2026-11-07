@@ -1,0 +1,122 @@
+{
+  "schema": "iw.recording-outcomes/1",
+  "version": 1,
+  "feature_id": "IW-PROMPT-001",
+  "spec": "specs/22_PROMPT_LEDGER.md",
+  "known_loss_reasons": [
+    "full",
+    "byte_budget",
+    "oversize",
+    "closed",
+    "encoding",
+    "entropy_unavailable",
+    "contention",
+    "discard",
+    "disk_budget",
+    "missing_parent",
+    "unsupported",
+    "invalid",
+    "conflict"
+  ],
+  "unknown_outcome_reasons": [
+    "worker_termination",
+    "shutdown",
+    "invalid_sink_result",
+    "refusal_after_uncertain_retry"
+  ],
+  "health_states": [
+    "healthy",
+    "delayed",
+    "dropping"
+  ],
+  "sink_results": [
+    "committed",
+    "permanent_loss",
+    "unresolved"
+  ],
+  "metrics": {
+    "known_loss": "iw_recording_losses_total",
+    "unknown_outcome": "iw_recording_sink_outcome_unknown_total",
+    "health": "iw_recording_health"
+  },
+  "defaults": {
+    "discard": false,
+    "capacity": 8192,
+    "max_bytes": 67108864,
+    "max_event_bytes": 8388608,
+    "max_batch_bytes": 16777216,
+    "batch_size": 128,
+    "flush_ms": 250,
+    "retry_initial_ms": 100,
+    "retry_max_ms": 30000,
+    "disk_max_bytes": 1073741824,
+    "disk_scan_limit": 10000
+  },
+  "invalid_policy_vectors": [
+    {
+      "capacity": 0
+    },
+    {
+      "max_bytes": 0
+    },
+    {
+      "max_event_bytes": 0
+    },
+    {
+      "max_batch_bytes": 0
+    },
+    {
+      "batch_size": 0
+    },
+    {
+      "flush_ms": 0
+    },
+    {
+      "retry_initial_ms": 0
+    },
+    {
+      "retry_max_ms": 0
+    },
+    {
+      "disk_max_bytes": 0
+    },
+    {
+      "disk_scan_limit": 0
+    },
+    {
+      "max_event_bytes": 8192,
+      "max_batch_bytes": 4096
+    },
+    {
+      "max_batch_bytes": 8192,
+      "max_bytes": 4096
+    },
+    {
+      "retry_initial_ms": 1000,
+      "retry_max_ms": 100
+    },
+    {
+      "capacity": 8193
+    },
+    {
+      "batch_size": 129
+    },
+    {
+      "capacity": 18446744073709551615
+    },
+    {
+      "batch_size": 18446744073709551615
+    }
+  ],
+  "count_ceilings": {
+    "capacity": 8192,
+    "batch_size": 128
+  },
+  "entropy_policy": {
+    "queued_objects": 8191,
+    "pending_prepare_or_send_objects": 1,
+    "maximum_objects": 8192,
+    "raw_entropy_bytes_per_object": 64,
+    "independent_of_configured_event_capacity": true
+  }
+}

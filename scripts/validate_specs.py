@@ -832,6 +832,11 @@ def validate():
     errors.extend(guard_deployment_substrate(ROOT))
     errors.extend(guard_required_artifacts(ROOT))
     errors.extend(guard_prompt_recording_contracts(ROOT))
+    import importlib.util
+    recording_spec = importlib.util.spec_from_file_location("recording_outcomes_contract", ROOT / "conformance/recording_outcomes.py")
+    recording_module = importlib.util.module_from_spec(recording_spec)
+    recording_spec.loader.exec_module(recording_module)
+    errors.extend(recording_module.contract_errors(ROOT))
     errors.extend(guard_bundle_metadata(ROOT))
     errors.extend(guard_backpressure_contracts(ROOT, features, tasks))
     errors.extend(guard_protocol_vocab(ROOT, features, tasks))
