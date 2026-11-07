@@ -923,7 +923,7 @@
   "scripts/test_native_control_plane.py": "fd4e33413e1cef6d99bff2d119fd1048ffd136fea84837a8f1662aab11deff14",
   "scripts/test_recording_outcomes.py": "339ff00856f2a5ba05896c0acfa3c9bb876a6a897693f235694fbf396b62f7cb",
   "scripts/test_validate_specs.py": "45b7fd4b5ecc7f9c708dfdc662f8015130a364393875e99151954944705303fc",
-  "scripts/validate_specs.py": "30eb957ea5b618ca4a1a01a2a3d1fbf298ded3f92c5a80e271e63bd671baacd9",
+  "scripts/validate_specs.py": "49c60a1ae261253a0d8f872addcdca936cfc4164cad37e02c818235b7f1b4c5c",
   "solana/DEVNET_ONLY.md": "1a8ea96fcc580aa266209747df5223314df59bf81a7492e2e5ff5e63bef3eb01",
   "specs/00_INVARIANTS.md": "e21827e641791bff401209cf17cca8cdf2209cec9b3a0bbb1e64b90bb088659e",
   "specs/01_REPOSITORIES_AND_OWNERSHIP.md": "e52f5e6e81126a0edc7804799598051a83a9217491afb002f583eebac239cac3",
