@@ -832,6 +832,8 @@ def validate():
     errors.extend(guard_deployment_substrate(ROOT))
     errors.extend(guard_required_artifacts(ROOT))
     errors.extend(guard_prompt_recording_contracts(ROOT))
+    import recording_outcomes
+    errors.extend(recording_outcomes.contract_errors(ROOT))
     errors.extend(guard_bundle_metadata(ROOT))
     errors.extend(guard_backpressure_contracts(ROOT, features, tasks))
     errors.extend(guard_protocol_vocab(ROOT, features, tasks))

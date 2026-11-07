@@ -1,0 +1,124 @@
+{
+  "build": {
+    "compile_only_before_container": true,
+    "exit_code": 0,
+    "gate_bypass": false,
+    "gate_wait_seconds": 600,
+    "gated": true,
+    "jobs": 2,
+    "locked": true,
+    "offline": true,
+    "package": "iw-storage",
+    "test_binary": "recording"
+  },
+  "cleanup": {
+    "independently_rechecked_container_absent": true,
+    "password_env_removed": true,
+    "runner_verified": true
+  },
+  "postgres": {
+    "cached_image_id": "sha256:80f4c7a5e91618546dce5b4fe60cf03b14c0f9efa7e40157278d122772ced8d2",
+    "ephemeral_container_id": "02d7e954ac2a13128f273b6590885d4fa361c474f5814645272d5b016a57ba3a",
+    "loopback_port": 32778,
+    "ownership_and_resources_verified_before_test": true,
+    "ownership_label": {
+      "key": "io.inferweave.validation",
+      "value": "246a85c8c52c41938df126f3cdcb6b99"
+    },
+    "pull_policy": "never",
+    "resources": {
+      "bind_ip": "127.0.0.1",
+      "cpus": 1,
+      "memory_bytes": 536870912,
+      "pgdata": "tmpfs160m",
+      "pids": 128,
+      "ttl_s": 600
+    },
+    "version": "postgres (PostgreSQL) 16.15 (Debian 16.15-1.pgdg13+2)"
+  },
+  "previous_failed_run": {
+    "cause": "New test fixture IDs violated frozen wire grammar; no overlap or ACK proof was claimed.",
+    "closed_marker_count": 0,
+    "sanitized_failure_proof_sha256": "4b45e4ce005c0970cf3c9b82e03dcb273647f28d54eb6e23c1316468f175024d",
+    "source_commit": "fc695c07b335bcc5233b5270a862195265f3689e",
+    "test_exit": 101
+  },
+  "runner_sha256": "61e3f0ec836846ac9885602a61a38c0fa91a676df1dff48c211f5c077de366aa",
+  "schema": "iw.recording-receipt-proof/2",
+  "scope": "Actual concurrent receipt transactions and actual withheld server COMMIT acknowledgement against controlled PostgreSQL fixtures. No gateway serving, production rollout, full-suite, power-loss durability or remote-filesystem qualification.",
+  "source_archive_bytes": 91043840,
+  "source_archive_sha256": "7baaec298cf5345bde11e6bbaf265cdf98733bc12eb72dfe1e2009d2a3bc16ab",
+  "source_commit": "0ae0f23c7dd6d826e2594de523d96b54b7a65785",
+  "source_file_sha256": {
+    "crates/iw-storage/migrations/0017_gateway_recording_receipt.down.sql": "4ad56664876c593d2fc1791b9af21d47747c06db2d694e1f3367dac9b5e0cd5a",
+    "crates/iw-storage/migrations/0017_gateway_recording_receipt.up.sql": "138d81016b8a2291e828486358c93434ed8d24762b66ea466de61a6893001154",
+    "crates/iw-storage/src/error.rs": "23887c97d815ba7310c91d171a52f5d420399af30e15f6bb017cb855370742e7",
+    "crates/iw-storage/src/lib.rs": "d32f10d3d6f80735608b8e62e862ed41364b20bf038ae4ab27a575e320eccea3",
+    "crates/iw-storage/src/migrate.rs": "f013e1615ced7bdc3976bfb6e0016da204d3c9379ec5b55a1b33f17d839b815d",
+    "crates/iw-storage/src/prompt_store.rs": "835c25ca6c077d3229eb42e1b7278eda8aa027ce7e65213c23423735502802f7",
+    "crates/iw-storage/src/recording.rs": "52d27d3ecace064c9aa4aaff6d4fe650e8641df2ca2f55173904a962ceed7f66",
+    "crates/iw-storage/src/request_fact.rs": "b7d3b4bb57204548190a4f33e3728fd6e4a606c1a33062b1137d34764cc93b0d",
+    "crates/iw-storage/src/store.rs": "7f9bb23aaffbd887833cb41e124703c4bb478b23920254edfdd6960d76b42f5a",
+    "crates/iw-storage/tests/aliases.rs": "fd0b57a0c266e67cfd856e377ba8a26906ea3f560e8142565942f423fe816260",
+    "crates/iw-storage/tests/benchmark_review.rs": "6ba8a62bd49e4b37ad019fd00e5c4a9565b8e8a9c1dcb2dead925c3a7834d599",
+    "crates/iw-storage/tests/benchmark_submission.rs": "a54a84b033e8bf3fefb069f998a78815d6c6169fbe7ed37ff2c530070f023d18",
+    "crates/iw-storage/tests/benchmark_warehouse.rs": "e5fa2cc59dde1d4ac91612d3cad4fb271675b9dc159cb916714171170e1f5dad",
+    "crates/iw-storage/tests/migrations.rs": "5cfe2bafab475cc6d6ec1f294d9d6c939d5cf6707665b62690cbd9cc72e477d5",
+    "crates/iw-storage/tests/recording.rs": "d2babe9029a2b49af48afd7d46da923a8b48226898132d3b28b3b33e141493cc"
+  },
+  "storage_implementation_commit": "3f96ba5e246b92226dd6d915dc0d1776fd91bfce",
+  "test": {
+    "exit_code": 0,
+    "failed": 0,
+    "ignored": 0,
+    "name": "receipt_and_supported_row_are_atomic_retries_require_identical_semantics",
+    "passed": 1,
+    "proxy_bounds_evidence": "Configured/source-enforced bounds; no independent OS thread census is claimed. PostgreSQL lock waiters and row counts were observed by the test.",
+    "runtime_assertions": {
+      "commit_ack_loss": {
+        "actual_row_after_retry": 1,
+        "actual_row_before_retry": 1,
+        "client_method_returned_error": true,
+        "commit_ack_withheld": true,
+        "proxy_backend_frame_bound_bytes": 1048576,
+        "proxy_loopback_only": true,
+        "proxy_max_threads": 2,
+        "receipt_after_retry": 1,
+        "receipt_before_retry": 1,
+        "server_commit_commandcomplete_observed": true
+      },
+      "concurrent_conflict": {
+        "ok_results": 1,
+        "receipt_rows": 1,
+        "recording_conflict_results": 1,
+        "winner_output_tokens": 19
+      },
+      "concurrent_identical": {
+        "actual_rows": 1,
+        "ok_results": 2,
+        "receipt_rows": 1
+      },
+      "database_overlap": [
+        {
+          "actual_row_insert_lock_waiters": 1,
+          "actual_row_table": "prompt_record",
+          "competing_receipt_insert_lock_waiters": 1
+        },
+        {
+          "actual_row_insert_lock_waiters": 1,
+          "actual_row_table": "request_fact",
+          "competing_receipt_insert_lock_waiters": 1
+        }
+      ]
+    }
+  },
+  "test_binary_sha256": "137ec79bbc4093dbcd6fb94802a7dd72c5b8ee3b89978ebe79c5899996f87b9b",
+  "toolchain": {
+    "cargo": "cargo 1.91.0 (ea2d97820 2025-10-10)",
+    "compiler_host_target": "x86_64-unknown-linux-gnu",
+    "explicit_installed_executables_verified": true,
+    "rustc": "rustc 1.91.0 (f8297e351 2025-10-28)",
+    "rustdoc": "rustdoc 1.91.0 (f8297e351 2025-10-28)"
+  },
+  "verified_storage_file_count": 15
+}

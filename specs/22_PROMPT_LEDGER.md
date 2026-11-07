@@ -67,6 +67,81 @@ These are configurable bounded policies, not durability guarantees. A sink call
 that never returns may strand one dedicated recorder thread; it cannot create
 unbounded replacement tasks or block request threads.
 
+### Recording resource and retry policy
+
+The versioned [frozen recording contract](../contracts/recording-outcomes-v1.json)
+and [vocabulary document](../docs/contracts/recording-outcomes-v1.md) define
+metric reasons, sink classes, health labels, policy defaults and invalid vectors.
+Implementations vendor the pinned data and reconcile emitted labels and limits
+by test; no runtime contract fetch is permitted.
+
+The default encoded-event byte budget is 64 MiB across queued events and the
+single retained batch, with at most 8 MiB per event and 16 MiB per batch. These
+are configurable operator-selected policy ceilings, not measured hardware
+capacity or throughput claims. Reserve bounded space before sealing/copying;
+an event that cannot fit is dropped newest and counted. Count, byte, encoding,
+entropy-unavailable, contention and closed-channel loss remain distinguishable.
+Reject zero or inconsistent event/batch/total byte bounds before startup;
+require event ≤ batch ≤ shared total. Count limits may be lowered but never
+raised above 8192 queued events or 128 batch events, and must be rejected before
+channel allocation if out of range. One encoded-byte reservation remains with
+the event through queue, in-flight, retained and retry ownership, and is released
+exactly once on terminal classification. Configured crash-loss count bounds
+never exceed 8320 and do not make actual crash loss known.
+Content never waits in a plaintext asynchronous queue. Managed envelope sealing
+must not wait on another caller's RNG lock or perform entropy/storage reads on
+the admission thread: one bounded pool of one-use prepared entropy may be
+refilled by one dedicated worker. The fixed reservoir is independent of lowered
+event count:8191 queued objects plus at most one preparing/sending object,8192
+total. A prepared-object gauge includes a pending send and is not readiness.
+Pool exhaustion drops recording; it never
+falls back to blocking sealing or plaintext. A frozen sink or entropy refiller
+cannot spawn replacements or make serving shutdown wait indefinitely.
+
+A file recorder defaults to a cumulative 1 GiB encoded-byte budget per
+configured deployment directory and a bounded 10,000-entry metadata scan.
+Historical and uncertain partial writes count after restart. Unknown capacity,
+symlinks, an over-budget batch or an unqualified competing writer never grant
+additional space. These values are policy, not an acceptable disk-full target.
+Budget exhaustion loses only new best-effort records with explicit counters;
+no acknowledged durable data is automatically deleted or truncated. Retention
+or drain of existing durable records is a separately authorized and audited
+workflow. Shared-filesystem locking and exclusion of older, non-cooperating
+writers require qualification before rollout.
+
+Recorder startup cannot discover or create the gateway's stable identity in
+the recording filesystem. Existing deployments must preprovision the **same**
+persisted identity in protected independent static settings before adopting
+this startup contract. Legacy implicit outbox identity is a bounded static
+migration error; an unavailable old identity is never replaced with a freshly
+minted identity while claiming continuity. Recording-filesystem and database
+outages remain independent of ordinary serving once static prerequisites are
+valid. Protected alias/warehouse authority retains its own fail-closed store
+requirements and cannot be fabricated from a recorder or discard adapter.
+
+Batch sinks return per-event committed, permanent-loss or unresolved outcomes.
+Only the unresolved subset is retried. Never-dispatched queued casualties are
+known loss, but a sink worker that terminates after dispatch may already have
+committed its in-flight batch. Report those unacknowledged outcomes separately
+as unknown, never as committed or known lost. A permanent refusal after an
+uncertain retry also cannot prove the earlier attempt did not commit. Closed
+unknown-outcome reasons are worker termination, shutdown with unresolved work,
+invalid sink outcome shape, and refusal after an uncertain retry. Do not spawn
+a replacement worker. The configured crash-loss bound is separate from these
+exact current-process counters and does not make abrupt crash loss known.
+A dropped prompt may cause a dependent
+fact/attempt to fail its parent constraint; that event is permanent measured
+loss, while unrelated valid events may commit. Natural-key uniqueness alone
+is insufficient evidence of identical retry. PostgreSQL may atomically commit
+a metadata-only semantic receipt with the supported prompt/attempt/fact row;
+matching input semantics acknowledge an identical retry, and different or
+unprovable legacy semantics are explicit conflict loss. The semantic binding
+includes original content hashes and logical fields, excludes randomized
+ciphertext/key wrapping and database-generated timestamps, and must not depend
+on round-tripping database timestamp precision. Receipts expire with authorized
+parent retention. This adds no PostgreSQL response-capture capability: existing
+unsupported response recording remains explicit loss, never false success.
+
 The durable prompt-ingest service remains horizontally scalable and distinct
 from the routing gateway. If a client explicitly chooses durable ingest and
 cannot reach it, that request is not durably submitted and the API fails closed.
