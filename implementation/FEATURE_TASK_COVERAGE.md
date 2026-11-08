@@ -86,6 +86,11 @@ Features: **92**
 | `IW-TOPO-002` Topology horizon and completeness semantics | P0 | 2 | control-plane | `P2-T23` |
 | `IW-TOPO-003` Federated topology composition | P1 | 5 | control-plane | `P5-T11` |
 | `IW-TOPO-004` Per-viewer topology redaction | P0 | 2 | control-plane | `P2-T24` |
+| `IW-BENCH-004` Capability vocabulary v2 and the scope-adherence record kind: frozen contracts/capability-bench-vocabulary-v2.json mirroring the implementation's capability-v2.json, additive to v1 (extension of Capability Bench v1; new proof owed) | P1 | 2 | benchmarks | `P2-T25` |
+| `IW-BENCH-005` Benchmark stack fingerprint: observed harness, tool-list, system-prompt and chat-template attribution stored with every drift and scope result, null when unobserved (extension of Capability Bench v1; new proof owed) | P1 | 2 | benchmarks | `P2-T26` |
+| `IW-BENCH-006` Scope-adherence scenario family: network-isolated recording-stub sandbox, bare and full harness arms, deterministic action-log grader, protected-hardware refusal (extension of Capability Bench v1; new proof owed) | P1 | 2 | benchmarks | `P2-T27` |
+| `IW-BENCH-007` Drift canaries and paired alarms: measured self-divergence floor, exact McNemar, Holm, EWMA/CUSUM and two-consecutive-run alarm rule (extension of Capability Bench v1; new proof owed) | P1 | 2 | benchmarks | `P2-T28` |
+| `IW-BENCH-008` Quantization baselines on Slurm: operator-launched reference runs and text-level and logit-level comparison of served quants against them (extension of Capability Bench v1; not implemented, no plan) | P1 | 2 | benchmarks | `P2-T29` |
 | `IW-TOPO-005` Topology scale aggregation | P2 | 5 | control-plane | `P5-T12` |
 | `IW-TOPO-006` Whole-network visualization surface | P2 | 5 | web | `P5-T13` |
 | `IW-GRANT-004` Capacity grant receipts and forecast signals (provisioning hosting requests: spec 62) | P2 | 5 | control-plane | `P5-T17` |

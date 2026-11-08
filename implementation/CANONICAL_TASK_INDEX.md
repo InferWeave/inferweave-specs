@@ -133,6 +133,11 @@ Total tasks: **168**
 | `D-T01` | deferred | C70 | P5-T10 | Optional development settlement adapter |
 | `P2-T23` | 2 | C80 | P0-T06, P1-T04, P1-T05 | Topology graph model and local gateway export |
 | `P2-T24` | 2 | C75 | P2-T23 | Per-viewer topology redaction |
+| `P2-T25` | 2 | C75 | P2-T03 | Capability vocabulary v2 and the scope-adherence record kind |
+| `P2-T26` | 2 | C70 | P2-T25 | Benchmark stack fingerprint with honest nulls |
+| `P2-T27` | 2 | C85 | P2-T25, P2-T26 | Scope-adherence scenario family with an isolated recording sandbox and deterministic grader |
+| `P2-T28` | 2 | C80 | P2-T25, P2-T26 | Drift canaries and paired alarms with a measured self-divergence floor |
+| `P2-T29` | 2 | C85 | P2-T27, P2-T28 | Quantization baselines on Slurm and the logit-level comparison tier |
 | `P5-T11` | 5 | C85 | P2-T23, P5-T04 | Federated topology composition |
 | `P5-T12` | 5 | C80 | P5-T11 | Topology scale aggregation |
 | `P5-T13` | 5 | C80 | P5-T11 | Whole-network topology visualization surface |
