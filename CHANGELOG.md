@@ -6,6 +6,11 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Capability Bench v1 extension, Drift Watch (traceability only; no wire or protocol change): frozen
+  `contracts/capability-bench-vocabulary-v2.json` (additive to v1, which is untouched; adds capabilities
+  `scope-adherence` and `drift-canary` and four `unrequested.*` failure classes), features `IW-BENCH-004` to
+  `IW-BENCH-008` and tasks `P2-T25` to `P2-T29`, all proof `owed`. Implemented in the reference repository
+  (PR #1491), not deployed; see `evidence/drift-watch-traceability-2026-11-08/README.md`.
 - Spec 36: bound owner cold-boot assurance to retained journal anchors and declared
   collector assumptions; require broader global OOM candidates and pre-ingest
   loss-indicator checks before adoption. All new proofs remain owed.

@@ -90,6 +90,23 @@ implementation repository under
   are never eligible without explicit configuration.
 - **Registry traceability owed:** feature IDs, task cards and `canonical-task-graph.json`
   entries for P1–P8 are not created, and specs 12/23/24 were not reconciled field by field.
+- **Drift Watch extension (2026-11-08): registered, unsatisfied.** Scope adherence, stack fingerprint
+  and paired drift alarms are merged in the implementation repository (PR #1491, `f9595585`) as an
+  extension of this package, registered as `IW-BENCH-004` to `IW-BENCH-008` and tasks `P2-T25` to
+  `P2-T29`, with frozen
+  [`contracts/capability-bench-vocabulary-v2.json`](contracts/capability-bench-vocabulary-v2.json)
+  (v1 untouched). All five tasks are `owed`; nothing is deployed and nothing has run on real
+  hardware. Not proven here: this change reproduced no implementation test. Known limits, from the
+  design: scope adherence is an upper bound (no catch-all egress recorder); the sandbox work
+  directory is not size-capped; the real git is listable inside the sandbox; the drift statistics
+  have no production history producer and Holm over a rolling pair does not control the error rate
+  across repeated monitoring; the hardware guard works from names, so a protected machine under an
+  unlisted name or bare address is not recognised; and the containment tests skip where `bwrap` is
+  unusable (the Woodpecker `ci.sif` image), so those controls are proven only on hosts with it.
+  Quantization baselines (`P2-T29`) are not started or planned. Scope and drift results must not
+  feed routing eligibility. Evidence:
+  [`evidence/drift-watch-traceability-2026-11-08/README.md`](evidence/drift-watch-traceability-2026-11-08/README.md).
+  The P1–P8 traceability and the spec 12/23/24 reconciliation above remain owed.
 
 ## How to read a gate
 
