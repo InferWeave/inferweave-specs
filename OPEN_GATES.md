@@ -1510,3 +1510,17 @@ the existing deployed identity, or integrated auth/alias/cancellation parity.
 The source/evidence boundary is tracked in
 [`evidence/bounded-recording-2026-11-06/README.md`](evidence/bounded-recording-2026-11-06/README.md).
 No Farm serving artifact, GPU deployment or CI pool is changed by these proofs.
+
+## Qualified public-console migration — 2026-11-10
+
+**UNSATISFIED / owed** (IW-DEPLOY-001 / P1-T22). Spec37 now requires usable
+full-source rollback and complete recovered composition before public admission
+is drained. The observed legacy console cannot establish restoration provenance
+from its short label and source-less health, and its Compose labels include a
+missing temporary file. No exception to ordinary source/image/health guards is
+approved. A separate qualified fallback migration requires independent review,
+removal-sensitive guard proofs, real Compose lifecycle, independent accepted
+model inference and loaded paid-policy proof, owned completed-actor recovery,
+production composition parity, and public-path verification after restoration.
+Implementation or a scratch probe opens no production gate. The supplied user
+session's explicit deployment authority is separate from these proof obligations.
