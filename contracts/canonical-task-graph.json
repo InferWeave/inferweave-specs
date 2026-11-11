@@ -782,9 +782,10 @@
         "capacity never negative property",
         "shared weights counted once",
         "context growth update tests",
-        "withdrawn ready provider contributes zero eligible/owner capacity; healthy sibling capacity and already accepted reservations remain intact"
+        "withdrawn ready provider contributes zero eligible/owner capacity; healthy sibling capacity and already accepted reservations remain intact",
+        "native state-unit pools counted once across models with conservative overlap distinguished from physical measurements (owed)"
       ],
-      "notes": ""
+      "notes": " Native runtime bounds and shared pools follow contracts/systemone-native-admission-v1.json; selected deployment proof owed."
     },
     {
       "id": "P1-T11A",
@@ -856,9 +857,10 @@
         "lease expiration",
         "double-admit race",
         "cancel releases resources",
-        "prediction mismatch"
+        "prediction mismatch",
+        "native input and exact registration-incarnation admission reject stale/mismatched claims; cancellation releases the owned pool cost once (owed)"
       ],
-      "notes": ""
+      "notes": " Native runtime bounds and shared pools follow contracts/systemone-native-admission-v1.json; selected deployment proof owed."
     },
     {
       "id": "P1-T12A",
@@ -4155,9 +4157,10 @@
         "name-derived-rejection",
         "registry-closure (unknown family id fails admission)",
         "adapter lifecycle completeness and process/container isolation",
-        "mixed-version peer compatibility without family inference"
+        "mixed-version peer compatibility without family inference",
+        "native SystemOne envelope, exact registration/generation, shared-pool occupancy and cancellation (owed)"
       ],
-      "notes": ""
+      "notes": " Native SystemOne input/report contract: contracts/systemone-native-admission-v1.json; production qualification owed."
     },
     {
       "id": "B-T02",

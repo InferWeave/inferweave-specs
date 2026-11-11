@@ -108,7 +108,7 @@ Features: **92**
 | `IW-SITEATT-001` Site attestation: a gateway attests the paid-model grant it enforces to a paid runtime that may join any gateway (`iw.site-attestation/1`; new proof owed) | P1 | 5 | gateway+node | `P5-T39` |
 | `IW-STORE-001` InferWeave Storage Phase 1: content-addressed model store, signed iwg1 grants, native and S3 read-only front ends, digest index, quarantine and multi-source stager (`iw.store/1`, Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T36` |
 | `IW-STORE-002` InferWeave Storage Phase 2: TLS, federated grant forwarding, per-range hashes, ingest leases, replication, write path, rendezvous | P2 | 5 | gateway+node | `P5-T37` |
-| `IW-RT-001` Runtime families, typed capabilities, isolated adapters and feature negotiation | P1 | B | control-plane | `B-T01` |
+| `IW-RT-001` Runtime families, typed capabilities, native SystemOne shared-pool envelopes, isolated adapters and feature negotiation | P1 | B | control-plane | `B-T01` |
 | `IW-RT-002` Native `/inferweave/v1` endpoints, standalone schema parity and exact-incarnation bounded request plus HTTP response-proof negotiation | P1 | B | control-plane | `B-T02` |
 | `IW-RT-003` Transactional lifecycle, single-flight loads, reservations, caches and rollback | P1 | B | control-plane | `B-T03` |
 | `IW-RT-004` Typed inference pipelines | P1 | B | control-plane | `B-T04` |

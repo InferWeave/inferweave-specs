@@ -53,8 +53,8 @@ Context degradation is never automatic unless client policy explicitly permits i
 
 ## Deployment context ceiling
 
-Every deployment publishes `max_context_tokens`: the largest total context its loaded runtime
-will accept. This is a property of the deployment, not of current load.
+Every token-addressable deployment publishes `max_context_tokens`: the largest total context its loaded runtime
+will accept. This is a property of the deployment, not of current load. A non-token runtime instead publishes and enforces its native input envelope under spec48; a fabricated token window cannot stand for a byte, shape or decision-input bound. Unknown native limits are inadmissible just as unknown token ceilings are.
 
 The pool a scheduler has budgeted and the ceiling a runtime will accept are different
 quantities. Only the ceiling can make a request impossible, and free capacity never raises it.

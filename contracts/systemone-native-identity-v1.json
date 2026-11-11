@@ -1,0 +1,43 @@
+{
+  "protocol": "iw.systemone-admission/1",
+  "pattern": "^[A-Za-z0-9_.:/-]+(?![\\s\\S])",
+  "maxBytes": 256,
+  "cases": [
+    {
+      "value": "a",
+      "accepted": true
+    },
+    {
+      "value": "node-a/runtime_1:gen.2",
+      "accepted": true
+    },
+    {
+      "value": "node@host",
+      "accepted": false
+    },
+    {
+      "value": "node\"host",
+      "accepted": false
+    },
+    {
+      "value": "node host",
+      "accepted": false
+    },
+    {
+      "value": "node\r\nhost",
+      "accepted": false
+    },
+    {
+      "value": "node\\host",
+      "accepted": false
+    },
+    {
+      "value": "节点",
+      "accepted": false
+    },
+    {
+      "value": "",
+      "accepted": false
+    }
+  ]
+}

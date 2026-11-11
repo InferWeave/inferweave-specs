@@ -258,3 +258,18 @@ is implementation evidence only. Production Rust/Go mixed-version exact
 path/status/MIME/bytes, cancellation, sustained backpressure, socket loss,
 no-replay and rollout tests remain **owed**. Spec57 and alias rollout gates remain
 blocked. Independent review is required before implementation activation.
+
+## Exact native SystemOne pool restriction
+
+A registration that negotiates both `iw.systemone-admission/1` and bound
+`iw.link-http-json/1` may carry `meta.http.native_pool` with `pool_id` and
+`generation` only on `/v1/systemone` or `/v1/systemone/batch`. The sender
+strips public caller pool headers and populates this metadata only after a
+real native pool reservation. The receiver reconstructs only the fixed
+`X-InferWeave-SystemOne-Pool` and `X-InferWeave-SystemOne-Generation`
+headers from validated metadata and keeps all existing auth, owner, license,
+paid-model and input-envelope checks. These headers restrict selection; they
+never grant capability. The child reserves the exact live registered pool
+and incarnation; missing/mismatched selection refuses instead of falling back
+to another runtime. A peer lacking either negotiated capability has no authority
+for this transport; native routing cannot downgrade to legacy frames.

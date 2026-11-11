@@ -35,6 +35,44 @@
       "type": "integer",
       "minimum": 2,
       "maximum": 9007199254740991
+    },
+    "native_pool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pool_id",
+        "generation"
+      ],
+      "properties": {
+        "pool_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[A-Za-z0-9_.:/-]+(?![\\s\\S])"
+        },
+        "generation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[A-Za-z0-9_.:/-]+(?![\\s\\S])"
+        }
+      },
+      "description": "Exact registered physical SystemOne pool restriction. Requires iw.systemone-admission/1 and bound LinkHTTP; grants no capability or input authority."
+    }
+  },
+  "if": {
+    "required": [
+      "native_pool"
+    ]
+  },
+  "then": {
+    "properties": {
+      "target": {
+        "enum": [
+          "/v1/systemone",
+          "/v1/systemone/batch"
+        ]
+      }
     }
   }
 }
