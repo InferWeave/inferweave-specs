@@ -30,3 +30,32 @@ completed-actor recovery; production composition parity; public-path recovery;
 and durable private operational receipts with exact implementation revisions.
 The implementation is staged for review in InferWeave/inferweave; it is not
 production approval or proof that the old image's source has been established.
+
+## Implementation validation, 2026-11-11
+
+[Core Actions run 42981340166](https://github.com/InferWeave/inferweave/actions/runs/42981340166),
+commit `0db2aa943f3411bad554de24fd1d89d721c236da`, completed successfully.
+Its recorded commands prove 83 Jev tests, real unmodified Go source-2839 gateway
+images, a pinned CPU llama.cpp/GGUF engine, authenticated SSH forwarding, actual
+nginx TLS, recovered composition despite a missing historical file, forward
+activation, settled-target fallback, and recovery from an actually Docker-paused
+target with a genuine completed-Compose receipt and owned pending marker.
+The archived marker, loaded paid policy and public inference are checked after
+recovery. No product health or model responses are fabricated.
+
+The separate statement/branch gate measured 482/539 executable statements
+(89.42%) and 208/260 branches (80.00%). Coverage is not guard-removal proof.
+A real mode-0600 file of 16,777,217 bytes exercises the private evidence limit;
+removing that size guard from a copied implementation makes its regression fail.
+The underlying unit guards also reject changed source/configuration/policy,
+unowned or incomplete pending state, and a working model route that still depends
+on the replaced gateway. The fixture tests real root-owned files and OpenSSH
+process metadata without returning secret contents.
+
+**Still owed:** final required repository CI and independent review closure,
+production composition parity, freshness of the independently qualified target
+and fallback at adoption, actual owned production transition/recovery receipts,
+and public model verification after restoration. The CPU fixture proves control
+and transport behavior, not production model context/performance envelopes.
+This validation does not establish source provenance for the old short-labeled
+artifact and does not open a deployment gate by itself.
