@@ -294,7 +294,9 @@ uncertain and requires reviewed recovery; never generically clear pending state.
 Remove only owned markers after full-source fallback health and loaded paid-policy
 proof. A running target must prove zero inflight before recreation.
 
-Proof status: **owed** for production adoption, independent review and complete
-failure-path/operational qualification. Local lifecycle or serialization tests do
-not establish a deployed rollback or public model availability. See the matching
-open gate and [operational evidence record](../evidence/qualified-public-console-migration-2026-11-10/README.md).
+Proof status: the selected forward production adoption and its checked
+composition/policy/inference parity were observed on 2026-11-11 and are recorded
+in the linked evidence. General production rollback, all configurations,
+remaining guard-removal obligations and complete P1-T22 closure remain **owed**.
+Local or CI rollback is not a production rollback claim. See the matching open
+gate and [operational evidence record](../evidence/qualified-public-console-migration-2026-11-10/README.md).
