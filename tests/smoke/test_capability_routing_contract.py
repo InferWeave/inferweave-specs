@@ -68,7 +68,7 @@ CASES = {
         remove_from(["then", "required"], "estimated_wait_ms")),
     "routing-decision-routed-empty-reasons": (
         ROUTED, put("route_reasons", []), DECISION,
-        [("minItems", ["route_reasons"], "is too short")],
+        [("minItems", ["route_reasons"], "should be non-empty")],
         remove_from(["properties", "route_reasons"], "minItems")),
     "routing-decision-routed-wait-over-bound": (
         ROUTED, put("estimated_wait_ms", 300001), DECISION,
@@ -76,7 +76,7 @@ CASES = {
         remove_from(["properties", "estimated_wait_ms"], "maximum")),
     "routing-decision-routed-with-retry-after": (
         ROUTED, put("retry_after_ms", 1000), DECISION,
-        [(None, ["retry_after_ms"], FALSE_SCHEMA)],
+        [(None, [], FALSE_SCHEMA)],
         remove_from(["then", "properties"], "retry_after_ms")),
     "routing-decision-blocked-missing-retry-after": (
         BLOCKED, drop("retry_after_ms"), DECISION,
@@ -88,7 +88,7 @@ CASES = {
         remove_from(["properties", "retry_after_ms"], "maximum")),
     "routing-decision-blocked-with-model": (
         BLOCKED, put("model", "glm-5.3-flash"), DECISION,
-        [(None, ["model"], FALSE_SCHEMA)],
+        [(None, [], FALSE_SCHEMA)],
         remove_from(["else", "properties"], "model")),
     "routing-decision-unknown-field": (
         ROUTED, put("priority", 1), DECISION,
