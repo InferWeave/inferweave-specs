@@ -450,6 +450,8 @@ Rules:
 - shared weights counted once
 - context growth update tests
 - withdrawn ready provider contributes zero eligible/owner capacity; healthy sibling capacity and already accepted reservations remain intact
+- native state-unit pools counted once across models with conservative overlap distinguished from physical measurements (owed)
+
 
 ### P1-T11A — Enforce the context ceiling as a hard admission bound
 **Context:** `C75`
@@ -496,6 +498,8 @@ Rules:
 - double-admit race
 - cancel releases resources
 - prediction mismatch
+- native input and exact registration-incarnation admission reject stale/mismatched claims; cancellation releases the owned pool cost once (owed)
+
 
 ### P1-T12A — Single-source queue observability
 **Context:** `C75`
@@ -2411,6 +2415,9 @@ Rules:
 - registry-closure (unknown family id fails admission)
 - adapter lifecycle completeness and process/container isolation
 - mixed-version peer compatibility without family inference
+- native SystemOne envelope, exact registration/generation, shared-pool occupancy and cancellation (owed)
+
+Native SystemOne admission follows `contracts/systemone-native-admission-v1.json`; exact input/generation/shared-pool/cancellation and deployed qualification proofs remain owed.
 
 ### B-T02 — Native `/inferweave/v1` control-plane and inference endpoints
 **Context:** `C75`

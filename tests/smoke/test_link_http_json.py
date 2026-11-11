@@ -64,6 +64,17 @@ class LinkHttpContract(unittest.TestCase):
             frame['meta']['http']['content_type']='Application/JSON;\tcharset="UTF-8"'
             self.assertEqual(request_valid(frame),frame['payload'].encode())
 
+    def test_native_pool_restriction_is_only_a_typed_systemone_target(self):
+        frame=self.request(); frame['meta']['http']['target']='/v1/systemone'
+        frame['meta']['http']['native_pool']={'pool_id':'runtime-1','generation':'generation-1'}
+        self.assertEqual(request_valid(frame),frame['payload'].encode())
+        for target in ('/v1/chat/completions','/v1/completions'):
+            invalid=copy.deepcopy(frame); invalid['meta']['http']['target']=target
+            with self.assertRaises(Exception): request_valid(invalid)
+        for value in ('', 'runtime\r\nX: bad', 'x'*257):
+            invalid=copy.deepcopy(frame); invalid['meta']['http']['native_pool']['pool_id']=value
+            with self.assertRaises(Exception): request_valid(invalid)
+
     def test_forbidden_request_modes_and_targets(self):
         for key,value in [('target','https://evil/v1/completions'),('target','/v1/completions?x=1'),
                           ('target','/v1/%63ompletions'),('method','GET'),('version',2),

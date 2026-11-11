@@ -1524,3 +1524,16 @@ model inference and loaded paid-policy proof, owned completed-actor recovery,
 production composition parity, and public-path verification after restoration.
 Implementation or a scratch probe opens no production gate. The supplied user
 session's explicit deployment authority is separate from these proof obligations.
+
+## Native SystemOne admission repair — 2026-11-11
+
+**UNSATISFIED / owed.** Whiteale's actual decision route served a real request
+while its generative admission endpoint reported an empty model list. Spec48
+now requires native bounded-input authority and shared-pool reporting rather
+than an invented generative token context. Source implementation, independent
+review, full required CI, native boundary/cancellation/shared-occupancy tests,
+fresh accepted parent report and deployed normal-route qualification remain
+**owed**. Existing warnings remain valid until actual applicable evidence replaces
+them. Neither package constants nor ready registry metadata establishes the
+deployed checkpoint's qualification. No paid policy/grant or scheduler authority
+changes here.

@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,617,746 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,621,988 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `024d8b276fdb` — ~28,406t
+- `OPEN_GATES.md` — `897527790448` — ~28,600t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -91,7 +91,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/backpressure-conformance-v1.json` — `775be4843952` — ~3,301t
 - `contracts/benchmark-continuation-policy.json` — `350ad477a88d` — ~256t
 - `contracts/benchmark-speed-execution.json` — `32e40f1d5397` — ~422t
-- `contracts/canonical-task-graph.json` — `363e4b23a2ec` — ~45,130t
+- `contracts/canonical-task-graph.json` — `25512f3a3463` — ~45,323t
 - `contracts/capability-bench-vocabulary-v1.json` — `3372ab1ac6c2` — ~461t
 - `contracts/capability-bench-vocabulary-v2.json` — `d209ff1d103b` — ~523t
 - `contracts/capacity-grant.example.json` — `732cb0334476` — ~813t
@@ -132,6 +132,8 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/repository-map.json` — `ea1edd0197ad` — ~174t
 - `contracts/request-observation.json` — `7e2ab0917ef2` — ~2,191t
 - `contracts/routing-preferences.example.json` — `8fe31be89156` — ~189t
+- `contracts/systemone-native-admission-v1.json` — `107deca48a6c` — ~853t
+- `contracts/systemone-native-identity-v1.json` — `832c55671e15` — ~178t
 - `contracts/topology-graph.example.json` — `c7070b8f1e4e` — ~876t
 - `contracts/topology-v2.example.json` — `2b9b163f6bf6` — ~465t
 - `decisions/2026-09-22-existing-gateway-rollout.md` — `3eaac9d26ffe` — ~586t
@@ -319,6 +321,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/rtx4090-shared-context-2026-10-04/stage5-attestation.json` — `db891d23d554` — ~887t
 - `evidence/rtx4090-shared-context-2026-10-04/stage7-attestation.json` — `bbf0558738fb` — ~926t
 - `evidence/rtx4090-shared-context-2026-10-04/staging-gateway-check.json` — `34c74ed4b338` — ~196t
+- `evidence/systemone-native-admission-2026-11-11/README.md` — `7b28866d1377` — ~496t
 - `fixtures/README.md` — `adbef0b4231f` — ~101t
 - `fixtures/federation/federation-path.json` — `4ae98d4876bf` — ~64t
 - `fixtures/invalid/alias-consume-dispatch-ack-missing-invocation.json` — `e4833d361fd8` — ~130t
@@ -779,12 +782,12 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `fixtures/valid/runtime-observation-report.json` — `a2e472f63798` — ~281t
 - `fixtures/valid/seat.json` — `226b3cc299f9` — ~19t
 - `implementation/ACCEPTANCE_TEST_MATRIX.md` — `13f720f8b4f5` — ~3,633t
-- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `7ad9dc1165b6` — ~33,553t
+- `implementation/CANONICAL_IMPLEMENTATION_SEQUENCE.md` — `c7adb216b791` — ~33,693t
 - `implementation/CANONICAL_TASK_INDEX.md` — `6f12ea33f073` — ~3,986t
 - `implementation/CONTEXT_50_100K_STRATEGY.md` — `aae72e9e1bc5` — ~1,638t
 - `implementation/DATA_MODEL.md` — `5728f5509454` — ~649t
 - `implementation/ERROR_SEMANTICS.md` — `353b4a250389` — ~598t
-- `implementation/FEATURE_TASK_COVERAGE.md` — `ab80b91ae3e9` — ~4,094t
+- `implementation/FEATURE_TASK_COVERAGE.md` — `45a5ca5cf56b` — ~4,104t
 - `implementation/IMPLEMENTATION_ORDER.md` — `1a48655f5ecc` — ~221t
 - `implementation/MILESTONES.md` — `84f77749cf80` — ~481t
 - `implementation/MONOREPO_BOOTSTRAP.md` — `7d729410dacd` — ~367t
@@ -885,7 +888,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `schemas/v1/requests/link-hello.json` — `b2b898b4f8dd` — ~857t
 - `schemas/v1/requests/link-http-end.json` — `8e827c2bf362` — ~130t
 - `schemas/v1/requests/link-http-failure.json` — `8b5beb26f725` — ~127t
-- `schemas/v1/requests/link-http-meta.json` — `08743e36ea5b` — ~205t
+- `schemas/v1/requests/link-http-meta.json` — `2745f2b426c6` — ~433t
 - `schemas/v1/requests/link-http-request.json` — `1032927b827b` — ~439t
 - `schemas/v1/requests/link-http-response-head.json` — `9141240a406d` — ~248t
 - `schemas/v1/requests/link-http-token.json` — `dcccaa44129e` — ~351t
@@ -951,7 +954,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/01_REPOSITORIES_AND_OWNERSHIP.md` — `e52f5e6e8112` — ~735t
 - `specs/02_PROTOCOL_AND_API.md` — `b7db68077f03` — ~542t
 - `specs/03_NODE_BOOTSTRAP_DEPLOYMENTS.md` — `2e0dd828a616` — ~1,971t
-- `specs/04_CAPACITY_ADMISSION_SEATS.md` — `be12aa05e91b` — ~3,105t
+- `specs/04_CAPACITY_ADMISSION_SEATS.md` — `2c3a65010fa9` — ~3,172t
 - `specs/05_ROUTING_AFFINITY.md` — `05ed86fdafb9` — ~792t
 - `specs/06_BACKPRESSURE_RETURN_TO_SENDER.md` — `c5ffc9099543` — ~1,340t
 - `specs/07_FAIRSHARE_OWNER_PRIORITY.md` — `3c9f3be77e28` — ~454t
@@ -995,7 +998,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/45_PROTOCOL_V1.md` — `e5c92740ad0b` — ~11,352t
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `e26904a4867b` — ~13,514t
 - `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `fcea209e5340` — ~11,348t
-- `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `56766c2f5e63` — ~1,860t
+- `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `1ae01bc236a2` — ~3,230t
 - `specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md` — `387132ce71c0` — ~2,005t
 - `specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md` — `24d9f61452a1` — ~3,315t
 - `specs/51_PIPELINES_AND_DURABLE_JOBS.md` — `ab9f8df6a816` — ~624t
@@ -1006,7 +1009,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md` — `aac39acef794` — ~5,069t
 - `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` — `3659d1492b01` — ~10,487t
 - `specs/58_MODEL_INTELLIGENCE_UI_COHESION.md` — `d4aafcb9742d` — ~3,996t
-- `specs/59_LINK_HTTP_JSON.md` — `a1628a9a5b5a` — ~4,337t
+- `specs/59_LINK_HTTP_JSON.md` — `8f9dcbbcacb1` — ~4,572t
 - `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` — `4fc9e27aded3` — ~3,135t
 - `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` — `77414c142add` — ~7,385t
 - `specs/62_FEDERATED_PROVISIONING_HOSTING_REQUESTS.md` — `943ff4bb28a1` — ~7,197t
@@ -1052,10 +1055,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-1/P1-T08A.md` — `3e28582c2906` — ~294t
 - `tasks/phase-1/P1-T09.md` — `277f732632d9` — ~254t
 - `tasks/phase-1/P1-T10.md` — `24a601e505b2` — ~230t
-- `tasks/phase-1/P1-T11.md` — `89845137f1a7` — ~253t
+- `tasks/phase-1/P1-T11.md` — `3d015d2ebdec` — ~285t
 - `tasks/phase-1/P1-T11A.md` — `ba874b7b8bc4` — ~291t
 - `tasks/phase-1/P1-T11B.md` — `c44413a61964` — ~265t
-- `tasks/phase-1/P1-T12.md` — `3343336487e6` — ~232t
+- `tasks/phase-1/P1-T12.md` — `d7041bbe12db` — ~268t
 - `tasks/phase-1/P1-T12A.md` — `29d4b32c6dd0` — ~361t
 - `tasks/phase-1/P1-T12B.md` — `fab313701e3b` — ~290t
 - `tasks/phase-1/P1-T13.md` — `f45b2a42de1b` — ~260t
@@ -1192,7 +1195,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-A/A-T06.md` — `0f062bc1d01e` — ~252t
 - `tasks/phase-A/A-T07.md` — `ca88f0a83b99` — ~273t
 - `tasks/phase-A/A-T08.md` — `1991cec56468` — ~255t
-- `tasks/phase-B/B-T01.md` — `de27ab6212c6` — ~311t
+- `tasks/phase-B/B-T01.md` — `f44d923ef2c8` — ~338t
 - `tasks/phase-B/B-T02.md` — `a2305dc7cc56` — ~484t
 - `tasks/phase-B/B-T03.md` — `8438abc83905` — ~306t
 - `tasks/phase-B/B-T04.md` — `531bab03f421` — ~252t
@@ -1201,16 +1204,16 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tests/smoke/test_alias_edge_delegation.py` — `e8f8df50ee53` — ~869t
 - `tests/smoke/test_alias_execution_contract.py` — `6af0f772c0e2` — ~3,848t
 - `tests/smoke/test_bundle_self_test.py` — `f0115f5e0f1a` — ~281t
-- `tests/smoke/test_capability_routing_contract.py` — `c2dca75a583d` — ~1,999t
+- `tests/smoke/test_capability_routing_contract.py` — `dbcce3796c1d` — ~1,995t
 - `tests/smoke/test_conformance.py` — `b1c910866008` — ~1,659t
 - `tests/smoke/test_dynamic_alias_contract.py` — `7d28f77b6c38` — ~4,396t
 - `tests/smoke/test_failure_rollups.py` — `c0f46e2ed960` — ~2,408t
 - `tests/smoke/test_family_routing.py` — `d44eef95e64a` — ~457t
 - `tests/smoke/test_jobs.py` — `a7c0900840ea` — ~400t
 - `tests/smoke/test_jobs_endpoint.py` — `36a80b52a28b` — ~348t
-- `tests/smoke/test_link_http_json.py` — `64efbf92dbbb` — ~2,494t
+- `tests/smoke/test_link_http_json.py` — `2684b36335b1` — ~2,687t
 - `tests/smoke/test_link_upstream.py` — `f88b403f5168` — ~2,223t
-- `tests/smoke/test_mission_event_contract.py` — `2d4757dd6a57` — ~2,403t
+- `tests/smoke/test_mission_event_contract.py` — `aec862d68319` — ~2,397t
 - `tests/smoke/test_native_inference.py` — `543c3f136b34` — ~805t
 - `tests/smoke/test_native_pipeline_job.py` — `05f6834e9671` — ~609t
 - `tests/smoke/test_node_reconcile.py` — `cae2c9517d83` — ~1,982t
