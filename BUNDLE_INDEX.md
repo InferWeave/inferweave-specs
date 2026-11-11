@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,617,746 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,618,813 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `024d8b276fdb` — ~28,406t
+- `OPEN_GATES.md` — `1928a52d4dee` — ~28,645t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -277,7 +277,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/private-observability-2026-10-20/unicode-red.log` — `64d63480c0ad` — ~211t
 - `evidence/private-observability-2026-10-20/validation.log` — `736a8179bb38` — ~35t
 - `evidence/provisioning-contract-2026-10-15/README.md` — `bc3fe8ea3129` — ~1,943t
-- `evidence/qualified-public-console-migration-2026-11-10/README.md` — `d2a378883b3e` — ~1,000t
+- `evidence/qualified-public-console-migration-2026-11-10/README.md` — `9de19d90546c` — ~1,753t
 - `evidence/rtx4090-shared-context-2026-10-03/README.md` — `bfaec7e5b43c` — ~960t
 - `evidence/rtx4090-shared-context-2026-10-03/compose-candidate.yml` — `63c9d18d4685` — ~688t
 - `evidence/rtx4090-shared-context-2026-10-03/engine.log` — `4da44e95f913` — ~26,001t
@@ -984,7 +984,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/34_PROMPT_STORE_TIERING.md` — `801f5b308130` — ~437t
 - `specs/35_CLUSTER_SIMULATOR_CHAOS.md` — `8ff7bb06c9db` — ~475t
 - `specs/36_GPU_WATCHDOG_RESCUE.md` — `9d89e957712b` — ~7,507t
-- `specs/37_CONTAINER_DEPLOYMENT_STANDARD.md` — `8c0d81a3db17` — ~2,415t
+- `specs/37_CONTAINER_DEPLOYMENT_STANDARD.md` — `4e78157c68ac` — ~2,449t
 - `specs/38_EXECUTABLE_EVIDENCE_AND_CONFORMANCE.md` — `3be309a25553` — ~1,179t
 - `specs/39_INFERENCE_RUNTIME_TUNING.md` — `3da89d20da5e` — ~1,485t
 - `specs/40_NETWORK_TOPOLOGY_GRAPH.md` — `25006d9feecf` — ~6,507t
@@ -1072,7 +1072,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `tasks/phase-1/P1-T20C.md` — `6c392a57daea` — ~313t
 - `tasks/phase-1/P1-T21.md` — `46ab609d7c13` — ~441t
 - `tasks/phase-1/P1-T21A.md` — `4e405f60d628` — ~302t
-- `tasks/phase-1/P1-T22.md` — `7cac1a09d5cc` — ~378t
+- `tasks/phase-1/P1-T22.md` — `2b50e876eadc` — ~419t
 - `tasks/phase-1/P1-T23.md` — `fce5fb7587f4` — ~260t
 - `tasks/phase-1/P1-T24.md` — `c53df0c58af0` — ~277t
 - `tasks/phase-1/P1-T25.md` — `4b554a405345` — ~350t

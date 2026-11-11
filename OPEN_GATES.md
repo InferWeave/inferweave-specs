@@ -1513,14 +1513,30 @@ No Farm serving artifact, GPU deployment or CI pool is changed by these proofs.
 
 ## Qualified public-console migration — 2026-11-10
 
-**UNSATISFIED / owed** (IW-DEPLOY-001 / P1-T22). Spec37 now requires usable
-full-source rollback and complete recovered composition before public admission
-is drained. The observed legacy console cannot establish restoration provenance
-from its short label and source-less health, and its Compose labels include a
-missing temporary file. No exception to ordinary source/image/health guards is
-approved. A separate qualified fallback migration requires independent review,
-removal-sensitive guard proofs, real Compose lifecycle, independent accepted
-model inference and loaded paid-policy proof, owned completed-actor recovery,
-production composition parity, and public-path verification after restoration.
-Implementation or a scratch probe opens no production gate. The supplied user
-session's explicit deployment authority is separate from these proof obligations.
+**General production qualification and P1-T22 closure remain UNSATISFIED / owed.**
+The explicitly authorized selected forward migration was observed on 2026-11-11:
+reviewed Core source `8f65e6ef3a096e21efc1e8a860d06819cd296d65`, full-source running
+Go gateway `e42e0cb2f8f3fc31586757232677179b45baffd1`, preserved loaded default-deny
+policy, and actual internal/off-host public SSE for the four baseline chat models.
+This records selected forward composition/policy/inference parity, not a generic
+exception to source/image/health guards or adoption for every configuration.
+
+Real CI rollback and completed-Compose owned-pending recovery passed; the retained
+full-source fallback was independently qualified on the deployed host's scratch
+path. **A production rollback was not exercised.** Remaining guard-removal
+obligations, general production rollback/configuration qualification and all
+P1-T22 gates are still owed. The old short-labeled image's source provenance is
+not established by the migration.
+
+The serving inventory and monitor verdict also retain their scope: the initial
+rejoin snapshot had six worker nodes/eleven workers; after owned Farm retirement
+there were ten workers. The on-host monitor correctly failed for the missing Farm
+serving node while its replacement remained `PENDING` for `Priority`. The selected
+57,344 MiB cache cap and queued CLI/spool are verified; actual running 56 GiB is
+still owed. The off-host scheduled public canary passed. Public inference success
+does not turn that capacity gap into a healthy fleet.
+
+See [bounded production evidence](evidence/qualified-public-console-migration-2026-11-10/README.md).
+Implementation, CI or scratch evidence alone grants no general production
+approval; explicit operator deployment authority remains separate from these
+proof obligations.
