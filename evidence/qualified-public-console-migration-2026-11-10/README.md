@@ -3,15 +3,16 @@
 The operator's 2026-11-10 incident investigation observed a public console whose
 image revision label was `8d8940d`, whose `/healthz` omitted `revision`, and whose
 Compose configuration-file label included the missing `/tmp/iw-pin.yaml`.
-The current installer requires a full 40-character reviewed image label and an
-identical running health revision. Those facts prevent ordinary guarded legacy
+Ordinary activation/restoration requires a full 40-character reviewed image
+label and an identical running health revision. Those facts prevent ordinary guarded legacy
 restoration and complete composition reconstruction from the historical labels.
 The public endpoint had previously returned the exact maintenance marker while
 health remained successful; the owned gate was recovered separately.
 
-Reproduce the observation read-only on the operated host with Docker inspect
-(image ID/labels, Config.Cmd/User/Env fingerprints, HostConfig/Mounts and Compose
-file existence), local health, and the administrative loaded-policy endpoint.
+The historical observation was captured read-only with Docker inspect,
+configuration-file existence checks, local health and the administrative
+loaded-policy endpoint. Audit the retained pre-migration receipts for that old
+state; the live post-adoption process now reports the new full source revision.
 Keep raw inspect, credentials, configuration, subjects and responses private.
 Public evidence contains digests/identifiers and verdicts only. The operator's
 private host snapshot and stage/qualification receipts are not committed here.
@@ -29,8 +30,8 @@ policy/transport guards; real recovered Compose lifecycle; independently routed
 accepted inference and loaded-policy proof for target and fallback; bounded
 completed-actor recovery; production composition parity; public-path recovery;
 and durable private operational receipts with exact implementation revisions.
-The implementation is staged for review in InferWeave/inferweave; it is not
-production approval or proof that the old image's source has been established.
+At that checkpoint the implementation was staged for review. Neither that
+staging nor the later migration establishes the old image's source provenance.
 
 ## Implementation validation, 2026-11-11
 
@@ -78,8 +79,8 @@ models returned HTTP 200, terminal `stop`, SSE `[DONE]` and nonempty visible
 content, including after owned scratch/tunnel cleanup. Paid gateway health, its
 bridge and capacity were checked; paid inference was not exercised.
 
-The [sanitized Core incident record](https://github.com/InferWeave/inferweave/blob/88a464d/docs/operations/public-console-recovery-20261111.md)
-and [receipt summary](https://github.com/InferWeave/inferweave/blob/88a464d/docs/operations/evidence/public-console-recovery-20261111/summary.json)
+The [sanitized Core incident record](https://github.com/InferWeave/inferweave/blob/88a464d02413f2174d094972c9d819787f037c42/docs/operations/public-console-recovery-20261111.md)
+and [receipt summary](https://github.com/InferWeave/inferweave/blob/88a464d02413f2174d094972c9d819787f037c42/docs/operations/evidence/public-console-recovery-20261111/summary.json)
 pin public identities and private source-receipt hashes. They publish no
 credentials, private addresses, prompts, response bodies or latency claims.
 The private backup and full-source fallback artifacts were preserved.

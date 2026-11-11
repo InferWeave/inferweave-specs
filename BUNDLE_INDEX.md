@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,618,813 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,618,848 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -277,7 +277,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/private-observability-2026-10-20/unicode-red.log` — `64d63480c0ad` — ~211t
 - `evidence/private-observability-2026-10-20/validation.log` — `736a8179bb38` — ~35t
 - `evidence/provisioning-contract-2026-10-15/README.md` — `bc3fe8ea3129` — ~1,943t
-- `evidence/qualified-public-console-migration-2026-11-10/README.md` — `9de19d90546c` — ~1,753t
+- `evidence/qualified-public-console-migration-2026-11-10/README.md` — `cde07a14cc83` — ~1,788t
 - `evidence/rtx4090-shared-context-2026-10-03/README.md` — `bfaec7e5b43c` — ~960t
 - `evidence/rtx4090-shared-context-2026-10-03/compose-candidate.yml` — `63c9d18d4685` — ~688t
 - `evidence/rtx4090-shared-context-2026-10-03/engine.log` — `4da44e95f913` — ~26,001t
