@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,621,988 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,622,227 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -321,7 +321,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/rtx4090-shared-context-2026-10-04/stage5-attestation.json` — `db891d23d554` — ~887t
 - `evidence/rtx4090-shared-context-2026-10-04/stage7-attestation.json` — `bbf0558738fb` — ~926t
 - `evidence/rtx4090-shared-context-2026-10-04/staging-gateway-check.json` — `34c74ed4b338` — ~196t
-- `evidence/systemone-native-admission-2026-11-11/README.md` — `7b28866d1377` — ~496t
+- `evidence/systemone-native-admission-2026-11-11/README.md` — `927ded9d9d98` — ~592t
 - `fixtures/README.md` — `adbef0b4231f` — ~101t
 - `fixtures/federation/federation-path.json` — `4ae98d4876bf` — ~64t
 - `fixtures/invalid/alias-consume-dispatch-ack-missing-invocation.json` — `e4833d361fd8` — ~130t
@@ -998,7 +998,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/45_PROTOCOL_V1.md` — `e5c92740ad0b` — ~11,352t
 - `specs/46_GPU_MEMORY_INTELLIGENCE.md` — `e26904a4867b` — ~13,514t
 - `specs/47_NODE_JOIN_AND_HARDWARE_REGISTRATION.md` — `fcea209e5340` — ~11,348t
-- `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `1ae01bc236a2` — ~3,230t
+- `specs/48_RUNTIME_FAMILIES_AND_CAPABILITIES.md` — `b9686d1b5c22` — ~3,373t
 - `specs/49_NATIVE_CONTROL_PLANE_ENDPOINTS.md` — `387132ce71c0` — ~2,005t
 - `specs/50_TRANSACTIONAL_RUNTIME_LIFECYCLE.md` — `24d9f61452a1` — ~3,315t
 - `specs/51_PIPELINES_AND_DURABLE_JOBS.md` — `ab9f8df6a816` — ~624t

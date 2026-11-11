@@ -14,7 +14,12 @@ The Go consumer additionally synthesizes a1024-token SystemOne context.
 The deployment dependency lock pins Laya0.4.8. Independently downloaded wheel
 SHA256 `05064d8b949803af8cb173561ed0b24d6be5b62cb86d8d319321577c630d0288`
 matches that lock. Its native serve source supplies byte/state/question/batch/
-option bounds; tokenizer windows vary by checkpoint and state truncation exists.
+option bounds. Verified wheel `laya/serve.py:121–122` describes shipped English
+`max_len=512` and multilingual `max_len=1024`. `laya/common.py:198–209`
+constructs the question head, computes remaining state room after the separator,
+truncates state token IDs to that room and clamps the resulting sequence. These
+are checkpoint sequence/truncation facts, not the native byte envelope, a
+generative KV window or proof that the whole submitted state is consumed.
 The worker launcher pins checkpoint revision
 `7b928d828b7b0e022f929d9bd2e44165aa270148`. Those source facts support designing
 the explicit envelope; they do not prove every deployed process's active

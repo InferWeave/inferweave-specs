@@ -131,16 +131,23 @@ runtimes. It does not make them generative token runtimes. Its registration
 claim and heartbeat report bind an explicitly versioned native input envelope to
 the actual runtime deployment and checkpoint/source provenance. The gateway and
 worker validate the same envelope before admission and execution. Unknown,
-unnegotiated, stale, malformed or mismatched evidence remains unavailable; it
-never becomes a zero-token window, an assumed 1024-token window or inferred
-capacity from another model.
+unnegotiated, stale, malformed or mismatched evidence grants no native input or
+capacity authority; it never becomes a zero-token window, an assumed 1024-token
+window or inferred capacity from another model. Existing legacy compatibility
+fields remain labeled legacy and do not establish measured native authority.
 
 The initial Laya policy uses UTF-8 serialized request bytes and explicit shape
 bounds. The implementation must publish the exact effective limits and policy
 fingerprint, including their unit, source package hash and checkpoint revision.
 A bound is not a claim that the backend reads every token: a backend that
 truncates retains that native behavior and must not advertise the input byte
-limit as a tokenizer context size. Aliases derive only from explicit configured
+limit as a tokenizer context size. The pinned Laya0.4.8 source describes shipped
+English `max_len=512` and multilingual `max_len=1024`; `common.build_sequence`
+budgets the question head, separator and remaining state within that checkpoint
+length and truncates state tokens to the available room. These checkpoint
+sequence lengths and truncation semantics are neither the native byte envelope
+nor a generative KV/context window; they do not prove complete state consumption.
+Aliases derive only from explicit configured
 public-to-logical mappings on that same registered runtime. Never infer identity
 or eligibility from a model spelling.
 
