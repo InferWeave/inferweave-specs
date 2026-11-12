@@ -499,6 +499,7 @@ Rules:
 - cancel releases resources
 - prediction mismatch
 - native input and exact registration-incarnation admission reject stale/mismatched claims; cancellation releases the owned pool cost once (owed)
+- native caller/transport termination retains physical work debt until actual completion or checked owned-process exit; ambiguous inference is not replayed (owed)
 
 
 ### P1-T12A — Single-source queue observability
@@ -2416,6 +2417,7 @@ Rules:
 - adapter lifecycle completeness and process/container isolation
 - mixed-version peer compatibility without family inference
 - native SystemOne envelope, exact registration/generation, shared-pool occupancy and cancellation (owed)
+- native caller/transport termination retains physical work debt until actual completion or checked owned-process exit; ambiguous inference is not replayed (owed)
 
 Native SystemOne admission follows `contracts/systemone-native-admission-v1.json`; exact input/generation/shared-pool/cancellation and deployed qualification proofs remain owed.
 

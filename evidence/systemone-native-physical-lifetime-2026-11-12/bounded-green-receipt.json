@@ -1,0 +1,93 @@
+{
+  "kind": "sanitized_original_bounded_green_observation",
+  "run_id": "9923",
+  "classification": "GREEN",
+  "proof_scope": "private_15_second_timeout_physical_retirement_only",
+  "production_qualification": "owed",
+  "private_receipt_set": "native-physical-6f28cb9/runs/9923/",
+  "original_sha256": {
+    "evidence.jsonl": "5908cebebea7f1bca63ff4f08eb0c3d76dd8efb5248edc27daa0042dd04282ab",
+    "artifact-provenance.json": "c15619aa54545d3d6beee105df06eeef37d41856b027fe8bb909d6e47a7e7b4d",
+    "harness.sha256": "74cf36e0b63b09fbe6a158770e307025455848ed0734b3f54d1714ea751e0fe9",
+    "logs/worker.log": "64fc7264ae780a345a725dc17dd4ead653fcb233001216df0bb3a09750931031"
+  },
+  "harness_sha256": "e74c0136c4dfc1c1e39e30a70b47c069818a5f8f357d82c963476a4547fd62a9",
+  "artifact_provenance": {
+    "source_revision": "6f28cb9ce7971d596f0aba3eb47777bf472984bf",
+    "sif_sha256": "76c17a10ff57310eb2f1a41d836d3543ec4db5ca4664cd616a88579a508cebf2",
+    "core_sha256": "d1cea9fa441bd67bedf31fb0ec1660f00f9d299e045f8854f07c41f6091ff9bb",
+    "go_sha256": "be624fa23f6d58c48d8455304d4da995a99b38380f098d569eae7bfd416141b5"
+  },
+  "events": [
+    {
+      "at": "2026-11-12T02:21:36.904064+00:00",
+      "elapsed_seconds": 0.002,
+      "error_code": null,
+      "event": "http_outcome",
+      "status": 200,
+      "timeout_named": false,
+      "upstream_status": null
+    },
+    {
+      "at": "2026-11-12T02:21:36.921221+00:00",
+      "concurrency": 16,
+      "event": "qualified_worker_source",
+      "fingerprint": "4e7c3e4f54df4f530f9df35a32baa845e3067f57bcd4075e69dede12632ab0e5",
+      "unique_pools": 1
+    },
+    {
+      "at": "2026-11-12T02:21:39.128326+00:00",
+      "event": "physical_probe_started",
+      "old_pid": 1945774,
+      "old_start": 312641944,
+      "worker_budget_seconds": 15
+    },
+    {
+      "at": "2026-11-12T02:21:54.250062+00:00",
+      "elapsed_seconds": 15.104,
+      "error_code": "system_one.native_pool_unavailable",
+      "event": "http_outcome",
+      "status": 503,
+      "timeout_named": false,
+      "upstream_status": null
+    },
+    {
+      "at": "2026-11-12T02:21:54.263635+00:00",
+      "elapsed_seconds": 15.125,
+      "event": "caller_ended_before_physical_proof",
+      "status": 503
+    },
+    {
+      "at": "2026-11-12T02:21:59.826956+00:00",
+      "elapsed_seconds": 20.689,
+      "event": "old_owned_process_exited",
+      "old_pid": 1945774
+    },
+    {
+      "at": "2026-11-12T02:22:44.682242+00:00",
+      "elapsed_seconds": 0.556,
+      "error_code": null,
+      "event": "http_outcome",
+      "status": 200,
+      "timeout_named": false,
+      "upstream_status": null
+    },
+    {
+      "at": "2026-11-12T02:22:44.699761+00:00",
+      "event": "GREEN_physical_lifetime",
+      "normal_route_status": 200,
+      "qualified_concurrency": 16.0,
+      "replacement_pid": 1946069,
+      "replacement_start": 312648441
+    }
+  ],
+  "checked_exit_receipts": [
+    {
+      "message": "native owned process exit confirmed",
+      "process_index": 0,
+      "termination_signal": 9,
+      "status_kind": "SIGKILL",
+      "line_sha256": "cbb496a8c94c304acb8a283aead957d8e1dbc46caddadc375b058f2dc01d804e"
+    }
+  ]
+}

@@ -858,7 +858,8 @@
         "double-admit race",
         "cancel releases resources",
         "prediction mismatch",
-        "native input and exact registration-incarnation admission reject stale/mismatched claims; cancellation releases the owned pool cost once (owed)"
+        "native input and exact registration-incarnation admission reject stale/mismatched claims; cancellation releases the owned pool cost once (owed)",
+        "native caller/transport termination retains physical work debt until actual completion or checked owned-process exit; ambiguous inference is not replayed (owed)"
       ],
       "notes": " Native runtime bounds and shared pools follow contracts/systemone-native-admission-v1.json; selected deployment proof owed."
     },
@@ -4158,7 +4159,8 @@
         "registry-closure (unknown family id fails admission)",
         "adapter lifecycle completeness and process/container isolation",
         "mixed-version peer compatibility without family inference",
-        "native SystemOne envelope, exact registration/generation, shared-pool occupancy and cancellation (owed)"
+        "native SystemOne envelope, exact registration/generation, shared-pool occupancy and cancellation (owed)",
+        "native caller/transport termination retains physical work debt until actual completion or checked owned-process exit; ambiguous inference is not replayed (owed)"
       ],
       "notes": " Native SystemOne input/report contract: contracts/systemone-native-admission-v1.json; production qualification owed."
     },
