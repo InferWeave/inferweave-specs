@@ -66,7 +66,12 @@
     "cross-model-unique-shared-pool-reservation",
     "cancellation-releases-pool-once",
     "old-peer-native-evidence-unknown",
-    "real-linked-native-decision-and-boundary-refusal"
+    "real-linked-native-decision-and-boundary-refusal",
+    "caller-timeout-retains-physical-work-permit",
+    "queued-cancellation-retires-only-undispatched-work",
+    "ambiguous-backend-failure-no-replay",
+    "checked-owned-process-exit-before-physical-reuse",
+    "old-incarnation-completion-cannot-release-new-work"
   ],
   "fingerprintAlgorithm": {
     "algorithm": "sha256",
@@ -95,10 +100,10 @@
   "occupancySemantics": {
     "basis": "conservative_sum",
     "inflight": "min(maxConcurrency, reportedInflight + gatewayHeld)",
-    "reportedInflight": "measured worker occupancy; absent means unknown and grants no usable native capacity",
+    "reportedInflight": "worker-measured outstanding state admission units retained by queued, executing or unconfirmed physical work; caller/transport termination cannot retire them; absent means unknown and grants no usable native capacity",
     "gatewayHeld": "child gateway held reservations, with unknown overlap against worker reported occupancy",
     "parentHeld": "parent adds its own held reservations conservatively; never infer overlap",
-    "physicalMetrics": "reportedInflight only; conservative routing occupancy kept distinct"
+    "physicalMetrics": "reportedInflight state admission units only, without clipping away retained work debt; not a forward-pass/thread/resource-utilization count; conservative routing occupancy stays distinct"
   },
   "poolConcurrencyUnit": "state_admission_units",
   "requestCost": {
@@ -108,5 +113,29 @@
   "identityContract": {
     "path": "contracts/systemone-native-identity-v1.json",
     "sha256": "832c55671e1515a7e7c97a1957113617815cc17b24dd5c85001e3480a715bf09"
+  },
+  "physicalLifetime": {
+    "dispatchedWorkRetirementEvidence": [
+      "authoritative_backend_completion_response_for_exact_work",
+      "successful_os_wait_for_exact_owned_process_incarnation"
+    ],
+    "notCompletionEvidence": [
+      "caller_cancellation",
+      "caller_deadline",
+      "transport_timeout",
+      "connection_eof",
+      "partial_or_malformed_response",
+      "healthy_runtime_probe",
+      "elapsed_time",
+      "signal_sent_without_wait_receipt",
+      "missing_child_handle_without_verified_exit"
+    ],
+    "unconfirmedWork": "retain_debt_and_quarantine",
+    "ambiguousInferenceReplay": "forbidden",
+    "undispatchedWork": "retire only after all owned queued work is removed before backend dispatch",
+    "callerReservation": "may end independently; releases only its own parent-held reservation once",
+    "physicalPermit": "queued and executing work retain ownership independently of caller lifetime; an unconfirmed dispatched operation retains debt until an authoritative completion or checked process exit",
+    "incarnationFence": "fence exact process/pool incarnation from dispatch through classification, checked termination and debt retirement; old completion must not release new work",
+    "runtimeProofStatus": "owed"
   }
 }

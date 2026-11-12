@@ -1537,3 +1537,33 @@ fresh accepted parent report and deployed normal-route qualification remain
 them. Neither package constants nor ready registry metadata establishes the
 deployed checkpoint's qualification. No paid policy/grant or scheduler authority
 changes here.
+
+
+## Native SystemOne physical-work lifetime — 2026-11-12 UTC
+
+**UNSATISFIED / owed** (IW-RT-001 / B-T01; IW-CAP-001 and IW-BP-001 / P1-T12).
+Private old-Core `e79730300fe59670f44ce86babf85a7956454be0` run 9921 returned
+caller HTTP503 after 15.154 s, then advertised fresh worker units 0 and gateway
+holds 0 while its tracked backend process continued consuming CPU. Run 9918's
+maximum-shape request returned HTTP503 after 180.062 s; a same-pool/generation
+recovery request took 98.919 s. These are RED counterexamples, not qualification.
+The earlier cancellation wording allowed logical release to be mistaken for
+physical retirement; spec48 and the native contract now distinguish them.
+
+Actual backend completion or checked owned-process exit, uncertainty quarantine,
+no ambiguous inference replay, late-incarnation isolation and fresh parent
+observations must be independently proven against the candidate and target
+placement. Contract tests and an ordinary health response do not prove them.
+The sanitized [original RED receipts](evidence/systemone-native-physical-lifetime-2026-11-12/README.md)
+are retained; bounded private run 9923 now proves timeout-to-checked-exit retirement, but full
+batch/disconnect/shared-pool and production-profile qualification, RAM and soak
+proof remain owed. Production native authority is not opened by this change.
+
+
+The bounded private run 9923 observation is **proven only for the 15 s test
+profile** on Core `6f28cb9ce7971d596f0aba3eb47777bf472984bf`: caller HTTP503 at
+15.104 s, actual owned-process exit at 20.689 s with checked SIGKILL receipt,
+then replacement readiness/fresh capacity 16 and normal-route HTTP200 in 0.556 s.
+No fresh free claim was accepted before physical retirement. This is not a
+production-profile or full-workload gate approval; the existing 180 s maximum
+shape failure, broader cancellation/batch cases, RAM and soak remain owed.

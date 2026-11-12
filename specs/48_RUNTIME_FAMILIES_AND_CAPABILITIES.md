@@ -161,7 +161,8 @@ Report authority includes the generation; reservation identity keeps the stable
 physical pool across generations, so replacement registration cannot escape
 held leases from the prior incarnation.
 Its held reservations consume the same pool across all logical models and
-aliases; cancellation releases the pool reservation once. Child admission remains
+aliases; cancellation releases only the caller-owned reservation once, without
+erasing outstanding physical-work debt. Child admission remains
 independently authoritative. A model capability may show an upper bound from
 its eligible pools, but fleet available concurrency sums distinct physical pools,
 never all model rows. This adds no second allocator or runtime service.
@@ -210,7 +211,56 @@ cannot release a newer incarnation's reservation.
 
 For this protocol, pool concurrency and occupancy count state admission units,
 matching Laya worker counters: a single decision costs one unit; a batch
-reserves `min(number of states, selected pool maxConcurrency)` units until
-completion/cancellation. Parent and child use the same cost and release it
-once. A 64-state batch on a 16-unit pool holds 16 units, not one HTTP-request
+reserves `min(number of states, selected pool maxConcurrency)` units. Parent
+and child use the same cost. Caller-reservation release and physical-permit
+retirement are distinct and each occurs once under the lifetime rules below. A 64-state batch on a 16-unit pool holds 16 units, not one HTTP-request
 unit; another model cannot reuse those units concurrently.
+
+
+### Physical work outlives a caller or transport
+
+The November 12 UTC counterexample exposed a specification defect, not only a
+counter implementation defect: the earlier phrase "until completion/cancellation"
+did not distinguish caller reservation release from physical execution retirement.
+An implementer following that wording could decrement worker occupancy at an HTTP
+deadline while the backend still computes. That violates the resource-release
+safety intended by invariants 23 and 37. See the [sanitized RED receipts](../evidence/systemone-native-physical-lifetime-2026-11-12/README.md).
+
+A caller deadline, cancellation or disconnect ends only that caller's right to
+wait. It does not prove a dispatched forward pass stopped. Queued and executing
+work MUST retain ownership of its physical state-unit permit independently of the
+caller. Work known never to have been dispatched may retire only after all of its
+owned queued items are discarded. Dispatched work may retire only on an
+authoritative backend completion response for that exact work, or a successful OS
+wait confirming the exact owned managed process incarnation exited. A sent TERM or
+KILL, missing child handle without a verified exit receipt, ordinary healthy
+probe, quiet CPU sample or elapsed interval is not completion evidence.
+
+Backend HTTP timeout, EOF after a possibly accepted write, partial response and
+malformed response leave execution unconfirmed. Such inference MUST NOT be
+replayed automatically or replaced with another backend attempt. Retain the
+outstanding work debt and quarantine the exact affected runtime instance; neither
+health nor another request's success may clear it. An unmanaged backend without
+an authoritative completion proof remains unknown/unavailable. Bounded recovery
+may stop an owned managed process and use its actual wait receipt, but must retain
+its handle, quarantine and debt when termination cannot be confirmed. Existing
+bounded restart policy applies only after confirmed retirement; no new allocator,
+model profile, request-deadline increase, owner bypass or paid exception is added.
+
+The process/pool incarnation must be fenced from dispatch through result
+classification, checked termination and debt retirement. A restart or late
+callback cannot spend a new incarnation's permit or clear its debt. Worker
+`reportedInflight` remains the raw outstanding state-admission-unit measurement,
+including retained work debt; it is not a physical thread/forward-pass count and
+must not be clipped merely because the caller left or readiness reduced. The
+existing child `inflight` formula remains
+`min(maxConcurrency, reportedInflight + gatewayHeld)`; the parent still adds its
+own held reservations conservatively. No origin acknowledgement is fabricated.
+No new report member, unit, batch cost or envelope is introduced.
+
+Required runtime proofs remain **owed**: real queued and dispatched cancellation,
+caller and backend deadlines, ambiguous EOF/no replay, checked process exit,
+failed termination retaining debt, old-incarnation late completion, unaffected
+healthy siblings and fresh accepted parent reports. Contract/schema tests prove
+vocabulary consistency only. The existing maximum-shape failure remains RED;
+full workload qualification, memory and soak evidence are not established here.

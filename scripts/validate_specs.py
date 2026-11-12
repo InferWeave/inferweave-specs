@@ -1034,6 +1034,10 @@ def self_test():
     if http_test.returncode:
         print(http_test.stdout + http_test.stderr)
         return 1
+    physical_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_systemone_native_physical_lifetime.py")], capture_output=True, text=True)
+    if physical_test.returncode:
+        print(physical_test.stdout + physical_test.stderr)
+        return 1
     upstream_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_link_upstream.py")], capture_output=True, text=True)
     if upstream_test.returncode:
         print(upstream_test.stdout + upstream_test.stderr)

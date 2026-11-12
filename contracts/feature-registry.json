@@ -39,6 +39,9 @@
       "canonical_tasks": [
         "P1-T11",
         "P1-T12"
+      ],
+      "contracts": [
+        "contracts/systemone-native-admission-v1.json"
       ]
     },
     {
@@ -1246,6 +1249,9 @@
       "owner_component": "protocol",
       "canonical_tasks": [
         "B-T01"
+      ],
+      "contracts": [
+        "contracts/systemone-native-admission-v1.json"
       ]
     },
     {
