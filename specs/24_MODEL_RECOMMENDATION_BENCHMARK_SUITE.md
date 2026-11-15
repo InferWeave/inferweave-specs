@@ -311,3 +311,91 @@ not qualification. Material identity changes invalidate use of the old record. T
 and one-hour maximum lifetime are unmeasured policy defaults, not reliability estimates.
 Native parser fixtures alone never qualify an actual model. Raw command arguments, prompts,
 reasoning, outputs, secrets and private node/GPU identity are excluded from public diagnostics.
+
+## Legacy NVIDIA evidence and complete qualification cohorts
+
+The 2026-10-27 operator bundle requests sm61 dual GTX 1080 Ti and sm75 dual
+RTX 2080 Ti evaluation through the existing catalogue, immutable benchmark
+records, planner, qualification and dashboard. A hardware expectation is not
+an enrolled inventory observation or a CUDA build qualification. Published weight
+hashes establish declared artifact provenance; qualification still needs hashes
+of the actual loaded files and the exact executable/container build.
+
+Qualification policies may specify `minimum_free_vram_bytes_per_gpu` (bytes).
+Old policies deserialize with zero for compatibility; zero adds no headroom
+protection. Legacy campaigns must explicitly choose and validate a reserve.
+A suggested 768 MiB is an unmeasured policy starting point, not a measured safe
+limit. For each physical GPU, checked arithmetic must prove non-KV residency +
+peak KV + reserve <= current owner-authorized allocatable VRAM. Residency, KV
+and allocatable-memory maps must identify exactly the same GPUs; summed VRAM,
+missing cards or arithmetic overflow cannot qualify a candidate. This read-only
+assessment grants no lease or production-promotion authority.
+
+Quality evidence must cover every applicable quality trial in the configuration
+cohort (agent roles or explicitly scored trials; unknown legacy workloads remain
+conservative). Successful throughput/context/vision-overhead measurements need
+not invent quality scores. A failed or skipped configuration trial, or a missing,
+nonfinite or out-of-range applicable quality score, prevents quality passing;
+retain throughput observations but report aggregate quality as unknown rather
+than a successful-only mean. An entirely throughput-only run has unknown quality,
+not passing quality. Equivalent canonical configuration fingerprints are scheduled
+once; duplicate planner inputs produce explicit prune records, not repeated work.
+
+Before any remote record storage, validate the canonical record schema, metadata,
+content SHA256 and safe canonical record ID. Reject tampering before creating files;
+never execute attached artifacts or fetch embedded URLs during validation. SHA256
+establishes integrity, not uploader identity or trust. Authenticated ingestion,
+public projection and automatic promotion remain separate obligations in the
+existing benchmark gateway, warehouse and Next.js workbench.
+
+Evaluation configuration may carry an explicit `backendTunables` map. Llama.cpp
+`split_mode` accepts `none`, `layer`, `row` or `tensor`, subject to the selected
+runtime build advertising support; `tensor_split` requires finite
+nonnegative decimal ratios with positive total and cannot accompany `none`.
+Unknown options are refused, not silently ignored. Tunables participate in the
+canonical configuration fingerprint. The exact selected executable must advertise
+requested flags through bounded help inspection before launch. This negotiation
+is not hardware/kernel qualification or a benchmark lease. Flags and values are
+separate argv elements; no shell tokenization is used to launch a model path.
+
+Operating-point residency requires agreement among all successful measured trials;
+missing or conflicting residency remains unknown. The achieved context is the
+minimum measured value in the applicable context-validation cohort. A missing
+applicable measurement remains unknown, rather than borrowing configured context
+or the largest observed value. Known throughput-only rows need no fabricated
+context validation. Unknown context cannot establish an admissible context floor.
+
+Experiment identity binds the complete requested workload, including repetitions,
+output limits and parameters, plus actual model-file SHA256 and execution mode.
+Resume excludes unrequested or incompatible workload/artifact/mode history; latest
+attempt status controls reuse while earlier matching failed attempts remain in
+profile denominators. Legacy incomplete experiment IDs are retained but rerun,
+not rewritten. File hashing requires an opened regular file, with nonblocking,
+no-follow descriptor checks before streaming special paths.
+
+
+## Existing-workbench integration and source selection
+
+The existing private conductor reader may use the configured file or authenticated
+Rust gateway. An explicitly configured `bench.conductor_dataset` remains its source
+even when `bench.gateway_url` also supplies grant authority. Without an explicit
+file, the live source uses the current access session and freshly resolved backend
+admin grant, the existing bounded transport and sanitized projection. A selected
+source's refusal, stale data or validation failure never selects another source.
+Private submission completion remains separate from consent/review/publication.
+
+`llama.split_mode` remains the canonical matrix vocabulary. The old short
+`split_mode` input may be normalized to it; conflicting aliases are refused and
+only one effective flag is emitted. Explicit global settings pin the split axis
+without repeating overwritten candidate cells. Recorded runtime commands preserve
+argv boundaries and applied environment; a readable display string is not allowed
+to misrepresent a successfully executed configuration.
+
+
+Conductor store compatibility is versioned: historical v1 stores retain their
+legacy leaf IDs and replay behavior; new v2 stores preserve canonical record IDs.
+A v1 envelope cannot be relabeled or admitted to generic canonical-store reads,
+coverage observations or publication. Private authenticated submission/replay is
+not public publication or hardware production qualification. Implementation and
+experimental single-card evidence are pinned in
+`evidence/legacy-nvidia-2026-10-28/README.md`; full AC-MI-08 remains owed.

@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "protocol": "iw.systemone-admission/1",
+  "heartbeatMember": "nativeAdmission",
+  "registrationMember": "nativePools",
+  "inputPolicyVersion": "iw.systemone-input/1",
+  "inputUnit": "utf8_request_bytes",
+  "poolIdentity": [
+    "authenticatedNodeId",
+    "poolId",
+    "generation"
+  ],
+  "registrationPoolFields": [
+    "poolId",
+    "generation",
+    "envelope",
+    "models",
+    "maxConcurrency"
+  ],
+  "reportPoolFields": [
+    "poolId",
+    "generation",
+    "envelope",
+    "models",
+    "maxConcurrency",
+    "inflight",
+    "gatewayHeld",
+    "occupancyBasis"
+  ],
+  "optionalReportPoolFields": [
+    "queued",
+    "reportedInflight"
+  ],
+  "envelopeFields": [
+    "fingerprint",
+    "policyVersion",
+    "unit",
+    "maxRequestBytes",
+    "maxStateChars",
+    "maxQuestions",
+    "maxBatchStates",
+    "maxChoiceOptions",
+    "maxScoreLevels",
+    "maxTotalOptions",
+    "layaVersion",
+    "sourceSha256",
+    "checkpointRevision"
+  ],
+  "initialPolicy": {
+    "maxRequestBytes": 1048576,
+    "maxStateChars": 50000,
+    "maxQuestions": 64,
+    "maxBatchStates": 64,
+    "maxChoiceOptions": 100,
+    "maxScoreLevels": 32,
+    "maxTotalOptions": 512,
+    "layaVersion": "0.4.8",
+    "sourceSha256": "05064d8b949803af8cb173561ed0b24d6be5b62cb86d8d319321577c630d0288",
+    "checkpointRevision": "7b928d828b7b0e022f929d9bd2e44165aa270148"
+  },
+  "proofStatus": "owed",
+  "requiredTests": [
+    "native-envelope-boundaries",
+    "exact-registered-model-and-alias",
+    "generation-and-freshness-fencing",
+    "cross-model-unique-shared-pool-reservation",
+    "cancellation-releases-pool-once",
+    "old-peer-native-evidence-unknown",
+    "real-linked-native-decision-and-boundary-refusal",
+    "caller-timeout-retains-physical-work-permit",
+    "queued-cancellation-retires-only-undispatched-work",
+    "ambiguous-backend-failure-no-replay",
+    "checked-owned-process-exit-before-physical-reuse",
+    "old-incarnation-completion-cannot-release-new-work"
+  ],
+  "fingerprintAlgorithm": {
+    "algorithm": "sha256",
+    "encoding": "UTF-8 compact JSON, no spaces, declaration order below, excluding fingerprint",
+    "orderedFields": [
+      "policyVersion",
+      "unit",
+      "maxRequestBytes",
+      "maxStateChars",
+      "maxQuestions",
+      "maxBatchStates",
+      "maxChoiceOptions",
+      "maxScoreLevels",
+      "maxTotalOptions",
+      "layaVersion",
+      "sourceSha256",
+      "checkpointRevision"
+    ],
+    "initialPolicyFingerprint": "4e7c3e4f54df4f530f9df35a32baa845e3067f57bcd4075e69dede12632ab0e5"
+  },
+  "reservationIdentity": [
+    "authenticatedNodeId",
+    "poolId"
+  ],
+  "generationRule": "Report authority binds exact current registration generation; held reservations remain charged to physical pool across generation changes until released.",
+  "occupancySemantics": {
+    "basis": "conservative_sum",
+    "inflight": "min(maxConcurrency, reportedInflight + gatewayHeld)",
+    "reportedInflight": "worker-measured outstanding state admission units retained by queued, executing or unconfirmed physical work; caller/transport termination cannot retire them; absent means unknown and grants no usable native capacity",
+    "gatewayHeld": "child gateway held reservations, with unknown overlap against worker reported occupancy",
+    "parentHeld": "parent adds its own held reservations conservatively; never infer overlap",
+    "physicalMetrics": "reportedInflight state admission units only, without clipping away retained work debt; not a forward-pass/thread/resource-utilization count; conservative routing occupancy stays distinct"
+  },
+  "poolConcurrencyUnit": "state_admission_units",
+  "requestCost": {
+    "single": 1,
+    "batch": "min(number of states, selected pool maxConcurrency)"
+  },
+  "identityContract": {
+    "path": "contracts/systemone-native-identity-v1.json",
+    "sha256": "832c55671e1515a7e7c97a1957113617815cc17b24dd5c85001e3480a715bf09"
+  },
+  "physicalLifetime": {
+    "dispatchedWorkRetirementEvidence": [
+      "authoritative_backend_completion_response_for_exact_work",
+      "successful_os_wait_for_exact_owned_process_incarnation"
+    ],
+    "notCompletionEvidence": [
+      "caller_cancellation",
+      "caller_deadline",
+      "transport_timeout",
+      "connection_eof",
+      "partial_or_malformed_response",
+      "healthy_runtime_probe",
+      "elapsed_time",
+      "signal_sent_without_wait_receipt",
+      "missing_child_handle_without_verified_exit"
+    ],
+    "unconfirmedWork": "retain_debt_and_quarantine",
+    "ambiguousInferenceReplay": "forbidden",
+    "undispatchedWork": "retire only after all owned queued work is removed before backend dispatch",
+    "callerReservation": "may end independently; releases only its own parent-held reservation once",
+    "physicalPermit": "queued and executing work retain ownership independently of caller lifetime; an unconfirmed dispatched operation retains debt until an authoritative completion or checked process exit",
+    "incarnationFence": "fence exact process/pool incarnation from dispatch through classification, checked termination and debt retirement; old completion must not release new work",
+    "runtimeProofStatus": "owed"
+  }
+}

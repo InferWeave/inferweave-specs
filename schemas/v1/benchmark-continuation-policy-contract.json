@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inferweave.org/schemas/benchmark-continuation-policy-contract-1.json",
+  "title": "Frozen continuation policy observation descriptor (not a Lease schema)",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": "iw.benchmark-continuation-policy/1"
+    },
+    "method": {
+      "const": "POST"
+    },
+    "path": {
+      "const": "/api/bench/leases/continuation-policy"
+    },
+    "transport": {
+      "const": "private_authenticated"
+    },
+    "features": {
+      "const": [
+        "IW-BENCH-003",
+        "IW-BENCH-002"
+      ]
+    },
+    "tasks": {
+      "const": [
+        "P2-T19",
+        "P2-T03"
+      ]
+    },
+    "request_fields": {
+      "const": [
+        "schema",
+        "nonce",
+        "lease"
+      ]
+    },
+    "positive_response_fields": {
+      "const": [
+        "schema",
+        "nonce",
+        "lease_id",
+        "node_id",
+        "hard_deadline",
+        "policy_allows"
+      ]
+    },
+    "nonce": {
+      "const": "exactly_32_lowercase_hex"
+    },
+    "max_request_bytes": {
+      "const": 4194304
+    },
+    "max_response_bytes": {
+      "const": 4194304
+    },
+    "lease": {
+      "const": "existing_complete_strict_lease_and_bounds"
+    },
+    "binding": {
+      "const": "response_echoes_request_actual_owned_lease_and_nonce"
+    },
+    "meaning": {
+      "const": "current_policy_observation_not_execution_or_start_grant"
+    },
+    "start_gates": {
+      "const": "unchanged"
+    },
+    "recovery": {
+      "const": "independent_of_current_policy"
+    },
+    "deadline": {
+      "const": "original_immutable_hard_deadline"
+    },
+    "failure": {
+      "const": "false_refused_unavailable_or_mismatch_is_not_positive"
+    },
+    "proof": {
+      "const": "offline_projection_only_runtime_owed"
+    }
+  },
+  "required": [
+    "version",
+    "method",
+    "path",
+    "transport",
+    "features",
+    "tasks",
+    "request_fields",
+    "positive_response_fields",
+    "nonce",
+    "max_request_bytes",
+    "max_response_bytes",
+    "lease",
+    "binding",
+    "meaning",
+    "start_gates",
+    "recovery",
+    "deadline",
+    "failure",
+    "proof"
+  ],
+  "additionalProperties": false
+}

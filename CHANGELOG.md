@@ -6,6 +6,32 @@ versioning rules and the protocol change workflow.
 
 ## 1.1.0 — GPU memory accounting (in progress)
 
+- Capability Bench v1 extension, Drift Watch (traceability only; no wire or protocol change): frozen
+  `contracts/capability-bench-vocabulary-v2.json` (additive to v1, which is untouched; adds capabilities
+  `scope-adherence` and `drift-canary` and four `unrequested.*` failure classes), features `IW-BENCH-004` to
+  `IW-BENCH-008` and tasks `P2-T25` to `P2-T29`, all proof `owed`. Implemented in the reference repository
+  (PR #1491), not deployed; see `evidence/drift-watch-traceability-2026-11-08/README.md`.
+- Spec 36: bound owner cold-boot assurance to retained journal anchors and declared
+  collector assumptions; require broader global OOM candidates and pre-ingest
+  loss-indicator checks before adoption. All new proofs remain owed.
+
+- Specs 36/28: define an explicit owner-only cold-boot evidence catch-up and
+  engine-epoch adoption contract, preserving the locked external profile,
+  complete monitoring history and quarantine-last publication. Explicit
+  whole-machine conservative replay needs no historical scope exemptions and
+  rejects every fault candidate; scoped exemptions require real capture/anchor
+  provenance. This repairs the
+  missing cross-boot recovery boundary; implementation, failure proofs and
+  production qualification remain owed. No automatic recovery or gate opens.
+
+- Specs 04/05/42: eligible catalogue capacity and currently servable context must
+  apply routing's withdrawal predicates while retaining known model identity,
+  declared context, healthy siblings and accepted work. Operational feedback and
+  bounded regression evidence are recorded separately; this introduces no wire
+  member or new DNS recovery signal. Engine-preserving direct-node refresh
+  remains owed; see `evidence/dns-withdrawal-capacity-2026-11-05/README.md`.
+
+- Spec 67: `iw.site-attestation/1` (additive, optional): a gateway attests, over the heartbeat of an enrolled registration, that it enforces a specific paid-model grant (`grant_sha256`), so a paid runtime that may join any gateway advertises its model only while the gateway demonstrably restricts it to the owner; a registration that does not negotiate it is unchanged. Accepted for implementation; proof owed (`P5-T39`, `IW-SITEATT-001`).
 - Spec 61: a held `selection.precision_table_version` now **binds classification**, not only validation (a candidate
   advertising another table version, or none, is classified by its token under the pinned table, whatever its
   route; the pinned class is what `preferred.precision` ranks and `unmet.observed` reports). New frozen `unmet`
@@ -49,6 +75,30 @@ versioning rules and the protocol change workflow.
   Slot semantics now distinguish schedulable `slots` from the `max_concurrency` admission bound, and a CPU-only node
   is first class (`cpu` device/backend, `gpus: []`, routable without GPU telemetry). Older peers are unaffected:
   every member is optional and omitted when absent. Casing of the new members is inconsistent and recorded as open.
+### Held Link initial-credit compatibility (specification correction)
+
+**Compatibility classification: patch, backwards-compatible specification
+correction.** Spec 59 now states that Request carries one implicit default response
+window and later Credit frames add to it. Existing Go gateways that also send an
+explicit initial default-window grant may temporarily retain that grant and a
+bounded receive buffer covering both allowances, so peers that start at zero do
+not deadlock. Per-consumed-item replenishment and overrun refusal are unchanged.
+
+The previous text required credit exhaustion behavior but did not identify who
+initialized the first window. Rust therefore began with an implicit window while
+Go granted another window and buffered only one. A paused consumer could be
+reported as a sender overrun even though the sender remained within the combined
+allowance. The bounded Go/Rust fixture evidence is recorded under
+`evidence/link-initial-credit-2026-11-04/`; production rollout and sustained-load
+qualification remain owed.
+
+The same correction set separates control liveness from data-path evidence: a
+heartbeat cannot restore a DNS-unresolvable endpoint, while fresh registration or
+an authenticated held Link can clear only that withdrawal. It also makes EOF
+before End incomplete on legacy Link streams and limits connection-loss wording to
+typed shared-socket failures. Stream-local credit, sequence and idle failures gain
+bounded operator attribution without changing public error codes, retry metadata,
+or replay rules.
 
 - Additive, explicitly negotiated `dynamic_aliases: "2"` (spec 54) preserves level 1.
   Adds strict alias policies/revisions, instance-level preview and evidence, frozen reasons/events,

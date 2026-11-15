@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inferweave.org/schemas/benchmark-speed-execution-contract-1.json",
+  "title": "Frozen SpeedRequests contract vocabulary",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": "iw.benchmark-speed-execution/1"
+    },
+    "profile": {
+      "const": "SpeedRequests"
+    },
+    "features": {
+      "const": [
+        "IW-BENCH-003",
+        "IW-BENCH-002"
+      ]
+    },
+    "safety_dependency": {
+      "const": "IW-GPUMEM-001"
+    },
+    "tasks": {
+      "const": [
+        "P2-T19",
+        "P2-T03"
+      ]
+    },
+    "coverage_version": {
+      "const": 2
+    },
+    "legacy_coverage_version": {
+      "const": 1
+    },
+    "backend_generating_concurrency": {
+      "const": "unknown_without_observation"
+    },
+    "overlap": {
+      "const": "positive_duration_at_requested_concurrency_each_measured_wave"
+    },
+    "intervals": {
+      "const": "half_open_ends_before_starts"
+    },
+    "calibration_max_calls": {
+      "const": 4
+    },
+    "measured_calls": {
+      "const": "C*R"
+    },
+    "recovery_order": {
+      "const": "committed_journal_before_current_checks"
+    },
+    "authority": {
+      "const": "private_owned_child_and_live_lease"
+    },
+    "proof": {
+      "const": "offline_shape_only_runtime_owed"
+    },
+    "refusals": {
+      "const": [
+        "TaskSerial",
+        "ordinary_constrained_cli",
+        "FakeEnv",
+        "missing_current_policy",
+        "unowned_or_ambiguous_child",
+        "unsupported_slurm"
+      ]
+    },
+    "acceptance": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "prefixItems": [
+        {
+          "const": {
+            "id": "AC-SPEED-01",
+            "owner_task": "P2-T19",
+            "proof_status": "owed"
+          }
+        },
+        {
+          "const": {
+            "id": "AC-SPEED-02",
+            "owner_task": "P2-T19",
+            "proof_status": "owed"
+          }
+        },
+        {
+          "const": {
+            "id": "AC-SPEED-03",
+            "owner_task": "P2-T19",
+            "proof_status": "owed"
+          }
+        },
+        {
+          "const": {
+            "id": "AC-SPEED-04",
+            "owner_task": "P2-T19",
+            "proof_status": "owed"
+          }
+        },
+        {
+          "const": {
+            "id": "AC-SPEED-05",
+            "owner_task": "P2-T19",
+            "proof_status": "owed"
+          }
+        },
+        {
+          "const": {
+            "id": "AC-SPEED-06",
+            "owner_task": "P2-T03",
+            "proof_status": "owed"
+          }
+        },
+        {
+          "const": {
+            "id": "AC-SPEED-07",
+            "owner_task": "P2-T03",
+            "proof_status": "owed"
+          }
+        },
+        {
+          "const": {
+            "id": "AC-SPEED-08",
+            "owner_task": "P2-T19/P2-T03",
+            "proof_status": "owed"
+          }
+        }
+      ],
+      "items": false
+    }
+  },
+  "required": [
+    "version",
+    "profile",
+    "features",
+    "safety_dependency",
+    "tasks",
+    "coverage_version",
+    "legacy_coverage_version",
+    "backend_generating_concurrency",
+    "overlap",
+    "intervals",
+    "calibration_max_calls",
+    "measured_calls",
+    "recovery_order",
+    "authority",
+    "proof",
+    "refusals",
+    "acceptance"
+  ],
+  "additionalProperties": false
+}

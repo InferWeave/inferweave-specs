@@ -120,11 +120,11 @@ CASES = {
         [remove_from(MISSION, [], "additionalProperties")]),
     "mission-event-causation-id": (
         FULL, put("causation_id", "evt-000123"),
-        {(None, ("causation_id",), FALSE_SCHEMA)},
+        {(None, (), FALSE_SCHEMA)},
         forbidden_field_breaks("causation_id")),
     "mission-event-payload": (
         FULL, put("payload", {"prompt": "redacted"}),
-        {(None, ("payload",), FALSE_SCHEMA)},
+        {(None, (), FALSE_SCHEMA)},
         forbidden_field_breaks("payload")),
     "mission-event-short-commit-sha": (
         FULL, put("commit_sha", "b97c777"),

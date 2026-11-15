@@ -112,6 +112,7 @@
 | AC-MI-05 | No demand, unknown state intervals and scheduler reclaim | Unknown is not available; explicit time denominator; linked GPU/worker/logical-request interruption and recovery; **owed** |
 | AC-MI-06 | Unauthenticated reads, forged tenant headers, private scope, shared exports and old facts | Explicit operator grants; unsupported private scopes fail closed; bounded redacted responses and additive unknown history; **owed** |
 | AC-MI-07 | Every existing route/action at desktop/tablet/mobile, light/dark and accessible states | Retained workflows/roles/preferences; coherent shared UI, real-data provenance, no fixture fallback and source/dist parity; **owed** |
+| AC-MI-08 | Legacy multi-GPU reserve and incomplete quality cohorts | Exact GPU key sets and checked residency/KV/reserve; failed, skipped or invalid quality cannot pass; throughput separate and canonical duplicates pruned; **owed** |
 
 ## Private normalized observability HTTP (2026-10-20)
 
@@ -125,3 +126,16 @@ IW-OBS-001/IW-TEL-001/IW-BENCH-002; P1-T20/P2-T03; spec23;
 | Durable outbox/ACK/replay and independent expected/loss coverage | owed | Restart, saturation and checkpoint integration |
 | Consistent bounded private snapshots and exact parent/failure reads | owed | Concurrent database and cursor tests |
 | Paired generation, atomic seal/prune and persistent late-ingest fence before collection enablement | owed | Real persistence integration; all routes default disabled |
+
+## Guarded SpeedRequests (all runtime proof owed)
+
+| ID | Scenario | Expected |
+|---|---|---|
+| AC-SPEED-01 | Committed capsule, current policy or manifest unavailable | Held-journal recovery imports original canonical RecordID before current checks |
+| AC-SPEED-02 | New work without current private owner, lease or policies | Refuse without inference; preserve recovery and fence |
+| AC-SPEED-03 | Original deadline, parent loss or uncertain reap | Bounded stop and cleanup; no new execution time or unsafe release |
+| AC-SPEED-04 | Admission and placement | Preserve owner, floors, scheduler, CPU and per-request KV accounting |
+| AC-SPEED-05 | Bounded speed run | At most four calibration plus C×R measured calls; complete usage and no hidden calls |
+| AC-SPEED-06 | Every measured wave overlap | Positive duration at C using half-open intervals; backend concurrency stays unknown |
+| AC-SPEED-07 | Coverage v2 and legacy v1 | Saved-leaf identity, explicit unknown axes, distinct exact match and qualification |
+| AC-SPEED-08 | Observation and production proof | E7–E9 and Slurm attestation remain dependencies; fixture shape is not runtime qualification |

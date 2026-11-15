@@ -20,6 +20,21 @@ Control messages:
 - telemetry/accounting acknowledgements;
 - prompt-ledger ingestion status.
 
+### Control liveness and data-path recovery
+
+A heartbeat proves that the authenticated control path is live. It does not prove
+that the node's registered data endpoint resolves or accepts traffic. When endpoint
+resolution fails before dispatch, the gateway withdraws that route immediately and
+MUST NOT restore it merely because another heartbeat arrives. A direct HTTP route
+without a held Link remains withdrawn until a fresh authenticated registration
+publishes the corrected endpoint.
+
+An accepted authenticated held Link is independent data-path evidence and MAY clear
+only an endpoint-unresolvable withdrawal for that node. A failed Link handshake or
+bad credential clears nothing. Link acceptance never clears a leaving, released,
+distrusted, revoked, or otherwise stronger withdrawal. These rules prevent a healthy
+control loop from repeatedly returning a known-broken data route to selection.
+
 ## Data path preference
 
 For every route:
@@ -69,6 +84,13 @@ Track:
 Define SLOs that drive the gateway-byte ratio toward zero for normal established clients.
 
 Gateway relay has explicit concurrency/bandwidth circuit breakers.
+
+Stream-local failure is not shared-transport failure. Credit-window overrun,
+token-sequence violation, and one request's idle deadline terminate only that
+request. Socket loss terminates the Link and its streams. Operator diagnostics keep
+those causes distinct; public errors remain bounded and expose no raw upstream
+message. An accepted request is never automatically replayed after an ambiguous or
+partial response.
 
 ## Prompt persistence
 

@@ -1,5 +1,23 @@
 # Open Gates
 
+## Autonomous background benchmark production qualification
+
+**BLOCKED.** Spec 33 background scheduling policy and spec 46 shared-memory
+admission require live target qualification. Local policy, journal, resource-ledger
+and subprocess tests do not establish production readiness. Owed: NVIDIA/AMD
+sharing headroom and serving-pressure validation, exact owned Slurm-step
+cancellation/preemption, independent deployed recovery, a verified Hive 8×A100
+canary, and a 24-hour interruption/recovery soak. Free VRAM, static qualification
+templates and a successful process exit grant no production placement authority.
+Keep the owning rebalancer, availability floors and scheduler authority in force.
+
+The benchmark-policy implementation does not implement P5-T31's owning-gateway
+composition/export. Physical node reports and generic heartbeat storage do not
+constitute authoritative `safeSchedulable`, pressure and eligibility, nor a
+qualified `/iw/v1/gpu-memory` endpoint. Live automatic sharing remains blocked
+until that controller dependency is implemented and qualified; fixtures or a
+successful/unauthorized HTTP probe do not satisfy it.
+
 Every gate below is **BLOCKED** unless this file records otherwise.
 
 A placeholder, example, environment default, test fixture, prototype, or merged pull request
@@ -9,6 +27,86 @@ deployment of it, and implementation of a control is not staffing of it.
 This file exists because these specifications run far ahead of any running system. Without a
 register of what is *not* approved, a reader encounters thirty-eight confident documents and
 reasonably concludes more exists than does.
+
+## Owner cold-boot catch-up and epoch adoption — 2026-11-06
+
+**UNSATISFIED / owed.** Spec 36 now defines explicit owner requalification of an
+already-running external engine after a host reboot, keeping quarantine until
+complete retained-boot journal/native evidence replay and a coherent durable
+checkpoint/identity adoption. The approved design permits implementation, not
+runtime adoption or automatic rescue. The existing guard's bounded current-boot
+monitor is not a cross-boot catch-up API; deleting a cursor to initialize at the
+tail is prohibited. Spec 28 external status remains read-only.
+
+`IW-WATCH-001` / `P1-T20A` and `IW-WATCH-003` / `P3-T18A` owe complete history and
+historical-scope provenance for scoped exemptions, boot-local stateful replay,
+explicit whole-machine conservative candidate/coverage proof without exemptions,
+native byte/append handoff, strict no-bootstrap startup, publication crash tests,
+and fresh local
+plus authenticated context/concurrent-session qualification. Implementation,
+removal-sensitive tests, independent review, applicable repository checks and
+owner production qualification are **owed**, not inferred from health, old proofs
+or this specification. Disabled CI pools do not waive required checks. Missing
+required provenance/lost records/new faults keep the resource quarantined.
+Global-only candidate normalization/cross-record windows, all-transport loss IDs,
+trusted kernel/driver loss recognition, protected collector configuration and
+limited assurance receipts remain **owed** before adoption. Global journal
+sequence continuity does not establish completeness of never-ingested events;
+historical collector continuity and trusted producers remain declared assumptions.
+Historical scopes may be absent only for complete candidate-free conservative
+coverage, never for a scoped exemption or a claim that the machine is fault-free;
+all existing
+qualification, watchdog and rollback gates remain binding. No gate opens here.
+See [operational evidence and limits](evidence/owner-coldboot-epoch-adoption-2026-11-06/README.md).
+
+## Autonomous capability & limitations bench v1.0.0 — 2026-10-28
+
+**BLOCKED. Unsatisfied.** Package `inferweave-autonomous-capability-bench-v1` (SHA-256
+`66b15719d09f4ddb135f6ad8d69e476e91b65810a0db8b1d114afd2414dd8496`) is audited in the
+implementation repository under
+`docs/specs/inferweave-autonomous-capability-bench-v1-20261028T180332Z/inferweave-autonomous-capability-bench-v1/audit/`.
+
+- **P1 (record metadata): merged, not deployed, not independently staffed-reviewed.** An optional
+  `capability` block on `iw.bench-record/1`, merged as implementation commit
+  `4e78b54a3413f5cbb20011a66a1bbdfaaa25f06c` (PR #1360); frozen vocabulary in
+  [`contracts/capability-bench-vocabulary-v1.json`](contracts/capability-bench-vocabulary-v1.json).
+  Proof status, reproducible with `cargo test -p iw-bench-record` at that commit:
+  *proven* — a record without the block keeps its historical `content_sha256`, id, JSON and
+  comparison/series keys (removing `skip_serializing_if` fails 2 tests); a changed grader hash
+  changes the comparison key (removing it fails 1 test); a stored record that breaks the block's
+  rules is refused on load (removing the load validator fails 1 test). *owed* — every other P1 rule
+  (canonical/adaptive requirements, hash checks) has a test but no removal-mutation was run.
+  No producer emits the block. `Record` rejects unknown fields, so readers must be deployed before
+  any writer. A model agent (Codex) reviewed the change; that does not staff the independent review gate.
+- **P2–P8: unsatisfied.** No new graders, mutation lifecycle, interactive harness, adaptive
+  scheduler, statistics, dashboard views or rollout exist. Nothing has run on real hardware;
+  no figure is measured.
+- **Live placement remains BLOCKED.** Spec 33 (background scheduling) and spec 46 (shared-memory
+  admission) govern background benchmark placement; this package's P5 is not approved to take
+  production placement under either. Qualification conditions beyond those specs (sharing headroom,
+  exact Slurm-step cancellation, a canary, a recovery soak) appear in an operator draft of the
+  background-benchmark gate that is not on `main`; they are not defined by this entry and need a
+  decision record before any live placement. Protected R9700 allocations and the operator's Mac
+  are never eligible without explicit configuration.
+- **Registry traceability owed:** feature IDs, task cards and `canonical-task-graph.json`
+  entries for P1–P8 are not created, and specs 12/23/24 were not reconciled field by field.
+- **Drift Watch extension (2026-11-08): registered, unsatisfied.** Scope adherence, stack fingerprint
+  and paired drift alarms are merged in the implementation repository (PR #1491, `f9595585`) as an
+  extension of this package, registered as `IW-BENCH-004` to `IW-BENCH-008` and tasks `P2-T25` to
+  `P2-T29`, with frozen
+  [`contracts/capability-bench-vocabulary-v2.json`](contracts/capability-bench-vocabulary-v2.json)
+  (v1 untouched). All five tasks are `owed`; nothing is deployed and nothing has run on real
+  hardware. Not proven here: this change reproduced no implementation test. Known limits, from the
+  design: scope adherence is an upper bound (no catch-all egress recorder); the sandbox work
+  directory is not size-capped; the real git is listable inside the sandbox; the drift statistics
+  have no production history producer and Holm over a rolling pair does not control the error rate
+  across repeated monitoring; the hardware guard works from names, so a protected machine under an
+  unlisted name or bare address is not recognised; and the containment tests skip where `bwrap` is
+  unusable (the Woodpecker `ci.sif` image), so those controls are proven only on hosts with it.
+  Quantization baselines (`P2-T29`) are not started or planned. Scope and drift results must not
+  feed routing eligibility. Evidence:
+  [`evidence/drift-watch-traceability-2026-11-08/README.md`](evidence/drift-watch-traceability-2026-11-08/README.md).
+  The P1–P8 traceability and the spec 12/23/24 reconciliation above remain owed.
 
 ## How to read a gate
 
@@ -1269,3 +1367,233 @@ and template fixtures prove their parsing controls only. No eligible existing sp
 proof was established; do not allocate another GPU or disturb protected workloads to fill the gap.
 Offline schemas, vectors and any local implementation tests retain their narrow evidence scope.
 All unrelated entries and the general spec56 verifier gate above remain in force.
+
+## Paid System One site attestation (2026-11-01)
+
+**Status: UNSATISFIED. Accepted for implementation; nothing implemented, nothing deployed.**
+
+A paid System One model is served from a Slurm job on Whiteale and advertised through the public
+gateway, gated today by an operator-made, one-hour file attestation that the gateway enforces the owner
+grant (`InferWeave/inferweave` `deploy/whiteale/jev/`). No specification described the policy file, the
+loopback status endpoint, the file attestation, its one-hour expiry, or the rule that the site checks it
+at every join and not while a link is held; `decisions/2026-11-01-gateway-served-site-attestation.md`
+records what exists and the incident (6 min 3 s from link drop to serving after a gateway restart).
+
+The decision owner accepted, on 2026-11-01, the gateway-served design for implementation: the capability
+`iw.site-attestation/1` (`specs/67_SITE_ATTESTATION.md`, feature `IW-SITEATT-001`, task `P5-T39`), with the
+Rust gateway as sole issuer and enforcer, binding by grant digest and operator enrollment (not node id),
+and a paid runtime that may join any gateway and be scheduled or restarted by one. The operated renewer
+was withdrawn the same day. This opens no production gate and approves no deployment.
+
+**Implemented, not deployed (2026-11-02).** `InferWeave/inferweave` PR #1446 (`90686506`) implements
+`iw.site-attestation/1` in the Rust gateway and node; Linux CI passed. This is not an operational claim: no
+paid site runs on it, the public gateway is still the Go gateway, and Jev still uses the file attestation.
+
+**Proven (fails when the control is removed):** default-deny enforcement before admission on every route
+found; the capability listed only with a valid loaded policy and a byte-identical wire without it; the
+enrollment check; the site's `verify` (a copy is useless to another instance, gateway, grant, model or
+rollout); the wake at `expires_at`; withdrawal on refusal with no older attestation kept; no fallback to the
+file while the capability is in force; the advert gate; and the grant digest comparison.
+
+**Owed, UNSATISFIED (invariant 40):** a mutation check of the remaining spec 67 section 10 tests (the order
+and individual refusal codes other than those above, two instances attested independently, `any` only when
+explicit, the lifetime clamp); and the operational evidence in `tasks/phase-5/P5-T39.md` (a real site on a
+Slurm node, restarted by its scheduler and re-attested; the same site on a second gateway). The file
+attestation and `renew_attestation.py` remain the only mechanism in production until a cutover. An unplanned
+link drop with an expired file leaves the site waiting until someone renews, which the owner accepted. The
+paid vendor credential's delivery to a scheduled instance is not decided here and is owed separately.
+
+## Legacy NVIDIA benchmark integration — 2026-10-28
+
+**UNSATISFIED / owed:** production qualification for dual sm61/sm75 targets.
+Read-only inventory observes serving workloads on both operator-named hosts;
+it grants no benchmark lease or preemption authority. Deterministic catalogue,
+planner, record-integrity and qualification changes do not establish a compatible
+CUDA build, loaded artifact identity, measured memory reserve, agent-task quality,
+stability, safe fallback, authenticated remote submission or deployed dashboard
+integration. AC-MI-08 remains owed as full acceptance. Existing R9700/4090 and Slurm
+ownership and production gates remain in force. No new deployment is authorized
+by this entry.
+
+
+### Legacy integration follow-up — 2026-11-04
+
+Implementation PR #1457 merged as `50e9f3d87caa1bb401a4687444d34c57cf9bd749`.
+Bounded source integration reuses the merged private submission, community
+review/publication and workbench implementations. Logical recovery tests use a
+persisted ACK journal, a fresh PostgreSQL connection and reconstructed service;
+a surviving test listener is not OS-crash or power-loss proof. Authorization and
+projection removal mutations fail the new web regressions. These checks establish
+neither deployed enablement nor production qualification. Both legacy targets are
+running operator benchmarks; alternate comparison resources require their own
+scheduler allocation. No owner workload may be displaced and no static inventory
+entry may manufacture a lease or open an existing production gate.
+The pinned implementation report linked from
+`evidence/legacy-nvidia-2026-10-28/README.md` records an owned single-TITAN RTX
+Slurm pilot and deployed authenticated private intake/replay. This is experimental
+single-card comparison evidence, not exact-target production qualification;
+AC-MI-08 remains **owed / UNSATISFIED**. Private raw evidence remains outside Git.
+Public publication, production promotion and deployed owner-view access are not
+established. New conductor v2 stores retain canonical IDs; v1 preserves legacy
+replay only and cannot supply canonical coverage or publication evidence.
+
+## Held Link initial-credit and communication recovery qualification
+
+The later [DNS-withdrawal capacity correction](evidence/dns-withdrawal-capacity-2026-11-05/README.md)
+addresses ghost-advertised eligible capacity without relaxing recovery. Its
+focused red/green regression and pinned implementation PR are recorded
+separately; required Linux CI and production qualification remain owed in that
+record. Engine-preserving refresh of a
+registered direct-only producer after a transient DNS failure remains
+**UNSATISFIED / owed**. Positive probing does not authorize direct restoration;
+atomic fences, bounded producer/executor exhaustion and no-engine-shutdown proof
+are prerequisites for the proposed fresh-registration recovery design, not
+controls proven by the capacity correction. No production gate opens here.
+
+Initial-credit interoperability now has bounded implementation evidence, not
+production qualification. The Go/Rust fixture holds the consumer, exercises the
+Rust implicit default window plus the Go explicit default-window grant, verifies
+one-for-one replenishment, and proves that an item beyond the combined allowance
+fails only its stream. This closes the specific buffer/grant mismatch in the
+fixture. Sustained mixed-version load, cancellation under saturation, deployment
+and post-rollout error-rate evidence remain **owed**. The compatibility buffer is
+temporary until a negotiated convention can replace support for both implicit-
+and explicit-initial-credit peers.
+
+DNS recovery and linked-stream attribution also have bounded implementation
+evidence, not production qualification. Rust HTTP integration tests reproduce a
+DNS-broken endpoint being incorrectly restored by heartbeat, then prove that only
+fresh registration or an authenticated held Link clears that withdrawal; a bad
+credential and stronger withdrawal reasons remain held. Go tests distinguish
+credit, sequence, stream-idle and shared-connection causes, and treat legacy EOF
+before End as incomplete. Public `upstream_transport_error` semantics remain
+unchanged and raw errors remain private. Mixed-version rollout, repaired-DNS
+operation without a held Link, sustained failure-rate comparison, cancellation
+under saturation and production operator-diagnostic retention remain **owed**.
+
+## Benchmark attempt inspection boundary — 2026-11-04
+
+**UNSATISFIED / owed.** Ownership is IW-UI-002 / P2-T18 for the inspector and
+IW-BENCH-002 / P2-T03 with the ledger/storage owner for its backend prerequisites.
+Authority: [spec10](specs/10_DASHBOARD_PORTAL.md) authenticated portal/history,
+[spec15](specs/15_ASYNC_JOBS_ARTIFACTS.md) artifact ownership and retention,
+[spec22](specs/22_PROMPT_LEDGER.md) scoped content access/audit/loss,
+[spec34](specs/34_PROMPT_STORE_TIERING.md) encrypted storage, and the accepted
+[Cognito decision](decisions/2026-10-25-bench-cognito-auth.md). Benchmark
+`viewer/requester/reviewer/admin` roles and ledger content roles remain their
+separate vocabularies; no implicit promotion between them is authorized.
+
+The private attempt inspector owes all of:
+
+1. **Tenant/owner policy and role mapping:** define the current verified registry
+   principal/benchmark-role to scoped ledger-content policy, including revocation
+   and expiry. A public model/task URL grants no content access.
+2. **Authoritative producer linkage:** persist benchmark record/task-repeat to
+   ledger prompt/request/attempt identifiers and ordering; do not join by model,
+   time or presentation-row index.
+3. **Capture/provenance:** define recorded prompt/output/check/artifact custody,
+   integrity and retention, with explicit missing, partial and recording-loss
+   disclosure. Missing historical transcripts remain unavailable.
+4. **Private reader and audit:** compose a bounded authorized route with the
+   existing encrypted prompt store and durable content-access audit, including
+   denied/unknown-resource and audit-failure behavior. Do not create a parallel
+   grant or audit authority.
+5. **Integration proof:** real local OIDC/registry/ledger/BFF/browser checks for
+   cross-tenant/owner denial, revocation, expiry, artifact binding, integrity and
+   audit failure; production-pool qualification remains separate.
+
+Closure must name its accepted mapping/linkage contract and exact implementation
+commit plus guard-removal and integration evidence under the existing task's
+completion record. None is supplied by public task-page navigation. This entry
+opens no deployment, real-user grant, production-content ingestion or benchmark
+execution authority.
+
+## Guarded SpeedRequests and coverage v2 — owed
+
+IW-BENCH-003/P2-T19 and IW-BENCH-002/P2-T03 acceptance AC-SPEED-01–08
+in `contracts/benchmark-speed-execution.json` are **owed**. Offline schema and
+conformance checks prove only contract shape and arithmetic examples. They do not
+prove actual authority, recovery ordering, cancellation, resource safety, runtime
+identity, observation authenticity, overlap, production readiness or qualification.
+Owner composition and live safety, Slurm cancellation and resident attestation,
+Hive canary, restoration and recovery soak remain open. E7–E9 observation
+producers, additive payload v2 and exact coverage are separate engineering
+prerequisites; existing v1 capsules lack observed exact axes. IW-GPUMEM-001's
+separate memory and owner-composition gates remain unsatisfied.
+
+The separate current owned-policy observation in
+`contracts/benchmark-continuation-policy.json` and spec 33 is specified but not
+implemented. Its offline descriptor and binding projections establish no deployed
+authority or active withdrawal. Live ownership, policy withdrawal/unavailability,
+cancellation under the original deadline, independent child/channel admission,
+recovery, safe capacity, hardware and production qualification remain **owed**.
+
+## Bounded gateway recorder resource policy — deployment proof owed
+
+**BLOCKED for production adoption of this repair until independently reviewed
+and qualified.** Spec22's configurable byte/disk policy and stable-identity
+migration implement existing best-effort recording intent; they do not approve
+an expanded rollout or new PostgreSQL response capture. Local component tests,
+private PostgreSQL receipt tests and policy defaults cannot establish target
+shared-filesystem lock semantics, exclusion of legacy writers, preservation of
+the existing deployed identity, or integrated auth/alias/cancellation parity.
+The source/evidence boundary is tracked in
+[`evidence/bounded-recording-2026-11-06/README.md`](evidence/bounded-recording-2026-11-06/README.md).
+No Farm serving artifact, GPU deployment or CI pool is changed by these proofs.
+
+## Qualified public-console migration — 2026-11-10
+
+**UNSATISFIED / owed** (IW-DEPLOY-001 / P1-T22). Spec37 now requires usable
+full-source rollback and complete recovered composition before public admission
+is drained. The observed legacy console cannot establish restoration provenance
+from its short label and source-less health, and its Compose labels include a
+missing temporary file. No exception to ordinary source/image/health guards is
+approved. A separate qualified fallback migration requires independent review,
+removal-sensitive guard proofs, real Compose lifecycle, independent accepted
+model inference and loaded paid-policy proof, owned completed-actor recovery,
+production composition parity, and public-path verification after restoration.
+Implementation or a scratch probe opens no production gate. The supplied user
+session's explicit deployment authority is separate from these proof obligations.
+
+## Native SystemOne admission repair — 2026-11-11
+
+**UNSATISFIED / owed.** Whiteale's actual decision route served a real request
+while its generative admission endpoint reported an empty model list. Spec48
+now requires native bounded-input authority and shared-pool reporting rather
+than an invented generative token context. Source implementation, independent
+review, full required CI, native boundary/cancellation/shared-occupancy tests,
+fresh accepted parent report and deployed normal-route qualification remain
+**owed**. Existing warnings remain valid until actual applicable evidence replaces
+them. Neither package constants nor ready registry metadata establishes the
+deployed checkpoint's qualification. No paid policy/grant or scheduler authority
+changes here.
+
+
+## Native SystemOne physical-work lifetime — 2026-11-12 UTC
+
+**UNSATISFIED / owed** (IW-RT-001 / B-T01; IW-CAP-001 and IW-BP-001 / P1-T12).
+Private old-Core `e79730300fe59670f44ce86babf85a7956454be0` run 9921 returned
+caller HTTP503 after 15.154 s, then advertised fresh worker units 0 and gateway
+holds 0 while its tracked backend process continued consuming CPU. Run 9918's
+maximum-shape request returned HTTP503 after 180.062 s; a same-pool/generation
+recovery request took 98.919 s. These are RED counterexamples, not qualification.
+The earlier cancellation wording allowed logical release to be mistaken for
+physical retirement; spec48 and the native contract now distinguish them.
+
+Actual backend completion or checked owned-process exit, uncertainty quarantine,
+no ambiguous inference replay, late-incarnation isolation and fresh parent
+observations must be independently proven against the candidate and target
+placement. Contract tests and an ordinary health response do not prove them.
+The sanitized [original RED receipts](evidence/systemone-native-physical-lifetime-2026-11-12/README.md)
+are retained; bounded private run 9923 now proves timeout-to-checked-exit retirement, but full
+batch/disconnect/shared-pool and production-profile qualification, RAM and soak
+proof remain owed. Production native authority is not opened by this change.
+
+
+The bounded private run 9923 observation is **proven only for the 15 s test
+profile** on Core `6f28cb9ce7971d596f0aba3eb47777bf472984bf`: caller HTTP503 at
+15.104 s, actual owned-process exit at 20.689 s with checked SIGKILL receipt,
+then replacement readiness/fresh capacity 16 and normal-route HTTP200 in 0.556 s.
+No fresh free claim was accepted before physical retirement. This is not a
+production-profile or full-workload gate approval; the existing 180 s maximum
+shape failure, broader cancellation/batch cases, RAM and soak remain owed.

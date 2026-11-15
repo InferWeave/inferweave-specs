@@ -52,6 +52,13 @@ A draining instance is not a candidate. Requests it cancels at its drain deadlin
 
 ## Explainability
 
+The catalogue/admission projection must use the same generic out-of-routing
+predicates as candidate selection for capacity and currently servable context.
+Freshness alone does not establish eligibility. Keep known model identity and
+declared context discoverable when eligible capacity is zero; do not broaden or
+erase the inventory merely to make the capacity projection agree with routing.
+This rule does not relax any withdrawal or provide a recovery signal.
+
 Persist candidate rejection reason codes, score components, selected instance/deployment and any soft fallback. The public representation uses privacy-safe IDs.
 
 

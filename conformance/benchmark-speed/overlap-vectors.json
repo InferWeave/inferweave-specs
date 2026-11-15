@@ -1,0 +1,9 @@
+{
+  "description": "Offline half-open HTTP overlap arithmetic only; no runtime evidence",
+  "vectors": [
+    {"id":"positive-each-wave","requested":2,"waves":[[[0,3],[2,4]],[[5,8],[6,7]]],"expected":true},
+    {"id":"touching-is-not-overlap","requested":2,"waves":[[[0,2],[2,4]]],"expected":false},
+    {"id":"one-wave-fails","requested":2,"waves":[[[0,3],[1,2]],[[4,5],[5,6]]],"expected":false},
+    {"id":"single-request","requested":1,"waves":[[[0,1]]],"expected":true}
+  ]
+}

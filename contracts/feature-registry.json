@@ -39,6 +39,9 @@
       "canonical_tasks": [
         "P1-T11",
         "P1-T12"
+      ],
+      "contracts": [
+        "contracts/systemone-native-admission-v1.json"
       ]
     },
     {
@@ -402,7 +405,7 @@
     },
     {
       "id": "IW-PROMPT-001",
-      "name": "Record encrypted prompts without coupling gateway admission to sink availability",
+      "name": "Record encrypted prompts with bounded resource policy without coupling gateway admission to sink availability",
       "phase": 1,
       "priority": "P0",
       "status": "required",
@@ -1246,6 +1249,9 @@
       "owner_component": "protocol",
       "canonical_tasks": [
         "B-T01"
+      ],
+      "contracts": [
+        "contracts/systemone-native-admission-v1.json"
       ]
     },
     {
@@ -1319,6 +1325,72 @@
         "A-T06",
         "A-T07",
         "A-T08"
+      ]
+    },
+    {
+      "id": "IW-SITEATT-001",
+      "name": "Site attestation: a gateway attests the paid-model grant it enforces to a paid runtime over the register and heartbeat messages (iw.site-attestation/1), for any gateway and any number of scheduled or restarted instances (Protocol 1.1.0; new proof owed)",
+      "phase": 5,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "gateway+node",
+      "canonical_tasks": [
+        "P5-T39"
+      ]
+    },
+    {
+      "id": "IW-BENCH-004",
+      "name": "Capability vocabulary v2 and the scope-adherence record kind: frozen contracts/capability-bench-vocabulary-v2.json mirroring the implementation's capability-v2.json, additive to v1 (extension of Capability Bench v1; new proof owed)",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "benchmarks",
+      "canonical_tasks": [
+        "P2-T25"
+      ]
+    },
+    {
+      "id": "IW-BENCH-005",
+      "name": "Benchmark stack fingerprint: observed harness, tool-list, system-prompt and chat-template attribution stored with every drift and scope result, null when unobserved (extension of Capability Bench v1; new proof owed)",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "benchmarks",
+      "canonical_tasks": [
+        "P2-T26"
+      ]
+    },
+    {
+      "id": "IW-BENCH-006",
+      "name": "Scope-adherence scenario family: network-isolated recording-stub sandbox, bare and full harness arms, deterministic action-log grader, protected-hardware refusal (extension of Capability Bench v1; new proof owed)",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "benchmarks",
+      "canonical_tasks": [
+        "P2-T27"
+      ]
+    },
+    {
+      "id": "IW-BENCH-007",
+      "name": "Drift canaries and paired alarms: measured self-divergence floor, exact McNemar, Holm, EWMA/CUSUM and two-consecutive-run alarm rule (extension of Capability Bench v1; new proof owed)",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "benchmarks",
+      "canonical_tasks": [
+        "P2-T28"
+      ]
+    },
+    {
+      "id": "IW-BENCH-008",
+      "name": "Quantization baselines on Slurm: operator-launched reference runs and text-level and logit-level comparison of served quants against them (extension of Capability Bench v1; not implemented, no plan)",
+      "phase": 2,
+      "priority": "P1",
+      "status": "required",
+      "owner_component": "benchmarks",
+      "canonical_tasks": [
+        "P2-T29"
       ]
     }
   ]

@@ -832,6 +832,11 @@ def validate():
     errors.extend(guard_deployment_substrate(ROOT))
     errors.extend(guard_required_artifacts(ROOT))
     errors.extend(guard_prompt_recording_contracts(ROOT))
+    import importlib.util
+    recording_spec = importlib.util.spec_from_file_location("recording_outcomes_contract", ROOT / "conformance/recording_outcomes.py")
+    recording_module = importlib.util.module_from_spec(recording_spec)
+    recording_spec.loader.exec_module(recording_module)
+    errors.extend(recording_module.contract_errors(ROOT))
     errors.extend(guard_bundle_metadata(ROOT))
     errors.extend(guard_backpressure_contracts(ROOT, features, tasks))
     errors.extend(guard_protocol_vocab(ROOT, features, tasks))
@@ -1029,6 +1034,10 @@ def self_test():
     if http_test.returncode:
         print(http_test.stdout + http_test.stderr)
         return 1
+    physical_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_systemone_native_physical_lifetime.py")], capture_output=True, text=True)
+    if physical_test.returncode:
+        print(physical_test.stdout + physical_test.stderr)
+        return 1
     upstream_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_link_upstream.py")], capture_output=True, text=True)
     if upstream_test.returncode:
         print(upstream_test.stdout + upstream_test.stderr)
@@ -1056,6 +1065,16 @@ def self_test():
     tool_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_tool_call_compatibility.py")], capture_output=True, text=True)
     if tool_test.returncode:
         print(tool_test.stdout + tool_test.stderr)
+        return 1
+    # Offline-only speed contract vocabulary and per-wave overlap vectors.
+    speed_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_speed_contract_smoke.py")], capture_output=True, text=True)
+    if speed_test.returncode:
+        print(speed_test.stdout + speed_test.stderr)
+        return 1
+    # Offline continuation-policy descriptor and binding projections.
+    continuation_test = subprocess.run([sys.executable, "-B", str(ROOT / "scripts/test_benchmark_continuation_policy.py")], capture_output=True, text=True)
+    if continuation_test.returncode:
+        print(continuation_test.stdout + continuation_test.stderr)
         return 1
     file_mutations = 1 + len(gpu_breaks) + len(semantic)
     print(f"OK: {len(MUTATIONS)} registry mutations and {file_mutations} file mutations, "

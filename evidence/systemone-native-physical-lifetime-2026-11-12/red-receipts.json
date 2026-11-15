@@ -1,0 +1,142 @@
+{
+  "kind": "sanitized_original_red_observations",
+  "runtime_green_proof_status": "owed",
+  "runs": [
+    {
+      "run_id": "9918",
+      "classification": "RED",
+      "private_receipt_set": "native-qualification-e797303/runs/9918/",
+      "original_sha256": {
+        "evidence.jsonl": "979de7385901f5c0e5a105eef9379ca4a9b7a9dba5b3e4833cbcd380ddb4808e",
+        "artifact-provenance.json": "86f79d8939b385fbe9f8bfa461d5b4e5449399fed3468f80eceae673fa2069e0",
+        "harness.sha256": "f91476708673e241c19796c148d14bc65f843be024dd924294a741410a1223f1"
+      },
+      "harness_sha256": "e169cd3da90604a78e2598a308cdd96b4a8320dc4ccb11c5403445f6aa644a79",
+      "artifact_provenance": {
+        "source_revision": "e79730300fe59670f44ce86babf85a7956454be0",
+        "sif_sha256": "d425cc857105686acdc47760f29884ae2579000f2272f6d2a60f5a8d34843d28",
+        "core_sha256": "4071d0e1f12f452cb76aa196513cc319c936cdb0cfa646b25d432104e0a311ed",
+        "go_sha256": "be624fa23f6d58c48d8455304d4da995a99b38380f098d569eae7bfd416141b5"
+      },
+      "events": [
+        {
+          "at": "2026-11-12T00:38:00.108121+00:00",
+          "elapsed_seconds": 0.003,
+          "error_code": null,
+          "event": "http_outcome",
+          "status": 200,
+          "timeout_named": false,
+          "upstream_status": null
+        },
+        {
+          "at": "2026-11-12T00:38:00.145254+00:00",
+          "concurrency": 16,
+          "event": "qualified_worker_source",
+          "fingerprint": "4e7c3e4f54df4f530f9df35a32baa845e3067f57bcd4075e69dede12632ab0e5",
+          "unique_pools": 1
+        },
+        {
+          "at": "2026-11-12T00:41:02.363057+00:00",
+          "elapsed_seconds": 180.062,
+          "error_code": "system_one.native_pool_unavailable",
+          "event": "http_outcome",
+          "status": 503,
+          "timeout_named": false,
+          "upstream_status": null
+        },
+        {
+          "at": "2026-11-12T00:41:02.376074+00:00",
+          "configured_worker_budget_seconds": 180,
+          "elapsed_seconds": 180.081,
+          "event": "maximum_shape_outcome",
+          "route_timeout_named": false,
+          "state_chars": 50000,
+          "status": 503,
+          "worker_timeout_named": false
+        },
+        {
+          "at": "2026-11-12T00:42:53.446141+00:00",
+          "elapsed_seconds": 98.919,
+          "error_code": null,
+          "event": "http_outcome",
+          "status": 200,
+          "timeout_named": false,
+          "upstream_status": null
+        },
+        {
+          "at": "2026-11-12T00:42:53.459535+00:00",
+          "event": "maximum_shape_recovery",
+          "same_generation": true,
+          "same_pool": true,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "run_id": "9921",
+      "classification": "RED",
+      "private_receipt_set": "native-qualification-e797303/runs/9921/",
+      "original_sha256": {
+        "evidence.jsonl": "5495a64dce5ab3ba5fa4936801f8c55954572bba64fe713eaff4e605d19cad62",
+        "artifact-provenance.json": "86f79d8939b385fbe9f8bfa461d5b4e5449399fed3468f80eceae673fa2069e0",
+        "harness.sha256": "451cc93e47616bd59d9fb7885ed19c974905990f45b6953e5b68aeb14f1fca9e"
+      },
+      "harness_sha256": "d80166b57355f468b1359f91b9a69a79470cad6daf5c213f80d295bedd275e74",
+      "artifact_provenance": {
+        "source_revision": "e79730300fe59670f44ce86babf85a7956454be0",
+        "sif_sha256": "d425cc857105686acdc47760f29884ae2579000f2272f6d2a60f5a8d34843d28",
+        "core_sha256": "4071d0e1f12f452cb76aa196513cc319c936cdb0cfa646b25d432104e0a311ed",
+        "go_sha256": "be624fa23f6d58c48d8455304d4da995a99b38380f098d569eae7bfd416141b5"
+      },
+      "events": [
+        {
+          "at": "2026-11-12T01:51:00.395913+00:00",
+          "elapsed_seconds": 0.001,
+          "error_code": null,
+          "event": "http_outcome",
+          "status": 200,
+          "timeout_named": false,
+          "upstream_status": null
+        },
+        {
+          "at": "2026-11-12T01:51:00.411769+00:00",
+          "concurrency": 16,
+          "event": "qualified_worker_source",
+          "fingerprint": "4e7c3e4f54df4f530f9df35a32baa845e3067f57bcd4075e69dede12632ab0e5",
+          "unique_pools": 1
+        },
+        {
+          "at": "2026-11-12T01:51:02.610944+00:00",
+          "event": "physical_probe_started",
+          "old_pid": 1932813,
+          "old_start": 312458291,
+          "worker_budget_seconds": 15
+        },
+        {
+          "at": "2026-11-12T01:51:17.782535+00:00",
+          "elapsed_seconds": 15.154,
+          "error_code": "system_one.native_pool_unavailable",
+          "event": "http_outcome",
+          "status": 503,
+          "timeout_named": false,
+          "upstream_status": null
+        },
+        {
+          "at": "2026-11-12T01:51:17.796382+00:00",
+          "elapsed_seconds": 15.176,
+          "event": "caller_ended_before_physical_proof",
+          "status": 503
+        },
+        {
+          "at": "2026-11-12T01:51:29.074110+00:00",
+          "child_held": 0,
+          "cpu_ticks_delta": 322,
+          "event": "RED_unacknowledged_work_reported_free",
+          "old_pid": 1932813,
+          "reported_units": 0,
+          "source_age_ms": 20
+        }
+      ]
+    }
+  ]
+}

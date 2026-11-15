@@ -255,3 +255,46 @@ or bare-metal system services), bind only scheduler/site-approved GPU devices,
 and re-probe inside the container to confirm usable resources. Recognized
 adapter backends per modality are enumerated in
 `contracts/backends.registry.example.json`.
+
+## Public gateway migration and usable rollback evidence
+
+Operational defect, 2026-11-10 (IW-DEPLOY-001, P1-T22): the operated public
+console had a short image label and health omitted source revision, while its
+Compose labels named a missing temporary file. A newer guarded activator required
+a full source revision and matching running health for restoration. Closing
+admission before discovering this mismatch could retain a public maintenance
+drain without a supported rollback. This was a specification defect: the OCI
+artifact list above did not require that a preserved gateway rollback artifact
+could actually pass the restoration guard, or that its composition still existed.
+Following that text literally would reintroduce an unusable rollback target.
+
+Before closing public inference admission, prove a concrete supported rollback
+artifact and complete private composition. A short label expanded through a
+source repository, a relabeled binary, disk policy bytes without loaded-policy
+proof, or a missing historical Compose file is insufficient. Preserve normal
+source/image/health guards. If the legacy artifact cannot satisfy them, a separate
+explicit migration may select an independently qualified full-source fallback;
+it must never claim to restore the unverifiable old software.
+
+Such a migration must bind private, nofollow/owned/permission-checked evidence to
+the exact live baseline, immutable target and fallback, protected policy digest,
+complete recovered runtime composition, qualification lifetime and owned drain.
+Reconstruction must refuse unsupported active runtime/security/network settings.
+Scratch identity, full-source health, loaded default-deny policy and real
+accepted inference must be proven independently of the baseline being replaced.
+An attested independence boolean is insufficient: verify worker routes and the
+owned backend transport/artifact receipt. Preserve secret/content privacy.
+
+Maintain the shared deployment lock and exact owned public drain throughout
+transition and recovery. A completed Compose subprocess must have a durable
+completion receipt and exact pending-marker/report/image/source fences. Only that
+owned completed actor may enter qualified fallback while its pending marker
+remains protective and archived. A timeout or missing completion receipt remains
+uncertain and requires reviewed recovery; never generically clear pending state.
+Remove only owned markers after full-source fallback health and loaded paid-policy
+proof. A running target must prove zero inflight before recreation.
+
+Proof status: **owed** for production adoption, independent review and complete
+failure-path/operational qualification. Local lifecycle or serialization tests do
+not establish a deployed rollback or public model availability. See the matching
+open gate and [operational evidence record](../evidence/qualified-public-console-migration-2026-11-10/README.md).

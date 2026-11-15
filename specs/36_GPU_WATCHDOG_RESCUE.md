@@ -82,6 +82,305 @@ thermal throttling
 
 A metric marked unsupported is not interpreted as zero.
 
+## Kernel OOM attribution
+
+For `IW-WATCH-001` / `P1-T20A`, a kernel OOM record is evidence to classify,
+not proof that the monitored runtime failed. This implements invariants 34–35
+without withdrawing a healthy runtime for a provably unrelated memory limit.
+
+A watchdog may discount a memory-cgroup OOM only when a bounded, complete event
+proves all of the following:
+
+- the constraint is explicitly `CONSTRAINT_MEMCG`;
+- both the constrained cgroup and victim's cgroup are known, with the victim
+  inside the constrained subtree;
+- the matching victim record identifies the same PID and task;
+- both cgroups are disjoint from the monitored engine and registrar container
+  roots, including their ancestors and descendants.
+
+Derive monitored scope from trusted runtime identity and kernel process
+membership, not from event text, a configured process name or an unverified PID.
+For Docker, bind the actual memory cgroup to the pinned container generation and
+running PID, and reject a generation change during capture. Normalize a PID in a
+delegated child to the exact container-ID ancestor: an OOM in a sibling child is
+still an OOM of the monitored container. Ambiguous or unavailable provenance is
+not evidence that an event is unrelated. A stopped registrar has no live scope;
+when registration starts, monitoring must include its current trusted scope.
+
+Engine/registrar OOM, their container-root sibling subtrees and ancestor-limit
+OOM remain faults. Global OOM and unknown, malformed, truncated or unmatched OOM
+events remain fail closed. Bound bytes, line size/count and pending event/victim
+correlations; exceeding a bound is a monitor failure, never permission to ignore
+records. An unrelated event must not mask a later runtime or GPU fault in the
+same batch. Preserve GPU/native fault detection and fail-closed monitor errors.
+A successful HTTP health check does not override a genuine runtime fault.
+
+For a false-positive quarantine of the same engine incarnation, preserve the
+original quarantine, cursor,
+native-log baselines and engine identity. Before an explicitly authorized
+acknowledgement, replay the complete saved-cursor kernel interval through the
+corrected classifier using independently qualified scope. Missing or truncated
+evidence blocks recovery. The corrected normal monitor must process the original
+cursor; do not reset cursors, discard native evidence, recapture identity or
+restart the engine to make the incident disappear. This rule grants no automatic
+engine action or bypass of existing recovery/qualification gates.
+
+### 2026-11-04 Beast incident and bounded proof
+
+At 20:36:14 UTC, unrelated Python processes exhausted a memory-cgroup limit in a
+user-session `app.slice/run-*.scope`. At 20:36:15 UTC, the Paiton containment guard
+withdrew its registrar and quarantined with `runtime_fault_or_monitor_failure`.
+Its implementation matched any host kernel `oom-kill:` / `out of memory:` line,
+without cgroup attribution. The engine remained running in a separate Docker
+cgroup, with its October 29 generation/start time unchanged and
+`OOMKilled=false`; its native fault logs had not advanced.
+
+The implementation defect was a host-wide OOM classifier. This specification's
+previous unqualified `OOM` signal and acceptance text did not define attribution,
+so an implementer following it could reproduce that false positive. The rules
+above repair that omission; they do not relax detection of runtime OOM below the
+admitted envelope.
+
+The corrected operational guard's `main.rs` SHA-256 is
+`d1af9a287717a3e3e561cc76072a0dad3a35aae645ef9d3bf06ae6738d247342`;
+the tested Linux musl ELF SHA-256 is
+`f73c9a2b760157b949ec939fbeb96c856a00a11cecf02df0d79752fcab2c2e98`.
+Its module is `deploy/beast/paiton-flashnext-131k/guard`, preserved with its CI gate
+in [implementation PR 1470](https://github.com/InferWeave/inferweave/pull/1470).
+Bounded proof for this correction is:
+
+- **proven, incident regression:** the exact foreign MEMCG/victim fixture first
+  failed on the old classifier, then passed with attribution. A second failing
+  regression exposed delegated-child scope hiding a sibling OOM; container-root
+  normalization made it pass without discounting that fault.
+- **proven, standalone Linux guard scope:** all 22 tests passed, including
+  engine/registrar ancestry, global/unknown OOM, malformed/truncated input,
+  provenance, GPU/native faults and existing containment ordering. Independent
+  review accepted the correction after the sibling-scope repair.
+- **incident recovery observation:** the preserved 90,046-byte saved-cursor
+  journal interval contained eight MEMCG events and replayed clear under the
+  corrected classifier. Recovery explicitly acknowledged the original false
+  positive; it did not repeatedly clear quarantine or reset evidence. The
+  registrar returned while engine generation and the locked three-slot,
+  131K-per-slot W3A8 profile remained unchanged. Public chat and automatic tool
+  selection passed. Forced structured output was rejected by the backend with
+  HTTP 400 and is not recorded as a passing capability.
+
+These observations prove only the scoped OOM classification/containment repair
+and the reported recovery path. They do not grant a new Verified qualification,
+prove sustained availability, authorize profile changes, or establish the full
+automatic rescue/rollback ladder, device reset, or host reboot. Those controls
+remain owed to their existing task/production gates; this guard has no automatic
+engine actions. Existing `OPEN_GATES.md` restrictions remain binding.
+
+## Owner cold-boot catch-up and epoch adoption
+
+For `IW-WATCH-001` / `P1-T20A` and `IW-WATCH-003` / `P3-T18A`, a supported
+owner operation may requalify an externally managed engine after a host reboot.
+It is explicit owner recovery, not automatic healing, a new watchdog rescue
+tier, or permission to reopen any production gate. The existing guard executable
+and serving profile may remain pinned; the recovery helper must implement the
+following contract independently of any normal monitor's bounded batch API.
+
+A serving deployment fingerprint and a live engine incarnation are distinct.
+Unchanged hashed model/profile/resource/policy/input bytes may retain their
+immutable deployment identity; a new start time/boot/process needs a newly
+qualified protected engine snapshot. Changed hashed inputs require normal
+identity rederivation and qualification. Never relabel the old incarnation's
+proof as current or adopt a changed profile through this operation.
+
+### Containment and evidence boundary
+
+- Hold an exclusive owner maintenance/recovery lock. Close ordinary admission,
+  prove public active/pending and native active/waiting work are zero, and
+  establish local-client quiescence. Keep the registrar stopped/unarmed and
+  quarantine present throughout catch-up and local qualification. Preserve
+  protected originals of the quarantine, identities, checkpoint files, guard
+  package/unit, profile and serving inputs before any state publication.
+- Replay the complete saved-cursor interval, including the retained previous-boot
+  tail, every intervening retained boot and current-boot history through a fixed
+  cutoff. A seekable cursor or a list of retained boots alone does not prove
+  continuity. Bind boot IDs, ordered record identities, page boundaries and
+  source retention/sequence evidence; detect missing, duplicated, reordered or
+  vacuumed ranges. If completeness cannot be established, remain quarantined.
+  A current-boot-only query cannot prove a cross-boot interval.
+- For scoped OOM exemptions (`scoped_attribution` in owner artifacts), preserve
+  OOM/victim correlation across bounded
+  pages within one boot. At a boot boundary unresolved events fail closed; never
+  pair records across boots or discard pending events to finish a page. Require
+  protected historical engine **and registrar** container-root scopes for their
+  relevant generations, including stopped historical registrars. Current live
+  scope cannot prove that an old OOM was foreign. Root-owned JSON assertions alone
+  are not scope authority: validate a concrete protected capture/anchor chain
+  against its backing measurements, journal anchor and runtime generation.
+  A live-only producer cannot backdate proof. Missing/ambiguous historical scope
+  provenance forbids scoped exemptions; do not guess roots or pass empty scopes
+  to turn parser failure into a clear result.
+- Scan every unconsumed native byte through fixed per-file cutoffs, with enough
+  carried state/lookbehind to detect patterns split across old offsets, chunks
+  or concurrent appends. Bind device/inode lineage and byte offsets; missing
+  files, replacement, truncation or unverifiable lineage fail closed. No tail-N,
+  sample, discarded prefix, checkpoint deletion, rewind or blind tail baseline
+  substitutes for complete replay. Bound records/pages/bytes, total work/time,
+  line sizes and pending classifier state; hitting a bound refuses adoption.
+- Include the entire local qualification interval in replay. Recheck engine,
+  boot, input and log/journal identities before publication. Persist explicit
+  watermarks and classifier boundary state. Bytes/records appended after the
+  cutoffs remain pending for the normal guard; prove its first read resumes
+  without gaps or double-skipped prefixes. If its bounds cannot consume the
+  pending handoff, perform another bounded qualified catch-up or refuse; never
+  advance past unseen evidence to fit a legacy batch limit.
+
+### Conservative replay without historical scope exemptions
+
+The explicit owner mode `whole_machine_conservative` may replay a complete
+qualified interval without historical cgroup proof because it discounts **no**
+OOM or GPU-fault candidate. It is a stronger classification policy over shared
+recognition, not a permissive parser fallback. Reject every OOM candidate,
+including complete foreign MEMCG pairs, header-only or victim-only records,
+malformed/unknown/incomplete events, case variations and page-split events.
+Preserve existing GPU fatal-fault recognition and conservatively reject unknown
+fault candidates; no parsing error may become clear. Journal continuity, all
+bounds, native replay, epoch/transaction fences and qualification remain exactly
+as required above.
+
+The conservative candidate families are deliberately broader than resident exact
+markers. Match case-insensitive `oom`, `oom-kill`, `oomkiller` (including
+underscore, hyphen and whitespace variants), `out of memory` / `out-of-memory`,
+`memory cgroup out of memory`, and colonless `Killed process`; recognize
+meaningful incomplete candidates such as `out of mem`. Document normalization,
+token boundaries, the finite cross-`MESSAGE` recognition window and its state
+budget. Carry bounded state across records and pages within the same boot;
+never pair across boots. Do not claim arbitrary truncation recognition from
+unrelated fragments such as `ou`. Invalid source framing/encoding, known
+truncation, ambiguous pending state at a boundary or exhausted bounds refuses
+adoption, rather than producing a candidate-free result.
+
+### Retained coverage and collector assumptions
+
+Full-journal global sequence continuity proves retained-record coverage between
+recorded anchors; it does not prove pre-ingest kernel completeness. Inspect
+`MESSAGE_ID` on every record regardless of transport. Refuse
+`SD_JOURNAL_MISSED` (`e9bf28e6e834481bb6f48f548ad13606`) and
+`SD_JOURNAL_DROPPED` (`a596d6fe7bfa4994828e72309e95d61e`), and malformed or
+ambiguous IDs. Separately inspect trusted kernel/collector-driver text for
+documented overrun, lost, suppressed or dropped messages/callbacks. Unrelated
+application bodies are not authoritative loss indicators. Missing IDs alone do
+not imply loss; do not require every journal record to carry an ID.
+
+A first-value lookup cannot establish singleton metadata: enumerate per-entry
+field names within bounded field-count, name-length, time, work and data-threshold
+budgets. Inspect each name through its first `=` within the finite official
+field-name maximum; refuse duplicate or malformed selected singleton fields,
+including duplicate `MESSAGE_ID`, even when only a later value reports loss.
+The library may materialize field pointers internally in host-process memory.
+The parser must not copy, decode, log or persist unrelated application `MESSAGE`
+bodies. Copy only bounded selected metadata payloads and trusted kernel/driver
+message bodies. Do not claim that the library never retrieves or touches unknown
+bodies. Exhausted enumeration or selected-payload bounds refuse adoption.
+
+The source basis is systemd v255
+[`journald-kmsg.c`](https://raw.githubusercontent.com/systemd/systemd/v255/src/journal/journald-kmsg.c)
+(kernel serial-gap reporting) and
+[`sd-messages.h`](https://raw.githubusercontent.com/systemd/systemd/v255/src/systemd/sd-messages.h)
+(loss message IDs). Pin the collector implementation and document its applicable
+loss vocabulary. Verify protected current effective collector configuration:
+`ReadKMsg` enabled and no known filter that could omit required evidence;
+verified documented defaults for that implementation are acceptable evidence.
+Declare historical configuration continuity and trusted-producer assumptions
+explicitly; current settings and absence of retained loss indicators cannot
+prove that events were never omitted before journal ingestion.
+
+Absent legacy scope provenance therefore need not block this mode when the
+**entire qualified interval is candidate-free**. Its protected receipt must name
+the mode and bind the actual coverage interval, boot/page/record watermarks,
+classifier policy/version and bounds. Its assurance must read:
+
+"Complete retained-journal coverage verified between
+recorded anchors under declared collector assumptions. No recognized fault
+candidates or known loss indicators found. Does not prove completeness of events
+never ingested by journal or absence of every machine fault."
+
+It does not verify
+historical scopes or grant automatic readiness. This narrower assurance is
+required before adoption; no absolute completeness claim may replace it. It
+cannot grant scoped exemptions or substitute
+for the normal guard's handoff checks.
+
+Generated tests must establish that conservative clear implies scoped clear for
+**every valid scope assignment under comparable classifier budgets**. Comparing
+an owner catch-up budget against a smaller resident-monitor wrapper limit is not
+that property; the normal monitor's own handoff bounds must separately pass.
+These mode labels identify owner-artifact policy, not a new negotiated wire API.
+No broader exemption or recovery signal is introduced.
+
+### Qualification and publication transaction
+
+Before adoption, freshly verify exact hardware binding, image, ordered launch
+arguments, input digests, TP/KV/resource limits, context and concurrency geometry
+against the unchanged owner-qualified package. Health HTTP 200, idle metrics,
+offline digest agreement and prior ready proofs are insufficient. Fresh local
+response-integrity, context and concurrent-session qualification must exercise
+the retained envelope; the locked Beast case retains TP2 and three public
+131072-token sessions without changing native sequence or KV limits.
+
+Publish the engine snapshot, kernel cursor/boot watermarks, native offsets and
+registrar-proof disposition as one coherent protected multi-file transaction.
+A durable manifest binds old/new file hashes, generations, cutoffs and evidence.
+Serialize all checkpoint writers and guard startup; an incomplete transaction
+blocks the strict preparation path.
+Stage regular private files, fsync their contents and parent directories, then
+publish in a documented recoverable order. Keep quarantine until every required
+replacement and transaction commit is durable; acknowledging quarantine is the
+last publication step. A crash at any earlier step, mixed manifest/file state,
+or ambiguous commit must leave registration blocked and quarantine retained or
+re-established before any service start. Preserve originals for audit; rollback
+must not reinstall an old engine identity as proof of the new process. An old
+registrar PID proof cannot authorize a new registrar generation.
+
+Normal startup must use a reviewed strict **no-bootstrap** preparation path:
+require the exact already-running engine and reject absent/stopped/changed
+engines without starting or restarting them. Passing an ignored flag to an old
+hook is not enforcement. The existing guard/owner alone creates the new
+registrar proof and arms it; no PATH shim, bypassed prehook, synthetic readiness
+or public profile/transport change is permitted.
+
+Keep ordinary traffic closed while fresh authenticated full-path completion,
+context and concurrent-session qualification proves the new incarnation through
+its real authorization/admission route. Preserve request identity, terminal
+stream status, resource accounting and fault monitoring. Do not replay old
+interrupted requests. Open ordinary admission only after the unchanged owner's
+existing gates and explicit operational approval pass. On any failure or new
+fault, contain/quarantine and preserve pending evidence; do not restart/retune
+the engine, erase history or loop acknowledgements.
+
+### Proof status and required failure tests
+
+All cold-boot controls above are **owed** until executable removal-sensitive
+proof, independent review and applicable repository checks pass. In particular:
+
+- split/interleaved OOM across pages, historical registrar/ancestor OOM, and GPU
+  faults cannot be hidden by foreign MEMCG events; cross-boot pairing fails;
+- conservative mode rejects every OOM/GPU-fault candidate without attribution,
+  accepts only complete candidate-free coverage when historical scopes are
+  absent, and satisfies the comparable-budget generated implication above;
+- root-owned historical claims without backing capture/anchor proof cannot
+  authorize scoped exemptions; a live producer cannot manufacture past proof;
+- missing/duplicate/reordered records/pages, absent boots, vacuum/loss, oversized
+  events and exhausted bounds refuse adoption;
+- split native faults across offset/chunk/append boundaries, inode replacement,
+  truncation and missing rank logs refuse adoption;
+- concurrent engine/boot/input changes, append-at-cutoff and monitor handoff
+  demonstrate no evidence gap; unseen events remain pending;
+- fault injection at every file/manifest/quarantine publication and restart
+  boundary proves crash containment and rejection of mixed epochs;
+- stopped-engine strict startup cannot bootstrap; old identity/PID/ready proofs
+  cannot arm a new generation; failed qualification cannot reopen admission;
+- fresh local and authenticated context/session tests preserve the locked
+  profile and accepted-request/replay semantics.
+
+See [the operational correction and open proof boundary](../evidence/owner-coldboot-epoch-adoption-2026-11-06/README.md).
+
 ## Failure classification
 
 ```text
@@ -379,6 +678,13 @@ Destructive operations require strong authorization and audit.
 
 - GPU reset removes the GPU from routing before more work is admitted.
 - OOM below admitted envelope trips rollback/health policy.
+- Complete provably unrelated MEMCG/victim pairs do not withdraw the monitored
+  runtime; engine/registrar ancestor and sibling-container-subtree OOM do.
+- Global/unknown OOM, incomplete attribution and monitor failure remain fail
+  closed, including when an unrelated event appears in the same input batch.
+- False-positive recovery preserves and replays the original cursor before an
+  explicit quarantine acknowledgement; no engine action or qualification claim
+  is inferred from a clear replay.
 - backend restart loop is bounded and ends in quarantine.
 - previous deployment/image/environment/cache remain available until rollback succeeds.
 - successful soft rescue returns resource through RECOVERING before HEALTHY.

@@ -152,6 +152,29 @@ Per section 6.12, a connection that keeps only `busySlots`, `queueDepth` and `le
 be gateway-role. The reference node registers a System One node with its real endpoint and the
 `systemone` list while `models` carries no generative model; that combination is a shape section 4
 calls invalid. This section does not resolve it: see `OPEN_GATES.md`.
+### 2.3 Heartbeat versus endpoint reachability (normative)
+
+An accepted heartbeat refreshes registration and credential liveness. It is not
+evidence that the registered `endpoint` resolves or accepts inference traffic. A
+gateway that observes a pre-dispatch endpoint-resolution failure MUST keep that
+route withdrawn across later heartbeats. A fresh authenticated registration MAY
+clear that DNS-specific withdrawal because it creates a new control incarnation
+and republishes the endpoint; a direct HTTP route with no held Link requires that
+fresh registration after DNS repair.
+
+An authenticated held Link accepted for the same node MAY clear only the
+DNS-specific withdrawal because it supplies an alternate data path that does not
+dial the endpoint. A rejected or unauthenticated Link clears nothing. Link
+acceptance and heartbeats MUST NOT clear leaving, release, distrust, revocation, or
+any stronger withdrawal. No new request or response member is introduced by this
+recovery rule.
+
+A pre-dispatch DNS failure applies only to the registration incarnation or
+controller route generation against which the attempt began. Applying withdrawal
+MUST atomically check that generation and the absence of a recovered held Link.
+A late DNS result cannot undo concurrent Link acceptance, re-registration at the
+same endpoint, or controller route replacement. Heartbeats do not advance this
+registration/route generation.
 
 ## 3. The `hardware` member
 

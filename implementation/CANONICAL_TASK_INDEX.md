@@ -133,6 +133,11 @@ Total tasks: **168**
 | `D-T01` | deferred | C70 | P5-T10 | Optional development settlement adapter |
 | `P2-T23` | 2 | C80 | P0-T06, P1-T04, P1-T05 | Topology graph model and local gateway export |
 | `P2-T24` | 2 | C75 | P2-T23 | Per-viewer topology redaction |
+| `P2-T25` | 2 | C75 | P2-T03 | Capability vocabulary v2 and the scope-adherence record kind |
+| `P2-T26` | 2 | C70 | P2-T25 | Benchmark stack fingerprint with honest nulls |
+| `P2-T27` | 2 | C85 | P2-T25, P2-T26 | Scope-adherence scenario family with an isolated recording sandbox and deterministic grader |
+| `P2-T28` | 2 | C80 | P2-T25, P2-T26 | Drift canaries and paired alarms with a measured self-divergence floor |
+| `P2-T29` | 2 | C85 | P2-T27, P2-T28 | Quantization baselines on Slurm and the logit-level comparison tier |
 | `P5-T11` | 5 | C85 | P2-T23, P5-T04 | Federated topology composition |
 | `P5-T12` | 5 | C80 | P5-T11 | Topology scale aggregation |
 | `P5-T13` | 5 | C80 | P5-T11 | Whole-network topology visualization surface |
@@ -161,6 +166,7 @@ Total tasks: **168**
 | `P5-T36` | 5 | C85 | P5-T33 | InferWeave Storage Phase 1: signed grants, store daemon, S3 front end, digest index and multi-source stager |
 | `P5-T37` | 5 | C85 | P5-T36 | InferWeave Storage Phase 2: ingest leases, replication, TLS, federated grants and per-range hashes |
 | `P5-T38` | 5 | C85 | P5-T35, P1-T23, P1-T20B, P3-T25 | Managed persistent node onboarding, qualification and durable reconciliation |
+| `P5-T39` | 5 | C85 | P5-T35, P5-T33 | Site attestation: the Rust gateway attests the grant it enforces to a paid runtime that may join any gateway |
 | `B-T01` | B | C75 | — | Runtime families and typed capabilities |
 | `B-T02` | B | C75 | B-T01 | Native `/inferweave/v1` control-plane and inference endpoints |
 | `B-T03` | B | C75 | B-T01 | Transactional runtime hot-swap lifecycle |

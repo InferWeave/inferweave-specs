@@ -32,6 +32,20 @@ Model weights/runtime residency are accounted once. Per-session KV/runtime state
 
 Gateway pre-admission predicts feasibility. Node performs authoritative local reservation before accepting the lease.
 
+Published eligible capacity must apply the same out-of-routing predicates as
+request selection. A withdrawn node contributes zero eligible capacity, including
+owner capacity, even while its registration and readiness remain fresh. This is
+a capacity projection, not deletion of the known model/deployment inventory or
+its declared context ceiling. Healthy siblings retain their eligible capacity;
+withdrawal does not cancel already accepted work or release its reservations.
+Known context and currently servable context remain separate: a withdrawn node
+cannot enlarge a serving offer through its context declaration.
+
+The November 2026 DNS-withdrawal incident exposed a missing specification link:
+freshness-only catalogue budgeting could advertise capacity that selection would
+reject. An implementation following freshness alone would recreate that ghost
+capacity. See [operational evidence](../evidence/dns-withdrawal-capacity-2026-11-05/README.md).
+
 Possible internal decision:
 `ACCEPT | QUEUE_BOUNDED | REROUTE | DEGRADE_CONTEXT_EXPLICIT_ONLY | REJECT_CAPACITY`.
 
@@ -39,8 +53,8 @@ Context degradation is never automatic unless client policy explicitly permits i
 
 ## Deployment context ceiling
 
-Every deployment publishes `max_context_tokens`: the largest total context its loaded runtime
-will accept. This is a property of the deployment, not of current load.
+Every token-addressable deployment publishes `max_context_tokens`: the largest total context its loaded runtime
+will accept. This is a property of the deployment, not of current load. A non-token runtime instead publishes and enforces its native input envelope under spec48; a fabricated token window cannot stand for a byte, shape or decision-input bound. Unknown native limits are inadmissible just as unknown token ceilings are.
 
 The pool a scheduler has budgeted and the ceiling a runtime will accept are different
 quantities. Only the ceiling can make a request impossible, and free capacity never raises it.

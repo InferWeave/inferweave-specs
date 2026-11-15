@@ -1,0 +1,19 @@
+{
+  "schema": "iw.capability-vocabulary/1",
+  "tracks": ["canonical", "adaptive", "experimental", "operational-regression"],
+  "reference_levels": ["exact", "synthetic-ground-truth", "experimental", "constraints", "reproducible-experiment", "exploratory-only"],
+  "execution_modes": ["raw", "minimal-agent", "full-stack"],
+  "outcomes": ["correct", "partial", "incorrect", "abstained", "invalid"],
+  "domains": ["chemistry", "biology", "mass-spectrometry", "peak-picking", "chromatography", "noise-reduction", "ai-research", "system-automation", "system-administration", "coding", "software-engineering", "architecture", "cross-domain"],
+  "capabilities": ["planning-depth", "exact-reasoning", "tool-selection", "schema-adherence", "software-execution", "scientific-interpretation", "experimental-design", "long-context", "memory-compaction", "calibration-abstention", "error-recovery", "cross-modal", "safety", "verifiable-completion", "resource-efficiency", "ood-generalization", "signal-processing", "uncertainty-calibration", "scientific-coding"],
+  "failure_classes": {
+    "model.reasoning": "model", "model.tool-selection": "model", "model.schema": "model", "model.long-context": "model",
+    "model.repetition": "model", "model.hallucination": "model", "model.uncertainty": "model", "model.safety": "model",
+    "model.unverified-completion": "model",
+    "runtime.serialization": "runtime", "runtime.parser": "runtime", "runtime.out-of-memory": "runtime",
+    "harness.recovery": "harness", "harness.compaction": "harness", "harness.prompt-template": "harness",
+    "environment.timeout": "environment", "environment.transport": "environment", "environment.resource": "environment",
+    "benchmark.invalid-reference": "benchmark", "benchmark.ambiguous": "benchmark", "benchmark.leakage": "benchmark",
+    "unknown": "unknown"
+  }
+}

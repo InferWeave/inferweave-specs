@@ -35,7 +35,7 @@ Features: **92**
 | `IW-FED-001` Intermediate coordinator/federation roles | P1 | 5 | control-plane | `P5-T04` |
 | `IW-TOOL-001` Workbench MCP/tool catalog and permission-aware invocation | P2 | 4 | web/workbench | `P4-T05`, `P4-T08` |
 | `IW-VERIFY-001` Node/deployment challenge and verification bands | P2 | 5 | control-plane+node | `P5-T05` |
-| `IW-PROMPT-001` Record encrypted prompts without coupling gateway admission to sink availability | P0 | 1 | control-plane | `P0-T05`, `P1-T07`, `P1-T08`, `P1-T24` |
+| `IW-PROMPT-001` Record encrypted prompts with bounded resource policy without coupling gateway admission to sink availability | P0 | 1 | control-plane | `P0-T05`, `P1-T07`, `P1-T08`, `P1-T24` |
 | `IW-DP-003` Direct-first client/local-proxy to node data path | P0 | 1 | control-plane+node | `P1-T16`, `P1-T17`, `P1-T24` |
 | `IW-TEL-001` Per-GPU full hardware/software/runtime/model telemetry | P0 | 1 | node | `P0-T04`, `P0-T05`, `P1-T04`, `P1-T05`, `P1-T20` |
 | `IW-BENCH-002` Global cluster benchmark and contribution warehouse | P0 | 2 | control-plane | `P2-T01`, `P2-T03` |
@@ -86,6 +86,11 @@ Features: **92**
 | `IW-TOPO-002` Topology horizon and completeness semantics | P0 | 2 | control-plane | `P2-T23` |
 | `IW-TOPO-003` Federated topology composition | P1 | 5 | control-plane | `P5-T11` |
 | `IW-TOPO-004` Per-viewer topology redaction | P0 | 2 | control-plane | `P2-T24` |
+| `IW-BENCH-004` Capability vocabulary v2 and the scope-adherence record kind: frozen contracts/capability-bench-vocabulary-v2.json mirroring the implementation's capability-v2.json, additive to v1 (extension of Capability Bench v1; new proof owed) | P1 | 2 | benchmarks | `P2-T25` |
+| `IW-BENCH-005` Benchmark stack fingerprint: observed harness, tool-list, system-prompt and chat-template attribution stored with every drift and scope result, null when unobserved (extension of Capability Bench v1; new proof owed) | P1 | 2 | benchmarks | `P2-T26` |
+| `IW-BENCH-006` Scope-adherence scenario family: network-isolated recording-stub sandbox, bare and full harness arms, deterministic action-log grader, protected-hardware refusal (extension of Capability Bench v1; new proof owed) | P1 | 2 | benchmarks | `P2-T27` |
+| `IW-BENCH-007` Drift canaries and paired alarms: measured self-divergence floor, exact McNemar, Holm, EWMA/CUSUM and two-consecutive-run alarm rule (extension of Capability Bench v1; new proof owed) | P1 | 2 | benchmarks | `P2-T28` |
+| `IW-BENCH-008` Quantization baselines on Slurm: operator-launched reference runs and text-level and logit-level comparison of served quants against them (extension of Capability Bench v1; not implemented, no plan) | P1 | 2 | benchmarks | `P2-T29` |
 | `IW-TOPO-005` Topology scale aggregation | P2 | 5 | control-plane | `P5-T12` |
 | `IW-TOPO-006` Whole-network visualization surface | P2 | 5 | web | `P5-T13` |
 | `IW-GRANT-004` Capacity grant receipts and forecast signals (provisioning hosting requests: spec 62) | P2 | 5 | control-plane | `P5-T17` |
@@ -100,9 +105,10 @@ Features: **92**
 | `IW-NODEHW-001` Hardware-only node registration, the optional versioned hardware report, the always-present assignments array and tokenless proof enrollment as one wire contract for the Rust and Go gateways (Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T33`, `P5-T34` |
 | `IW-DYNNODE-001` Dynamic nodes: gateway-driven provisioning over the register and heartbeat responses (`iw.dynamic-node/1`), measured-profile selection, one node per engine, drafted profiles from measurements (Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T35` |
 | `IW-DYNNODE-002` Managed persistent node onboarding, qualification and durable reconciliation (`iw.node-reconcile/1`; new proof owed) | P1 | 5 | gateway+node | `P5-T38` |
+| `IW-SITEATT-001` Site attestation: a gateway attests the paid-model grant it enforces to a paid runtime that may join any gateway (`iw.site-attestation/1`; new proof owed) | P1 | 5 | gateway+node | `P5-T39` |
 | `IW-STORE-001` InferWeave Storage Phase 1: content-addressed model store, signed iwg1 grants, native and S3 read-only front ends, digest index, quarantine and multi-source stager (`iw.store/1`, Protocol 1.1.0) | P1 | 5 | gateway+node | `P5-T36` |
 | `IW-STORE-002` InferWeave Storage Phase 2: TLS, federated grant forwarding, per-range hashes, ingest leases, replication, write path, rendezvous | P2 | 5 | gateway+node | `P5-T37` |
-| `IW-RT-001` Runtime families, typed capabilities, isolated adapters and feature negotiation | P1 | B | control-plane | `B-T01` |
+| `IW-RT-001` Runtime families, typed capabilities, native SystemOne shared-pool envelopes, isolated adapters and feature negotiation | P1 | B | control-plane | `B-T01` |
 | `IW-RT-002` Native `/inferweave/v1` endpoints, standalone schema parity and exact-incarnation bounded request plus HTTP response-proof negotiation | P1 | B | control-plane | `B-T02` |
 | `IW-RT-003` Transactional lifecycle, single-flight loads, reservations, caches and rollback | P1 | B | control-plane | `B-T03` |
 | `IW-RT-004` Typed inference pipelines | P1 | B | control-plane | `B-T04` |
@@ -146,3 +152,12 @@ IW-ROUTE-001/P1-T13, IW-REC-001/P2-T05, IW-ALIAS-001/A-T05 and IW-DYNNODE-001/P5
 This adds no feature ID, task or dependency order. The purpose-specific tool hard filter does
 not promote alias confidence or accept the general verifier. Implementation authority and live
 model/GPU/Pi/production proof are recorded separately in OPEN_GATES; new proof remains owed.
+
+Guarded SpeedRequests and advisory coverage v2 reuse IW-BENCH-003/P2-T19 and
+IW-BENCH-002/P2-T03, with the independent IW-GPUMEM-001 safety dependency.
+AC-SPEED-01–08 and their owed proof are in `contracts/benchmark-speed-execution.json`.
+
+The 2026-11-06 IW-PROMPT-001 recording resource-policy repair and P1-T25 failure
+proofs are tracked in [bounded-recording evidence](../evidence/bounded-recording-2026-11-06/README.md).
+This preserves the existing task graph, phase order and durable-ingest contract;
+component tests do not close production/shared-filesystem gates.
