@@ -145,6 +145,14 @@ The private HTTP carrier reuses IW-OBS-001/IW-TEL-001/IW-BENCH-002 and P1-T20/P2
 `contracts/private-observability.json`, AC-PRIVATEOBS-01..06. Existing request and
 failure DTOs are unchanged; private ingest/read runtime proof remains owed.
 
+## Tool compatibility extension (2026-10-28)
+
+`contracts/tool-call-compatibility.json` maps the additive specs03/24/56/64 contract to existing
+IW-ROUTE-001/P1-T13, IW-REC-001/P2-T05, IW-ALIAS-001/A-T05 and IW-DYNNODE-001/P5-T35.
+This adds no feature ID, task or dependency order. The purpose-specific tool hard filter does
+not promote alias confidence or accept the general verifier. Implementation authority and live
+model/GPU/Pi/production proof are recorded separately in OPEN_GATES; new proof remains owed.
+
 Guarded SpeedRequests and advisory coverage v2 reuse IW-BENCH-003/P2-T19 and
 IW-BENCH-002/P2-T03, with the independent IW-GPUMEM-001 safety dependency.
 AC-SPEED-01–08 and their owed proof are in `contracts/benchmark-speed-execution.json`.

@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 1,
+  "status": "acceptedForImplementation",
+  "productionApproval": false,
+  "generalVerifierApproval": false,
+  "capability": "iw.tool-config/1",
+  "features": [
+    "IW-ROUTE-001",
+    "IW-REC-001",
+    "IW-ALIAS-001",
+    "IW-DYNNODE-001"
+  ],
+  "tasks": [
+    "P1-T13",
+    "P2-T05",
+    "A-T05",
+    "P5-T35"
+  ],
+  "schemas": {
+    "tool-calling": "schemas/v1/runtime/tool-calling.json",
+    "tool-execution-binding": "schemas/v1/runtime/tool-execution-binding.json",
+    "tool-suite-report": "schemas/v1/runtime/tool-suite-report.json",
+    "tool-qualification": "schemas/v1/runtime/tool-qualification.json",
+    "tool-trust-policy": "schemas/v1/runtime/tool-trust-policy.json",
+    "tool-qualification-snapshot": "schemas/v1/runtime/tool-qualification-snapshot.json"
+  },
+  "vocabulary": {
+    "mode": [
+      "unsupported",
+      "experimental",
+      "native"
+    ],
+    "operation": [
+      "nonStreaming",
+      "streaming",
+      "continuation",
+      "parallel",
+      "forcedChoice"
+    ],
+    "path": [
+      "directRuntime",
+      "gateway",
+      "agent"
+    ],
+    "scope": [
+      "syntheticTransport",
+      "actualModel",
+      "physicalLifecycle"
+    ],
+    "outcome": [
+      "pass",
+      "fail",
+      "unsupported",
+      "owed"
+    ],
+    "reason": [
+      "malformedResponse",
+      "transportError",
+      "unsupportedCapability",
+      "evidenceUnavailable",
+      "unexpectedToolBehavior",
+      "pending",
+      "bindingMismatch",
+      "expired",
+      "revoked",
+      "untrustedVerifier",
+      "invalidSignature",
+      "invalidEvidence",
+      "unsupportedParser",
+      "toolSchemaDropped",
+      "invalidStream",
+      "nativeMarkupLeak",
+      "qualified"
+    ],
+    "rollout": [
+      "off",
+      "shadow",
+      "on"
+    ],
+    "cases": {
+      "T01": "ordinary chat without tools",
+      "T02": "one tool",
+      "T03": "sequential calls",
+      "T04": "parallel calls when advertised",
+      "T05": "tool result continuation",
+      "T06": "streamed split boundaries",
+      "T07": "large nested JSON arguments",
+      "T08": "escaped quotes and Unicode",
+      "T09": "invalid or missing arguments",
+      "T10": "reasoning/content separation",
+      "T11": "cancelled stream",
+      "T12": "unsupported parser/model",
+      "T13": "model hot swap",
+      "T14": "Qwen regression",
+      "T15": "raw DSML failure",
+      "T16": "gateway preserves tool definitions"
+    }
+  },
+  "bounds": {
+    "snapshotBytes": 1048576,
+    "models": 128,
+    "records": 256,
+    "expectedBindings": 256,
+    "verifierKeys": 64,
+    "revokedRecords": 4096,
+    "revokedKeys": 4096,
+    "gpuIds": 64,
+    "textBytes": 256,
+    "templatePathBytes": 4096,
+    "engineRevisionBytes": 128,
+    "repetitionsMin": 1,
+    "repetitionsMax": 32,
+    "attempts": 1536
+  },
+  "policyDefaults": {
+    "minRepetitions": 3,
+    "maxLifetimeMs": 3600000,
+    "basis": "unmeasured operator policy; not a hardware envelope",
+    "mode": "off"
+  },
+  "nativeConfiguration": {
+    "engine": "llama.cpp",
+    "backends": [
+      "cpu",
+      "cuda"
+    ],
+    "parser": "llamaCppDeepseekV41",
+    "reasoning": "llamaCppDeepseek",
+    "upstreamRevision": "74bca3950054eed1795f525cb9cf06bfe796492d",
+    "backportBase": "32bf0eb37cfecbc7d74b1dd2594ce285bed2f55f",
+    "backportPatchSha256": "03e81a8aa0b8834e6951f4e46bb30324521343d6581ede5dd0a78da1a94d6696",
+    "candidateTemplateSha256": "c9046238d418153ed16c1ece7041873556d4c5ae27918a2cc20106d12b0a23f8",
+    "qualification": "owed; CPU parser/template fixtures do not qualify actual models"
+  },
+  "qualification": {
+    "purpose": "inferweave.tool-qualification/v1",
+    "reportDomain": "inferweave.tool-suite-report/v1",
+    "requiredCases": {
+      "directRuntime": [
+        "T02",
+        "T05",
+        "T06"
+      ],
+      "gateway": [
+        "T02",
+        "T05",
+        "T06"
+      ],
+      "agent": [
+        "T05"
+      ]
+    },
+    "requiredScope": "actualModel",
+    "allRepetitions": true,
+    "anyFailRejects": true,
+    "parallelAdditionalCases": {
+      "directRuntime": [
+        "T04"
+      ],
+      "gateway": [
+        "T04"
+      ]
+    },
+    "forcedChoiceQualifiable": false,
+    "reportDigest": "SHA-256 of semantic binary transcript, not JSON bytes",
+    "reportId": "existing benchmark Store record reference",
+    "aliasPromotion": false
+  },
+  "transcript": {
+    "encoding": {
+      "string": "u32 big-endian UTF-8 byte length followed by UTF-8 bytes",
+      "count": "u32 big-endian",
+      "number": "u64 big-endian",
+      "presence": "one byte 0 absent or 1 present",
+      "sets": "sorted serialized wire tokens; GPU IDs sorted UTF-8 lexicographically",
+      "attempts": "preserve recorded array order"
+    },
+    "bindingOrder": [
+      "ownerGatewayId",
+      "registrationIncarnation",
+      "nodeId",
+      "instanceId",
+      "deploymentFingerprint",
+      "generation",
+      "sourceEpoch",
+      "requiredGpuIds:count+sortedStrings",
+      "cohort.model",
+      "cohort.modelRevision",
+      "cohort.tokenizerRevision",
+      "cohort.quantization",
+      "cohort.runtimeImplementationId",
+      "cohort.runtimeVersion",
+      "cohort.hardwareFingerprint",
+      "cohort.contextTokens:number",
+      "cohort.concurrency:number",
+      "cohort.outputTokens:number",
+      "cohort.cacheRegime",
+      "profileSha256",
+      "imageDigest",
+      "artifactsSha256",
+      "templateSha256",
+      "parserFamily",
+      "backend"
+    ],
+    "qualificationOrder": [
+      "domain",
+      "schemaVersion:number",
+      "verifierId",
+      "keyId",
+      "purpose",
+      "policyRevision:number",
+      "issuedAtMs:number",
+      "notBeforeMs:number",
+      "expiresAtMs:number",
+      "binding",
+      "suiteVersion",
+      "reportId",
+      "reportSha256",
+      "operations:count+sortedWireStrings",
+      "repetitions:number"
+    ],
+    "reportOrder": [
+      "domain",
+      "schemaVersion:number",
+      "suiteVersion",
+      "repetitions:number",
+      "binding:presence+bindingIfPresent",
+      "attempts:count",
+      "eachAttempt:caseId,repetition:number,path,scope,outcome,reason:presence+wireStringIfPresent"
+    ],
+    "signature": "Ed25519 over qualification transcript",
+    "recordId": "tq1- followed by lowercase SHA-256 of qualification transcript",
+    "signatureEncoding": "128 lowercase hexadecimal characters",
+    "publicKeyEncoding": "64 lowercase hexadecimal characters"
+  },
+  "admin": {
+    "context": "GET /iw/v1/routes/explain?model=<id>&tool_qualification_context=true",
+    "reload": "POST /v1/admin/routes/reload?tool_qualifications=true",
+    "authentication": "Caller::Admin only for tool context and trust reload; existing service-operator authorization does not grant tool trust authority",
+    "atomicReload": true,
+    "revision": "strictly increasing within installed owner policy; same owner required",
+    "failedReload": "preserve previous policy",
+    "snapshotFile": "private owner-owned regular file, no symlink, at most snapshotBytes"
+  },
+  "telemetry": {
+    "decisionCounter": "iw_tool_qualification_decisions_total",
+    "reloadCounter": "iw_tool_qualification_reloads_total",
+    "labels": [
+      "model",
+      "profile",
+      "runtime",
+      "reason"
+    ],
+    "content": "no raw arguments, content, reasoning, credentials or private node/GPU identities",
+    "cardinality": "bounded hashed profile/runtime groups; overflow collapsed",
+    "retriesAdded": false,
+    "dsmlConversion": false
+  },
+  "proofStatus": "owed",
+  "proofScope": "Offline schemas/transcript/hostile vectors prove only their checks; runtime security, actual-model/GPU/Pi compatibility and production activation remain separate.",
+  "dynamicFingerprintExtension": {
+    "presence": "Absent toolCalling appends zero bytes; existing fingerprints remain byte-identical. Present toolCalling appends the fields below after the legacy payload.",
+    "domain": "iw.runtime-tool-calling/1",
+    "encoding": {
+      "S": "u64 big-endian UTF-8 byte length followed by UTF-8 bytes",
+      "N": "u64 big-endian number",
+      "optional": "one byte 0 absent or 1 present followed by the encoded value",
+      "support": "N count followed by lexically sorted serialized wire strings, each encoded with S"
+    },
+    "order": [
+      "S(domain)",
+      "N(schemaVersion)",
+      "S(modeWire)",
+      "S(engineRevision)",
+      "optional parserPatchSha256:S",
+      "optional parser:S(wireToken)",
+      "optional reasoning:S(wireToken)",
+      "optional template:S(path)+S(sha256)",
+      "N(supportCount)",
+      "S(eachSortedSupportWireToken)"
+    ],
+    "separateFromQualification": "Legacy dynamic fingerprint strings use u64 lengths; purpose-specific qualification/report strings use u32 lengths. Do not interchange these domains or encoders."
+  },
+  "admissionError": {
+    "httpStatus": 503,
+    "code": "tool_capability_unavailable",
+    "condition": "No eligible instance satisfies the enabled exact-model tool hard filter",
+    "behavior": "Refuse before indefinite queueing or automatic acquisition; do not retry or relax hard constraints",
+    "distinctFrom": "Diagnostic ToolFailureCode reason vocabulary"
+  }
+}

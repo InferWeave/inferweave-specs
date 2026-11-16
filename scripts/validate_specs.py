@@ -1062,6 +1062,10 @@ def self_test():
     if reconcile_test.returncode:
         print(reconcile_test.stdout + reconcile_test.stderr)
         return 1
+    tool_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_tool_call_compatibility.py")], capture_output=True, text=True)
+    if tool_test.returncode:
+        print(tool_test.stdout + tool_test.stderr)
+        return 1
     # Offline-only speed contract vocabulary and per-wave overlap vectors.
     speed_test = subprocess.run([sys.executable, "-B", str(ROOT / "tests/smoke/test_speed_contract_smoke.py")], capture_output=True, text=True)
     if speed_test.returncode:

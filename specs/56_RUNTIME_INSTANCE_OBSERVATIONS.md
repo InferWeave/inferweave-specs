@@ -242,3 +242,51 @@ above correct specification defects; implementers must not reproduce the earlier
 interpretation. Hostile vectors include stale-item replay, same-sequence item conflict, retained
 fences across omission, oversized content and oversized JSON whitespace. Their offline success
 remains distinct from producer/owner implementation proof.
+
+## Purpose-specific tool hard filter (2026-10-28)
+
+The operator accepted a bounded tool-qualification implementation under
+`decisions/2026-10-28-proposed-toolcall-compatibility.md`. The general verifier proposed on
+2026-10-16 remains unaccepted. `contracts/tool-call-compatibility.json` and the tool runtime
+schemas define a purpose-specific signed record and owner-installed policy that add an exact-model
+routing constraint; they do not promote alias confidence, create general trust or replace
+normal authentication, owner/context/resource/health admission.
+
+Records bind the current owner, registration incarnation, node, actual instance/deployment,
+engine generation, source epoch, exact GPU set, runtime implementation and full expected artifact
+identity. The router checks current authenticated observations, freshness, ready/healthy state,
+family and backend under its admission lock. Registration incarnation is an extra invalidator,
+not engine-generation or source-epoch evidence. Observation DTOs carry no actual build/version,
+image, served-weight or template-hash attestation. Those expected values are owner trust input;
+never claim that matching observations independently measured them.
+
+Verify Ed25519 with an enabled purpose-specific configured key, exact body-derived `tq1-` ID,
+policy revision, owner and complete binding. Check issue/not-before/expiry, key validity,
+revoked record/key sets, minimum repetitions and maximum lifetime. Cap validity by record, key
+and current observation expiry. A bad/missing/stale record cannot fall back to qualified state.
+The byte transcript, sorted wire-token sets, semantic report hash and domains are frozen in the
+contract; no implicit JSON canonicalization is assumed.
+
+The private snapshot is schema version 1, at most 1 MiB, with at most 128 model IDs, 256 records
+and 256 expected bindings. It is read from an owner-owned private regular file without following
+symlinks; refuse duplicate JSON members and unknown fields. Default `mode` is explicitly `off`,
+not the generic scheduling default. `shadow` counts decisions without exclusions; `on` filters
+only configured models with nonempty tools. Nonempty tools require base nonstreaming/streaming/
+continuation support even with `tool_choice: none`; required/named tool choice and explicit
+parallel calls add their own operation requirements. Existing tool-free and legacy unknown-tool
+behavior remains. With enforcement enabled and no eligible instance, refuse with HTTP 503 and
+`tool_capability_unavailable` before indefinite queueing or automatic acquisition. This admission
+error is separate from the diagnostic tool-reason enum; do not retry or relax hard constraints.
+
+Strictly increasing same-owner revisions replace snapshots atomically; invalid reload preserves
+the prior snapshot and active leases. Existing authenticated operator routes provide
+`GET /iw/v1/routes/explain?model=<id>&tool_qualification_context=true` and
+`POST /v1/admin/routes/reload?tool_qualifications=true`; require `Caller::Admin` before tool context inspection or trust mutation. Existing service-operator
+permissions on legacy route administration confer no tool-trust authority. No new URL/public projection is introduced.
+
+`iw_tool_qualification_decisions_total` and `iw_tool_qualification_reloads_total` are bounded
+content-free counters using the closed reason vocabulary and model/profile/runtime groups.
+Keep private node/GPU identifiers, prompts, arguments and reasoning out of labels. Preserve
+spec63 allow-list redaction and existing cancellation/no-replay rules. No DSML conversion,
+command execution or automatic retry is added. Production activation and actual-model proof
+remain owed; policy configuration or a local fixture is not independent attestation.

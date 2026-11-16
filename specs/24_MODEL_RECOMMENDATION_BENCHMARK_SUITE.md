@@ -280,6 +280,38 @@ It produces a `benchmark_profile_id` consumable by a `modality: image` manifest'
 `contracts/image-qualification-profile.example.json`. Recognized runtimes are
 enumerated per modality in `contracts/backends.registry.example.json`.
 
+## Structured tool compatibility suite v1 (2026-10-28)
+
+`contracts/tool-call-compatibility.json` freezes T01–T16, paths, evidence scopes, outcomes and
+failure codes; `schemas/v1/runtime/tool-suite-report.json` freezes the closed camelCase report.
+Reuse the existing benchmark Store. A `reportId` names its record; `reportSha256` is the hash
+of the semantic binary transcript specified in the contract, not of serialized JSON bytes.
+No separate benchmark service, scheduler or protocol registry is created.
+
+Reports have schema version 1, suite version `"1"`, 1–32 repetitions and at most 1536 attempts.
+Every attempt has a one-based repetition, case, path, scope and outcome. The tuple
+(caseId, path, repetition) is unique. Failed, unsupported and owed attempts carry a closed reason;
+`qualified` is a decision reason, never an attempt reason. Unknown binding is representable and
+persistable but cannot qualify. Nonblank identity strings are bounded in UTF-8 bytes. Synthetic
+transport and physical-lifecycle proof do not substitute for `actualModel` generation evidence.
+
+A qualification candidate requires every repetition's actual-model passes for T02/T05/T06 on
+`directRuntime` and `gateway`, plus T05 on `agent`, with no failure anywhere in the report.
+Required passes have no failure reason. Parallel support requires T04 passes on both direct
+runtime and gateway for every repetition. Suite v1 has no forced-choice evidence dimension, so
+`forcedChoice` cannot be signed into a qualification even when manually requested. T01–T16
+results remain visible as pass/fail/unsupported/owed; this minimum qualifying subset does not
+claim completion of every matrix case or authorization for hot swapping.
+
+The complete identity binds model/tokenizer revisions, quantization, runtime implementation and
+version, hardware, context/concurrency/output/cache regime, profile/image/artifact/template
+hashes, parser/backend and owner/node/instance/deployment/generation/epoch/GPU identities.
+Keep unknown values unknown; a node boolean, throughput draft or configuration declaration is
+not qualification. Material identity changes invalidate use of the old record. Three repetitions
+and one-hour maximum lifetime are unmeasured policy defaults, not reliability estimates.
+Native parser fixtures alone never qualify an actual model. Raw command arguments, prompts,
+reasoning, outputs, secrets and private node/GPU identity are excluded from public diagnostics.
+
 ## Legacy NVIDIA evidence and complete qualification cohorts
 
 The 2026-10-27 operator bundle requests sm61 dual GTX 1080 Ti and sm75 dual

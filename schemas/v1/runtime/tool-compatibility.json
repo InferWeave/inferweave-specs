@@ -1,0 +1,815 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inferweave.dev/schemas/v1/runtime/tool-compatibility.json",
+  "title": "Purpose-specific tool compatibility definitions; implementation approval only",
+  "description": "Closed camelCase objects. Semantic checks include UTF-8 byte lengths, duplicate object keys, identity equality, time ordering, set deduplication, raw snapshot bytes and cryptographic validation; schemas are not operational proof.",
+  "definitions": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^(?!\\s*$)[^\\u0000-\\u001f\\u007f-\\u009f]+$",
+      "description": "Nonblank UTF-8, at most 256 bytes; byte/control bounds are also checked semantically."
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "cohort": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "$ref": "#/definitions/text"
+        },
+        "modelRevision": {
+          "$ref": "#/definitions/text"
+        },
+        "tokenizerRevision": {
+          "$ref": "#/definitions/text"
+        },
+        "quantization": {
+          "$ref": "#/definitions/text"
+        },
+        "runtimeImplementationId": {
+          "$ref": "#/definitions/text"
+        },
+        "runtimeVersion": {
+          "$ref": "#/definitions/text"
+        },
+        "hardwareFingerprint": {
+          "$ref": "#/definitions/text"
+        },
+        "contextTokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "concurrency": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "outputTokens": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "cacheRegime": {
+          "$ref": "#/definitions/text"
+        }
+      },
+      "required": [
+        "model",
+        "modelRevision",
+        "tokenizerRevision",
+        "quantization",
+        "runtimeImplementationId",
+        "runtimeVersion",
+        "hardwareFingerprint",
+        "contextTokens",
+        "concurrency",
+        "outputTokens",
+        "cacheRegime"
+      ]
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ownerGatewayId": {
+          "$ref": "#/definitions/text"
+        },
+        "registrationIncarnation": {
+          "$ref": "#/definitions/text"
+        },
+        "nodeId": {
+          "$ref": "#/definitions/text"
+        },
+        "instanceId": {
+          "$ref": "#/definitions/text"
+        },
+        "deploymentFingerprint": {
+          "$ref": "#/definitions/text"
+        },
+        "generation": {
+          "$ref": "#/definitions/text"
+        },
+        "sourceEpoch": {
+          "$ref": "#/definitions/text"
+        },
+        "requiredGpuIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/text"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "cohort": {
+          "$ref": "#/definitions/cohort"
+        },
+        "profileSha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "imageDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "artifactsSha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "templateSha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "parserFamily": {
+          "$ref": "#/definitions/text"
+        },
+        "backend": {
+          "$ref": "#/definitions/text"
+        }
+      },
+      "required": [
+        "ownerGatewayId",
+        "registrationIncarnation",
+        "nodeId",
+        "instanceId",
+        "deploymentFingerprint",
+        "generation",
+        "sourceEpoch",
+        "requiredGpuIds",
+        "cohort",
+        "profileSha256",
+        "imageDigest",
+        "artifactsSha256",
+        "templateSha256",
+        "parserFamily",
+        "backend"
+      ]
+    },
+    "template": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 4096,
+          "pattern": "^/",
+          "description": "Normalized absolute container path under exactly one read-only mount; no dot segments, overlap or controls."
+        },
+        "sha256": {
+          "$ref": "#/definitions/sha256"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ]
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "mode": {
+          "enum": [
+            "unsupported",
+            "experimental",
+            "native"
+          ]
+        },
+        "engineRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "parserPatchSha256": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parser": {
+          "anyOf": [
+            {
+              "enum": [
+                "llamaCppDeepseekV41"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasoning": {
+          "anyOf": [
+            {
+              "enum": [
+                "llamaCppDeepseek"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "template": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/template"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "support": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "nonStreaming",
+              "streaming",
+              "continuation",
+              "parallel",
+              "forcedChoice"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 5,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "mode",
+        "engineRevision"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "unsupported"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "parserPatchSha256": {
+                "type": "null"
+              },
+              "parser": {
+                "type": "null"
+              },
+              "reasoning": {
+                "type": "null"
+              },
+              "template": {
+                "type": "null"
+              },
+              "support": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "parser",
+              "template",
+              "support"
+            ],
+            "properties": {
+              "parser": {
+                "const": "llamaCppDeepseekV41"
+              },
+              "template": {
+                "$ref": "#/definitions/template"
+              },
+              "support": {
+                "minItems": 1
+              }
+            },
+            "oneOf": [
+              {
+                "properties": {
+                  "engineRevision": {
+                    "const": "74bca3950054eed1795f525cb9cf06bfe796492d"
+                  },
+                  "parserPatchSha256": {
+                    "type": "null"
+                  }
+                }
+              },
+              {
+                "required": [
+                  "parserPatchSha256"
+                ],
+                "properties": {
+                  "engineRevision": {
+                    "const": "32bf0eb37cfecbc7d74b1dd2594ce285bed2f55f"
+                  },
+                  "parserPatchSha256": {
+                    "const": "03e81a8aa0b8834e6951f4e46bb30324521343d6581ede5dd0a78da1a94d6696"
+                  },
+                  "template": {
+                    "properties": {
+                      "sha256": {
+                        "const": "c9046238d418153ed16c1ece7041873556d4c5ae27918a2cc20106d12b0a23f8"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "caseId": {
+          "enum": [
+            "T01",
+            "T02",
+            "T03",
+            "T04",
+            "T05",
+            "T06",
+            "T07",
+            "T08",
+            "T09",
+            "T10",
+            "T11",
+            "T12",
+            "T13",
+            "T14",
+            "T15",
+            "T16"
+          ]
+        },
+        "repetition": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "path": {
+          "enum": [
+            "directRuntime",
+            "gateway",
+            "agent"
+          ]
+        },
+        "scope": {
+          "enum": [
+            "syntheticTransport",
+            "actualModel",
+            "physicalLifecycle"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "pass",
+            "fail",
+            "unsupported",
+            "owed"
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "malformedResponse",
+                "transportError",
+                "unsupportedCapability",
+                "evidenceUnavailable",
+                "unexpectedToolBehavior",
+                "pending",
+                "bindingMismatch",
+                "expired",
+                "revoked",
+                "untrustedVerifier",
+                "invalidSignature",
+                "invalidEvidence",
+                "unsupportedParser",
+                "toolSchemaDropped",
+                "invalidStream",
+                "nativeMarkupLeak"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "caseId",
+        "repetition",
+        "path",
+        "scope",
+        "outcome"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "enum": [
+                  "fail",
+                  "unsupported",
+                  "owed"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "reason"
+            ],
+            "properties": {
+              "reason": {
+                "enum": [
+                  "malformedResponse",
+                  "transportError",
+                  "unsupportedCapability",
+                  "evidenceUnavailable",
+                  "unexpectedToolBehavior",
+                  "pending",
+                  "bindingMismatch",
+                  "expired",
+                  "revoked",
+                  "untrustedVerifier",
+                  "invalidSignature",
+                  "invalidEvidence",
+                  "unsupportedParser",
+                  "toolSchemaDropped",
+                  "invalidStream",
+                  "nativeMarkupLeak"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "suiteVersion": {
+          "const": "1"
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "binding": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/binding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attempts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/attempt"
+          },
+          "minItems": 1,
+          "maxItems": 1536
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "suiteVersion",
+        "repetitions",
+        "attempts"
+      ]
+    },
+    "body": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "verifierId": {
+          "$ref": "#/definitions/text"
+        },
+        "keyId": {
+          "$ref": "#/definitions/text"
+        },
+        "purpose": {
+          "const": "inferweave.tool-qualification/v1"
+        },
+        "policyRevision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "issuedAtMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18446744073709551615
+        },
+        "notBeforeMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18446744073709551615
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18446744073709551615
+        },
+        "binding": {
+          "$ref": "#/definitions/binding"
+        },
+        "suiteVersion": {
+          "const": "1"
+        },
+        "reportId": {
+          "$ref": "#/definitions/text"
+        },
+        "reportSha256": {
+          "$ref": "#/definitions/sha256"
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "nonStreaming",
+              "streaming",
+              "continuation",
+              "parallel"
+            ]
+          },
+          "minItems": 3,
+          "maxItems": 4,
+          "allOf": [
+            {
+              "contains": {
+                "const": "nonStreaming"
+              }
+            },
+            {
+              "contains": {
+                "const": "streaming"
+              }
+            },
+            {
+              "contains": {
+                "const": "continuation"
+              }
+            }
+          ]
+        },
+        "repetitions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "verifierId",
+        "keyId",
+        "purpose",
+        "policyRevision",
+        "issuedAtMs",
+        "notBeforeMs",
+        "expiresAtMs",
+        "binding",
+        "suiteVersion",
+        "reportId",
+        "reportSha256",
+        "operations",
+        "repetitions"
+      ]
+    },
+    "signed": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^tq1-[0-9a-f]{64}$"
+        },
+        "body": {
+          "$ref": "#/definitions/body"
+        },
+        "signature": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{128}$"
+        }
+      },
+      "required": [
+        "id",
+        "body",
+        "signature"
+      ]
+    },
+    "key": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "verifierId": {
+          "$ref": "#/definitions/text"
+        },
+        "keyId": {
+          "$ref": "#/definitions/text"
+        },
+        "publicKey": {
+          "$ref": "#/definitions/sha256"
+        },
+        "notBeforeMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18446744073709551615
+        },
+        "expiresAtMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18446744073709551615
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "verifierId",
+        "keyId",
+        "publicKey",
+        "notBeforeMs",
+        "expiresAtMs",
+        "enabled"
+      ]
+    },
+    "trust": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ownerGatewayId": {
+          "$ref": "#/definitions/text"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "maxLifetimeMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "minRepetitions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 32
+        },
+        "keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/key"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        },
+        "revokedRecordIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^tq1-[0-9a-f]{64}$"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "revokedKeyIds": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/text"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [
+        "ownerGatewayId",
+        "revision",
+        "maxLifetimeMs",
+        "minRepetitions",
+        "keys",
+        "revokedRecordIds",
+        "revokedKeyIds"
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "off",
+            "shadow",
+            "on"
+          ],
+          "default": "off"
+        },
+        "models": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/text"
+          },
+          "minItems": 0,
+          "maxItems": 128
+        },
+        "trust": {
+          "$ref": "#/definitions/trust"
+        }
+      },
+      "required": [
+        "models",
+        "trust"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "mode"
+            ],
+            "properties": {
+              "mode": {
+                "enum": [
+                  "shadow",
+                  "on"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "models": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "policy": {
+          "$ref": "#/definitions/policy"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/signed"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        },
+        "expectedBindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/binding"
+          },
+          "minItems": 0,
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "policy",
+        "records",
+        "expectedBindings"
+      ]
+    }
+  }
+}
