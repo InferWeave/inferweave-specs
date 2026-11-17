@@ -112,3 +112,7 @@ scripts/         spec-repository validation
 ## Solana
 
 Solana/settlement work is intentionally deferred until the deployed GPU weave is stable and explicitly reopened.
+
+## License
+
+Released under the [MIT License](LICENSE).
