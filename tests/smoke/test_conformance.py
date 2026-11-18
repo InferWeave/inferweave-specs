@@ -15,6 +15,22 @@ VECTORS = ROOT / "conformance" / "runtime-family-vectors.json"
 FAMILIES = ["embeddings", "reranking", "prediction", "stt", "rag"]
 
 
+def forbid_network():
+    """Fail any network fetch jsonschema attempts, across jsonschema versions.
+
+    Older releases bind urlopen at module level in jsonschema.validators; newer
+    ones (4.26) import it from urllib.request at call time, so patch both.
+    """
+    from contextlib import ExitStack
+    import jsonschema.validators as validators
+    stack = ExitStack()
+    boom = AssertionError("offline validation attempted network")
+    stack.enter_context(patch("urllib.request.urlopen", side_effect=boom))
+    if hasattr(validators, "urlopen"):
+        stack.enter_context(patch.object(validators, "urlopen", side_effect=boom))
+    return stack
+
+
 def run_runner(vectors_text=None):
     """Run the runner against an isolated vector copy so mutation tests cannot race."""
     with tempfile.TemporaryDirectory() as directory:
@@ -38,7 +54,7 @@ class Conformance(unittest.TestCase):
         from conformance import runner
         fixture = json.loads((ROOT / "fixtures/valid/alias-link-request.json").read_text())
         try:
-            with patch("jsonschema.validators.urlopen", side_effect=AssertionError("offline validation attempted network")):
+            with forbid_network():
                 errors = list(runner.validator("requests/link-alias-request.json").iter_errors(fixture))
         except Exception as error:
             self.fail(f"bundled sibling references must resolve offline: {error}")
@@ -57,7 +73,7 @@ class Conformance(unittest.TestCase):
         from conformance import runner
         fixture = json.loads((ROOT / "fixtures/valid/alias-link-request.json").read_text())
         fixture["meta"]["executable"]["unrecognized"] = True
-        with patch("jsonschema.validators.urlopen", side_effect=AssertionError("offline validation attempted network")):
+        with forbid_network():
             errors = list(runner.validator("requests/link-alias-request.json").iter_errors(fixture))
         self.assertTrue(errors, "local reference resolution must retain closed-schema validation")
 
