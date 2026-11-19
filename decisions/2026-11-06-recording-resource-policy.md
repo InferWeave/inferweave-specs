@@ -19,9 +19,8 @@ them. Reject zero, inconsistent or oversized limits before channel allocation;
 explicit discard disables recording without treating zero budgets as a mode.
 
 Ordinary recording uses bounded one-use managed sealing entropy and encoded
-reservations without waiting on storage or shared entropy I/O. Existing stable
-identity is preprovisioned outside recording storage; unsupported implicit
-identity configurations need migration, never a replacement identity. File
+reservations without waiting on storage or shared entropy I/O. Gateway
+identity resolves as the pre-recording gateway did (see the amendment below). File
 budgets preserve historical/uncertain bytes; private namespace/reference checks
 and target filesystem writer exclusion must be qualified. No automatic deletion
 of acknowledged data is authorized.
@@ -65,3 +64,27 @@ to the frozen v1 data, not an additive extension: `schema` and `version` stay
 values did. Implementations that vendor the file must update to identical bytes.
 The count ceilings, byte bounds, entropy bound and every other default are
 unchanged. Production qualification remains unsatisfied.
+
+## Amendment 2026-11-19: identity resolves as the pre-recording gateway did
+
+**Status:** Accepted by the operator's instruction to amend spec 22.
+
+The sentence above requiring identity to be preprovisioned, and treating
+implicit outbox identity as a migration error, is replaced. Reference
+implementation: InferWeave PR #1506 at `352aaf72`
+(`crates/iw-gateway/src/recording_identity.rs`, `cli.rs`,
+`docs/ops/bounded-recording.md`).
+
+- A non-blank explicit flag, else a non-blank setting, is used exactly as given
+  and touches no recording filesystem; odd values are warned about only.
+- Otherwise `<outbox>/<name>/gateway-id` is read. A blank flag over a differing
+  setting starts as the stored ID with a warning.
+- With no file, an ID is minted and saved as before, with a warning if `*.jsonl`
+  history exists. If saving fails, a partial process identity is used and
+  recording continues.
+- A malformed or unreadable identity file exits 2.
+
+Why: the earlier text made deployments that start and record on main fail at
+startup or change identity. Following it literally would reintroduce that
+regression and move recorded history to a new identity. Budgets, ceilings and
+the frozen vocabulary are unchanged.
