@@ -49,8 +49,8 @@
     "flush_ms": 250,
     "retry_initial_ms": 100,
     "retry_max_ms": 30000,
-    "disk_max_bytes": 1073741824,
-    "disk_scan_limit": 10000
+    "disk_max_bytes": null,
+    "disk_scan_limit": null
   },
   "invalid_policy_vectors": [
     {

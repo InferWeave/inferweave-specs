@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,652,301 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,652,938 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -75,7 +75,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `conformance/owner-execution-permit-vectors.json` — `df73b72d7d7c` — ~7,772t
 - `conformance/owner_execution_permit.py` — `2a204b3f4fda` — ~3,695t
 - `conformance/private_observability.py` — `420149794e8c` — ~3,861t
-- `conformance/recording_outcomes.py` — `4aadd7e4faac` — ~1,505t
+- `conformance/recording_outcomes.py` — `4de236381c4d` — ~1,549t
 - `conformance/release-manifest.yaml` — `f1864185a739` — ~294t
 - `conformance/request-observation-failure-rollup-vectors.json` — `aad3b8166769` — ~6,076t
 - `conformance/request-observation-vectors.json` — `76a610871926` — ~7,575t
@@ -128,7 +128,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `contracts/protocol-v1/model-lifecycle-events.json` — `3908c9d493ae` — ~115t
 - `contracts/protocol-v1/provenance-sources.json` — `cdba40960903` — ~74t
 - `contracts/protocol-v1/workload-classes.json` — `1c11057ff94b` — ~77t
-- `contracts/recording-outcomes-v1.json` — `6c4a11824cbd` — ~565t
+- `contracts/recording-outcomes-v1.json` — `d1d46ebacf8c` — ~563t
 - `contracts/repository-map.json` — `ea1edd0197ad` — ~174t
 - `contracts/request-observation.json` — `7e2ab0917ef2` — ~2,191t
 - `contracts/routing-preferences.example.json` — `8fe31be89156` — ~189t
@@ -163,7 +163,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-25-bench-cognito-auth.md` — `915ddebfaf3d` — ~733t
 - `decisions/2026-10-28-proposed-toolcall-compatibility.md` — `84df720b4c1a` — ~3,410t
 - `decisions/2026-11-01-gateway-served-site-attestation.md` — `d26b9ea71c6d` — ~4,072t
-- `decisions/2026-11-06-recording-resource-policy.md` — `96eec0848080` — ~708t
+- `decisions/2026-11-06-recording-resource-policy.md` — `e84f2788e341` — ~1,041t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `a144f22f0a4c` — ~4,320t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
@@ -172,7 +172,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/alias-implementation-gap-matrix.md` — `37c1cf59a5b9` — ~7,876t
 - `docs/architecture.md` — `3d2cc8e44219` — ~377t
 - `docs/compatibility.md` — `8ceb21cb1933` — ~713t
-- `docs/contracts/recording-outcomes-v1.md` — `f02e6c854d57` — ~1,267t
+- `docs/contracts/recording-outcomes-v1.md` — `ff0156c3ea5d` — ~1,330t
 - `docs/events.md` — `a957e821624f` — ~481t
 - `docs/extensions.md` — `64c0b09b4dcb` — ~227t
 - `docs/federated-provisioning-audit.md` — `ce321d70bacd` — ~9,209t
@@ -959,7 +959,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `scripts/test_benchmark_continuation_policy.py` — `de9eedf1ad2d` — ~1,074t
 - `scripts/test_benchmark_speed_contract.py` — `a5beccffadc7` — ~592t
 - `scripts/test_native_control_plane.py` — `fd4e33413e1c` — ~842t
-- `scripts/test_recording_outcomes.py` — `339ff00856f2` — ~912t
+- `scripts/test_recording_outcomes.py` — `cffe5914f9f7` — ~1,071t
 - `scripts/test_validate_specs.py` — `45b7fd4b5ecc` — ~6,695t
 - `scripts/validate_specs.py` — `2f44d15e291a` — ~12,583t
 - `solana/DEVNET_ONLY.md` — `1a8ea96fcc58` — ~136t
@@ -985,7 +985,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/19_CI_CD_LIVING_SPECS.md` — `4bed745d8e28` — ~320t
 - `specs/20_NODE_AUTOCONFIG_DISCOVERY.md` — `0d0646f28dab` — ~424t
 - `specs/21_FEDERATION_ROLES.md` — `edc52ab18985` — ~494t
-- `specs/22_PROMPT_LEDGER.md` — `88695c16da18` — ~3,326t
+- `specs/22_PROMPT_LEDGER.md` — `ecfca06ad0c6` — ~3,366t
 - `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md` — `401a3703cb20` — ~5,995t
 - `specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md` — `c67530dd942b` — ~3,679t
 - `specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md` — `b4fb9cff4ba4` — ~1,910t

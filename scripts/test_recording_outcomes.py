@@ -52,6 +52,15 @@ class RecordingOutcomesTests(unittest.TestCase):
             path.write_text(json.dumps(data))
         self.assertTrue(any("policy vectors" in e for e in self.broken(mutate)))
 
+    def test_disk_budget_is_unset_by_default_and_zero_is_invalid(self):
+        data = json.loads((ROOT / "contracts/recording-outcomes-v1.json").read_text())
+        self.assertIsNone(data["defaults"]["disk_max_bytes"])
+        self.assertIsNone(data["defaults"]["disk_scan_limit"])
+        ceilings = data["count_ceilings"]
+        self.assertTrue(recording_outcomes.valid_policy(data["defaults"], ceilings))
+        self.assertTrue(recording_outcomes.valid_policy({**data["defaults"], "disk_max_bytes": 1}, ceilings))
+        self.assertFalse(recording_outcomes.valid_policy({**data["defaults"], "disk_max_bytes": 0}, ceilings))
+
     def test_wrong_entropy_type_is_a_closed_validation_error(self):
         def mutate(root):
             path = root / "contracts/recording-outcomes-v1.json"

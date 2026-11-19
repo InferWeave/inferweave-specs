@@ -98,11 +98,13 @@ Pool exhaustion drops recording; it never
 falls back to blocking sealing or plaintext. A frozen sink or entropy refiller
 cannot spawn replacements or make serving shutdown wait indefinitely.
 
-A file recorder defaults to a cumulative 1 GiB encoded-byte budget per
-configured deployment directory and a bounded 10,000-entry metadata scan.
-Historical and uncertain partial writes count after restart. Unknown capacity,
+A file recorder has no default disk budget: `disk_max_bytes` and
+`disk_scan_limit` default to unset (`null`), and a budget applies only when an
+operator sets either one. A configured budget counts only the sink's own
+`recording-*.jsonl` files in the configured deployment directory. Historical
+and uncertain partial writes in those files count after restart. Unknown capacity,
 symlinks, an over-budget batch or an unqualified competing writer never grant
-additional space. These values are policy, not an acceptable disk-full target.
+additional space. Any configured value is policy, not an acceptable disk-full target.
 Budget exhaustion loses only new best-effort records with explicit counters;
 no acknowledged durable data is automatically deleted or truncated. Retention
 or drain of existing durable records is a separately authorized and audited
