@@ -68,10 +68,13 @@ sink growth. New numerical defaults are operator-selected policy ceilings,
   test IDs stopped execution before any marker, proving neither property; that
   test grammar was fixed and checked locally before the successful retry.
   No response-payload storage is introduced.
-- Corrected secret-file/static-identity CLI startup fixtures passed: legacy
-  implicit identity fails before recorder filesystem access, and an explicitly
-  provisioned stable identity serves `/health` while the recorder-only database
-  is unreachable. Full affected auth/alias/cancellation regressions, unknown
+- Corrected secret-file/static-identity CLI startup fixtures passed: an
+  explicitly provisioned stable identity serves `/health` while the
+  recorder-only database is unreachable. The earlier claim here that legacy
+  implicit identity fails before recorder filesystem access is superseded
+  (2026-11-19, InferWeave PR #1506 at `352aaf72`): the gateway now reads the
+  identity file beside the outbox or mints one as the pre-recording gateway did,
+  and only a malformed or unreadable identity file exits 2. Full affected auth/alias/cancellation regressions, unknown
   in-flight outcome negatives and independent whole-diff review remain **owed
   at this checkpoint**. Final artifact/test pins must be appended before
   claiming the repair complete. A passing component test is not deployment.

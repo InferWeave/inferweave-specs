@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,652,938 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,653,441 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -163,7 +163,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `decisions/2026-10-25-bench-cognito-auth.md` — `915ddebfaf3d` — ~733t
 - `decisions/2026-10-28-proposed-toolcall-compatibility.md` — `84df720b4c1a` — ~3,410t
 - `decisions/2026-11-01-gateway-served-site-attestation.md` — `d26b9ea71c6d` — ~4,072t
-- `decisions/2026-11-06-recording-resource-policy.md` — `e84f2788e341` — ~1,041t
+- `decisions/2026-11-06-recording-resource-policy.md` — `ab6ec813ee9c` — ~1,326t
 - `decisions/ADR_TEMPLATE.md` — `377f554a7e0f` — ~399t
 - `decisions/DECISIONS_REQUIRED.md` — `a144f22f0a4c` — ~4,320t
 - `dev/LOCAL_DEV_STACK.md` — `c3d7b7b8b1ab` — ~266t
@@ -233,7 +233,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `evidence/benchmark-speed-contract-2026-11-05/delivery.md` — `5ee31c01a3da` — ~1,215t
 - `evidence/benchmark-speed-contract-2026-11-05/fix-review.md` — `d9340eb5e193` — ~1,193t
 - `evidence/benchmark-speed-contract-2026-11-05/review.md` — `1c3125601164` — ~2,145t
-- `evidence/bounded-recording-2026-11-06/README.md` — `3880ca9e67f5` — ~1,902t
+- `evidence/bounded-recording-2026-11-06/README.md` — `0c73c554283b` — ~1,966t
 - `evidence/bounded-recording-2026-11-06/file-namespace-control-proof.json` — `95b5aaf2fcf7` — ~1,649t
 - `evidence/bounded-recording-2026-11-06/postgres-concurrent-ack-proof.json` — `d8fd599c64cb` — ~1,451t
 - `evidence/bounded-recording-2026-11-06/postgres-failed-fixture-run.json` — `4b45e4ce005c` — ~411t
@@ -985,7 +985,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/19_CI_CD_LIVING_SPECS.md` — `4bed745d8e28` — ~320t
 - `specs/20_NODE_AUTOCONFIG_DISCOVERY.md` — `0d0646f28dab` — ~424t
 - `specs/21_FEDERATION_ROLES.md` — `edc52ab18985` — ~494t
-- `specs/22_PROMPT_LEDGER.md` — `ecfca06ad0c6` — ~3,366t
+- `specs/22_PROMPT_LEDGER.md` — `de766698f0cc` — ~3,520t
 - `specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md` — `401a3703cb20` — ~5,995t
 - `specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md` — `c67530dd942b` — ~3,679t
 - `specs/25_SLURM_EPHEMERAL_PROVIDER_NODES.md` — `b4fb9cff4ba4` — ~1,910t

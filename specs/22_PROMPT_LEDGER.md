@@ -111,12 +111,20 @@ or drain of existing durable records is a separately authorized and audited
 workflow. Shared-filesystem locking and exclusion of older, non-cooperating
 writers require qualification before rollout.
 
-Recorder startup cannot discover or create the gateway's stable identity in
-the recording filesystem. Existing deployments must preprovision the **same**
-persisted identity in protected independent static settings before adopting
-this startup contract. Legacy implicit outbox identity is a bounded static
-migration error; an unavailable old identity is never replaced with a freshly
-minted identity while claiming continuity. Recording-filesystem and database
+A deployment that started and recorded on the pre-recording gateway must keep
+starting with the **same** identity, so startup resolves it as that gateway did.
+A non-blank explicit `--gateway-id` flag, else a non-blank `gateway_id` setting,
+is used exactly as given; nothing on the recording filesystem is read, and an
+odd value (surrounding whitespace, control character, leading `--`, over 256
+bytes) is only warned about. Otherwise the gateway reads
+`<outbox>/<name>/gateway-id`; a blank flag hiding a differing setting starts as
+the stored ID with one warning. With no identity file it mints and saves one, as
+before, warning once if `*.jsonl` history already exists (those files were
+written under an identity that was not saved). If the save fails (read-only,
+no hard links, no space) it logs the error, falls back to an explicitly partial
+process identity and keeps recording. A malformed or unreadable identity file is
+a startup error (exit 2). A stored identity is never silently replaced by a
+minted one while claiming continuity. Recording-filesystem and database
 outages remain independent of ordinary serving once static prerequisites are
 valid. Protected alias/warehouse authority retains its own fail-closed store
 requirements and cannot be fabricated from a recorder or discard adapter.
