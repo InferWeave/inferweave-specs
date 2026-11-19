@@ -67,7 +67,10 @@ absence is never a claim of zero lifetime loss.
 ## Resource policy
 
 The JSON defaults are operator-selected policy, not hardware measurements.
-All numeric limits are finite positive integers. Queued count may be lowered
+All numeric limits are finite positive integers, except `disk_max_bytes` and
+`disk_scan_limit`: they default to `null` (unset), meaning no disk budget, and
+are positive integers only when an operator sets them. A set budget counts only
+the sink's own `recording-*.jsonl` files; zero is still invalid. Queued count may be lowered
 from 8192 and batch count from 128, but neither may be raised. Reject count
 limits above these ceilings (including platform-sized maximum integers) before
 allocating channels or starting workers. Configured crash-loss count bounds

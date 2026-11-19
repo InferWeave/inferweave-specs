@@ -8,10 +8,13 @@ GROUPS = {
     "health_states": "Health states",
     "sink_results": "Sink results",
 }
-POLICY_KEYS = {"capacity", "max_bytes", "max_event_bytes", "max_batch_bytes", "batch_size", "flush_ms", "retry_initial_ms", "retry_max_ms", "disk_max_bytes", "disk_scan_limit"}
+REQUIRED_KEYS = {"capacity", "max_bytes", "max_event_bytes", "max_batch_bytes", "batch_size", "flush_ms", "retry_initial_ms", "retry_max_ms"}
+OPTIONAL_KEYS = {"disk_max_bytes", "disk_scan_limit"}
+POLICY_KEYS = REQUIRED_KEYS | OPTIONAL_KEYS
 
 def valid_policy(policy, ceilings):
-    return (all(type(policy.get(k)) is int and policy[k] > 0 for k in POLICY_KEYS)
+    return (all(type(policy.get(k)) is int and policy[k] > 0 for k in REQUIRED_KEYS)
+            and all(policy.get(k) is None or (type(policy[k]) is int and policy[k] > 0) for k in OPTIONAL_KEYS)
             and type(policy.get("discard")) is bool
             and policy["max_event_bytes"] <= policy["max_batch_bytes"] <= policy["max_bytes"]
             and policy["retry_initial_ms"] <= policy["retry_max_ms"]
