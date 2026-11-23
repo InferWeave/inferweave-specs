@@ -245,3 +245,55 @@ public DTOs or a new export API. Public serialization still requires the existin
 allowlisted publication review; this extension changes no privacy thresholds.
 New-family-only retention is 90 days aggregates / 7 days diagnostics, with legacy
 records/caches and shared backups unchanged. All new runtime acceptance is owed.
+
+## Benchmark publication corrections (2026-11-22 review)
+
+These clarify MI-01, MI-03, MI-04 and MI-06 for the existing public benchmark
+surface; they add no qualification or publication authority. The
+[incident evidence](../evidence/benchmark-publication-review-2026-11-22/README.md)
+records why these distinctions must be observable:
+
+- Family coverage derives from actual eligible measurement families across the
+  applicable record types. A fixed list is a documented qualification scope,
+  not evidence that an observed family was never tested. Label catalogued tasks,
+  scored tasks, measured configurations, all configurations and qualified
+  capabilities with their separate populations.
+- GPU count is observed metadata, nullable when unavailable. Missing count must
+  never become one card. Preserve model/count and per-card memory interpretation
+  consistently in selectors, plots, placements and configuration details;
+  aggregate VRAM is not per-card capacity.
+- A task result identifies its exact configuration observation and profile,
+  hardware/count, runtime, suite/cohort, limits/budget and task sample count, with
+  a link to that observation when safely published. Identical display names
+  never establish identity or justify merging observations. Historical rows
+  lacking keys remain explicitly unlinked. A profile-level sample count must
+  not be presented as a task-level count.
+- Missing public task rows mean that the task projection is unavailable, not
+  that no measurement exists. Show available family coverage with its own
+  denominator and state that it cannot establish the selected task's result.
+  Partial publication and unrun tasks remain distinguishable; do not manufacture
+  task results from family totals or model-label joins.
+- Public variant descriptions come from a bounded explicit safe projection,
+  independent of immutable observation identity. Operational annotations,
+  launch arguments and private host/runtime suffixes cannot be exposed by
+  relaxing a model-label privacy check. Unknown formats fail closed with a
+  content-free diagnostic. Producer, publisher and browser must agree on the
+  public label contract so one unsupported label cannot silently masquerade as
+  a successful fresh complete publication.
+- Rank exact equal scores equally within the same eligible cohort and hosting
+  class. Rounded display equality does not establish an exact tie. Stable
+  sorting may order tied rows but must not assign different ranks to them.
+- Methodology exposes known scorer/judge identity, settings, rubric/prompt and
+  pinned cases, executable reproduction instructions, denominators/errors and
+  limitations where authorized. Each unavailable element is named as unavailable;
+  generic reproduction guidance must not imply that missing originals were
+  recovered. Private cases and answer keys remain private.
+- On phones, score and distinguishing hardware/count remain visible beside the
+  model identity. A working horizontal scroll alone does not satisfy comparison
+  readability. Probe/context and concurrency provenance remain visible or
+  accessibly attached to speed figures, including repeated model labels.
+
+Existing task ownership and acceptance mappings above remain unchanged. A
+historical metadata gap stays unknown; this clarification requires no guessed
+backfill and does not certify controlled cross-hardware equivalence, complete
+public result coverage, production activation or any global phase gate.
