@@ -399,3 +399,9 @@ coverage observations or publication. Private authenticated submission/replay is
 not public publication or hardware production qualification. Implementation and
 experimental single-card evidence are pinned in
 `evidence/legacy-nvidia-2026-10-28/README.md`; full AC-MI-08 remains owed.
+
+## Strict recorded comparison settings (2026-11-23)
+
+Under `contracts/benchmark-trust-controls.json`, optional strict quality matching uses authoritative cohort identity and known consistent public execution settings for the selected profile. Unknown/unknown is not evidence of equivalence; unmeasured, incomplete, community or contradictory observations cannot acquire equivalence by a copied identifier. Model, quantization and hardware can deliberately differ as comparison subjects; isolate provenance-specific ranks and preserve exact configuration-to-speed joins. Equal prompt tags or generic GPU/runtime labels do not establish a controlled speed methodology.
+
+The existing comparison shows recorded values and differences for suite/source/data, context, sampling, limits, harness and placement. Missing evidence is explicit. If cohort identity differs but visible fields agree, say that the public fields do not identify the underlying difference. The URL-backed matching control preserves selection, search/hosting intersection, pagination reset and compare/return/reload/history. No recommendation promotion or private evidence authority is added.

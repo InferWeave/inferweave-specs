@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "specs": [
+    "specs/12_MODEL_TUNING_BENCHMARKS.md",
+    "specs/23_GLOBAL_TELEMETRY_BENCHMARKS.md",
+    "specs/24_MODEL_RECOMMENDATION_BENCHMARK_SUITE.md",
+    "specs/58_MODEL_INTELLIGENCE_UI_COHESION.md"
+  ],
+  "scope": "Additive benchmark execution metadata and comparison settings. Publication alerts were explicitly declined by the operator on 2026-11-23; no monitoring or notification work is included.",
+  "reason_codes": [
+    "provenance_incomplete",
+    "provenance_mixed",
+    "settings_different",
+    "settings_unknown"
+  ],
+  "acceptance": [
+    {
+      "id": "AC-BTRUST-01",
+      "canonical_tasks": [
+        "P2-T01",
+        "P2-T03"
+      ],
+      "scenario": "Future native run provenance",
+      "expected": "Execution freezes typed known model revision, deployment card count, context, quantization and harness build identity. Source distinctions are retained; positive counts only; strict controlled-run preflight rejects missing required metadata before inference. Legacy hashes/identifiers remain unchanged.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-BTRUST-02",
+      "canonical_tasks": [
+        "P2-T05",
+        "P2-T03"
+      ],
+      "scenario": "Future review run provenance",
+      "expected": "Store execution-time provenance per case; aggregate only consistent stored run evidence. Re-export under changed configuration cannot rewrite old evidence; mixed resumed runs are explicit and old fields remain unknown. Public fields are bounded and private metadata rejected.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-BTRUST-05",
+      "canonical_tasks": [
+        "P2-T18"
+      ],
+      "scenario": "Strict quality settings filtering",
+      "expected": "Use authoritative nonempty cohort identity and recorded consistent complete quality settings, excluding unknown/incomplete/cohort conflicts. Model/quantization/hardware may vary as comparison subjects. Preserve existing ranks and exact speed joins; no controlled speed equivalence from labels/tags.",
+      "proof_status": "owed"
+    },
+    {
+      "id": "AC-BTRUST-06",
+      "canonical_tasks": [
+        "P2-T18"
+      ],
+      "scenario": "Comparison explanations and navigation",
+      "expected": "Show recorded per-side differences and unknown settings without guessing hidden cohort differences. URL-backed filter survives compare/return, reload and history, intersections and pagination; preserve excluded selections. Desktop/tablet/phone visual approval and CLI browser evidence are separate.",
+      "proof_status": "owed"
+    }
+  ],
+  "provenance_v1": {
+    "schema": "iw.bench-run-provenance/1",
+    "fields": [
+      "schema",
+      "model_revision",
+      "revision_source",
+      "weights_fingerprint",
+      "cards",
+      "context_tokens",
+      "context_source",
+      "quantization",
+      "harness"
+    ],
+    "revision_sources": [
+      "configured",
+      "catalogue",
+      "measured",
+      null
+    ],
+    "context_sources": [
+      "configured",
+      "observed",
+      null
+    ],
+    "strict_required": "40/64-hex immutable revision or 64-hex weights fingerprint; positive explicit deployment cards; positive known context; known quantization; actual versioned clean source-pinned executing harness. Mutable aliases and missing fields cannot satisfy strict preflight.",
+    "public_run_state": {
+      "statuses": [
+        "consistent",
+        "missing",
+        "mixed"
+      ],
+      "fields": [
+        "status",
+        "value"
+      ],
+      "consistent": "all included stored case provenance objects valid, present and identical; value is frozen object, possibly incomplete",
+      "missing": "all included cases lack provenance or no eligible cases; value is null",
+      "mixed": "mixed absence/presence or different objects; value is null"
+    },
+    "legacy": "optional absent fields; no export-time filling from current config; previous hashes/identifiers unchanged"
+  }
+}

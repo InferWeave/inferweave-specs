@@ -467,3 +467,7 @@ Qualification requires independent measured proof and is never inferred from a
 fixture, submitted record or exact match. E7–E9 must provide authenticated owner
 observations, additive payload v2 and producer receipts before source-backed exact
 coverage can be claimed. Slurm resident attestation remains absent.
+
+## Frozen benchmark execution metadata (2026-11-23)
+
+`contracts/benchmark-trust-controls.json` records the additive future-execution provenance and public comparison obligations under existing IW-BENCH-002/IW-UI-002 owners. Existing measurement/privacy boundaries remain; no alerting, monitoring or notification changes are included after the operator declined publication alerts. Native and review public values must be frozen stored facts; historical unknowns remain unknown.
