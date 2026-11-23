@@ -1609,3 +1609,7 @@ controlled cross-hardware equivalence or recover missing historical fingerprints
 Private operational model annotations require safe public projection; weakening
 privacy checks is not an accepted publication repair. Existing production,
 qualification and privacy gates remain unchanged.
+
+## Benchmark trust controls (2026-11-23)
+
+AC-BTRUST-01/02/05/06 in `contracts/benchmark-trust-controls.json` are **owed**: execution-time provenance persistence and strict preflight, mixed-resume/export proof, public strict-settings controls and source-bound UI approval. The operator declined publication alerts; monitoring/delivery are outside this change. Existing published historical metadata cannot be reconstructed. No phase, inference serving or hardware qualification gate is opened.

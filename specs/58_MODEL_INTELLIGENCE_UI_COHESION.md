@@ -297,3 +297,7 @@ Existing task ownership and acceptance mappings above remain unchanged. A
 historical metadata gap stays unknown; this clarification requires no guessed
 backfill and does not certify controlled cross-hardware equivalence, complete
 public result coverage, production activation or any global phase gate.
+
+## Benchmark trust follow-up (2026-11-23)
+
+The operator authorized future-run metadata capture and explicit equivalent-settings comparisons after the benchmark publication correction, and subsequently declined publication alerts. `contracts/benchmark-trust-controls.json` records AC-BTRUST-01/02/05/06 under existing task ownership; numbers03/04 are intentionally unused. Specs12/23/24 define the additive execution and public comparison boundaries. Missing historical metadata remains unavailable. New UI controls require source-bound before/after evidence and operator approval separately from real CLI browser verification. No monitoring, alert routing or notification work is included. This extension grants no new global phase, model-serving, inference-experiment or privacy authority.
