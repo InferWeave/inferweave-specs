@@ -1597,3 +1597,15 @@ then replacement readiness/fresh capacity 16 and normal-route HTTP200 in 0.556 s
 No fresh free claim was accepted before physical retirement. This is not a
 production-profile or full-workload gate approval; the existing 180 s maximum
 shape failure, broader cancellation/batch cases, RAM and soak remain owed.
+
+## Public benchmark review corrections — 2026-11-22 Pacific
+
+**UNSATISFIED / owed:** fresh public publication and authoritative-store/export
+reconciliation after the GPU-count, task-identity, family-coverage, exact-tie,
+methodology and phone-comparison corrections. The
+[bounded incident record](evidence/benchmark-publication-review-2026-11-22/README.md)
+and spec58 clarify existing acceptance; they do not prove deployed completeness,
+controlled cross-hardware equivalence or recover missing historical fingerprints.
+Private operational model annotations require safe public projection; weakening
+privacy checks is not an accepted publication repair. Existing production,
+qualification and privacy gates remain unchanged.

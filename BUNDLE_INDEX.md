@@ -16,7 +16,7 @@ GPU watchdog/rescue: **required**
 
 ## Files
 
-Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,653,441 tokens**.
+Digest and approximate token cost at four characters per token, so a context pack can be budgeted before it is assembled. Whole bundle: **~1,656,862 tokens**.
 
 - `.github/ISSUE_TEMPLATE/spec-change.md` — `df8eed06a443` — ~72t
 - `.github/PULL_REQUEST_TEMPLATE.md` — `d50237598fa3` — ~91t
@@ -33,7 +33,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `GETTING_STARTED.md` — `2d786173fd79` — ~580t
 - `INFERWEAVE_DYNAMIC_ALIASES_MASTER_SPEC.md` — `29ba2583c13f` — ~11,826t
 - `Makefile` — `4ac16eb54065` — ~113t
-- `OPEN_GATES.md` — `6fb8543eff30` — ~29,667t
+- `OPEN_GATES.md` — `69fba6c0f3d0` — ~29,849t
 - `README.md` — `bfdb06ecbcf4` — ~898t
 - `SOURCE_AUDIT.md` — `655a39d50187` — ~387t
 - `SOURCE_NOTES_CURRENT.md` — `be95fa740a29` — ~441t
@@ -230,6 +230,10 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `docs/superpowers/plans/2026-10-21-role-scoped-embedded-uis.md` — `72b43565e5c1` — ~875t
 - `evidence/alias-precision-tokens-2026-10-15/README.md` — `b11af2d47390` — ~536t
 - `evidence/alias-precision-tokens-2026-10-15/models.txt` — `a99123809c19` — ~99t
+- `evidence/benchmark-publication-review-2026-11-22/README.md` — `ce76c66c5d40` — ~1,642t
+- `evidence/benchmark-publication-review-2026-11-22/corrected-export-summary.json` — `00fa75c7617b` — ~412t
+- `evidence/benchmark-publication-review-2026-11-22/production-policy-verification.json` — `e579880ea6f5` — ~37t
+- `evidence/benchmark-publication-review-2026-11-22/reproduce.py` — `ec47aa9bf8c7` — ~279t
 - `evidence/benchmark-speed-contract-2026-11-05/delivery.md` — `5ee31c01a3da` — ~1,215t
 - `evidence/benchmark-speed-contract-2026-11-05/fix-review.md` — `d9340eb5e193` — ~1,193t
 - `evidence/benchmark-speed-contract-2026-11-05/review.md` — `1c3125601164` — ~2,145t
@@ -1021,7 +1025,7 @@ Digest and approximate token cost at four characters per token, so a context pac
 - `specs/55_ALIAS_EDGE_DELEGATION.md` — `38b0da721b74` — ~2,316t
 - `specs/56_RUNTIME_INSTANCE_OBSERVATIONS.md` — `b9a968f727dc` — ~6,011t
 - `specs/57_ALIAS_EXECUTION_IDENTITY_AND_CLAIMS.md` — `3659d1492b01` — ~10,487t
-- `specs/58_MODEL_INTELLIGENCE_UI_COHESION.md` — `d4aafcb9742d` — ~3,996t
+- `specs/58_MODEL_INTELLIGENCE_UI_COHESION.md` — `db9f6d2f401a` — ~4,865t
 - `specs/59_LINK_HTTP_JSON.md` — `8f9dcbbcacb1` — ~4,572t
 - `specs/60_CAPABILITY_ROUTING_AND_MISSION_EVENTS.md` — `4fc9e27aded3` — ~3,135t
 - `specs/61_ALIAS_PRECISION_ADHOC_SELECTION_AND_RESOLUTION_TREES.md` — `77414c142add` — ~7,385t
